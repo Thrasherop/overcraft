@@ -1,0 +1,21 @@
+MARK T16 second night fight (the fixed build; ult full at the start) setup: normal, midnight, monsters spawning; her tamed wolf beside her; a wave of 6 zombies, 3 skeletons, a spider and a creeper 12-18 m around
+cmd /tp @s 4.5 -60 -3.5 0 0
+cmd /kill @e[type=!player]
+cmd /difficulty normal
+cmd /gamerule spawn_monsters true
+cmd /time set midnight
+cmd /summon wolf 5.5 -60 -3.5 {Tags:["w"]}
+cmd /execute as @e[tag=w] run data modify entity @s Owner set from entity @p UUID
+cmd /summon zombie 4.5 -60 12.5
+cmd /summon zombie 10.5 -60 10.5
+cmd /summon zombie -4.5 -60 12.5
+cmd /summon zombie 16.5 -60 -3.5
+cmd /summon zombie -10.5 -60 -6.5
+cmd /summon zombie 4.5 -60 -20.5
+cmd /summon skeleton 14.5 -60 8.5
+cmd /summon skeleton -12.5 -60 4.5
+cmd /summon skeleton 2.5 -60 -18.5
+cmd /summon spider -8.5 -60 14.5
+cmd /summon creeper 12.5 -60 -14.5
+sleep 1
+ult 100

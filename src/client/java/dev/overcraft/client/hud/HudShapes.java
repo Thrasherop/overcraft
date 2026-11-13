@@ -81,6 +81,16 @@ public final class HudShapes {
 	/** Clear in the middle, soft toward the edges: screen-edge tints (Kitsune Rush's mist, Swift Step's flash). */
 	public static final Identifier VIGNETTE = Overcraft.id("hud/vignette");
 	/** A soft streak, brightest near one end: speed lines across the screen. */
+	/**
+	 * Ana's scope (#90): its surround, clear in a circle filling the square to 90% of its half-width and dark outside, with a
+	 * soft lens edge darkening in over the last 12% (ours: her data's overlay 0613.116 has no art).
+	 */
+	public static final Identifier SCOPE = Overcraft.id("hud/scope");
+	/** The scope's lens rim: a thin soft ring at the clear circle's edge. */
+	public static final Identifier SCOPE_RIM = Overcraft.id("hud/scope_rim");
+	public static final int SCOPE_SIZE = 512;
+	/** The clear circle's radius as a share of the scope square's half-width. */
+	public static final float SCOPE_CLEAR = 0.9f;
 	public static final Identifier STREAK = Overcraft.id("hud/streak");
 	public static final int STREAK_W = 32;
 	public static final int STREAK_H = 128;
@@ -170,6 +180,17 @@ public final class HudShapes {
 			return (float) Math.exp(-across * across * 9) * body * body;
 		});
 		register(SHIELD_BORDER, SHIELD_W, SHIELD_H, (x, y) -> Math.min(shield(x, y, 0), 1 - shield(x, y, 5)));
+		register(SCOPE, SCOPE_SIZE, SCOPE_SIZE, (x, y) -> {
+			float d = (float) Math.hypot(x - SCOPE_SIZE / 2f, y - SCOPE_SIZE / 2f) / (SCOPE_SIZE / 2f) / SCOPE_CLEAR;
+			// clear to 0.88 of the circle, then the lens edge darkens in (an eased ramp), solid past the circle
+			float t = Math.clamp((d - 0.88f) / 0.12f, 0, 1);
+			return Math.max(0.12f * Math.clamp((d - 0.5f) / 0.38f, 0, 1), t * t * (3 - 2 * t));
+		});
+		register(SCOPE_RIM, SCOPE_SIZE, SCOPE_SIZE, (x, y) -> {
+			float d = (float) Math.hypot(x - SCOPE_SIZE / 2f, y - SCOPE_SIZE / 2f) / (SCOPE_SIZE / 2f) / SCOPE_CLEAR;
+			float e = (d - 0.97f) / 0.012f;
+			return (float) Math.exp(-e * e);
+		});
 	}
 
 	/**

@@ -1,0 +1,241 @@
+# Cassidy's voice: <sound id> = <file under E:/Overwatch Archive/extracted/154088/> (build 154088). Same format as dva.txt;
+# build_asset_pack.py sounds copies / mixes them into the local pack. Read 2026-11-12 offline (Overwatch and Battle.net
+# checked closed before every archive read and TankLib run). Scripts: E:/Overwatch Archive/research/cassidy/scripts/sounds/
+# (voiceset_cassidy.py, cassidy_voice.py, cassidy_voice_gen.py, which writes this file; Tracer's voice pipeline retargeted); data:
+# research/cassidy/sounds/voice_lines.json. His sound effects are in cassidy_sfx.txt.
+
+# ===== Voice (HeroVoice/Cassidy): the voice set 0051.05F's lines by moment (367 stimuli, 1276 lines; from cassidy_voice.py:
+# each line's 0B2, stimulus, weight and decoded criteria; files from DataTool's extract-hero-voice --subtitles-with-sounds,
+# in research/cassidy/extract). w = the line's weight. Lines with criteria are left out, as Tracer's are (hero interactions,
+# skins, maps, Overwatch Classic, scripted moments: counted per moment), except 'NOT ScriptedEvent 191E', treated as
+# always true (kiriko-voice.md). Stimulus numbers (the .078): priority, radius m, volume dB, interrupt, cooldown s
+# (m_A73F2EBE-m_DD27AC95 read as min-max, M); Voice.java's table takes priority, cooldown and interrupt.
+# Not mapped: 0019 (UltimateSeenRemark), 0575 (a teammate's ult ready), 11CC ('You're stuck': 01E9 #215 STU_40E05F6B, the
+# Stadium magnetic Flashbang, not the live kit), the reload (01D2 #322 / #323 raise 05D6 / 05D7 by ammo, but no stimulus of his
+# set names either: no reload line), 05AF / 191B (01D2 perk paths, no stimulus), perk lines, the match / objective / PvE lines.
+# Elimination 0008: 20 files; prio 70, 30 m, +2 dB, interrupt 0, cooldown 15-15 s; left out: 20 a hero interaction, 17 a scripted condition, 11 Overwatch Classic only, 2 a map (OnMap)
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/00000000AB7A.0B2-Just a matter of time.ogg | w=0.01
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/00000000AB6D.0B2-You needed killin'.ogg | w=0.05
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/00000000AB49.0B2-Dead to rights.ogg | w=0.05
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/00000000AB38.0B2-Come and get it.ogg | w=0.2
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/00000000ACCD.0B2-Call that a fair fight_.ogg | w=0.01
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/00000000B406.0B2-All in a day's work.ogg | w=0.05
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/000000020006.0B2-Too slow.ogg | w=0.05
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/000000061356.0B2-You'll need more grit than that.ogg | w=1
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/000000061355.0B2-I never miss my mark.ogg | w=1
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/00000006131C.0B2-Quit making yourself an easy target.ogg | w=1
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/000000061352.0B2-You had it comin'.ogg | w=1
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/00000006130D.0B2-Chew on that.ogg | w=1
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/00000006135D.0B2-Dead on.ogg | w=1
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/000000061320.0B2-You don't know when to quit.ogg | w=1
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/00000006132B.0B2-See that_.ogg | w=1
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/000000061344.0B2-You really underestimatin' me_.ogg | w=1
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/00000006133E.0B2-You tangled with the wrong man.ogg | w=1
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/00000006A1F2.0B2-You're not the first to learn that lesson.ogg | w=1
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/00000006A1F3.0B2-Get along now.ogg | w=1
+cassidy.voice.elimination = ../../research/cassidy/extract/HeroVoice/Cassidy/Elimination/00000006A1F0.0B2-Eh, that's your sunset.ogg | w=1
+# Multikill 00C9: 8 files; prio 70, 35 m, +2 dB, interrupt 0, cooldown 15-20 s
+cassidy.voice.multikill = ../../research/cassidy/extract/HeroVoice/Cassidy/Multikill/00000000AB48.0B2-You all had it coming.ogg | w=1
+cassidy.voice.multikill = ../../research/cassidy/extract/HeroVoice/Cassidy/Multikill/00000000AB47.0B2-Anyone else_.ogg | w=1
+cassidy.voice.multikill = ../../research/cassidy/extract/HeroVoice/Cassidy/Multikill/00000000AB39.0B2-Did I miss anybody_.ogg | w=1
+cassidy.voice.multikill = ../../research/cassidy/extract/HeroVoice/Cassidy/Multikill/00000000AB20.0B2-Yippee ki yay!.ogg | w=0.05
+cassidy.voice.multikill = ../../research/cassidy/extract/HeroVoice/Cassidy/Multikill/00000000ACCE.0B2-Clean sweep.ogg | w=1
+cassidy.voice.multikill = ../../research/cassidy/extract/HeroVoice/Cassidy/Multikill/000000061323.0B2-Cleaned 'em up nice.ogg | w=1
+cassidy.voice.multikill = ../../research/cassidy/extract/HeroVoice/Cassidy/Multikill/000000061331.0B2-Plenty more where that came from.ogg | w=1
+cassidy.voice.multikill = ../../research/cassidy/extract/HeroVoice/Cassidy/Multikill/00000006132A.0B2-It's a bone orchard out here.ogg | w=1
+# MeleeEnemyKilledRemark 0032 (an enemy killed in melee range): 3 files; prio 65, 30 m, +2 dB, interrupt 0, cooldown 10-14 s; left out: 2 Overwatch Classic only, 1 a hero interaction, 1 a scripted condition
+cassidy.voice.melee_kill = ../../research/cassidy/extract/HeroVoice/Cassidy/MeleeEnemyKilledRemark/000000061359.0B2-Hey, hands off the merchandise.ogg | w=1
+cassidy.voice.melee_kill = ../../research/cassidy/extract/HeroVoice/Cassidy/MeleeEnemyKilledRemark/000000061322.0B2-You'll feel that one tomorrow.ogg | w=1
+cassidy.voice.melee_kill = ../../research/cassidy/extract/HeroVoice/Cassidy/MeleeEnemyKilledRemark/000000061354.0B2-I love a good brawl.ogg | w=1
+# On Fire 0583: 3 files; prio 60, 35 m, +2 dB, interrupt 0, cooldown 2-5 s; left out: 3 Overwatch Classic only
+cassidy.voice.on_fire = ../../research/cassidy/extract/HeroVoice/Cassidy/OnFire/000000061361.0B2-Where there's smoke, there's fire!.ogg | w=0.8
+cassidy.voice.on_fire = ../../research/cassidy/extract/HeroVoice/Cassidy/OnFire/000000061315.0B2-I'm really feelin' the heat!.ogg | w=1
+cassidy.voice.on_fire = ../../research/cassidy/extract/HeroVoice/Cassidy/OnFire/000000061314.0B2-These barrels are smokin'.ogg | w=0.5
+# Respawn 002C: 10 files; prio 40, 35 m, +0 dB, interrupt 0, cooldown 15-15 s; left out: 8 Overwatch Classic only, 2 a scripted condition, 1 a map (OnMap), 1 a hero interaction
+cassidy.voice.respawn = ../../research/cassidy/extract/HeroVoice/Cassidy/Respawn/00000006130B.0B2-Death ain't on my doorstep yet.ogg | w=1
+cassidy.voice.respawn = ../../research/cassidy/extract/HeroVoice/Cassidy/Respawn/00000006133F.0B2-Maybe a different angle.ogg | w=1
+cassidy.voice.respawn = ../../research/cassidy/extract/HeroVoice/Cassidy/Respawn/00000006136B.0B2-Where was I_.ogg | w=1
+cassidy.voice.respawn = ../../research/cassidy/extract/HeroVoice/Cassidy/Respawn/000000061311.0B2-Bit early to dust off the boots.ogg | w=1
+cassidy.voice.respawn = ../../research/cassidy/extract/HeroVoice/Cassidy/Respawn/000000061310.0B2-Not exactly what I expected.ogg | w=1
+cassidy.voice.respawn = ../../research/cassidy/extract/HeroVoice/Cassidy/Respawn/00000006130F.0B2-They still haven't seen my ace.ogg | w=1
+cassidy.voice.respawn = ../../research/cassidy/extract/HeroVoice/Cassidy/Respawn/000000061351.0B2-Eyes sharp this time.ogg | w=1
+cassidy.voice.respawn = ../../research/cassidy/extract/HeroVoice/Cassidy/Respawn/000000061350.0B2-No time to waste.ogg | w=1
+cassidy.voice.respawn = ../../research/cassidy/extract/HeroVoice/Cassidy/Respawn/00000006135C.0B2-Lucky shot.ogg | w=1
+cassidy.voice.respawn = ../../research/cassidy/extract/HeroVoice/Cassidy/Respawn/0000000642DA.0B2-Come on, Cole. Try a little harder.ogg | w=1
+# Melee shout 0023 (the shared melee VoiceStimulus): 9 files; prio 35, 35 m, +0 dB, interrupt 0, cooldown 0.5-0.5 s
+cassidy.voice.melee = ../../research/cassidy/extract/HeroVoice/Cassidy/Melee/00000000ABD8.0B2-(shouts).ogg | w=0.7
+cassidy.voice.melee = ../../research/cassidy/extract/HeroVoice/Cassidy/Melee/00000000AB95.0B2-(shouts).ogg | w=0.7
+cassidy.voice.melee = ../../research/cassidy/extract/HeroVoice/Cassidy/Melee/00000000AB9F.0B2-(shouts).ogg | w=0.7
+cassidy.voice.melee = ../../research/cassidy/extract/HeroVoice/Cassidy/Melee/00000000ABC2.0B2-(shouts).ogg | w=0.7
+cassidy.voice.melee = ../../research/cassidy/extract/HeroVoice/Cassidy/Melee/00000000ABC0.0B2-(shouts).ogg | w=0.7
+cassidy.voice.melee = ../../research/cassidy/extract/HeroVoice/Cassidy/Melee/00000000AB9A.0B2-(shouts).ogg | w=0.7
+cassidy.voice.melee = ../../research/cassidy/extract/HeroVoice/Cassidy/Melee/0000000642FA.0B2-(shouts).ogg | w=1
+cassidy.voice.melee = ../../research/cassidy/extract/HeroVoice/Cassidy/Melee/0000000642FB.0B2-(shouts).ogg | w=1
+cassidy.voice.melee = ../../research/cassidy/extract/HeroVoice/Cassidy/Melee/0000000642FC.0B2-(shouts).ogg | w=1
+# Hero select 002B: 1 files; prio 100, 35 m, +0 dB, interrupt 0, cooldown 1-1 s; left out: 2 a map (OnMap), 1 Overwatch Classic only
+cassidy.voice.select = ../../research/cassidy/extract/HeroVoice/Cassidy/HeroSelect/00000006136D.0B2-Someone needs to fill this saddle.ogg | w=1
+# Death 0001: 6 files; prio 90, 60 m, +2 dB, interrupt 0, cooldown 2-5 s
+cassidy.voice.death = ../../research/cassidy/extract/HeroVoice/Cassidy/Death/00000000AB98.0B2-(dying sounds).ogg | w=1
+cassidy.voice.death = ../../research/cassidy/extract/HeroVoice/Cassidy/Death/00000000ABAD.0B2-(dying sounds).ogg | w=1
+cassidy.voice.death = ../../research/cassidy/extract/HeroVoice/Cassidy/Death/00000000ABBB.0B2-(dying sounds).ogg | w=1
+cassidy.voice.death = ../../research/cassidy/extract/HeroVoice/Cassidy/Death/00000000ABAC.0B2-(dying sounds).ogg | w=1
+cassidy.voice.death = ../../research/cassidy/extract/HeroVoice/Cassidy/Death/00000000ABA4.0B2-(dying sounds).ogg | w=1
+cassidy.voice.death = ../../research/cassidy/extract/HeroVoice/Cassidy/Death/00000000ABA7.0B2-(dying sounds).ogg | w=1
+# Pain 0003 / 0004: 19 files; prio 40, 35 m, -3 dB, interrupt 0, cooldown 1-2.5 s
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000ABB6.0B2-(grunts).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000ABC9.0B2-(grunts).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000AB91.0B2-(grunts).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000ABC3.0B2-(grunts).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000ABCA.0B2-(grunts).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000AB9E.0B2-(grunts).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000ABAF.0B2-(grunts).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000ABD4.0B2-(grunts).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000ABBF.0B2-(grunts).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000ABCB.0B2-(painful grunt).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000ABB4.0B2-(painful grunt).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000ABB2.0B2-(painful grunt).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000ABA8.0B2-(painful grunt).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000ABB5.0B2-(painful grunt).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000AB9D.0B2-(painful grunt).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000ABD7.0B2-(painful grunt).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000AB9C.0B2-(painful grunt).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000AB9B.0B2-(painful grunt).ogg | w=1
+cassidy.voice.pain = ../../research/cassidy/extract/HeroVoice/Cassidy/Pain/00000000ABC1.0B2-(painful grunt).ogg | w=1
+# Resurrected 005A (what he says when a Mercy brings him back): 1 files; prio 75, 35 m, +0 dB, interrupt 0, cooldown 10-10 s
+cassidy.voice.resurrected = ../../research/cassidy/extract/HeroVoice/Cassidy/Resurrected/00000006135E.0B2-Don't mind if I do.ogg | w=1
+# Ultimate/Ready 02E7 (the wheel line): 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s; left out: 1 a scripted condition
+cassidy.voice.ult_ready = ../../research/cassidy/extract/HeroVoice/Cassidy/Ultimate/Ready/00000000B3FE.0B2-My ultimate's ready!.ogg | w=1
+cassidy.voice.ult_ready = ../../research/cassidy/extract/HeroVoice/Cassidy/Ultimate/Ready/00000002ECC1.0B2-You know what time it is.ogg | w=0.1
+# Ultimate/Charging 0574: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+cassidy.voice.call_ult_charging = ../../research/cassidy/extract/HeroVoice/Cassidy/Ultimate/Charging/00000002001E.0B2-My ultimate is charging.ogg | w=1
+# Ultimate/AlmostReady 05A7: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+cassidy.voice.call_ult_almost = ../../research/cassidy/extract/HeroVoice/Cassidy/Ultimate/AlmostReady/00000002001D.0B2-My ultimate is almost ready.ogg | w=1
+# Hello 01CF: 7 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+cassidy.voice.call_hello = ../../research/cassidy/extract/HeroVoice/Cassidy/Hello/00000000ABDA.0B2-Howdy.ogg | w=0.1
+cassidy.voice.call_hello = ../../research/cassidy/extract/HeroVoice/Cassidy/Hello/00000000AB8D.0B2-Hey.ogg | w=1
+cassidy.voice.call_hello = ../../research/cassidy/extract/HeroVoice/Cassidy/Hello/00000000B411.0B2-Hey there.ogg | w=1
+cassidy.voice.call_hello = ../../research/cassidy/extract/HeroVoice/Cassidy/Hello/00000000B43C.0B2-Hello.ogg | w=1
+cassidy.voice.call_hello = ../../research/cassidy/extract/HeroVoice/Cassidy/Hello/0000000642E5.0B2-Hey.ogg | w=1
+cassidy.voice.call_hello = ../../research/cassidy/extract/HeroVoice/Cassidy/Hello/0000000642E3.0B2-How's it going_.ogg | w=1
+cassidy.voice.call_hello = ../../research/cassidy/extract/HeroVoice/Cassidy/Hello/0000000642E4.0B2-How's it hanging_.ogg | w=0.1
+# Thanks 01D0: 5 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+cassidy.voice.call_thanks = ../../research/cassidy/extract/HeroVoice/Cassidy/Thanks/00000000AB8A.0B2-Much obliged.ogg | w=1
+cassidy.voice.call_thanks = ../../research/cassidy/extract/HeroVoice/Cassidy/Thanks/00000000AB4C.0B2-Thank you.ogg | w=1
+cassidy.voice.call_thanks = ../../research/cassidy/extract/HeroVoice/Cassidy/Thanks/00000002001C.0B2-Thank you kindly.ogg | w=1
+cassidy.voice.call_thanks = ../../research/cassidy/extract/HeroVoice/Cassidy/Thanks/0000000642EB.0B2-Thanks.ogg | w=1
+cassidy.voice.call_thanks = ../../research/cassidy/extract/HeroVoice/Cassidy/Thanks/0000000642EC.0B2-Thank you.ogg | w=1
+# Sorry 05E1: 3 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+cassidy.voice.call_sorry = ../../research/cassidy/extract/HeroVoice/Cassidy/Sorry/00000002A875.0B2-Sorry about that.ogg | w=1
+cassidy.voice.call_sorry = ../../research/cassidy/extract/HeroVoice/Cassidy/Sorry/00000002A882.0B2-Sorry.ogg | w=1
+cassidy.voice.call_sorry = ../../research/cassidy/extract/HeroVoice/Cassidy/Sorry/00000002A892.0B2-Pardon me.ogg | w=1
+# No 01D2: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+cassidy.voice.call_no = ../../research/cassidy/extract/HeroVoice/Cassidy/No/00000000AB4D.0B2-No.ogg | w=1
+cassidy.voice.call_no = ../../research/cassidy/extract/HeroVoice/Cassidy/No/00000000B3FA.0B2-Nuh uh.ogg | w=1
+# GroupUp 02C6: 7 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+cassidy.voice.call_group_up = ../../research/cassidy/extract/HeroVoice/Cassidy/GroupUp/00000000B442.0B2-Group up here.ogg | w=1
+cassidy.voice.call_group_up = ../../research/cassidy/extract/HeroVoice/Cassidy/GroupUp/00000000B45B.0B2-Form up here.ogg | w=1
+cassidy.voice.call_group_up = ../../research/cassidy/extract/HeroVoice/Cassidy/GroupUp/000000020011.0B2-Join me.ogg | w=1
+cassidy.voice.call_group_up = ../../research/cassidy/extract/HeroVoice/Cassidy/GroupUp/000000020012.0B2-Group up with me!.ogg | w=1
+cassidy.voice.call_group_up = ../../research/cassidy/extract/HeroVoice/Cassidy/GroupUp/000000020013.0B2-Group up!.ogg | w=1
+cassidy.voice.call_group_up = ../../research/cassidy/extract/HeroVoice/Cassidy/GroupUp/0000000642E1.0B2-Let's stick together.ogg | w=1
+cassidy.voice.call_group_up = ../../research/cassidy/extract/HeroVoice/Cassidy/GroupUp/0000000642E2.0B2-Stay on me.ogg | w=1
+# AssistanceRequired 0427: 3 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+cassidy.voice.call_need_help = ../../research/cassidy/extract/HeroVoice/Cassidy/AssistanceRequired/00000001FFF5.0B2-Need a hand here.ogg | w=1
+cassidy.voice.call_need_help = ../../research/cassidy/extract/HeroVoice/Cassidy/AssistanceRequired/000000020018.0B2-Little help here_.ogg | w=1
+cassidy.voice.call_need_help = ../../research/cassidy/extract/HeroVoice/Cassidy/AssistanceRequired/000000020019.0B2-I need help!.ogg | w=1
+# Healing 0045: 3 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+cassidy.voice.call_need_healing = ../../research/cassidy/extract/HeroVoice/Cassidy/Healing/00000000AB8C.0B2-I need healing.ogg | w=1
+cassidy.voice.call_need_healing = ../../research/cassidy/extract/HeroVoice/Cassidy/Healing/00000002001A.0B2-I need a doctor.ogg | w=1
+cassidy.voice.call_need_healing = ../../research/cassidy/extract/HeroVoice/Cassidy/Healing/0000000642E6.0B2-I need a medic.ogg | w=1
+# ping 11D9: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+cassidy.voice.ping = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/11D9.078/0000000642D6.0B2-Over there!.ogg | w=1
+# ping warning 11DA: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+cassidy.voice.ping_warning = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/11DA.078/0000000642D7.0B2-Eyes out.ogg | w=1
+cassidy.voice.ping_warning = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/11DA.078/0000000642D8.0B2-Keep a look out.ogg | w=1
+cassidy.voice.ping_warning = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/11DA.078/0000000642D9.0B2-Watch here.ogg | w=1
+# ping enemy 1117: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+cassidy.voice.ping_enemy = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/1117.078/000000062ABC.0B2-Enemy spotted!.ogg | w=1
+cassidy.voice.ping_enemy = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/1117.078/000000062ABA.0B2-Spotted an enemy.ogg | w=1
+cassidy.voice.ping_enemy = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/1117.078/000000062ABB.0B2-There's one!.ogg | w=1
+# DamageBoosted 00CC (what he says when a Mercy boosts him): 6 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 30-30 s; left out: 1 a hero interaction
+cassidy.voice.damage_boosted = ../../research/cassidy/extract/HeroVoice/Cassidy/DamageBoosted/00000000ABDB.0B2-Oh, that'll do fine.ogg | w=1
+cassidy.voice.damage_boosted = ../../research/cassidy/extract/HeroVoice/Cassidy/DamageBoosted/00000000AB88.0B2-That'll get it done.ogg | w=1
+cassidy.voice.damage_boosted = ../../research/cassidy/extract/HeroVoice/Cassidy/DamageBoosted/00000000AB7B.0B2-Thanks. Put it on my tab.ogg | w=1
+cassidy.voice.damage_boosted = ../../research/cassidy/extract/HeroVoice/Cassidy/DamageBoosted/00000000AB6E.0B2-Feel like a man possessed.ogg | w=0.01
+cassidy.voice.damage_boosted = ../../research/cassidy/extract/HeroVoice/Cassidy/DamageBoosted/00000000AB24.0B2-Much obliged.ogg | w=1
+cassidy.voice.damage_boosted = ../../research/cassidy/extract/HeroVoice/Cassidy/DamageBoosted/00000000AB23.0B2-Thank you kindly.ogg | w=1
+# NanoBoosted 05E2 (what he says when an Ana nanos him): 7 files; prio 95, 80 m, +3 dB, interrupt 1, cooldown 2-2 s
+cassidy.voice.nano_boosted = ../../research/cassidy/extract/HeroVoice/Cassidy/NanoBoosted/00000002A878.0B2-Ain't no stoppin' me.ogg | w=1
+cassidy.voice.nano_boosted = ../../research/cassidy/extract/HeroVoice/Cassidy/NanoBoosted/00000002A877.0B2-I am unstoppable.ogg | w=1
+cassidy.voice.nano_boosted = ../../research/cassidy/extract/HeroVoice/Cassidy/NanoBoosted/00000002A876.0B2-Buckle up, this gunslinger's loaded.ogg | w=1
+cassidy.voice.nano_boosted = ../../research/cassidy/extract/HeroVoice/Cassidy/NanoBoosted/00000006131B.0B2-By all means, come try your luck!.ogg | w=1
+cassidy.voice.nano_boosted = ../../research/cassidy/extract/HeroVoice/Cassidy/NanoBoosted/000000061325.0B2-This is what I call power.ogg | w=1
+cassidy.voice.nano_boosted = ../../research/cassidy/extract/HeroVoice/Cassidy/NanoBoosted/000000061324.0B2-Locked and loaded.ogg | w=1
+cassidy.voice.nano_boosted = ../../research/cassidy/extract/HeroVoice/Cassidy/NanoBoosted/000000061367.0B2-There's no stoppin' me.ogg | w=1
+# Combat Roll grunt 01D3 (stimulus criteria ScriptedEvent 09C0, raised by 01F0 #140 ActionCriteria in the roll's StateAbility, H): 5 files; prio 30, 35 m, -6 dB, interrupt 0, cooldown 2-5 s
+cassidy.voice.roll = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/1D3.078/00000000ABDE.0B2-(grunts).ogg | w=1
+cassidy.voice.roll = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/1D3.078/00000000ACC8.0B2-(grunts).ogg | w=1
+cassidy.voice.roll = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/1D3.078/00000000ACC9.0B2-(grunts).ogg | w=1
+cassidy.voice.roll = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/1D3.078/00000000ACCA.0B2-(grunts).ogg | w=1
+cassidy.voice.roll = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/1D3.078/00000000ACCB.0B2-(grunts).ogg | w=1
+# Flashbang 01D4 ('Hold up, now' / 'Easy!' / 'Now hold on' / 'Pardon me'; criteria 09C1, raised by 01E9 #116 ActionCriteria, H): 7 files; prio 65, 35 m, +0 dB, interrupt 0, cooldown 2-5 s; left out: 1 a hero interaction
+cassidy.voice.flashbang = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/1D4.078/00000000AB63.0B2-Hold up, now.ogg | w=1
+cassidy.voice.flashbang = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/1D4.078/00000000B419.0B2-Easy!.ogg | w=1
+cassidy.voice.flashbang = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/1D4.078/00000000B3F4.0B2-Now hold on.ogg | w=1
+cassidy.voice.flashbang = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/1D4.078/00000000B416.0B2-Pardon me.ogg | w=1
+cassidy.voice.flashbang = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/1D4.078/00000000B40F.0B2-Don't move.ogg | w=1
+cassidy.voice.flashbang = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/1D4.078/00000000B457.0B2-(laughs) Excuse me.ogg | w=1
+cassidy.voice.flashbang = ../../research/cassidy/extract/HeroVoice/Cassidy/Unknown/1D4.078/0000000612A8.0B2-Just a minute.ogg | w=1
+# Deadeye's shot 020C ('Draw'; criteria 0A0E, raised by 022F #473 ActionCriteria, timeout 0.35 s, H node, M moment): 1 files; prio 60, 300 m, +6 dB, interrupt 0, cooldown 0.1-0.1 s
+cassidy.voice.deadeye_fire = ../../research/cassidy/extract/HeroVoice/Cassidy/Ultimate/00000000AB7D.0B2-Draw.ogg | w=1
+# EnemyKilled/DeadEye 01D6 (022F #452's params name it with the kill, H node, M meaning): 4 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 2-5 s; left out: 3 a scripted condition, 2 Overwatch Classic only
+cassidy.voice.deadeye_kill = ../../research/cassidy/extract/HeroVoice/Cassidy/EnemyKilled/DeadEye/00000000ACCC.0B2-Someone call the undertaker.ogg | w=0.1
+cassidy.voice.deadeye_kill = ../../research/cassidy/extract/HeroVoice/Cassidy/EnemyKilled/DeadEye/000000061358.0B2-Easy pickings.ogg | w=1
+cassidy.voice.deadeye_kill = ../../research/cassidy/extract/HeroVoice/Cassidy/EnemyKilled/DeadEye/00000006135B.0B2-Left yourself wide open.ogg | w=1
+cassidy.voice.deadeye_kill = ../../research/cassidy/extract/HeroVoice/Cassidy/EnemyKilled/DeadEye/00000006131F.0B2-Right in my line of fire.ogg | w=1
+# Deadeye, his own copy 183B ('It's high noon'; 022F #621 STU_37D754C8 key F1AC, the own key, H): 1 files; prio 95, 300 m, +8 dB, interrupt 0, cooldown 1-1 s; left out: 3 a skin / celebration
+cassidy.voice.ultimate = ../../research/cassidy/extract/HeroVoice/Cassidy/Ultimate/00000006979D.0B2-It's high noon.ogg | w=1
+# Deadeye line, allies 0487 ('Step right up'; 022F #621 key F1AB, the friendly key, H): 1 files; prio 95, 60 m, +6 dB, interrupt 0, cooldown 1-1 s; left out: 3 a skin / celebration, 2 a map (OnMap)
+cassidy.ult.friendly = ../../research/cassidy/extract/HeroVoice/Cassidy/Ultimate/00000000AB90.0B2-Step right up.ogg | w=1
+# Deadeye line, enemies 01D5 ('It's high noon'; 022F #621 key F1AA, the enemy key, H): 1 files; prio 95, 300 m, +8 dB, interrupt 0, cooldown 1-1 s; left out: 3 a skin / celebration
+cassidy.ult.enemy = ../../research/cassidy/extract/HeroVoice/Cassidy/Ultimate/00000000AB5E.0B2-It's high noon.ogg | w=1
+# GOOD JOB (the wheel key's tap): his set has no such category (as Sigma's); ours: his Teammate/KillSeen 001B lines
+#  (a teammate's kill seen) with no criteria.
+cassidy.voice.call_good_job = ../../research/cassidy/extract/HeroVoice/Cassidy/Teammate/KillSeen/00000000B3F6.0B2-Hoo, nice one!.ogg | w=0.1
+cassidy.voice.call_good_job = ../../research/cassidy/extract/HeroVoice/Cassidy/Teammate/KillSeen/000000061342.0B2-Hey, at least give them a chance!.ogg | w=1
+cassidy.voice.call_good_job = ../../research/cassidy/extract/HeroVoice/Cassidy/Teammate/KillSeen/000000061340.0B2-Now that was a sight for sore eyes.ogg | w=1
+cassidy.voice.call_good_job = ../../research/cassidy/extract/HeroVoice/Cassidy/Teammate/KillSeen/00000006134F.0B2-Now color me impressed.ogg | w=1
+# Voice subtitles: one per event (its lines vary); ours describe the moment, quoting a line where the pool says one thing.
+$cassidy.voice.elimination = Cassidy remarks on a takedown
+$cassidy.voice.multikill = Cassidy remarks on a multikill
+$cassidy.voice.melee_kill = Cassidy remarks on a melee kill
+$cassidy.voice.on_fire = Cassidy is on fire
+$cassidy.voice.respawn = Cassidy is back
+$cassidy.voice.melee = Cassidy shouts
+$cassidy.voice.select = Cassidy: Someone needs to fill this saddle
+$cassidy.voice.death = Cassidy dies
+$cassidy.voice.pain = Cassidy grunts
+$cassidy.voice.resurrected = Cassidy: Don't mind if I do
+$cassidy.voice.ult_ready = Cassidy: My ultimate's ready!
+$cassidy.voice.call_ult_charging = Cassidy: My ultimate is charging
+$cassidy.voice.call_ult_almost = Cassidy: My ultimate is almost ready
+$cassidy.voice.call_hello = Cassidy: Howdy
+$cassidy.voice.call_thanks = Cassidy: Much obliged
+$cassidy.voice.call_sorry = Cassidy: Sorry about that
+$cassidy.voice.call_no = Cassidy: No
+$cassidy.voice.call_group_up = Cassidy: Group up here
+$cassidy.voice.call_need_help = Cassidy: Need a hand here
+$cassidy.voice.call_need_healing = Cassidy: I need healing
+$cassidy.voice.ping = Cassidy: Over there!
+$cassidy.voice.ping_warning = Cassidy: Eyes out
+$cassidy.voice.ping_enemy = Cassidy: Enemy spotted!
+$cassidy.voice.damage_boosted = Cassidy is damage boosted
+$cassidy.voice.nano_boosted = Cassidy is nano boosted
+$cassidy.voice.roll = Cassidy grunts as he rolls
+$cassidy.voice.flashbang = Cassidy: Hold up, now
+$cassidy.voice.deadeye_fire = Cassidy: Draw
+$cassidy.voice.deadeye_kill = Cassidy remarks on a Deadeye kill
+$cassidy.voice.ultimate = Cassidy: It's high noon
+$cassidy.voice.call_good_job = Cassidy compliments a teammate
+$cassidy.ult.friendly = Cassidy: Step right up
+$cassidy.ult.enemy = Cassidy: It's high noon

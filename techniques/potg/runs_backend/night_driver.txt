@@ -1,0 +1,76 @@
+=== phase night 16:52:38
+/time set midnight {'ok': True}
+/gamerule minecraft:advance_time false {'ok': True}
+/effect give @a minecraft:resistance 99999 2 true {'ok': True}
+/tp Viewer Kiriko {'ok': True}
+{'screen': '', 'inWorld': True, 'x': -5.56, 'y': -60.0, 'z': -9.52, 'yaw': 86.18, 'pitch': -0.17, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 1529.0, 'primaryAmmo': 15, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko', 'food': 20}
+{'screen': 'DeathScreen', 'inWorld': True, 'x': -57.75, 'y': -60.0, 'z': -16.68, 'yaw': 0.0, 'pitch': 0.0, 'health': 0.0, 'hero': 'mercy', 'heroMode': False, 'ult': 421.5, 'primaryAmmo': 25, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy', 'food': 20}
+[16:53:21] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 31981 KB; 1e286f74[seg seg-1 raw 11092 KB, 0 zips 0 KB, folder 8609 KB, highlights 0] c6f66a25[seg seg-2 raw 27353 KB, 0 zips 0 KB, folder 23371 KB, highlights 0]
+=== phase night 16:53:56
+/time set midnight {'ok': True}
+/gamerule minecraft:advance_time false {'ok': True}
+/effect give @a minecraft:resistance 99999 2 true {'ok': True}
+/tp Viewer Kiriko {'ok': True}
+{'screen': '', 'inWorld': True, 'x': -16.52, 'y': -60.0, 'z': -7.25, 'yaw': 30.41, 'pitch': -0.06, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 10, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko', 'food': 20}
+{'screen': '', 'inWorld': True, 'x': 1.13, 'y': -59.08, 'z': -3.38, 'yaw': 86.18, 'pitch': -0.17, 'health': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 594.0, 'primaryAmmo': 25, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy', 'food': 20}
+[16:54:01] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight Sharpshooter 296 (seg-2.zip)
+[16:54:02] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 618 (seg-2.zip)
+[16:54:03] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 736 (seg-2.zip)
+[16:54:04] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1118 (seg-2.zip)
+[16:54:05] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1500 (seg-2.zip)
+[16:54:06] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1736 (seg-2.zip)
+[16:54:07] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2059 (seg-2.zip)
+[16:54:08] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2500 (seg-2.zip)
+[16:54:09] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2618 (seg-2.zip)
+[16:54:10] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 3000 (seg-2.zip)
+[16:54:12] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 3118 (seg-2.zip)
+[16:54:13] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 3264 (seg-2.zip)
+[16:54:14] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight Sharpshooter 3849 (seg-2.zip)
+[16:54:15] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight Sharpshooter 4362 (seg-2.zip)
+[16:54:16] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight Sharpshooter 4775 (seg-2.zip)
+[16:54:17] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight Sharpshooter 5545 (seg-2.zip)
+[16:54:19] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight Sharpshooter 6243 (seg-2.zip)
+[16:54:20] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight Sharpshooter 6918 (seg-2.zip)
+[16:54:22] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight Sharpshooter 7310 (seg-2.zip)
+[16:54:23] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight Sharpshooter 7365 (seg-2.zip)
+[16:54:24] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight Sharpshooter 7567 (seg-2.zip)
+[16:54:25] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight Sharpshooter 7793 (seg-2.zip)
+[16:54:31] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 40092 KB; 1e286f74[seg seg-1 raw 20011 KB, 0 zips 0 KB, folder 16472 KB, highlights 0] c6f66a25[seg seg-2 raw 29640 KB, 0 zips 0 KB, folder 23620 KB, highlights 1]
+=== phase night 17:01:09
+/time set midnight {'ok': True}
+/gamerule minecraft:advance_time false {'ok': True}
+/effect give @a minecraft:resistance 99999 2 true {'ok': True}
+/tp Viewer Kiriko {'ok': True}
+{'screen': '', 'inWorld': True, 'x': -7.4, 'y': -60.0, 'z': 11.09, 'yaw': -118.01, 'pitch': -3.51, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2413.0, 'primaryAmmo': 3, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko', 'food': 20}
+{'screen': '', 'inWorld': True, 'x': 3.5, 'y': -60.0, 'z': 8.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 213.25, 'primaryAmmo': 25, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy', 'food': 20}
+[17:01:13] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight Sharpshooter 337 (seg-1.zip)
+[17:01:13] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 618 (seg-1.zip)
+[17:01:14] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1000 (seg-1.zip)
+[17:01:15] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1118 (seg-1.zip)
+[17:01:16] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1500 (seg-1.zip)
+[17:01:17] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1736 (seg-1.zip)
+[17:01:18] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2118 (seg-1.zip)
+[17:01:19] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2236 (seg-1.zip)
+[17:01:20] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2500 (seg-1.zip)
+[17:01:21] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2736 (seg-1.zip)
+[17:01:22] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 3000 (seg-1.zip)
+[17:01:42] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 16005 KB; 1e286f74[seg seg-1 raw 10335 KB, 0 zips 0 KB, folder 7775 KB, highlights 0] c6f66a25[seg seg-1 raw 11761 KB, 0 zips 0 KB, folder 8229 KB, highlights 1]
+=== phase night 17:11:23
+/time set midnight {'ok': True}
+/gamerule minecraft:advance_time false {'ok': True}
+/effect give @a minecraft:resistance 99999 2 true {'ok': True}
+/tp Viewer Kiriko {'ok': True}
+{'screen': '', 'inWorld': True, 'x': 5.14, 'y': -60.0, 'z': 14.71, 'yaw': -154.67, 'pitch': -1.97, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 3, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko', 'food': 20}
+{'screen': '', 'inWorld': True, 'x': 3.5, 'y': -60.0, 'z': 8.5, 'yaw': 115.74, 'pitch': -28.49, 'health': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 2150.0, 'primaryAmmo': 25, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy', 'food': 20}
+[17:11:27] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight Sharpshooter 164 (seg-4.zip)
+[17:11:28] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 500 (seg-4.zip)
+[17:11:29] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 736 (seg-4.zip)
+[17:11:30] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1118 (seg-4.zip)
+[17:11:31] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1500 (seg-4.zip)
+[17:11:32] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1736 (seg-4.zip)
+[17:11:33] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2118 (seg-4.zip)
+[17:11:34] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2236 (seg-4.zip)
+[17:11:35] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2354 (seg-4.zip)
+[17:11:36] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2472 (seg-4.zip)
+[17:11:37] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 3000 (seg-4.zip)
+[17:11:57] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 52114 KB; 1e286f74[seg seg-1 raw 25123 KB, 0 zips 0 KB, folder 23847 KB, highlights 0] c6f66a25[seg seg-4 raw 26447 KB, 2 zips 3109 KB, folder 28265 KB, highlights 5]

@@ -40,6 +40,11 @@ public final class SombraFx {
 
 	private static final Map<Integer, Held> HACKED = new HashMap<>();
 	private static final Map<Integer, Held> REVEALED = new HashMap<>();
+
+	/** Dev only: what it draws on this entity now. */
+	public static String devHeld(int id) {
+		return (HACKED.containsKey(id) ? "hacked " : "") + (REVEALED.containsKey(id) ? "revealed " : "") + (WEAKENED.containsKey(id) ? "weakened " : "");
+	}
 	private static final Map<Integer, Held> HOTFIXED = new HashMap<>();
 	private static final Map<Integer, Held> WEAKENED = new HashMap<>();
 	private static final Map<Integer, Held> HACKED_THINGS = new HashMap<>();
@@ -93,6 +98,7 @@ public final class SombraFx {
 					: Palette.SOMBRA_BEACON_TRAIL_N, 0.5f, 0.3f, 0.4f);
 			}
 		}
+		detectionRing(mc);
 		held(mc, HACKED, now, SombraFx::hacked);
 		held(mc, REVEALED, now, SombraFx::revealed);
 		held(mc, HOTFIXED, now, SombraFx::hotfixed);
@@ -393,16 +399,23 @@ public final class SombraFx {
 			case "sombra_hit" -> hit(at, enemy);
 			case "sombra_hit_block" -> blockHit(at, dir, enemy);
 			case "sombra_strands" -> STRANDS.put(e.entity(), new Strands(e.variant() >> 1, now, (e.variant() & 1) == 1, enemy));
-			case "sombra_hotfixed" -> HOTFIXED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
+			case "sombra_hotfixed" -> HOTFIXED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
 			case "sombra_hotfixed_end" -> HOTFIXED.remove(e.entity());
-			case "sombra_hacked" -> HACKED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
-			case "sombra_revealed" -> REVEALED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
-			case "sombra_hacked_thing" -> HACKED_THINGS.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
-			case "sombra_weakened" -> WEAKENED.put(e.entity(), new Held(now, now + e.variant() / 20f, enemy));
+			case "sombra_hacked" -> HACKED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
+			case "sombra_revealed" -> REVEALED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
+			case "sombra_hacked_end" -> HACKED.remove(e.entity());
+			case "sombra_revealed_end" -> REVEALED.remove(e.entity());
+			case "sombra_hacked_thing" -> HACKED_THINGS.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
+			case "sombra_weakened" -> WEAKENED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
 			case "sombra_cyber_launch" -> launch(at, enemy);
 			case "sombra_cyberspace" -> {
 				burst(at, enemy);
 				ZONES.add(new Zone(at, now, now + e.variant() / 20f, enemy));
+			}
+			// for one who has just come to see it (Effects.showHeld, #96): the zone as it is, no burst, one a place
+			case "sombra_cyberspace_state" -> {
+				ZONES.removeIf(z -> z.at.distanceToSqr(at) < 0.01);
+				ZONES.add(new Zone(at, now - e.dx(), now + (e.variant() & 0xFFFF) / 20f, enemy));
 			}
 			case "sombra_teleport" -> teleport(at, enemy);
 			case "sombra_stealth" -> stealth(at, enemy);
@@ -563,6 +576,42 @@ public final class SombraFx {
 			Fx.add(flash.at(mid).life(0.35f).size(2, 1.4f).alpha(0.6f).fade(0.02f, 0.6f).nearFade(0.8f));
 		}
 	}
+
+	/**
+	 * Her stealth's detection ring (4DD9, held while stealthed; the option "Hide Stealth Detection Ring" v52253 is off by default,
+	 * 420C #959 -> #785): the open cylinder 129B x the three squares band 43D04, violet, 8 m across (the 4 m an enemy sees her from,
+	 * df 0639: M), shown to her alone (M). Its height is the mesh's scaled with its width, squashed by the mesh's own axis: see play.
+	 */
+	private static void detectionRing(Minecraft mc) {
+		net.minecraft.client.player.LocalPlayer me = mc.player;
+		Long from = me == null ? null : me.getAttached(dev.overcraft.hero.HeroManager.SOMBRA_STEALTH);
+		if (from == null || from < 0 || !"sombra".equals(me.getAttached(dev.overcraft.hero.HeroManager.HERO))) {
+			return;
+		}
+		float[] raw = Fx.mesh("sombra_cylinder");
+		if (raw == null) {
+			return;
+		}
+		if (raw != ringFrom) {
+			// the cylinder's axis (its Y as imported) squashed to a band: 8.4 m tall at the data's unit length stood as a wall (ours)
+			ringFrom = raw;
+			ringMesh = raw.clone();
+			for (int i = 1; i < ringMesh.length; i += 5) {
+				ringMesh[i] *= RING_BAND;
+			}
+		}
+		float[] mesh = ringMesh;
+		Fx.attach("sombra_detect/" + me.getId(), me.position().add(0, RING_LIFT, 0), () -> {
+			Particle p = Fx.particle("sombra_square_band", Palette.SOMBRA_DETECT_RING_N);
+			return p == null ? null : p.mesh(mesh, new Vec3(1, 0, 0)).life(1).size(RING_SIZE, RING_SIZE).alpha(0.5f).fade(0.05f, 0.2f);
+		});
+	}
+
+	private static float @org.jspecify.annotations.Nullable [] ringFrom, ringMesh;
+	private static final float RING_BAND = 0.1f;
+	private static final float RING_LIFT = 0.1f;
+	/** 8 m across: the cylinder's 0.95 scaled. */
+	private static final float RING_SIZE = 8 / 0.95f;
 
 	/** Stealth fades in (1AD9): purple sparkles round her middle as she goes. */
 	private static void stealth(Vec3 at, boolean enemy) {

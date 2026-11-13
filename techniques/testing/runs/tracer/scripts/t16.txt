@@ -1,0 +1,27 @@
+MARK T7e (fix: the speed sent the tick after the end, before recall() runs) Recall into the air: a running jump, E 3.5 s after it. Expected: back mid-jump, held, then leaving forward at about 6 m/s and down
+cmd /kill @e[type=!player]
+cmd /fill 15 -60 -5 30 -50 40 air
+cmd /tp @s 20.5 -60 0.5 0 0
+sleep 13
+key forward down
+sleep 0.2
+key jump down
+sleep 0.1
+key jump up
+sleep 0.9
+key forward up
+sleep 2.5
+key ability_2 down
+sleep 0.05
+key ability_2 up
+sleep 0.5
+state
+sleep 0.42
+state
+sleep 0.05
+state
+sleep 0.05
+state
+sleep 0.5
+state
+MARK T14a Recall presses with a 0.05 s tap, five times 13 s apart at low health (4 MC by /damage each time): each should start (cooldown 12 after)

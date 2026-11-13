@@ -1,0 +1,164 @@
+=== phase look 18:22:58
+showing seen 18:25:28
+  shot 1.5s at 1.5s
+  shot 3.8s at 3.8s
+  shot 4.3s at 4.3s
+  shot 6.1s at 6.1s
+  shot 7.6s at 7.6s
+  shot 8.25s at 8.25s
+  shot 9.3s at 9.3s
+  shot 11s at 11.0s
+  shot 15s at 15.0s
+  shot 19s at 19.0s
+  shot 21s at 21.0s
+  shot 22s at 22.0s
+  shot 23s at 23.0s
+  shot 24s at 24.0s
+  shot 25.5s at 25.5s
+  shot 27s at 27.0s
+  shot 29s at 29.0s
+[18:23:04] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 28 (seg-2.zip)
+[18:23:05] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 55 (seg-2.zip)
+[18:23:17] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 55 (seg-2.zip)
+[18:23:18] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 83 (seg-2.zip)
+[18:23:19] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 110 (seg-2.zip)
+[18:23:20] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 165 (seg-2.zip)
+[18:23:21] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 193 (seg-2.zip)
+[18:23:24] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 253 (seg-2.zip)
+=== phase look 18:26:23
+showing seen 18:26:46
+  shot 1.5s at 1.5s
+  shot 3.8s at 3.8s
+  shot 4.3s at 4.3s
+  shot 6.1s at 6.1s
+  shot 7.6s at 7.6s
+  shot 8.25s at 8.25s
+  shot 9.3s at 9.3s
+  shot 11s at 11.0s
+  shot 15s at 15.0s
+  shot 19s at 19.0s
+  shot 21s at 21.0s
+  shot 22s at 22.0s
+  shot 23s at 23.0s
+=== phase look 18:35:18
+showing seen 18:35:33
+  shot 1.5s at 1.5s
+  shot 3.8s at 3.8s
+  shot 4.3s at 4.3s
+  shot 6.1s at 6.1s
+  shot 7.6s at 7.6s
+  shot 8.25s at 8.25s
+  shot 9.3s at 9.3s
+  shot 11s at 11.0s
+  shot 15s at 15.0s
+  shot 19s at 19.0s
+  shot 20.5s at 20.5s
+  shot 21.5s at 21.5s
+  shot 22.3s at 22.3s
+  shot 23s at 23.0s
+  shot 24s at 24.0s
+  shot 25.5s at 25.5s
+  shot 27s at 27.0s
+  shot 29s at 29.0s
+  shot 31s at 31.0s
+[18:35:21] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 55 (seg-3.zip)
+[18:35:22] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 110 (seg-3.zip)
+[18:35:23] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2637 (seg-3.zip)
+[18:35:23] [Server thread/INFO] (Overcraft) [POTG] the dragon died, killer Kiriko (allows a POTG); scoring closed
+[18:35:33] [Server thread/INFO] (Overcraft) [POTG] at the dragon's tick 199: Kiriko High Score 2637; highlights: [Kiriko High Score 3100 as kiriko in minecraft:overworld (seg-1.zip t4862), Kiriko High Score 2637 as kiriko in minecraft:the_end (seg-3.zip t2239), Kiriko High Score 2555 as kiriko in minecraft:the_end (seg-2.zip t4464), Kiriko High Score 253 as kiriko in minecraft:the_end (seg-2.zip t703), Kiriko High Score 55 as kiriko in minecraft:the_end (seg-2.zip t323)] []; scoring ms/tick: mean 0.1809 max 92.023 over 2238 ticks
+[18:35:33] [Server thread/INFO] (Overcraft) [POTG] mobs this run: [ { "uuid": "d0e8be59-e13d-4c3e-b3a8-d47ba50c896f", "type": "minecraft:zombie", "name": "Gerald", "playersKilled": 1, "damageToPlayers": 0.0 }, { "uuid": "41d72fa0-dbf7-42d7-b86c-72061a115283", "type": "minecraft:enderman", "playersKilled": 0, "damageToPlayers": 1575.0 }, { "uuid": "1270d2ac-49f6-4907-aafd-92561ef8520c", "type": "minecraft:enderman", "playersKilled": 0, "damageToPlayers": 1487.5 }, { "uuid": "f536ba80-6c0c-4b27-b7fc-b96437e6449b", "type": "minecraft:enderman", "playersKilled": 0, "damageToPlayers": 437.5 }, { "uuid": "a0291898-cdb9-44a0-939a-5c91678007a9", "type": "minecraft:ender_dragon", "playersKilled": 0, "damageToPlayers": 0.0 } ]
+[18:35:33] [Server thread/INFO] (Overcraft) [POTG] showing Kiriko High Score 2637 as kiriko in minecraft:the_end (seg-3.zip t2239) to 2 viewer(s), world frozen (was false)
+[18:35:42] [Server thread/INFO] (Overcraft) [POTG] replay started for 2 viewer(s) 8369 ms after the card began
+[18:35:55] [Server thread/INFO] (Overcraft) [POTG] showing ended (replay done) after 21145 ms, world held for the end screen
+[18:36:02] [Server thread/INFO] (Overcraft) [POTG] end screen over: world thawed
+=== phase look 18:37:03
+showing seen 18:37:03
+  shot 0.5s at 0.5s
+  shot 1.2s at 1.2s
+  shot 2.5s at 2.5s
+  shot 4s at 4.0s
+  shot 5.25s at 5.25s
+  shot 6.3s at 6.3s
+  shot 8s at 8.0s
+  shot 12s at 12.0s
+  shot 16s at 16.0s
+  shot 17.5s at 17.5s
+  shot 18.5s at 18.5s
+  shot 19.5s at 19.5s
+[18:37:03] [Server thread/INFO] (Overcraft) [POTG] Kiriko watches highlight 0: Watching Kiriko High Score 3100 as kiriko in minecraft:overworld (seg-1.zip t4862)
+[18:37:08] [Server thread/INFO] (Overcraft) [POTG] replay started for 1 viewer(s) 5184 ms after the card began
+[18:37:21] [Server thread/INFO] (Overcraft) [POTG] showing ended (replay done) after 17911 ms, world not held
+=== phase look 18:42:28
+showing seen 18:42:29
+  shot 0.5s at 0.5s
+  shot 1s at 1.0s
+  shot 2s at 2.0s
+  shot 4s at 4.0s
+  shot 5.25s at 5.25s
+  shot 6.3s at 6.3s
+  shot 8s at 8.0s
+  shot 12s at 12.0s
+  shot 16s at 16.0s
+  shot 18s at 18.0s
+  shot 19.5s at 19.5s
+[18:42:29] [Server thread/INFO] (Overcraft) [POTG] Kiriko watches highlight 1: Watching Kiriko High Score 2637 as kiriko in minecraft:the_end (seg-3.zip t2239)
+[18:42:34] [Server thread/INFO] (Overcraft) [POTG] replay started for 1 viewer(s) 5285 ms after the card began
+[18:42:47] [Server thread/INFO] (Overcraft) [POTG] showing ended (replay done) after 18010 ms, world not held
+=== phase look 18:42:57
+showing seen 18:42:58
+=== phase look 18:43:28
+showing seen 18:43:29
+  shot 1.5s at 1.5s
+  shot 6.1s at 6.1s
+  shot 9s at 9.0s
+  shot 21s at 21.0s
+  shot 22s at 22.0s
+  shot 23s at 23.0s
+  shot 24.5s at 24.5s
+  shot 26s at 26.0s
+[18:43:29] [Server thread/INFO] (Overcraft) [POTG] showing Kiriko High Score 3100 as kiriko in minecraft:overworld (seg-1.zip t4862) to 1 viewer(s), world frozen (was false)
+[18:43:37] [Server thread/INFO] (Overcraft) [POTG] replay started for 1 viewer(s) 8110 ms after the card began
+[18:43:50] [Server thread/INFO] (Overcraft) [POTG] showing ended (replay done) after 20813 ms, world held for the end screen
+[18:43:57] [Server thread/INFO] (Overcraft) [POTG] end screen over: world thawed
+=== phase look 18:45:51
+showing seen 18:45:51
+  shot 1.5s at 1.5s
+  shot 6.1s at 6.1s
+  shot 23s at 23.0s
+  shot 24.5s at 24.5s
+[18:45:51] [Server thread/INFO] (Overcraft) [POTG] showing Kiriko High Score 3100 as kiriko in minecraft:overworld (seg-1.zip t4862) to 1 viewer(s), world frozen (was false)
+[18:45:59] [Server thread/INFO] (Overcraft) [POTG] replay started for 1 viewer(s) 8318 ms after the card began
+[18:46:12] [Server thread/INFO] (Overcraft) [POTG] showing ended (replay done) after 21445 ms, world held for the end screen
+=== phase look 19:14:00
+showing seen 19:14:10
+  shot 1.5s at 1.5s
+  shot 6.1s at 6.1s
+  shot 11s at 11.0s
+  shot 22.5s at 22.5s
+  shot 23.5s at 23.5s
+  shot 25s at 25.0s
+[19:14:00] [Server thread/INFO] (Overcraft) [POTG] the dragon died, killer (none) (allows a POTG); scoring closed
+[19:14:02] [Server thread/INFO] (Overcraft) [POTG] Kiriko asks to watch highlight 1794446510231: Watching Kiriko High Score 3100 as kiriko in minecraft:overworld (seg-1.zip t4862)
+[19:14:08] [Server thread/INFO] (Overcraft) [POTG] replay started for 1 viewer(s) 5408 ms after the card began
+[19:14:10] [Server thread/INFO] (Overcraft) [POTG] at the dragon's tick 199: Kiriko High Score 1500; highlights: [Kiriko High Score 3100 as kiriko in minecraft:overworld (seg-1.zip t4862), Kiriko High Score 2637 as kiriko in minecraft:the_end (seg-3.zip t2239), Kiriko High Score 2555 as kiriko in minecraft:the_end (seg-2.zip t4464), Kiriko High Score 1500 as kiriko in minecraft:the_end (seg-9.zip t3860), Kiriko High Score 1500 as kiriko in minecraft:the_end (seg-8.zip t420)] []; scoring ms/tick: mean 0.0293 max 23.778 over 4127 ticks
+[19:14:10] [Server thread/INFO] (Overcraft) [POTG] mobs this run: [ { "uuid": "8b118f00-395c-4b01-aa30-f2c45730eaa0", "type": "minecraft:zombie", "playersKilled": 0, "damageToPlayers": 37.5 }, { "uuid": "85685037-c62b-4cc4-995c-4ff4fbabaaac", "type": "minecraft:ender_dragon", "playersKilled": 0, "damageToPlayers": 0.0 } ]
+[19:14:10] [Server thread/INFO] (Overcraft) [POTG] showing ended (the dragon's POTG) after 7933 ms, world not held
+[19:14:10] [Server thread/INFO] (Overcraft) [POTG] showing Kiriko High Score 1500 as kiriko in minecraft:the_end (seg-9.zip t3860) to 2 viewer(s), world frozen (was false)
+[19:14:10] [Server thread/INFO] (Overcraft) [POTG] the dragon's POTG: Showing Kiriko High Score 1500 as kiriko in minecraft:the_end (seg-9.zip t3860)
+[19:14:18] [Server thread/INFO] (Overcraft) [POTG] replay started for 2 viewer(s) 8122 ms after the card began
+[19:14:31] [Server thread/INFO] (Overcraft) [POTG] showing ended (replay done) after 20937 ms, world held for the end screen
+=== phase look 19:16:02
+showing seen 19:16:04
+  shot 1s at 1.0s
+  shot 2.2s at 2.2s
+  shot 4s at 4.0s
+  shot 5.25s at 5.25s
+  shot 5.9s at 5.9s
+  shot 8s at 8.0s
+  shot 14s at 14.0s
+  shot 17.6s at 17.6s
+  shot 18.3s at 18.3s
+  shot 19.5s at 19.5s
+[19:16:04] [Server thread/INFO] (Overcraft) [POTG] Kiriko asks to watch highlight 1794446510231: Watching Kiriko High Score 3100 as kiriko in minecraft:overworld (seg-1.zip t4862)
+[19:16:09] [Server thread/INFO] (Overcraft) [POTG] replay started for 1 viewer(s) 5146 ms after the card began
+[19:16:22] [Server thread/INFO] (Overcraft) [POTG] showing ended (replay done) after 17882 ms, world not held

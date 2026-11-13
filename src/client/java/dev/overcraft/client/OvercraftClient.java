@@ -45,12 +45,15 @@ public class OvercraftClient implements ClientModInitializer {
 		FxRender.init();
 		ClientHero.init();
 		DevServer.startIfEnabled();
+		ClientPotg.init();
 
-		ClientPlayNetworking.registerGlobalReceiver(HeroSyncPayload.TYPE, (payload, context) -> ClientHero.onSync(payload));
-		ClientPlayNetworking.registerGlobalReceiver(EffectPayload.TYPE, (payload, context) -> KirikoFx.play(payload));
+		ClientPlayNetworking.registerGlobalReceiver(HeroSyncPayload.TYPE, (payload, context) -> dev.overcraft.client.dev.DevLag.in(() -> ClientHero.onSync(payload)));
+		ClientPlayNetworking.registerGlobalReceiver(EffectPayload.TYPE, (payload, context) -> dev.overcraft.client.dev.DevLag.in(() -> KirikoFx.play(payload)));
 		ClientPlayNetworking.registerGlobalReceiver(KillFeedPayload.TYPE, (payload, context) -> KillFeedHud.add(payload));
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.ConspiratorPayload.TYPE,
 			(payload, context) -> dev.overcraft.client.hud.ConspiratorHud.receive(payload));
+		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.DeadeyePayload.TYPE,
+			(payload, context) -> dev.overcraft.client.hud.DeadeyeHud.receive(payload));
 		ClientPlayNetworking.registerGlobalReceiver(VictoryPayload.TYPE, (payload, context) -> VictoryHud.show());
 		// a Mercy resurrected us: respawn as the death screen's button does (the server puts us back where we fell)
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.GripPayload.TYPE, (payload, context) ->
@@ -61,19 +64,23 @@ public class OvercraftClient implements ClientModInitializer {
 				context.client().gui.setScreen(null);
 			}
 		});
-		ClientPlayNetworking.registerGlobalReceiver(OwnSoundPayload.TYPE, (payload, context) ->
-			ClientHero.playOwn(Identifier.parse(payload.sound()), payload.volume(), payload.pitch(), payload.seed()));
+		ClientPlayNetworking.registerGlobalReceiver(OwnSoundPayload.TYPE, (payload, context) -> dev.overcraft.client.dev.DevLag.in(() ->
+			ClientHero.playOwn(Identifier.parse(payload.sound()), payload.volume(), payload.pitch(), payload.seed())));
 		// Mercy's beams follow her staff and their targets frame by frame, before the effects are drawn
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.MercyFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.LifeweaverFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(Fx::render);
+		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.hero.PressTrace.frame());
+		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.EffectArt.frame());
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.PingPayload.TYPE,
 			(payload, context) -> dev.overcraft.client.comms.Pings.receive(payload));
-		ClientPlayNetworking.registerGlobalReceiver(HeroActionPayload.TYPE, (payload, context) -> {
+		ClientPlayNetworking.registerGlobalReceiver(HeroActionPayload.TYPE, (payload, context) -> dev.overcraft.client.dev.DevLag.in(() -> {
 			if (context.client().level != null) {
 				if (payload.clip().startsWith("emote:")) {
-					HeroAnimator.emote(payload.entityId(), payload.clip().substring("emote:".length()),
-						context.client().level.getGameTime() / 20f);
+					// "emote:<id>", or "emote:<id>@<ticks>": already that far on, for one who has just come to see it (Comms.showEmote, #96)
+					String[] emote = payload.clip().substring("emote:".length()).split("@");
+					float ran = emote.length > 1 ? Integer.parseInt(emote[1]) / 20f : 0;
+					HeroAnimator.emote(payload.entityId(), emote[0], context.client().level.getGameTime() / 20f - ran);
 					return;
 				}
 				HeroAnimator.trigger(payload.entityId(), payload.clip(), context.client().level.getGameTime() / 20f);
@@ -92,11 +99,13 @@ public class OvercraftClient implements ClientModInitializer {
 					}
 				}
 			}
-		});
+		}));
 		HeroModels.init();
 		ClientPlayConnectionEvents.JOIN.register((listener, sender, client) -> ClientHero.onJoin());
 		ClientPlayConnectionEvents.DISCONNECT.register((listener, client) -> {
+			ClientSojourn.reset();
 			ClientHero.onDisconnect();
+			ClientPotg.onDisconnect();
 			HeroAnimator.clear();
 			HeroModelRenderer.clear();
 			ClientLifeweaver.clear();
@@ -106,11 +115,13 @@ public class OvercraftClient implements ClientModInitializer {
 			dev.overcraft.client.effect.BrigitteFx.clear();
 			dev.overcraft.client.effect.JunoFx.clear();
 			dev.overcraft.client.effect.SojournFx.clear();
+			dev.overcraft.client.effect.SigmaFx.clear();
 			ClientBrigitte.clear();
 			Fx.clear();
 			Cleansed.clear();
 			KillFeedHud.clear();
 			dev.overcraft.client.hud.ConspiratorHud.clear();
+			dev.overcraft.client.hud.DeadeyeHud.clear();
 			HeroHud.clearMoments();
 			VictoryHud.clear();
 			RushSound.clear();
@@ -119,6 +130,8 @@ public class OvercraftClient implements ClientModInitializer {
 			dev.overcraft.client.effect.LucioFx.clear();
 		});
 		ClientTickEvents.START_CLIENT_TICK.register(ClientHero::tick);
+		ClientTickEvents.START_CLIENT_TICK.register(ClientPotg::tick);
+		ClientTickEvents.START_CLIENT_TICK.register(ClientTow::tick);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			ClientHero.endTick(client);
 			RushSound.tick(client);
@@ -138,13 +151,19 @@ public class OvercraftClient implements ClientModInitializer {
 				dev.overcraft.client.effect.SombraFx.tick(client);
 				ClientJuno.tick(client);
 				ClientSojourn.tick(client);
+				ClientPharah.tick(client);
+			ClientSigma.tick(client);
 				dev.overcraft.client.effect.BrigitteFx.tick(client);
 				dev.overcraft.client.effect.JunoFx.tick(client);
 				dev.overcraft.client.effect.SojournFx.tick(client);
+				dev.overcraft.client.effect.SigmaFx.tick(client);
 			}
 			// (after JunoFx's, which moves what her loops follow; with no world, it stops them)
 			JunoSounds.tick(client);
 			SojournSounds.tick(client);
+			SigmaSounds.tick(client);
+			DvaSounds.tick(client);
+			PharahSounds.tick(client);
 			if (client.level != null && client.level.getGameTime() % 200 == 0) {
 				HeroAnimator.prune(client.level.getGameTime() / 20f);
 			}
@@ -194,6 +213,37 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.PETAL_PLATFORM, dev.overcraft.client.model.LifeweaverPropRenderer::platform);
 		EntityRendererRegistry.register(OcEntities.SEED, dev.overcraft.client.model.LifeweaverPropRenderer::seed);
 		EntityRendererRegistry.register(OcEntities.TREE_OF_LIFE, dev.overcraft.client.model.LifeweaverPropRenderer::tree);
+		// Sigma's: the Hyperspheres have no model in his data (2D35 / 32B4 are effects only): the item stands in until his
+		// effects (step 10); the barrier is his model C015 with its four orbs FC88
+		EntityRendererRegistry.register(OcEntities.HYPERSPHERE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"hypersphere", 0.6f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.SIGMA_BARRIER, dev.overcraft.client.model.SigmaBarrierRenderer::new);
+		EntityRendererRegistry.register(OcEntities.DVA_MECH, dev.overcraft.client.model.DvaMechRenderer::new);
+		// D.Va's missiles and Light Gun rounds: stand-in items until her effects (1E8A / 1000, step 11)
+		EntityRendererRegistry.register(OcEntities.DVA_MISSILE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"dva_missile", 0.35f, false, 1, false));
+		// Pharah's rockets (12F5B; Barrage's and Rocket Salvo's the same model) and Concussive Blast (stand-in item)
+		// Tracer's Pulse Bomb (model 160BB)
+		// Cassidy's Flashbang (model 118EB on entity 037D)
+		EntityRendererRegistry.register(OcEntities.FLASHBANG, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"cassidy_flashbang", 0.4f, false, 1, false));
+		// Junkrat's frag and bombs (118EA), mine (10093), trap (100DC; set down 29B2) and tire (118D8)
+		EntityRendererRegistry.register(OcEntities.FRAG, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"junkrat_frag", 0.35f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.CONCUSSION_MINE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"junkrat_mine", 0.4f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.STEEL_TRAP, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"junkrat_trap", 0.5f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.RIP_TIRE, dev.overcraft.client.model.LifeweaverPropRenderer::tire);
+		EntityRendererRegistry.register(OcEntities.PULSE_BOMB, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"tracer_bomb", 0.4f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.PHARAH_ROCKET, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"pharah_rocket", 0.35f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.LIGHT_GUN_SHOT, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"dva_light_gun_shot", 0.3f, false, 1, false));
+		// his Accretion rock: its model C5CA (hero_models/sigma_rock.glb), the stone item without the pack
+		EntityRendererRegistry.register(OcEntities.ACCRETION, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"=sigma_rock", 1.2f, false, 1, false));
 
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Overcraft.id("hero_hud"), HeroHud::render);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Overcraft.id("rush_view"), HeroHud::rushView);
@@ -251,9 +301,19 @@ public class OvercraftClient implements ClientModInitializer {
 		// a Life Grip moves whoever it has, hero or not (their own client: ClientLifeweaver.grip)
 		OwMovement.active = entity -> entity == mc.player && (ClientHero.controls() || ClientLifeweaver.gripped());
 		OwMovement.wallClimb = entity -> entity == mc.player && ClientHero.hero() == Hero.KIRIKO;
+		// the client's own player's body box follows the client's own hero mode (HeroBody)
+		dev.overcraft.hero.HeroBody.local = player -> player != mc.player ? null
+			: java.util.Optional.ofNullable(ClientHero.hero() != null && ClientHero.heroModeOn() && !player.isSpectator()
+				? ClientHero.hero() : null);
+		// a Stalwart tank's own client resists the slows it moves under (Tank)
+		dev.overcraft.hero.Tank.resistsSlows = entity -> entity == mc.player && ClientHero.controls()
+			&& dev.overcraft.hero.Tank.stalwart(ClientHero.hero());
 		OwMovement.wallRide = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO;
-		OwMovement.gravityScale = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO && ClientHero.barrierSlam(mc)
-			? dev.overcraft.lucio.LucioStats.BARRIER_GRAVITY : 1;
+		OwMovement.roped = entity -> entity == mc.player && ClientTow.taut();
+		OwMovement.gravityScale = entity -> (entity == mc.player && ClientHero.hero() == Hero.LUCIO && ClientHero.barrierSlam(mc)
+			? dev.overcraft.lucio.LucioStats.BARRIER_GRAVITY : 1)
+			// Minecraft's gravity attribute on them, against its default 0.08 (Hyper Strike's float, Sleep.stun: x0.01)
+			* entity.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.GRAVITY) / 0.08;
 		OwMovement.mover = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO ? OwMovement.Mover.LUCIO : OwMovement.Mover.DEFAULT;
 		OwMovement.jumpKeyHeld = entity -> entity == mc.player && HeroControls.get(HeroControls.Action.JUMP).isDown()
 			&& !ClientMercy.heldForLaunch(HeroControls.Action.JUMP);
@@ -267,9 +327,29 @@ public class OvercraftClient implements ClientModInitializer {
 		// Lifeweaver's dash, else Brigitte's Shield Bash
 		OwMovement.dash = entity -> {
 			net.minecraft.world.phys.Vec3 lw = ClientLifeweaver.dash(entity);
-			return lw != null ? lw : ClientBrigitte.bash(entity);
+			if (lw != null) {
+				return lw;
+			}
+			net.minecraft.world.phys.Vec3 roll = ClientCassidy.roll(entity);
+			return roll != null ? roll : ClientBrigitte.bash(entity);
 		};
+		OwMovement.abilityMoving = entity -> ClientLifeweaver.grip(entity) != null || ClientMercy.glide(entity) != null || ClientLifeweaver.dashing(entity) || ClientBrigitte.bashing(entity) || ClientSojourn.slide(entity) != null || ClientCassidy.rolling(entity);
 		OwMovement.descent = ClientMercy::descent;
+		// Sigma: Accretion's gather holds his jump; Gravitic Flux's flight (its rise first)
+		OwMovement.levitating = ClientSigma::levitating;
+		// (and Cassidy in Deadeye: W, no jump while channelling)
+		OwMovement.noJump = entity -> entity == mc.player && (ClientHero.hero() == Hero.SIGMA
+			&& (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_GATHER) != 0 || ClientCassidy.inDeadeye()
+			// Junkrat on his tire: Jump is the tire's (Junkrat.driveTire), not his
+			|| ClientJunkrat.inputsOff(entity)
+			// rooted (Steel Trap: its jump strength taken to nothing, as a creature's, Junkrat.root)
+			|| entity.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.JUMP_STRENGTH) <= 1.0E-4);
+		OwMovement.sigmaFlight = entity -> entity != mc.player || ClientHero.hero() != Hero.SIGMA
+			|| (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_FLUX_FLIGHT) == 0 ? 0
+			: (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_FLUX_RISE) != 0 ? 1 : 2;
+		// D.Va's Boosters: the server's flight, her client's move
+		OwMovement.dvaBoosters = entity -> entity == mc.player && ClientHero.hero() == Hero.DVA
+			&& (ClientHero.sync().mode() & dev.overcraft.dva.Dva.MODE_BOOSTING) != 0;
 		// Juno's Martian Overboots (double jump, hover) and Glide Boost
 		OwMovement.airJumps = ClientJuno::airJumps;
 		OwMovement.doubleJumped = ClientJuno::doubleJumped;
@@ -277,6 +357,12 @@ public class OvercraftClient implements ClientModInitializer {
 		// Sojourn's Power Slide and its jump
 		OwMovement.slide = ClientSojourn::slide;
 		OwMovement.slideEnded = ClientSojourn::ended;
+		// Pharah's Hover Jets (and the push her jets turn on)
+		OwMovement.pharahHover = ClientPharah::hover;
+		OwMovement.pharahBarrage = ClientPharah::barrageFlight;
+		// Tracer's Recall holds her still while the server moves her (Junkrat's tire doesn't: only his inputs are off, gravity still
+		// acts on him: ClientJunkrat.inputsOff, KeyboardInputMixin)
+		OwMovement.held = ClientTracer::held;
 		OwMovement.undamped = ClientMercy::undamped;
 		OwMovement.boosting = entity -> entity == mc.player ? ClientHero.boostTicks() : -1;
 		OwMovement.driven = entity -> entity == mc.player && ClientHero.hero() == Hero.JETPACK_CAT && ClientHero.catnapperDriven();

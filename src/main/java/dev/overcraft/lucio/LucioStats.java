@@ -1,7 +1,7 @@
 package dev.overcraft.lucio;
 
 /**
- * Lúcio's numbers in Overwatch units (metres, seconds, Overwatch health), live game as of the Oct 20 2026 patch
+ * Lúcio's numbers in Overwatch units (metres, seconds, Overwatch health), live game as of the Nov 3 2026 patch (nothing for him in it)
  * (tools/reference/lucio.md has every quote). Sources: Blizzard patch notes first, the Overwatch wiki where the notes
  * give no number. Where a source gave none, the value is ours and says so.
  */
@@ -79,9 +79,10 @@ public final class LucioStats {
 	 * The leap off (his wall-ride graph 0263, research\lucio\wallride-data.md): 6.9 m/s up, the graph's 1.15 times his
 	 * 6 m/s jump (the owner's Workshop recording, 2026-10-28, tools/reference/lucio-wallride-log.md: 6.90 at the launch
 	 * looking level, peaking 1.41 m above it), plus 2.5 m/s (game value 212A) along where he looks with forward held,
-	 * along the keys with another, along his motion with none.
+	 * along the keys with another, along his motion with none. Ours 7.02 in our 20 Hz steps: with rising gravity at the
+	 * recordings' 17.5 (#130) 6.9 tops at 1.36 m; 7.02 gives the recording's 1.41 (v²/2g, compare tops: WS 2026-11-11).
 	 */
-	public static final double WALL_JUMP_SPEED = 6.9;
+	public static final double WALL_JUMP_SPEED = 7.02;
 	public static final double WALL_LEAP_FORWARD = 2.5;
 	/**
 	 * How he rises on the wall (the recording, 151 rides): no gravity; for his first 0.3 s at least 2.72 m/s (arriving
@@ -141,6 +142,11 @@ public final class LucioStats {
 	public static final double PERK_MINOR_XP = 2020;
 	public static final double PERK_MAJOR_XP = 5050;
 	/** Soundwave Rider: riding a wall charges the next Soundwave, +25% knockback and +50% damage; ~5 s fills it (wiki). */
+	/**
+	 * Off the wall a part charge waits this long before draining (D 5162: #462's other plug -> StateWait #463, 3 s -> #465, not while full (v66768) -> ChaseVar #464 at 20 a
+	 * second toward its default 0). H values, M the path: #462 STU_B591EBFE's own fields (v1204, 0.75) aren't decoded.
+	 */
+	public static final double RIDER_DRAIN_WAIT = 3;
 	public static final double RIDER_KNOCKBACK = 0.25;
 	public static final double RIDER_DAMAGE = 0.50;
 	public static final double RIDER_CHARGE_TIME = 5;

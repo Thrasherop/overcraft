@@ -1,0 +1,181 @@
+newworld pl_r creative -> {"ok": true}
+screenclick 240 244 1 -> {"screen": ""}
+hero lucio -> {"ok": true}
+lucio
+jump off
+  riding: anim wallride_left roll 20.0
+  jump_off       roll 0.0 anim skate_stop_forward y -60.0
+water
+  riding: anim wallride_left roll 20.0
+  water          roll 20.0 anim wallride_left y -53.586704528115284
+levitation
+  riding: anim wallride_left roll 20.0
+  levitation     roll 20.0 anim wallride_left y -56.14175921398036
+elytra
+  riding: anim wallride_left roll 20.0
+press key.keyboard.space -> {"key": "key.keyboard.space"}
+  elytra         roll 0.0 anim jump_forward y -57.64315860128776
+ladder
+  roll 18.222221
+  ladder         roll 20.0 anim wallride_left y -56.255451160564476
+  at z 27.130000023841912
+G
+  riding: anim wallride_left roll 20.0
+press key.keyboard.g -> {"key": "key.keyboard.g"}
+  g              roll 0.0 anim wallride_left y -58.99866402088785
+press key.keyboard.g -> {"key": "key.keyboard.g"}
+hero switch
+  riding: anim wallride_left roll 20.0
+  riding: anim wallride_left roll 20.0
+hero kiriko -> {"ok": true}
+  switch         roll 20.0 anim fall y -56.337965010237454
+  hero kiriko
+hero lucio -> {"ok": true}
+death
+  riding: anim wallride_left roll 20.0
+  death          roll 20.0 anim knockdown y -60.0
+  screen DeathScreen
+respawn -> {"ok": true}
+flick
+  riding: anim wallride_left roll 20.0
+  frames 143
+62.256 yaw 0.0 want 20.00 roll 20.00
+62.264 yaw 16.8 want 16.27 roll 19.36
+62.273 yaw 27.6 want 13.87 roll 18.64
+62.281 yaw 37.2 want 11.73 roll 18.00
+62.289 yaw 46.8 want 9.60 roll 17.36
+62.298 yaw 57.6 want 7.20 roll 16.64
+62.307 yaw 60.0 want 6.67 roll 15.92
+62.316 yaw 60.0 want 6.67 roll 15.20
+62.324 yaw 60.0 want 6.67 roll 14.56
+62.332 yaw 60.0 want 6.67 roll 13.92
+62.341 yaw 60.0 want 6.67 roll 13.20
+62.349 yaw 60.0 want 6.67 roll 12.56
+62.357 yaw 60.0 want 6.67 roll 11.92
+62.366 yaw 60.0 want 6.67 roll 11.20
+62.550 yaw 60.0 want 6.67 roll 6.67
+62.561 yaw 60.0 want 6.67 roll 6.67
+62.570 yaw 60.0 want 6.67 roll 6.67
+62.578 yaw 60.0 want 6.67 roll 6.67
+62.586 yaw 60.0 want 6.67 roll 6.67
+62.595 yaw 60.0 want 6.67 roll 6.67
+62.604 yaw 60.0 want 6.67 roll 6.67
+62.612 yaw 60.0 want 6.67 roll 6.67
+62.620 yaw 60.0 want 6.67 roll 6.67
+62.629 yaw 60.0 want 6.67 roll 6.67
+62.637 yaw 60.0 want 6.67 roll 6.67
+62.646 yaw 60.0 want 6.67 roll 6.67
+62.654 yaw -60.0 want 6.67 roll 6.67
+62.663 yaw -60.0 want 6.67 roll 6.67
+62.674 yaw -60.0 want 6.67 roll 6.67
+62.686 yaw -60.0 want 6.67 roll 6.67
+62.695 yaw -60.0 want 6.67 roll 6.67
+62.703 yaw -60.0 want 6.67 roll 6.67
+62.712 yaw -60.0 want 6.67 roll 6.67
+62.720 yaw -60.0 want 6.67 roll 6.67
+62.729 yaw -60.0 want 6.67 roll 6.67
+62.737 yaw -60.0 want 6.67 roll 6.67
+62.746 yaw -60.0 want 6.67 roll 6.67
+62.754 yaw -60.0 want 6.67 roll 6.67
+62.762 yaw -60.0 want 6.67 roll 6.67
+62.771 yaw -60.0 want 6.67 roll 6.67
+62.779 yaw -60.0 want 6.67 roll 6.67
+62.787 yaw -60.0 want 6.67 roll 6.67
+62.796 yaw -60.0 want 6.67 roll 6.67
+62.804 yaw -60.0 want 6.67 roll 6.67
+62.812 yaw -60.0 want 6.67 roll 6.67
+62.821 yaw -60.0 want 6.67 roll 6.67
+62.829 yaw -60.0 want 6.67 roll 6.67
+62.837 yaw -60.0 want 6.67 roll 6.67
+62.846 yaw -60.0 want 6.67 roll 6.67
+62.854 yaw -60.0 want 6.67 roll 6.67
+62.862 yaw -60.0 want 6.67 roll 6.67
+62.871 yaw -60.0 want 6.67 roll 6.67
+62.880 yaw -60.0 want 6.67 roll 6.67
+62.888 yaw -60.0 want 6.67 roll 6.67
+62.896 yaw -60.0 want 6.67 roll 6.67
+62.905 yaw -60.0 want 6.67 roll 6.67
+62.913 yaw -60.0 want 6.67 roll 6.67
+62.922 yaw -60.0 want 6.67 roll 6.67
+62.930 yaw -60.0 want 6.67 roll 6.67
+62.938 yaw -60.0 want 6.67 roll 6.67
+62.947 yaw -60.0 want 6.67 roll 6.67
+62.955 yaw -60.0 want 6.67 roll 6.67
+62.964 yaw -60.0 want 6.67 roll 6.67
+62.972 yaw -60.0 want 6.67 roll 6.67
+62.980 yaw -60.0 want 6.67 roll 6.67
+62.989 yaw -60.0 want 6.67 roll 6.67
+62.997 yaw -60.0 want 6.67 roll 6.67
+63.005 yaw -60.0 want 6.67 roll 6.67
+63.014 yaw -60.0 want 6.67 roll 6.67
+63.023 yaw -60.0 want 6.67 roll 6.67
+63.031 yaw -60.0 want 6.67 roll 6.67
+63.040 yaw -60.0 want 6.67 roll 6.67
+63.048 yaw -60.0 want 6.67 roll 6.67
+63.057 yaw -60.0 want 6.67 roll 6.67
+63.065 yaw -60.0 want 6.67 roll 6.67
+63.074 yaw -60.0 want 6.67 roll 6.67
+63.082 yaw -60.0 want 6.67 roll 6.67
+63.090 yaw -60.0 want 6.67 roll 6.67
+63.099 yaw -60.0 want 6.67 roll 6.67
+63.107 yaw -60.0 want 6.67 roll 6.67
+63.115 yaw -60.0 want 6.67 roll 6.67
+63.124 yaw -60.0 want 6.67 roll 6.67
+63.132 yaw -60.0 want 6.67 roll 6.67
+63.141 yaw -60.0 want 6.67 roll 6.67
+63.149 yaw -60.0 want 6.67 roll 6.67
+63.157 yaw 0.0 want 20.00 roll 7.31
+63.166 yaw 0.0 want 20.00 roll 8.03
+63.174 yaw 0.0 want 20.00 roll 8.67
+63.182 yaw 0.0 want 20.00 roll 9.31
+63.191 yaw 0.0 want 20.00 roll 10.03
+63.199 yaw 0.0 want 20.00 roll 10.67
+63.208 yaw 0.0 want 20.00 roll 11.39
+63.216 yaw 0.0 want 20.00 roll 12.03
+63.224 yaw 0.0 want 20.00 roll 12.67
+63.233 yaw 0.0 want 20.00 roll 13.39
+63.241 yaw 0.0 want 20.00 roll 14.03
+63.250 yaw 0.0 want 20.00 roll 14.75
+63.258 yaw 0.0 want 20.00 roll 15.39
+63.266 yaw 0.0 want 20.00 roll 16.03
+63.275 yaw 0.0 want 20.00 roll 16.75
+63.283 yaw 0.0 want 20.00 roll 17.39
+63.291 yaw 0.0 want 20.00 roll 18.03
+63.300 yaw 0.0 want 20.00 roll 18.75
+63.308 yaw 0.0 want 20.00 roll 19.39
+63.316 yaw 0.0 want 20.00 roll 20.00
+63.325 yaw 0.0 want 20.00 roll 20.00
+63.333 yaw 0.0 want 20.00 roll 20.00
+63.341 yaw 0.0 want 20.00 roll 20.00
+63.350 yaw 0.0 want 20.00 roll 20.00
+63.358 yaw 0.0 want 20.00 roll 20.00
+63.366 yaw 0.0 want 20.00 roll 20.00
+63.375 yaw 0.0 want 20.00 roll 20.00
+63.383 yaw 0.0 want 20.00 roll 20.00
+63.392 yaw 0.0 want 20.00 roll 20.00
+63.400 yaw 0.0 want 20.00 roll 20.00
+63.409 yaw 0.0 want 20.00 roll 20.00
+63.417 yaw 0.0 want 20.00 roll 20.00
+63.426 yaw 0.0 want 20.00 roll 20.00
+63.434 yaw 0.0 want 20.00 roll 20.00
+63.442 yaw 0.0 want 20.00 roll 20.00
+63.451 yaw 0.0 want 20.00 roll 20.00
+63.459 yaw 0.0 want 20.00 roll 20.00
+63.468 yaw 0.0 want 20.00 roll 20.00
+63.477 yaw 0.0 want 20.00 roll 20.00
+63.486 yaw 0.0 want 20.00 roll 20.00
+63.495 yaw 0.0 want 20.00 roll 20.00
+63.504 yaw 0.0 want 20.00 roll 20.00
+63.513 yaw 0.0 want 20.00 roll 20.00
+63.522 yaw 0.0 want 20.00 roll 20.00
+63.531 yaw 0.0 want 20.00 roll 20.00
+63.540 yaw 0.0 want 20.00 roll 20.00
+63.549 yaw 0.0 want 20.00 roll 20.00
+63.558 yaw 0.0 want 20.00 roll 20.00
+63.567 yaw 0.0 want 20.00 roll 20.00
+63.576 yaw 0.0 want 20.00 roll 20.00
+63.586 yaw 0.0 want 20.00 roll 20.00
+63.595 yaw 0.0 want 20.00 roll 20.00
+63.604 yaw 0.0 want 20.00 roll 20.00
+63.613 yaw 0.0 want 20.00 roll 20.00
+63.622 yaw 0.0 want 20.00 roll 20.00

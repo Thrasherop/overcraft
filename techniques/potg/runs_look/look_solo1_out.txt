@@ -1,0 +1,17 @@
+=== phase look 18:37:03
+showing seen 18:37:03
+  shot 0.5s at 0.5s
+  shot 1.2s at 1.2s
+  shot 2.5s at 2.5s
+  shot 4s at 4.0s
+  shot 5.25s at 5.25s
+  shot 6.3s at 6.3s
+  shot 8s at 8.0s
+  shot 12s at 12.0s
+  shot 16s at 16.0s
+  shot 17.5s at 17.5s
+  shot 18.5s at 18.5s
+  shot 19.5s at 19.5s
+[18:37:03] [Server thread/INFO] (Overcraft) [POTG] Kiriko watches highlight 0: Watching Kiriko High Score 3100 as kiriko in minecraft:overworld (seg-1.zip t4862)
+[18:37:08] [Server thread/INFO] (Overcraft) [POTG] replay started for 1 viewer(s) 5184 ms after the card began
+[18:37:21] [Server thread/INFO] (Overcraft) [POTG] showing ended (replay done) after 17911 ms, world not held

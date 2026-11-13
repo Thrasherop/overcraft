@@ -1,0 +1,25 @@
+=== phase join 16:46:32
+{'ok': True}
+select 2 AccessibilityOnboardingScreen
+{'error': 'java.lang.IllegalStateException: Cannot send packets when not in game!'}
+{'screen': 'TitleScreen', 'inWorld': False, 'x': None, 'y': None, 'z': None, 'yaw': None, 'pitch': None, 'health': None, 'hero': None, 'heroMode': None, 'ult': None, 'primaryAmmo': None, 'camera': None, 'heroAttached': None, 'food': None}
+=== phase join 16:48:54
+{'ok': True}
+select 2 DisconnectedScreen
+{'error': 'java.lang.IllegalStateException: Cannot send packets when not in game!'}
+{'screen': 'TitleScreen', 'inWorld': False, 'x': None, 'y': None, 'z': None, 'yaw': None, 'pitch': None, 'health': None, 'hero': None, 'heroMode': None, 'ult': None, 'primaryAmmo': None, 'camera': None, 'heroAttached': None, 'food': None}
+=== phase join 16:52:20
+{'ok': True}
+select 2 HeroSelectScreen
+{'ok': True}
+{'screen': '', 'inWorld': True, 'x': -2.5, 'y': -60.0, 'z': -1.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 6.5, 'primaryAmmo': 25, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy', 'food': 20}
+=== phase join 17:00:50
+{'ok': True}
+select 2 HeroSelectScreen
+{'ok': True}
+{'screen': '', 'inWorld': True, 'x': -4.5, 'y': -60.0, 'z': 0.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 6.5, 'primaryAmmo': 25, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy', 'food': 20}
+=== phase join 17:11:05
+{'ok': True}
+select 2 HeroSelectScreen
+{'ok': True}
+{'screen': '', 'inWorld': True, 'x': 7.8, 'y': 62.0, 'z': 28.56, 'yaw': 0.0, 'pitch': 0.0, 'health': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 2150.0, 'primaryAmmo': 25, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy', 'food': 20}

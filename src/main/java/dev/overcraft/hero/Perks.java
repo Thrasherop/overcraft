@@ -60,7 +60,13 @@ public final class Perks {
 			case SOMBRA -> dev.overcraft.sombra.SombraStats.PERK_MINOR_XP;
 			case BRIGITTE -> dev.overcraft.brigitte.BrigitteStats.PERK_MINOR_XP;
 			case JUNO -> dev.overcraft.juno.JunoStats.PERK_MINOR_XP;
+			case SIGMA -> dev.overcraft.sigma.SigmaStats.PERK_MINOR_XP;
+			case DVA -> dev.overcraft.dva.DvaStats.PERK_MINOR_XP;
 			case SOJOURN -> dev.overcraft.sojourn.SojournStats.PERK_MINOR_XP;
+			case PHARAH -> dev.overcraft.pharah.PharahStats.PERK_MINOR_XP;
+			case TRACER -> dev.overcraft.tracer.TracerStats.PERK_MINOR_XP;
+			case CASSIDY -> dev.overcraft.cassidy.CassidyStats.PERK_MINOR_XP;
+			case JUNKRAT -> dev.overcraft.junkrat.JunkratStats.PERK_MINOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}
@@ -77,7 +83,13 @@ public final class Perks {
 			case SOMBRA -> dev.overcraft.sombra.SombraStats.PERK_MAJOR_XP;
 			case BRIGITTE -> dev.overcraft.brigitte.BrigitteStats.PERK_MAJOR_XP;
 			case JUNO -> dev.overcraft.juno.JunoStats.PERK_MAJOR_XP;
+			case SIGMA -> dev.overcraft.sigma.SigmaStats.PERK_MAJOR_XP;
+			case DVA -> dev.overcraft.dva.DvaStats.PERK_MAJOR_XP;
 			case SOJOURN -> dev.overcraft.sojourn.SojournStats.PERK_MAJOR_XP;
+			case PHARAH -> dev.overcraft.pharah.PharahStats.PERK_MAJOR_XP;
+			case TRACER -> dev.overcraft.tracer.TracerStats.PERK_MAJOR_XP;
+			case CASSIDY -> dev.overcraft.cassidy.CassidyStats.PERK_MAJOR_XP;
+			case JUNKRAT -> dev.overcraft.junkrat.JunkratStats.PERK_MAJOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}

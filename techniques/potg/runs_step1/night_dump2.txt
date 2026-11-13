@@ -1,0 +1,105 @@
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG] Kiriko: 93.1 s armed, 1761 ticks recorded in hero play (102 out of it), server tick avg 4.63 ms
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG] tap ms/tick: mean 0.113 p50 0.078 p99 0.666 max 8.022 (keyframe each 5 s: mean 1.06 max 7.29 ms)
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG] bytes/s: stream 10360 + own track 680 = 11040; keyframes 19, avg 13171 B, max in ring 14096 B; ring now 327063 B in 6 segments
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG] keyframe entities: avg 149.8, max 175; last: {chicken=1, creeper=10, enderman=3, experience_orb=55, item=33, kunai=2, pig=7, player=1, sheep=4, skeleton=14, slime=26, spider=14, zombie=4}
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG] types seen (count, kept bytes, encode errors):
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   add_entity                                       KEPT      3162     167456 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   block_update                                     KEPT       116       1160 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   custom_payload/fabric:attachment_sync_v1         KEPT        39       2008 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   custom_payload/overcraft:effect                  KEPT       328      23944 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   custom_payload/overcraft:hero_action             KEPT       176       6272 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   custom_payload/overcraft:hero_sync               KEPT      1760     197120 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   custom_payload/overcraft:kill_feed               probe       23          0 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   custom_payload/overcraft:own_sound               KEPT       240      16049 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   damage_event                                     KEPT        71        568 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   entity_event                                     KEPT        49        294 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   entity_position_sync                             KEPT      5107     198898 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   move_entity_pos                                  KEPT     20019     215172 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   move_entity_pos_rot                              KEPT       952      12372 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   move_entity_rot                                  KEPT      1238       7428 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   own/set_equipment                                KEPT         1         18 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   player_info_update                               probe        3          0 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   player_position                                  probe      228          0 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   remove_entities                                  KEPT       263       1052 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   rotate_head                                      KEPT      3895      15580 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   set_entity_data                                  KEPT      2959      30796 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   set_entity_motion                                KEPT     22148     192229 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   set_equipment                                    KEPT       134       1198 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   set_experience                                   probe        2          0 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   set_time                                         probe       88          0 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   sound                                            KEPT        56       1792 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   system_chat                                      probe      256          0 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   take_item_entity                                 KEPT         1          5 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   update_advancements                              probe        4          0 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   update_attributes                                KEPT      1962      49479 0
+[13:48:01] [Server thread/INFO] (Overcraft) [POTG]   update_mob_effect                                KEPT        22        176 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG] Kiriko: 93.1 s armed, 1761 ticks recorded in hero play (102 out of it), server tick avg 4.63 ms
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG] tap ms/tick: mean 0.113 p50 0.078 p99 0.666 max 8.022 (keyframe each 5 s: mean 1.06 max 7.29 ms)
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG] bytes/s: stream 10360 + own track 680 = 11040; keyframes 19, avg 13171 B, max in ring 14096 B; ring now 327063 B in 6 segments
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG] keyframe entities: avg 149.8, max 175; last: {chicken=1, creeper=10, enderman=3, experience_orb=55, item=33, kunai=2, pig=7, player=1, sheep=4, skeleton=14, slime=26, spider=14, zombie=4}
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG] types seen (count, kept bytes, encode errors):
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   add_entity                                       KEPT      3162     167456 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   block_update                                     KEPT       116       1160 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   custom_payload/fabric:attachment_sync_v1         KEPT        39       2008 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   custom_payload/overcraft:effect                  KEPT       328      23944 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   custom_payload/overcraft:hero_action             KEPT       176       6272 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   custom_payload/overcraft:hero_sync               KEPT      1760     197120 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   custom_payload/overcraft:kill_feed               probe       23          0 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   custom_payload/overcraft:own_sound               KEPT       240      16049 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   damage_event                                     KEPT        71        568 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   entity_event                                     KEPT        49        294 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   entity_position_sync                             KEPT      5107     198898 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   move_entity_pos                                  KEPT     20019     215172 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   move_entity_pos_rot                              KEPT       952      12372 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   move_entity_rot                                  KEPT      1238       7428 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   own/set_equipment                                KEPT         1         18 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   player_info_update                               probe        3          0 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   player_position                                  probe      228          0 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   remove_entities                                  KEPT       263       1052 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   rotate_head                                      KEPT      3895      15580 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   set_entity_data                                  KEPT      2959      30796 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   set_entity_motion                                KEPT     22148     192229 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   set_equipment                                    KEPT       134       1198 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   set_experience                                   probe        2          0 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   set_time                                         probe       88          0 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   sound                                            KEPT        56       1792 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   system_chat                                      probe      256          0 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   take_item_entity                                 KEPT         1          5 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   update_advancements                              probe        4          0 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   update_attributes                                KEPT      1962      49479 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   update_mob_effect                                KEPT        22        176 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG] client decode of Kiriko: 8.7 ms; records: packets 14295 (265524 B), own track 504 (17136 B), own packets 0 (0 B); framing errors 0
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG] decoded (count, bytes, ok, leftover bytes, re-encode differs, errors, decoded as):
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   add_entity                                                 112      5979     112    0    0    0 ClientboundAddEntityPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   block_update                                                21       210      21    0    0    0 ClientboundBlockUpdatePacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   custom_payload/overcraft:effect                             48      3528      48    0    0    0 EffectPayload
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   custom_payload/overcraft:hero_action                        51      1821      51    0    0    0 HeroActionPayload
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   custom_payload/overcraft:hero_sync                         503     56336     503    0    0    0 HeroSyncPayload
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   custom_payload/overcraft:own_sound                          74      4960      74    0    0    0 OwnSoundPayload
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   damage_event                                                24       192      24    0    0    0 ClientboundDamageEventPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   entity_event                                                16        96      16    0    0    0 ClientboundEntityEventPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   entity_position_sync                                       774     30060     774    0    0    0 ClientboundEntityPositionSyncPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   kf add_entity                                              964     50452     964    0    0    0 ClientboundAddEntityPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   kf custom_payload/fabric:attachment_sync_v1                 12       618      12    0    0    0 ClientboundAttachmentSyncPayload
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   kf set_entity_data                                         853      8254     853    0    0    0 ClientboundSetEntityDataPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   kf set_equipment                                            61       549      61    0    0    0 ClientboundSetEquipmentPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   kf update_attributes                                       505     11605     505    0    0    0 ClientboundUpdateAttributesPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   kf update_mob_effect                                         6        48       6    0    0    0 ClientboundUpdateMobEffectPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   move_entity_pos                                           4310     45622    4310    0    0    0 Pos
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   move_entity_pos_rot                                        201      2613     201    0    0    0 PosRot
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   move_entity_rot                                            179      1074     179    0    0    0 Rot
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   probe custom_payload/overcraft:kill_feed                     3       264       3    0    0    0 KillFeedPayload
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   probe player_info_update                                     3        60       3    0    0    0 ClientboundPlayerInfoUpdatePacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   probe player_position                                        3       186       3    0    0    0 ClientboundPlayerPositionPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   probe set_experience                                         2        14       2    0    0    0 ClientboundSetExperiencePacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   probe set_time                                               3        30       3    0    0    0 ClientboundSetTimePacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   probe system_chat                                            3       819       3    0    0    0 ClientboundSystemChatPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   probe update_advancements                                    3     24512       3    0    1    0 ClientboundUpdateAdvancementsPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   remove_entities                                             83       332      83    0    0    0 ClientboundRemoveEntitiesPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   rotate_head                                               1268      5072    1268    0    0    0 ClientboundRotateHeadPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   set_entity_data                                            259      2632     259    0    0    0 ClientboundSetEntityDataPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   set_entity_motion                                         3891     32464    3891    0    0    0 ClientboundSetEntityMotionPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   set_equipment                                               41       361      41    0    0    0 ClientboundSetEquipmentPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   sound                                                        4       128       4    0    0    0 ClientboundSoundPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   update_attributes                                           34       510      34    0    0    0 ClientboundUpdateAttributesPacket
+[13:48:01] [Render thread/INFO] (Overcraft) [POTG]   update_mob_effect                                            1         8       1    0    0    0 ClientboundUpdateMobEffectPacket

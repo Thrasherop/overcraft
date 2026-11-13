@@ -62,7 +62,7 @@ public class Overcraft implements ModInitializer {
 	 * assets/overcraft/asset_pack.json): raise it whenever the pack must be rebuilt for a build (clips renamed, sounds
 	 * added), so an old zip is flagged in game (#21).
 	 */
-	public static final String ASSETS_NEEDED = "0.3.30";
+	public static final String ASSETS_NEEDED = "0.3.31";
 
 	/** This build's version (gradle.properties, through fabric.mod.json), as "0.2.0". */
 	public static String version() {
@@ -102,6 +102,7 @@ public class Overcraft implements ModInitializer {
 		OcEntities.init();
 		OcSounds.init();
 		HeroManager.init();
+		Souls.init();
 		Teams.init();
 
 		PayloadTypeRegistry.serverboundPlay().register(SelectHeroPayload.TYPE, SelectHeroPayload.CODEC);
@@ -121,12 +122,21 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.clientboundPlay().register(EffectPayload.TYPE, EffectPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(KillFeedPayload.TYPE, KillFeedPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.ConspiratorPayload.TYPE, dev.overcraft.net.ConspiratorPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.DeadeyePayload.TYPE, dev.overcraft.net.DeadeyePayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(VictoryPayload.TYPE, VictoryPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.ResurrectPayload.TYPE, dev.overcraft.net.ResurrectPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.GripPayload.TYPE, dev.overcraft.net.GripPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(OwnSoundPayload.TYPE, OwnSoundPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.PotgPayload.TYPE, dev.overcraft.net.PotgPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(dev.overcraft.net.HighlightsPayload.TYPE, dev.overcraft.net.HighlightsPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.HighlightsPayload.TYPE, dev.overcraft.net.HighlightsPayload.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(dev.overcraft.net.HighlightsPayload.TYPE,
+			(payload, context) -> dev.overcraft.potg.PotgReplay.highlightsAsked(context.player(), payload.watch(), payload.data()));
 
 		ServerPlayNetworking.registerGlobalReceiver(SelectHeroPayload.TYPE, (payload, context) -> {
+			if (dev.overcraft.potg.PotgReplay.viewing(context.player())) {
+				return;
+			}
 			Hero hero = Hero.byId(payload.heroId());
 			HeroManager.select(context.player(), hero);
 			if (hero == null) {
@@ -134,11 +144,20 @@ public class Overcraft implements ModInitializer {
 			}
 		});
 		ServerPlayNetworking.registerGlobalReceiver(HeroModePayload.TYPE,
-			(payload, context) -> HeroManager.setHeroMode(context.player(), payload.on()));
+			(payload, context) -> {
+				if (!dev.overcraft.potg.PotgReplay.viewing(context.player())) {
+					HeroManager.setHeroMode(context.player(), payload.on());
+				}
+			});
 		ServerPlayNetworking.registerGlobalReceiver(HeroOptionsPayload.TYPE,
 			(payload, context) -> HeroManager.setOptions(context.player(), payload));
 		ServerPlayNetworking.registerGlobalReceiver(HeroInputPayload.TYPE,
-			(payload, context) -> HeroManager.onInput(context.player(), payload));
+			(payload, context) -> {
+				// a replay's viewer acts on nothing (dev only, PotgReplay)
+				if (!dev.overcraft.potg.PotgReplay.viewing(context.player())) {
+					HeroManager.onInput(context.player(), payload);
+				}
+			});
 		ServerPlayNetworking.registerGlobalReceiver(CalloutPayload.TYPE, (payload, context) -> {
 			Callout callout = Callout.byIndex(payload.callout());
 			if (callout != null) {
@@ -159,8 +178,15 @@ public class Overcraft implements ModInitializer {
 			(payload, context) -> Perks.pick(context.player(), Perk.byIndex(payload.perk())));
 
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
+			// a Play of the Game showing holds the world still, the mod's ticks with it (PotgReplay)
+			if (dev.overcraft.potg.PotgReplay.tick(server)) {
+				return;
+			}
 			KitsuneRush.tickAll(server);
 			Combat.tick(server);
+			// Silver Bullet's bleeds
+			dev.overcraft.cassidy.Cassidy.tickBleeds(server);
+			dev.overcraft.hero.Effects.tick(server);
 			HeroManager.tick(server);
 			dev.overcraft.mercy.Boosts.tick(server);
 			dev.overcraft.ana.Nano.tick(server);
@@ -175,15 +201,16 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.juno.OrbitalRay.tickAll(server);
 			dev.overcraft.sojourn.Disruptor.tickAll(server);
 			dev.overcraft.brigitte.Brigitte.tickPushes();
+			dev.overcraft.brigitte.Barrier.tickProjectiles(server);
 			Souls.tick(server, dev.overcraft.mercy.MercyStats.SOUL_TIME);
+			// Play of the Game: the scoring and the recorders (the whole run), the last of the tick
+			dev.overcraft.potg.PlayScore.tick(server);
+			dev.overcraft.potg.PotgRecorder.tick(server);
+			dev.overcraft.potg.PlayerStats.tick(server);
 		});
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
-		// a player who starts seeing a hero hears of the states others heard begin (Jetpack Cat's Lifeline)
-		net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents.START_TRACKING.register((tracked, player) -> {
-			if (tracked instanceof net.minecraft.server.level.ServerPlayer hero) {
-				dev.overcraft.jetpackcat.JetpackCat.showState(hero, player);
-			}
-		});
+		// a player who starts seeing someone hears of the states others heard begin (#96)
+		net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents.START_TRACKING.register(HeroManager::showState);
 		ServerPlayConnectionEvents.DISCONNECT.register((listener, server) -> {
 			HeroManager.onLeave(listener.player);
 			Comms.forget(listener.player);
@@ -193,33 +220,56 @@ public class Overcraft implements ModInitializer {
 			HeroManager.onRespawn(newPlayer, resurrected);
 			// a Mercy's Resurrect puts them back where they fell, with its health (after the kit, which sets the health)
 			Souls.onRespawn(oldPlayer, newPlayer);
+			// Play of the Game: a respawn can land in a new dimension (an anchor in the Nether)
+			dev.overcraft.potg.PlayerStats.entered(newPlayer);
 		});
+		// Play of the Game: a player's first entry into the Nether and the End (PotgValues, owner 2026-11-11)
+		net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register(
+			(player, origin, destination) -> dev.overcraft.potg.PlayerStats.entered(player));
 
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
-			if (Combat.isPhased(entity)) {
+			if (Combat.refusesDamage(entity, source)) {
 				return false;
 			}
 			// a fall in hero mode hurts from the hero's own safe height (LivingEntityMixin), unless an ability lands it (#35)
-			return !(source.is(DamageTypeTags.IS_FALL) && entity instanceof Player player && HeroManager.controls(player)
+			return !(source.is(DamageTypeTags.IS_FALL) && entity instanceof Player player && HeroManager.inHeroPlay(player)
 				&& HeroManager.fallIsSafe(player));
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register(KillFeed::onDeath);
-		ServerLivingEntityEvents.AFTER_DEATH.register(Voice::onDeath);
+		// Voice's kill lines come from KillFeed.onDeath, which knows whose kill it is (a fall after a boop too)
 		ServerLivingEntityEvents.AFTER_DEATH.register(Souls::onDeath);
 		CommandRegistrationCallback.EVENT.register((dispatcher, registries, environment) -> OvercraftCommand.register(dispatcher));
+		// a hero who dies leaves play at once (#100: HeroKit.leavePlay): Brigitte's barrier goes down (it stood on over her body,
+		// and she came back in its stance: #88), a tow or a carry lets go, a stealth ends
+		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			Combat.clearHealing(entity);
+			if (entity instanceof ServerPlayer player) {
+				HeroManager.onDeath(player);
+				dev.overcraft.potg.PlayScore.died(player);
+				dev.overcraft.potg.MobStats.killed(player, source);
+			}
+		});
 		// killing the Ender Dragon wins the match: everyone in the End sees Overwatch's VICTORY as it starts to die (#18)
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			if (entity instanceof EnderDragon && entity.level() instanceof ServerLevel level) {
 				for (ServerPlayer player : level.players()) {
 					ServerPlayNetworking.send(player, new VictoryPayload());
 				}
+				// its Play of the Game waits for the death's tick 199 (PotgReplay.dragonAt199)
+				dev.overcraft.potg.PotgReplay.dragonDied((EnderDragon) entity, source);
 			}
 		});
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
 			if (entity instanceof Player player && damage > 0) {
 				HeroManager.onDamaged(player);
+				// the end screen's enemy side: what each mob did to players this run (owner, 2026-11-11)
+				dev.overcraft.potg.MobStats.damaged(player, source, damage);
+			}
+			if (damage > 0 && source.getEntity() instanceof net.minecraft.world.entity.Mob mob && source.getEntity() != entity) {
+				dev.overcraft.hero.Allies.remember(mob, entity);
 			}
 			if (damage > 0) {
+				Combat.onHurt(entity, source);
 				// a sleeper wakes from any damage once it has slept 0.5 s (224E #202 / #205 -> #332)
 				dev.overcraft.hero.Sleep.onDamaged(entity);
 			}
@@ -234,9 +284,23 @@ public class Overcraft implements ModInitializer {
 				entity.discard();
 			}
 		});
+		// Play of the Game: scoring runs the whole time; the recorders' segments close (kept ones saved) as the world closes
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+			dev.overcraft.potg.PotgRecorder.serverStarted(server);
+			dev.overcraft.potg.PlayScore.open();
+		});
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+			dev.overcraft.potg.MobStats.flush(server);
+			dev.overcraft.potg.PlayerStats.flush(server);
+			dev.overcraft.potg.PotgRecorder.stopAll(server);
+		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			HeroManager.clear();
 			Combat.clear();
+			dev.overcraft.hero.Effects.clear();
+			Comms.clearEmotes();
+			dev.overcraft.sigma.GraviticFlux.clearAll();
+			dev.overcraft.hero.Sleep.clear();
 			KitsuneRush.clear();
 			Souls.clear();
 			dev.overcraft.mercy.Boosts.clear();
@@ -252,6 +316,12 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.juno.OrbitalRay.clearAll();
 			dev.overcraft.sojourn.Disruptor.clearAll();
 			dev.overcraft.lifeweaver.LifeGrip.clear();
+			dev.overcraft.potg.PotgReplay.clear();
+			// the scoring and the highlights are statics: a world left must not hand its state to the next one
+			dev.overcraft.potg.PlayScore.clear();
+			dev.overcraft.potg.Highlights.clear();
+			dev.overcraft.potg.MobStats.clear();
+			dev.overcraft.potg.PlayerStats.clear();
 		});
 	}
 }

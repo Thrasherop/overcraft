@@ -1,0 +1,10 @@
+=== phase aim 18:22:58
+aim ended at 40.0
+[18:23:04] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 28 (seg-2.zip)
+[18:23:05] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 55 (seg-2.zip)
+[18:23:17] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 55 (seg-2.zip)
+[18:23:18] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 83 (seg-2.zip)
+[18:23:19] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 110 (seg-2.zip)
+[18:23:20] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 165 (seg-2.zip)
+[18:23:21] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 193 (seg-2.zip)
+[18:23:24] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 253 (seg-2.zip)

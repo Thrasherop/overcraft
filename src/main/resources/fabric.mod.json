@@ -13,15 +13,18 @@
 	},
 	"mixins": [
 		"overcraft.mixins.json",
+		"overcraft-replay.mixins.json",
 		{
 			"config": "overcraft.client.mixins.json",
 			"environment": "client"
 		}
 	],
+	"accessWidener": "overcraft-replay.classtweaker",
 	"depends": {
 		"fabricloader": ">=0.20.1",
 		"minecraft": "~26.3",
 		"java": ">=25",
-		"fabric-api": "*"
+		"fabric-api": "*",
+		"fabric-language-kotlin": ">=1.14.1+kotlin.2.4.20"
 	}
 }

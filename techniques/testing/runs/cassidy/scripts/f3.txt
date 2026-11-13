@@ -1,0 +1,56 @@
+cmd /gamerule spawn_monsters false
+cmd /kill @e[type=!player]
+MARK F8 (#3) skull vs armor (critic C4c): a NoAI zombie, 60 MC (750 OW), full iron (17 armor), 8 m; Q, screenshot ~3.85 s in, fire. Old: the skull shown, the zombie left at 0.9. Fixed: no skull at that charge (or, shown, it dies)
+cmd /fill -6 -55 -2 6 -55 14 glass
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /summon zombie 0.5 -60 8.5 {NoAI:1b,Tags:["z3"],equipment:{head:{id:"minecraft:iron_helmet",count:1},chest:{id:"minecraft:iron_chestplate",count:1},legs:{id:"minecraft:iron_leggings",count:1},feet:{id:"minecraft:iron_boots",count:1}},attributes:[{id:"minecraft:max_health",base:60}],Health:60f}
+cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 8.5 run tp @s ~ ~ ~ ~ ~
+cmd /overcraft ult @s 100
+sleep 1.4
+hp @e[tag=z3,limit=1]
+key ultimate down
+sleep 0.13
+key ultimate up
+sleep 3.7
+screenshot FX_f8_skull.png
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 1.4
+hp @e[tag=z3,limit=1]
+cmd /kill @e[type=!player]
+cmd /fill -6 -55 -2 6 -55 14 air
+MARK F9 (#3) the same zombie, longer lock: fire once the skull shows (~5 s in). Fixed: the skull, then it dies
+cmd /summon zombie 0.5 -60 8.5 {NoAI:1b,Tags:["z4"],equipment:{head:{id:"minecraft:iron_helmet",count:1},chest:{id:"minecraft:iron_chestplate",count:1},legs:{id:"minecraft:iron_leggings",count:1},feet:{id:"minecraft:iron_boots",count:1}},attributes:[{id:"minecraft:max_health",base:60}],Health:60f}
+cmd /overcraft ult @s 100
+sleep 1.4
+key ultimate down
+sleep 0.13
+key ultimate up
+sleep 5.6
+screenshot FX_f9_skull.png
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 1.4
+hp @e[tag=z4,limit=1]
+cmd /kill @e[type=!player]
+sleep 1
+MARK F10 (#6 range) Flashbang thrown level at open air; a NoAI husk 100 MC whose near face is ~3.2 m past a 7.0 m burst (~2.7 m past the old 7.5 m one). Old: hit. Fixed: untouched
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /summon husk 0.5 -60 11.45 {NoAI:1b,Tags:["f10"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+sleep 0.5
+hp @e[tag=f10,limit=1]
+key ability_2 down
+sleep 0.05
+key ability_2 up
+ents Flashbang
+ents Flashbang
+ents Flashbang
+ents Flashbang
+ents Flashbang
+ents Flashbang
+ents Flashbang
+ents Flashbang
+sleep 0.5
+hp @e[tag=f10,limit=1]

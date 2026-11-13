@@ -445,6 +445,14 @@
 		"subtitle": "subtitles.overcraft.music.victory",
 		"sounds": []
 	},
+	"announcer.potg": {
+		"subtitle": "subtitles.overcraft.announcer.potg",
+		"sounds": []
+	},
+	"music.potg": {
+		"subtitle": "subtitles.overcraft.music.potg",
+		"sounds": []
+	},
 	"kiriko.voice.swift_step.wrecking_ball": {
 		"subtitle": "subtitles.overcraft.kiriko.voice.swift_step.wrecking_ball",
 		"sounds": []

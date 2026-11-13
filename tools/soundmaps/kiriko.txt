@@ -8,6 +8,11 @@ kiriko.ult.enemy = HeroVoice/Kiriko/Ultimate/000000062D15.0B2-(Japanese)_ O fox 
 # has how they were found; both play in the head, so they stay stereo.
 announcer.victory = ExtraSounds/Announcer/00000000A8C8.0B2-Victory..ogg
 music.victory = ExtraSounds/MatchEnd/ChainB/Sounds/000000008B7F.02C/0000002B0DE6.03F.ogg
+# Play of the Game (#44, #45): the announcer's "Play of the game." (voice set 001D, file A8C4, research\announcer\set_001D.json)
+# and cue 5B1F (bank 1E5C8, file 2B0E13, 16.84 s; graph 0D3B's message 19C8 and graph 1B4C play it: music-round9, M-L),
+# both extracted 2026-11-11 offline (round 8's extract_voice.py, kiriko-sounds' extract_banks.py "Potg=5B1F").
+announcer.potg = ExtraSounds/Announcer/00000000A8C4.0B2-Play of the game..ogg
+music.potg = ExtraSounds/MatchEnd/Potg/Potg/Sounds/000000005B1F.02C/0000002B0E13.03F.ogg
 
 # ===== How each game event is put together (build_asset_pack.py sounds). Minecraft plays one file per sound event, so
 # the layers Overwatch plays together are mixed into one file per variant, at build time:

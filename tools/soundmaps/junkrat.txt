@@ -1,0 +1,306 @@
+# Junkrat's voice: <sound id> = <file under E:/Overwatch Archive/extracted/154088/> (build 154088). Same format as cassidy.txt;
+# build_asset_pack.py sounds copies / mixes them into the local pack. Read 2026-11-13 offline (Overwatch and Battle.net
+# checked closed before every archive read and TankLib run). Scripts: E:/Overwatch Archive/research/junkrat/scripts/sounds/
+# (voiceset_junkrat.py, junkrat_voice.py, junkrat_voice_gen.py, which writes this file; Cassidy's voice pipeline retargeted); data:
+# research/junkrat/work/voiceset_0055.05F.json and stim078.json, research/junkrat/sounds/voice_lines.json. His sound effects
+# are in junkrat_sfx.txt.
+
+# ===== Voice (HeroVoice/Junkrat): the voice set 0055.05F's lines by moment (335 stimuli, 1279 lines; from junkrat_voice.py:
+# each line's 0B2, stimulus, weight and decoded criteria; files from DataTool's extract-hero-voice --subtitles-with-sounds,
+# in research/junkrat/extract). w = the line's weight. Lines with criteria are left out, as Cassidy's are (hero interactions,
+# skins, maps, Overwatch Classic, scripted moments: counted per moment), except 'NOT ScriptedEvent 191E', treated as
+# always true (kiriko-voice.md). Stimulus numbers (the .078): priority, radius m, volume dB, interrupt, cooldown s
+# (m_A73F2EBE-m_DD27AC95 read as min-max, M); Voice.java's table takes priority, cooldown and interrupt.
+# Ult lines (RIP-Tire): his own copy 184C is what Junkrat says for himself; allies hear 048D, enemies 0247 (0232 #572's
+# three keys F1AC / F1AB / F1AA, read as Cassidy's 022F #621).
+# Not mapped: 0019 (UltimateSeenRemark), 0575 (a teammate's ult ready); stimuli his graphs raise that his voice set doesn't
+# hold (no lines): 1084 (096A #562, when count(v1752) == 5, 0.8 s delay), 1082 (022A #197, Total Mayhem), 11D4 / 11D5 / 11D6
+# (022B #349 / #353 / #342, on the frag counter v42868); no reload or Steel Trap throw stimulus in his graphs; perk lines (the
+# perks raise none of their own), the match / objective / PvE lines.
+# Elimination 0008: 29 files; prio 70, 30 m, +2 dB, interrupt 0, cooldown 15-15 s; left out: 28 a hero interaction, 10 a scripted condition, 2 a map (OnMap), 1 a skin / celebration, 1 HeroOnTeam
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000000B836.0B2-Rest in pieces!.ogg | w=0.005
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000000B8A3.0B2-Bomb's away!.ogg | w=0.005
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000000B897.0B2-Boom! Hahahaha!.ogg | w=1
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000000B87C.0B2-If I had a Ph.D, they'd call me Dr. Boom!.ogg | w=0.001
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000000B82B.0B2-Ya dipstick!.ogg | w=0.005
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000000B7FC.0B2-And on that bombshell.ogg | w=0.005
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000000B8A4.0B2-Brings tears to my eyes.ogg | w=0.005
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000000B8A5.0B2-Fore!.ogg | w=0.005
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000000B7F7.0B2-Now that was beautiful.ogg | w=0.005
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000000B80A.0B2-Don't lose your head!.ogg | w=0.005
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000000B7C2.0B2-If you can't handle the heat, stay out of the kitchen!.ogg | w=0.005
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000001FF4B.0B2-Hey, where'd you go_.ogg | w=0.005
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000001FF4C.0B2-(laughs) You're blowing up!.ogg | w=0.005
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000005F191.0B2-An explosive development!.ogg | w=1
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000005F1A6.0B2-Dy-na-mite!.ogg | w=1
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000005F1A8.0B2-You misunderestimated me!.ogg | w=1
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000005F1AA.0B2-Where are me manners_.ogg | w=1
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000005F1AB.0B2-That's why I'm famous!.ogg | w=1
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000005F19E.0B2-Jackpot! (laughs).ogg | w=1
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000005F19F.0B2-I made that bomb meself.ogg | w=1
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000005F1A0.0B2-How bomblastic!.ogg | w=1
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000005F1A1.0B2-Aw, did a bomb getcha_.ogg | w=1
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000005F1A2.0B2-A scintillating finish!.ogg | w=1
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000005F1A3.0B2-I impress myself.ogg | w=1
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/00000005F1B0.0B2-(chuckle) Write that one in my diary.ogg | w=1
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/0000000622EA.0B2-I am Junkrat... and you just died to Junkrat.ogg | w=0.01
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/000000063D70.0B2-Demolition, by Jamison.ogg | w=0.25
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/000000063D72.0B2-Diegetic!.ogg | w=0.25
+junkrat.voice.elimination = ../../research/junkrat/extract/HeroVoice/Junkrat/Elimination/000000065F04.0B2-Bonza!.ogg | w=0.5
+# Multikill 00C9: 8 files; prio 70, 35 m, +2 dB, interrupt 0, cooldown 15-20 s; left out: 1 a scripted condition
+junkrat.voice.multikill = ../../research/junkrat/extract/HeroVoice/Junkrat/Multikill/00000000B7F1.0B2-Yeah! Collateral damage!.ogg | w=0.1
+junkrat.voice.multikill = ../../research/junkrat/extract/HeroVoice/Junkrat/Multikill/00000000B889.0B2-You're just making it easy for me.ogg | w=0.1
+junkrat.voice.multikill = ../../research/junkrat/extract/HeroVoice/Junkrat/Multikill/00000005F1BF.0B2-How many was that_ Oh my stars!.ogg | w=1
+junkrat.voice.multikill = ../../research/junkrat/extract/HeroVoice/Junkrat/Multikill/00000005F1BC.0B2-Someone get the camera!.ogg | w=0.5
+junkrat.voice.multikill = ../../research/junkrat/extract/HeroVoice/Junkrat/Multikill/00000005F1BD.0B2-Multifarious eliminations!.ogg | w=1
+junkrat.voice.multikill = ../../research/junkrat/extract/HeroVoice/Junkrat/Multikill/00000005F1BE.0B2-(wild extended laughter).ogg | w=1
+junkrat.voice.multikill = ../../research/junkrat/extract/HeroVoice/Junkrat/Multikill/00000005F1BB.0B2-(wild laughter).ogg | w=0.1
+junkrat.voice.multikill = ../../research/junkrat/extract/HeroVoice/Junkrat/Multikill/00000006383A.0B2-A cavalcade of hits!.ogg | w=1
+# MeleeEnemyKilledRemark 0032 (an enemy killed in melee range): 4 files; prio 65, 30 m, +2 dB, interrupt 0, cooldown 10-14 s; left out: 3 Overwatch Classic only, 3 a scripted condition, 1 a hero interaction
+junkrat.voice.melee_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/MeleeEnemyKilledRemark/00000005F1B8.0B2-Doink!.ogg | w=1
+junkrat.voice.melee_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/MeleeEnemyKilledRemark/00000005F1B9.0B2-Clean hit, clean hit.ogg | w=1
+junkrat.voice.melee_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/MeleeEnemyKilledRemark/00000005F1BA.0B2-Wonk! Right in the griddle.ogg | w=1
+junkrat.voice.melee_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/MeleeEnemyKilledRemark/00000005F1B7.0B2-Fisticuffs!.ogg | w=1
+# On Fire 0583: 5 files; prio 60, 35 m, +2 dB, interrupt 0, cooldown 2-5 s; left out: 1 Overwatch Classic only
+junkrat.voice.on_fire = ../../research/junkrat/extract/HeroVoice/Junkrat/OnFire/00000001FF43.0B2-I'm on fire! (laughs).ogg | w=1
+junkrat.voice.on_fire = ../../research/junkrat/extract/HeroVoice/Junkrat/OnFire/00000001FF44.0B2-Someone better get a firie, because I'm on a roll!.ogg | w=0.8
+junkrat.voice.on_fire = ../../research/junkrat/extract/HeroVoice/Junkrat/OnFire/0000000622EB.0B2-I did it, mum! I'm on fire!.ogg | w=1
+junkrat.voice.on_fire = ../../research/junkrat/extract/HeroVoice/Junkrat/OnFire/0000000622EC.0B2-My fuses are alight!.ogg | w=1
+junkrat.voice.on_fire = ../../research/junkrat/extract/HeroVoice/Junkrat/OnFire/0000000622ED.0B2-Look who's on fire again! Me!.ogg | w=0.5
+# Respawn 002C: 20 files; prio 40, 35 m, +0 dB, interrupt 0, cooldown 15-15 s; left out: 6 a scripted condition, 3 a hero interaction, 1 a map (OnMap), 1 HeroOnTeam
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000000B7F3.0B2-Hooly dooly!.ogg | w=0.001
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000000B874.0B2-Well that's a fine how do you do! (laughs).ogg | w=0.001
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000000B7D6.0B2-If at first you don't succeed, blow it up again!.ogg | w=0.001
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000000B7E3.0B2-You won't get rid of me that easily!.ogg | w=0.001
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000000B88D.0B2-(growls).ogg | w=0.001
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000000B847.0B2-Back for more!.ogg | w=0.001
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000000B859.0B2-Takes a lickin', keeps on tickin'.ogg | w=0.001
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/000000043ABD.0B2-Rise and shine!.ogg | w=0.001
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000005F1F4.0B2-Such perfidy cannot go unanswered!.ogg | w=0.7
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000005F1F5.0B2-I'm going back in!.ogg | w=1
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000005F1EE.0B2-This situation calls for more bombs!.ogg | w=1
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000005F1EF.0B2-Buckle my shoe, there's mayhem to do!.ogg | w=1
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000005F1F0.0B2-Let's give it a fair shake, mate!.ogg | w=1
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000005F1F1.0B2-Ooh, I'm ready!.ogg | w=1
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000005F1F2.0B2-I ain't quitting!.ogg | w=1
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000005F1F3.0B2-Can't keep a bad lad down.ogg | w=1
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000005F1F6.0B2-I still think we can win.ogg | w=1
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000005F1F7.0B2-I'll keep trying till I run out of limbs!.ogg | w=1
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/00000005F1F8.0B2-I am indefatibagel!.ogg | w=1
+junkrat.voice.respawn = ../../research/junkrat/extract/HeroVoice/Junkrat/Respawn/000000063DA7.0B2-Stiff upper lip now. You've come back from worse.ogg | w=0.25
+# Melee shout 0023 (the shared melee VoiceStimulus): 9 files; prio 35, 35 m, +0 dB, interrupt 0, cooldown 0.5-0.5 s
+junkrat.voice.melee = ../../research/junkrat/extract/HeroVoice/Junkrat/Melee/00000000B8C6.0B2-(shouts).ogg | w=0.7
+junkrat.voice.melee = ../../research/junkrat/extract/HeroVoice/Junkrat/Melee/00000000B8B3.0B2-(shouts).ogg | w=0.7
+junkrat.voice.melee = ../../research/junkrat/extract/HeroVoice/Junkrat/Melee/00000000B8E9.0B2-(shouts).ogg | w=0.7
+junkrat.voice.melee = ../../research/junkrat/extract/HeroVoice/Junkrat/Melee/00000000B8DB.0B2-(shouts).ogg | w=0.7
+junkrat.voice.melee = ../../research/junkrat/extract/HeroVoice/Junkrat/Melee/00000000B8CB.0B2-(shouts).ogg | w=0.7
+junkrat.voice.melee = ../../research/junkrat/extract/HeroVoice/Junkrat/Melee/00000000B8D8.0B2-(shouts).ogg | w=0.7
+junkrat.voice.melee = ../../research/junkrat/extract/HeroVoice/Junkrat/Melee/000000064314.0B2-(shouts).ogg | w=1
+junkrat.voice.melee = ../../research/junkrat/extract/HeroVoice/Junkrat/Melee/000000064315.0B2-(shouts).ogg | w=1
+junkrat.voice.melee = ../../research/junkrat/extract/HeroVoice/Junkrat/Melee/000000064316.0B2-(shouts).ogg | w=1
+# Hero select 002B: 1 files; prio 100, 35 m, +0 dB, interrupt 0, cooldown 1-1 s; left out: 1 Overwatch Classic only
+junkrat.voice.select = ../../research/junkrat/extract/HeroVoice/Junkrat/HeroSelect/00000005F1D6.0B2-Plenty of bombs to go around!.ogg | w=1
+# Death 0001: 6 files; prio 90, 60 m, +2 dB, interrupt 0, cooldown 2-5 s
+junkrat.voice.death = ../../research/junkrat/extract/HeroVoice/Junkrat/Death/00000000B8D4.0B2-(dying sounds).ogg | w=1
+junkrat.voice.death = ../../research/junkrat/extract/HeroVoice/Junkrat/Death/00000000B8EA.0B2-(dying sounds).ogg | w=1
+junkrat.voice.death = ../../research/junkrat/extract/HeroVoice/Junkrat/Death/00000000B8EE.0B2-(dying sounds).ogg | w=1
+junkrat.voice.death = ../../research/junkrat/extract/HeroVoice/Junkrat/Death/00000000B8E1.0B2-(dying sounds).ogg | w=1
+junkrat.voice.death = ../../research/junkrat/extract/HeroVoice/Junkrat/Death/00000000B8BA.0B2-(dying sounds).ogg | w=1
+junkrat.voice.death = ../../research/junkrat/extract/HeroVoice/Junkrat/Death/00000000B8C4.0B2-(dying sounds).ogg | w=1
+# Pain 0003 / 0004: 19 files; prio 40, 35 m, -3 dB, interrupt 0, cooldown 1-2.5 s
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8B8.0B2-(grunts).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8ED.0B2-(grunts).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8AD.0B2-(grunts).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8FA.0B2-(grunts).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8CC.0B2-(grunts).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8B9.0B2-(grunts).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8FD.0B2-(grunts).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8C5.0B2-(grunts).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8B6.0B2-(grunts).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8C2.0B2-(painful grunt).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8DE.0B2-(painful grunt).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8E5.0B2-(painful grunt).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8C8.0B2-(painful grunt).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8B0.0B2-(painful grunt).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8DF.0B2-(painful grunt).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8BC.0B2-(painful grunt).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8DC.0B2-(painful grunt).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8E0.0B2-(painful grunt).ogg | w=1
+junkrat.voice.pain = ../../research/junkrat/extract/HeroVoice/Junkrat/Pain/00000000B8FB.0B2-(painful grunt).ogg | w=1
+# Resurrected 005A (what he says when a Mercy brings him back): 2 files; prio 75, 35 m, +0 dB, interrupt 0, cooldown 10-10 s
+junkrat.voice.resurrected = ../../research/junkrat/extract/HeroVoice/Junkrat/Resurrected/00000000B8A2.0B2-Ooh! I owe you one!.ogg | w=1
+junkrat.voice.resurrected = ../../research/junkrat/extract/HeroVoice/Junkrat/Resurrected/0000000622F2.0B2-With friends like these, who needs other kinds of friends_.ogg | w=1
+# Ultimate/Ready 02E7 (the wheel line): 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s; left out: 1 a scripted condition
+junkrat.voice.ult_ready = ../../research/junkrat/extract/HeroVoice/Junkrat/Ultimate/Ready/00000000B86C.0B2-My ultimate's ready!.ogg | w=1
+# Ultimate/Charging 0574: 3 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+junkrat.voice.call_ult_charging = ../../research/junkrat/extract/HeroVoice/Junkrat/Ultimate/Charging/00000001FF26.0B2-My RIP-Tire is charging.ogg | w=1
+junkrat.voice.call_ult_charging = ../../research/junkrat/extract/HeroVoice/Junkrat/Ultimate/Charging/00000001FF27.0B2-My ultimate is charging.ogg | w=1
+junkrat.voice.call_ult_charging = ../../research/junkrat/extract/HeroVoice/Junkrat/Ultimate/Charging/000000063DB8.0B2-Still filling up my tire.ogg | w=0.25
+# Ultimate/AlmostReady 05A7: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s; left out: 1 a scripted condition
+junkrat.voice.call_ult_almost = ../../research/junkrat/extract/HeroVoice/Junkrat/Ultimate/AlmostReady/00000001FF28.0B2-My ultimate is almost ready!.ogg | w=1
+# Hello 01CF: 8 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+junkrat.voice.call_hello = ../../research/junkrat/extract/HeroVoice/Junkrat/Hello/00000000B7D9.0B2-G'day, cobber!.ogg | w=1
+junkrat.voice.call_hello = ../../research/junkrat/extract/HeroVoice/Junkrat/Hello/00000000B85A.0B2-G'day, mate!.ogg | w=1
+junkrat.voice.call_hello = ../../research/junkrat/extract/HeroVoice/Junkrat/Hello/00000000B7C9.0B2-G'day!.ogg | w=1
+junkrat.voice.call_hello = ../../research/junkrat/extract/HeroVoice/Junkrat/Hello/00000006232E.0B2-Hello!.ogg | w=0.05
+junkrat.voice.call_hello = ../../research/junkrat/extract/HeroVoice/Junkrat/Hello/00000006232F.0B2-G'day!.ogg | w=1
+junkrat.voice.call_hello = ../../research/junkrat/extract/HeroVoice/Junkrat/Hello/000000062330.0B2-G'day, mate!.ogg | w=1
+junkrat.voice.call_hello = ../../research/junkrat/extract/HeroVoice/Junkrat/Hello/000000062331.0B2-Hey.ogg | w=0.5
+junkrat.voice.call_hello = ../../research/junkrat/extract/HeroVoice/Junkrat/Hello/000000063DB1.0B2-Hey.ogg | w=0.1
+# Thanks 01D0: 6 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+junkrat.voice.call_thanks = ../../research/junkrat/extract/HeroVoice/Junkrat/Thanks/00000000B80F.0B2-Cheers!.ogg | w=1
+junkrat.voice.call_thanks = ../../research/junkrat/extract/HeroVoice/Junkrat/Thanks/00000000B851.0B2-Ta!.ogg | w=1
+junkrat.voice.call_thanks = ../../research/junkrat/extract/HeroVoice/Junkrat/Thanks/00000000B83B.0B2-Thanks, mate.ogg | w=1
+junkrat.voice.call_thanks = ../../research/junkrat/extract/HeroVoice/Junkrat/Thanks/00000006233B.0B2-Thanks, mate.ogg | w=1
+junkrat.voice.call_thanks = ../../research/junkrat/extract/HeroVoice/Junkrat/Thanks/00000006233C.0B2-Ta!.ogg | w=1
+junkrat.voice.call_thanks = ../../research/junkrat/extract/HeroVoice/Junkrat/Thanks/00000006233D.0B2-Cheers!.ogg | w=1
+# Sorry 05E1: 4 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+junkrat.voice.call_sorry = ../../research/junkrat/extract/HeroVoice/Junkrat/Sorry/00000002EE9D.0B2-Oops!.ogg | w=1
+junkrat.voice.call_sorry = ../../research/junkrat/extract/HeroVoice/Junkrat/Sorry/00000002EE9F.0B2-Sorry about that.ogg | w=1
+junkrat.voice.call_sorry = ../../research/junkrat/extract/HeroVoice/Junkrat/Sorry/00000002EEBE.0B2-Oopsies.ogg | w=1
+junkrat.voice.call_sorry = ../../research/junkrat/extract/HeroVoice/Junkrat/Sorry/00000006231F.0B2-Sorry, sorry!.ogg | w=1
+# No 01D2: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+junkrat.voice.call_no = ../../research/junkrat/extract/HeroVoice/Junkrat/No/00000000B7ED.0B2-Nah.ogg | w=1
+junkrat.voice.call_no = ../../research/junkrat/extract/HeroVoice/Junkrat/No/00000000B89D.0B2-No.ogg | w=1
+# GroupUp 02C6: 7 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+junkrat.voice.call_group_up = ../../research/junkrat/extract/HeroVoice/Junkrat/GroupUp/00000000B88F.0B2-Join up with me!.ogg | w=1
+junkrat.voice.call_group_up = ../../research/junkrat/extract/HeroVoice/Junkrat/GroupUp/00000001FF2C.0B2-Group up here!.ogg | w=1
+junkrat.voice.call_group_up = ../../research/junkrat/extract/HeroVoice/Junkrat/GroupUp/00000001FF1F.0B2-Group up!.ogg | w=1
+junkrat.voice.call_group_up = ../../research/junkrat/extract/HeroVoice/Junkrat/GroupUp/00000001FF20.0B2-Group up with me!.ogg | w=1
+junkrat.voice.call_group_up = ../../research/junkrat/extract/HeroVoice/Junkrat/GroupUp/000000062338.0B2-Group up here!.ogg | w=1
+junkrat.voice.call_group_up = ../../research/junkrat/extract/HeroVoice/Junkrat/GroupUp/000000062339.0B2-Join up with me!.ogg | w=1
+junkrat.voice.call_group_up = ../../research/junkrat/extract/HeroVoice/Junkrat/GroupUp/00000006233A.0B2-Get over here!.ogg | w=1
+# AssistanceRequired 0427: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+junkrat.voice.call_need_help = ../../research/junkrat/extract/HeroVoice/Junkrat/AssistanceRequired/00000000B849.0B2-Help!.ogg | w=1
+junkrat.voice.call_need_help = ../../research/junkrat/extract/HeroVoice/Junkrat/AssistanceRequired/00000000B868.0B2-I could use some help here!.ogg | w=1
+# Healing 0045: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+junkrat.voice.call_need_healing = ../../research/junkrat/extract/HeroVoice/Junkrat/Healing/00000000B87A.0B2-I need healing!.ogg | w=1
+junkrat.voice.call_need_healing = ../../research/junkrat/extract/HeroVoice/Junkrat/Healing/00000001FF23.0B2-Need healing!.ogg | w=1
+# ping 11D9: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+junkrat.voice.ping = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/11D9.078/000000063D98.0B2-Over there!.ogg | w=1
+# ping warning 11DA: 4 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+junkrat.voice.ping_warning = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/11DA.078/000000063D99.0B2-Heads up!.ogg | w=1
+junkrat.voice.ping_warning = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/11DA.078/000000063D9A.0B2-Alert! Alert!.ogg | w=1
+junkrat.voice.ping_warning = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/11DA.078/000000063D9B.0B2-Hey! Watch here!.ogg | w=1
+junkrat.voice.ping_warning = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/11DA.078/000000063D9C.0B2-Keep your eyes peeled!.ogg | w=1
+# ping enemy 1117: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+junkrat.voice.ping_enemy = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/1117.078/000000062329.0B2-Enemy here!.ogg | w=1
+junkrat.voice.ping_enemy = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/1117.078/00000006232A.0B2-There's an enemy here!.ogg | w=1
+junkrat.voice.ping_enemy = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/1117.078/00000006232B.0B2-Baddy over here!.ogg | w=1
+# DamageBoosted 00CC (what he says when a Mercy boosts him): 3 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 30-30 s
+junkrat.voice.damage_boosted = ../../research/junkrat/extract/HeroVoice/Junkrat/DamageBoosted/00000000B861.0B2-Now we're talking!.ogg | w=1
+junkrat.voice.damage_boosted = ../../research/junkrat/extract/HeroVoice/Junkrat/DamageBoosted/00000000B801.0B2-Hohoho!.ogg | w=1
+junkrat.voice.damage_boosted = ../../research/junkrat/extract/HeroVoice/Junkrat/DamageBoosted/00000000B850.0B2-Now we're cooking with gas!.ogg | w=1
+# NanoBoosted 05E2 (what he says when an Ana nanos him): 5 files; prio 95, 80 m, +3 dB, interrupt 1, cooldown 2-2 s
+junkrat.voice.nano_boosted = ../../research/junkrat/extract/HeroVoice/Junkrat/NanoBoosted/00000002EE97.0B2-I'm unstoppable!.ogg | w=1
+junkrat.voice.nano_boosted = ../../research/junkrat/extract/HeroVoice/Junkrat/NanoBoosted/00000002EE98.0B2-There's no one to stop me now!.ogg | w=1
+junkrat.voice.nano_boosted = ../../research/junkrat/extract/HeroVoice/Junkrat/NanoBoosted/0000000622EE.0B2-Glowing like a Junkertown doublecow!.ogg | w=0.1
+junkrat.voice.nano_boosted = ../../research/junkrat/extract/HeroVoice/Junkrat/NanoBoosted/0000000622EF.0B2-They can't stop me now!.ogg | w=1
+junkrat.voice.nano_boosted = ../../research/junkrat/extract/HeroVoice/Junkrat/NanoBoosted/0000000622F0.0B2-Un-stompable!.ogg | w=1
+# Concussion Mine throw 03DE ('Fly, my little friend!' / 'Hold this a minute!'; 096A #586, onBegin of the throw States #231 / #449, H): 6 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 20-15 s; left out: 6 Overwatch Classic only, 3 a scripted condition
+junkrat.voice.mine_throw = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/3DE.078/00000005F184.0B2-Fly, my little friend!.ogg | w=1
+junkrat.voice.mine_throw = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/3DE.078/00000005F185.0B2-The pleasure is mine.ogg | w=1
+junkrat.voice.mine_throw = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/3DE.078/00000005F186.0B2-Hold this a minute!.ogg | w=1
+junkrat.voice.mine_throw = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/3DE.078/00000005F187.0B2-What a lob!.ogg | w=1
+junkrat.voice.mine_throw = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/3DE.078/00000005F189.0B2-Woop woop!.ogg | w=1
+junkrat.voice.mine_throw = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/3DE.078/00000005F196.0B2-Hee hee! Hoo hoo!.ogg | w=1
+# Mine self-launch 0454 ('Blasting off!' / 'Wheee!'; 096A #550 via #565 when no throw line is pending (v43160), 0.3 s delay, H node, M moment): 10 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 10-15 s; left out: 1 HeroOnTeam
+junkrat.voice.mine_jump = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/454.078/00000000B7D1.0B2-Woo hoo!.ogg | w=0.1
+junkrat.voice.mine_jump = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/454.078/00000001FF54.0B2-Going up!.ogg | w=0.1
+junkrat.voice.mine_jump = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/454.078/00000005F18B.0B2-Blasting off!.ogg | w=1
+junkrat.voice.mine_jump = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/454.078/00000005F18C.0B2-We have liftoff!.ogg | w=0.5
+junkrat.voice.mine_jump = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/454.078/00000005F18D.0B2-If mum could see me now!.ogg | w=0.1
+junkrat.voice.mine_jump = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/454.078/00000005F18E.0B2-Wheee!.ogg | w=1
+junkrat.voice.mine_jump = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/454.078/00000005F18F.0B2-Bomb voyage!.ogg | w=1
+junkrat.voice.mine_jump = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/454.078/00000005F190.0B2-Boing!.ogg | w=1
+junkrat.voice.mine_jump = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/454.078/00000005F18A.0B2-Ha hee hee he hee!.ogg | w=1
+junkrat.voice.mine_jump = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/454.078/000000062340.0B2-Pronk!.ogg | w=0.25
+# Mine left waiting 043B ('Waiting... Waiting' / 'I want to push the button'; 096A #594 after #592's random 10-60 s with the mine still out, H node, M moment): 7 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 10-10 s; left out: 2 Overwatch Classic only
+junkrat.voice.mine_waiting = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/43B.078/00000000B86E.0B2-Patience... patience.ogg | w=0.1
+junkrat.voice.mine_waiting = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/43B.078/00000000B80D.0B2-Come on, let me push it!.ogg | w=0.1
+junkrat.voice.mine_waiting = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/43B.078/00000000B85E.0B2-Tick tock tick tock.ogg | w=0.1
+junkrat.voice.mine_waiting = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/43B.078/00000005F198.0B2-Why have I got this detonator again_.ogg | w=1
+junkrat.voice.mine_waiting = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/43B.078/00000005F199.0B2-Waiting... Waiting.ogg | w=1
+junkrat.voice.mine_waiting = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/43B.078/00000005F19A.0B2-(sucking air through teeth) I want to push the button.ogg | w=1
+junkrat.voice.mine_waiting = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/43B.078/00000005F19B.0B2-Let's go, let's go.ogg | w=1
+# Mine kill 0415 ('Concussion!' / 'Scattered to the wind!'; the mine's game message 19A3 (096A #542) -> 022A #178 -> #192 sends it in 1B27, H nodes, M meaning): 5 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 10-10 s; left out: 3 a scripted condition, 2 Overwatch Classic only, 1 a map (OnMap), 1 a hero interaction
+junkrat.voice.mine_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/415.078/00000005F193.0B2-Concussion!.ogg | w=1
+junkrat.voice.mine_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/415.078/00000005F194.0B2-Scattered to the wind!.ogg | w=1
+junkrat.voice.mine_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/415.078/00000005F195.0B2-Mine mistake! (laughs).ogg | w=1
+junkrat.voice.mine_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/415.078/00000005F197.0B2-Half the time, works every time!.ogg | w=0.5
+junkrat.voice.mine_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/415.078/00000005F192.0B2-Works every time! (low voice) Terms and conditions may apply.ogg | w=0.05
+# Steel Trap catches someone 043D ('Trapped!' / 'Snap! Gotcha!'; the trap's graph 09BB #791, H): 7 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 1-1 s; left out: 4 Overwatch Classic only, 1 a hero interaction
+junkrat.voice.trap = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/43D.078/00000000B812.0B2-Oh, you really stepped in it, mate!.ogg | w=0.05
+junkrat.voice.trap = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/43D.078/00000005F1FE.0B2-Trapped!.ogg | w=1
+junkrat.voice.trap = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/43D.078/00000005F1FF.0B2-Snap! Gotcha!.ogg | w=1
+junkrat.voice.trap = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/43D.078/00000005F200.0B2-Hee hee hee hee!.ogg | w=1
+junkrat.voice.trap = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/43D.078/00000005F201.0B2-Oh you're in a pickle!.ogg | w=1
+junkrat.voice.trap = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/43D.078/00000005F202.0B2-Snagged!.ogg | w=1
+junkrat.voice.trap = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/43D.078/000000065F03.0B2-Beautiful fish. Nice—two and a half meters, ALMOST three.ogg | w=0.05
+# RIP-Tire drive giggles 1890 (0232 #595 after #594's random 0.5-2.25 s, while he steers the tire, H): 6 files; prio 75, 35 m, +0 dB, interrupt 0, cooldown 0.1-0.1 s
+junkrat.voice.tire_giggle = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/1890.078/000000069A90.0B2-(giggle).ogg | w=1
+junkrat.voice.tire_giggle = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/1890.078/000000069A91.0B2-(giggle).ogg | w=1
+junkrat.voice.tire_giggle = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/1890.078/000000069A8F.0B2-(giggle).ogg | w=1
+junkrat.voice.tire_giggle = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/1890.078/000000069A8E.0B2-(giggle).ogg | w=1
+junkrat.voice.tire_giggle = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/1890.078/000000069A8D.0B2-(giggle).ogg | w=1
+junkrat.voice.tire_giggle = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/1890.078/000000069A8C.0B2-(giggle).ogg | w=1
+# RIP-Tire kill 0414 ('Rolled over!' / 'Burnin' rubber!'; the tire's game message 19A5 (0233) -> 022A #182 -> #193, H nodes, M meaning): 11 files; prio 75, 60 m, +3 dB, interrupt 0, cooldown 5-5 s; left out: 4 Overwatch Classic only, 1 a scripted condition
+junkrat.voice.tire_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/414.078/00000000B873.0B2-I never get tire-d of this! (laughs).ogg | w=0.005
+junkrat.voice.tire_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/414.078/00000000B7E6.0B2-Hey, where'd that come from_.ogg | w=0.005
+junkrat.voice.tire_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/414.078/00000000B7C8.0B2-(chuckles) Wheel 'em out!.ogg | w=0.005
+junkrat.voice.tire_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/414.078/00000005F1E6.0B2-You little ripper!.ogg | w=1
+junkrat.voice.tire_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/414.078/00000005F1EA.0B2-Rolled over!.ogg | w=1
+junkrat.voice.tire_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/414.078/00000005F1EB.0B2-Burnin' rubber!.ogg | w=1
+junkrat.voice.tire_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/414.078/00000005F1EC.0B2-Caught beneath the wheel of progress!.ogg | w=1
+junkrat.voice.tire_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/414.078/00000005F1E7.0B2-And around we go!.ogg | w=1
+junkrat.voice.tire_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/414.078/00000005F1E8.0B2-Tired of me yet_.ogg | w=1
+junkrat.voice.tire_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/414.078/00000005F1E9.0B2-En-tire-ly unavoidable.ogg | w=1
+junkrat.voice.tire_kill = ../../research/junkrat/extract/HeroVoice/Junkrat/Unknown/414.078/00000005F1ED.0B2-That tire popped you!.ogg | w=1
+# RIP-Tire, his own copy 184C ('Fire in the hole!'; 0232 #572 STU_37D754C8 key F1AC, the own key, out of #317 the tire's spawn, H): 1 files; prio 95, 300 m, +8 dB, interrupt 0, cooldown 1-1 s; left out: 1 a skin / celebration, 1 a map (OnMap)
+junkrat.voice.ultimate = ../../research/junkrat/extract/HeroVoice/Junkrat/Ultimate/000000069823.0B2-Fire in the hole!.ogg | w=1
+# RIP-Tire line, allies 048D ('Ladies and gentlemen, start your engines!'; 0232 #572 key F1AB, the friendly key, H): 1 files; prio 95, 60 m, +6 dB, interrupt 0, cooldown 1-1 s; left out: 1 a skin / celebration
+junkrat.ult.friendly = ../../research/junkrat/extract/HeroVoice/Junkrat/Ultimate/00000000B82F.0B2-Ladies and gentlemen, start your engines!.ogg | w=1
+# RIP-Tire line, enemies 0247 ('Fire in the hole!'; 0232 #572 key F1AA, the enemy key, H): 1 files; prio 95, 300 m, +8 dB, interrupt 0, cooldown 1-1 s; left out: 1 a map (OnMap), 1 a skin / celebration
+junkrat.ult.enemy = ../../research/junkrat/extract/HeroVoice/Junkrat/Ultimate/00000000B895.0B2-Fire in the hole!.ogg | w=1
+# GOOD JOB (the wheel key's tap): his set has no such category (as Sigma's); ours: his Teammate/KillSeen 001B lines
+#  (a teammate's kill seen) with no criteria.
+junkrat.voice.call_good_job = ../../research/junkrat/extract/HeroVoice/Junkrat/Teammate/KillSeen/00000005F1CE.0B2-Love the energy, mate.ogg | w=1
+junkrat.voice.call_good_job = ../../research/junkrat/extract/HeroVoice/Junkrat/Teammate/KillSeen/00000005F1CF.0B2-I like what you're up to!.ogg | w=1
+junkrat.voice.call_good_job = ../../research/junkrat/extract/HeroVoice/Junkrat/Teammate/KillSeen/00000005F1D3.0B2-(giggle) You got 'em good, there!.ogg | w=1
+# Voice subtitles: one per event (its lines vary); ours describe the moment, quoting a line where the pool says one thing.
+$junkrat.voice.elimination = Junkrat remarks on a takedown
+$junkrat.voice.multikill = Junkrat remarks on a multikill
+$junkrat.voice.melee_kill = Junkrat remarks on a melee kill
+$junkrat.voice.on_fire = Junkrat is on fire
+$junkrat.voice.respawn = Junkrat is back
+$junkrat.voice.melee = Junkrat shouts
+$junkrat.voice.select = Junkrat: Plenty of bombs to go around!
+$junkrat.voice.death = Junkrat dies
+$junkrat.voice.pain = Junkrat grunts
+$junkrat.voice.resurrected = Junkrat: Ooh! I owe you one!
+$junkrat.voice.ult_ready = Junkrat: My ultimate's ready!
+$junkrat.voice.call_ult_charging = Junkrat: My ultimate is charging
+$junkrat.voice.call_ult_almost = Junkrat: My ultimate is almost ready
+$junkrat.voice.call_hello = Junkrat: G'day, mate!
+$junkrat.voice.call_thanks = Junkrat: Cheers!
+$junkrat.voice.call_sorry = Junkrat: Sorry about that
+$junkrat.voice.call_no = Junkrat: Nah
+$junkrat.voice.call_group_up = Junkrat: Group up here!
+$junkrat.voice.call_need_help = Junkrat: Help!
+$junkrat.voice.call_need_healing = Junkrat: I need healing!
+$junkrat.voice.ping = Junkrat: Over there!
+$junkrat.voice.ping_warning = Junkrat: Heads up!
+$junkrat.voice.ping_enemy = Junkrat: Enemy here!
+$junkrat.voice.damage_boosted = Junkrat is damage boosted
+$junkrat.voice.nano_boosted = Junkrat is nano boosted
+$junkrat.voice.mine_throw = Junkrat throws a mine
+$junkrat.voice.mine_jump = Junkrat: Blasting off!
+$junkrat.voice.mine_waiting = Junkrat wants to push the button
+$junkrat.voice.mine_kill = Junkrat remarks on a mine kill
+$junkrat.voice.trap = Junkrat: Trapped!
+$junkrat.voice.tire_giggle = Junkrat giggles
+$junkrat.voice.tire_kill = Junkrat remarks on a RIP-Tire kill
+$junkrat.voice.ultimate = Junkrat: Fire in the hole!
+$junkrat.voice.call_good_job = Junkrat compliments a teammate
+$junkrat.ult.friendly = Junkrat: Ladies and gentlemen, start your engines!
+$junkrat.ult.enemy = Junkrat: Fire in the hole!

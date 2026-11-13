@@ -121,12 +121,21 @@ public final class HyperRing {
 	private static void speedUp(LivingEntity e, long now) {
 		AttributeInstance speed = e.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (speed != null) {
-			speed.addOrReplacePermanentModifier(new AttributeModifier(FAST, RING_BOOST, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+			speed.addOrUpdateTransientModifier(new AttributeModifier(FAST, RING_BOOST, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
 		}
 		FASTER.put(e, now + Ow.ticks(RING_BOOST_TIME));
 		// through it (#437 per ally -> #432 5A8B): in the ally's head, its 45 m copy at them for the rest (M on whom)
 		JunoSounds.on(e, "ring.pass", 45);
 		Effects.play((ServerLevel) e.level(), "juno_ring_boost", e.position(), Vec3.ZERO, e, Ow.ticks(RING_BOOST_TIME), null);
+	}
+
+	/** Out of its speed at once (she left play: Juno.leavePlay). */
+	static void unboost(LivingEntity e) {
+		FASTER.remove(e);
+		AttributeInstance speed = e.getAttribute(Attributes.MOVEMENT_SPEED);
+		if (speed != null) {
+			speed.removeModifier(FAST);
+		}
 	}
 
 	public static void clearAll() {

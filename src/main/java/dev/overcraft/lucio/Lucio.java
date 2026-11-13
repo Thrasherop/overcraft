@@ -159,20 +159,32 @@ public final class Lucio implements HeroKit {
 		}
 
 		// Soundwave Rider (perk): riding a wall charges the next Soundwave over about 5 s; off the wall a part charge
-		// drains, a full one holds until used (the wiki)
+		// waits 3 s, then drains at the same rate, a full one holds until used (5162 #462 -> #463 -> #465 -> #464)
 		if (HeroManager.hasPerk(player, Perk.LUCIO_SOUNDWAVE_RIDER)) {
 			double step = 1.0 / Ow.ticks(RIDER_CHARGE_TIME);
 			if (s.wallRiding) {
 				s.riderCharge = Math.min(1, s.riderCharge + step);
+				s.riderDrainWait = Ow.ticks(RIDER_DRAIN_WAIT);
+			} else if (s.riderDrainWait > 0) {
+				s.riderDrainWait--;
 			} else if (s.riderCharge < 1) {
 				s.riderCharge = Math.max(0, s.riderCharge - step);
 			}
 		}
 
-		if (player.tickCount % SONG_TICKS == 0) {
+		// in play only: in Minecraft mode his song neither plays nor heals nor speeds anyone (#100)
+		if (controls && player.tickCount % SONG_TICKS == 0) {
 			songs(player, s);
 		}
 		syncSong(player, s, controls);
+
+		// a wall ride lands him unhurt, off its end, off a jump, off a high wall (#35; real keys, a6609b6: 4.48 m and the pain line, hidden from health by the song)
+		HeroManager.softLanding(player, s, controls && s.wallRiding, false);
+		// how he rides, for the others watching (#115: only his own client knows it, and tells us)
+		int wall = controls ? s.wallRide : 0;
+		if (player.getAttachedOrElse(HeroManager.LUCIO_WALL, 0) != wall) {
+			player.setAttached(HeroManager.LUCIO_WALL, wall);
+		}
 
 		// Wall Ride's sound while he rides, and his line once he's been on the wall 2.2 s
 		if (s.wallRiding) {
@@ -270,24 +282,28 @@ public final class Lucio implements HeroKit {
 		double cosLimit = Math.cos(Math.toRadians(WAVE_HALF_ANGLE));
 		float dealt = 0;
 		for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AABB(eye, eye).inflate(WAVE_RANGE))) {
-			if (target == player || !Allies.canHurt(player, target)) {
+			if (target == player || !Allies.areaHits(player, target)) {
 				continue;
 			}
 			Vec3 to = target.getBoundingBox().getCenter().subtract(eye);
 			if (to.length() > WAVE_RANGE + target.getBbWidth() / 2 || to.normalize().dot(look) < cosLimit || !player.hasLineOfSight(target)) {
 				continue;
 			}
-			dealt += Combat.damage(target, player.damageSources().playerAttack(player), damage);
-			if (target.isAlive()) {
+			float hit = Combat.damage(target, player.damageSources().playerAttack(player), damage,
+				dev.overcraft.hero.Blow.ability("soundwave").by(dev.overcraft.hero.Hero.LUCIO));
+			dealt += hit;
+			// each target's own share (an enemy tank's 40% less: Tank)
+			Combat.credit(player, hit, target);
+			// a barrier in the way takes the wave whole: no push, no lockout behind it (#88; any barrier: Barriers)
+			if (target.isAlive() && !dev.overcraft.brigitte.Barrier.shields(target, player)) {
 				Vec3 velocity = look.scale(13.73).add(0, 10.15, 0);
-				velocity = velocity.normalize().scale(WAVE_KNOCKBACK * push * (1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
-				target.setDeltaMovement(Ow.speed(velocity.x), Ow.speed(velocity.y), Ow.speed(velocity.z));
-				target.syncVelocity = true;
+				velocity = velocity.normalize().scale(WAVE_KNOCKBACK * push);
+				Combat.launch(target, new Vec3(Ow.speed(velocity.x), Ow.speed(velocity.y), Ow.speed(velocity.z)), player,
+					dev.overcraft.hero.Blow.ability("soundwave").by(dev.overcraft.hero.Hero.LUCIO));
 				// the lockout (ours: Minecraft has no "can't move", so a moment of heavy Slowness)
 				target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Ow.ticks(WAVE_LOCKOUT), 9, false, false));
 			}
 		}
-		Combat.credit(player, dealt);
 		s.ability3Cooldown = Ow.ticks(WAVE_COOLDOWN);
 		s.weaponRecovery = Math.max(s.weaponRecovery, Ow.ticks(WAVE_RECOVERY));
 		s.volleyLeft = 0;
@@ -310,11 +326,13 @@ public final class Lucio implements HeroKit {
 		double radius = SONG_RADIUS * (amped && HeroManager.hasPerk(player, Perk.LUCIO_NOISE_VIOLATION) ? 1 + NOISE_VIOLATION_RANGE : 1);
 		double seconds = SONG_TICKS / 20.0;
 		float healed = 0;
+		int reached = 0;
 		for (LivingEntity ally : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(radius))) {
 			if (!Allies.isSelfOrAlly(player, ally) || !ally.isAlive() || ally.distanceTo(player) > radius
 				|| ally != player && !player.hasLineOfSight(ally)) {
 				continue;
 			}
+			reached += ally == player ? 0 : 1;
 			if (s.speedSong) {
 				Combat.buff(ally, Attributes.MOVEMENT_SPEED, SPEED_SONG_BUFF, amped ? AMP_UP_SPEED : SPEED_SONG, SONG_LINGER + seconds);
 			} else {
@@ -323,6 +341,7 @@ public final class Lucio implements HeroKit {
 			}
 		}
 		Combat.credit(player, healed);
+		s.songAllies = reached;
 	}
 
 	/** Sound Barrier lands: 625 overhealth to himself and allies within 30 m, gone over 6 s. Beat Drop: Amp It Up 4 s. */
@@ -351,5 +370,32 @@ public final class Lucio implements HeroKit {
 			s.rushed, s.canChangeHero, s.onFire,
 			Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk), Perk.index(s.majorPerk),
 			(float) (s.ability3Cooldown / 20.0), s.speedSong ? 1 : 0, s.ampUp / 20f, (float) s.riderCharge);
+	}
+
+	/** His widgets (#85): count, the allies his song reaches, himself not counted (0263, 0266 #374: 067C = count(v375) - 1). */
+	@Override
+	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
+		return new HeroSyncPayload.Widgets(-1, -1, -1, false, s.songAllies, 0, 0, 0, "", "");
+	}
+
+	/** Out of play (#100: HeroKit.leavePlay): no song (its healing and speed went on in Minecraft mode: found playing), no Sound Barrier landing. */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		// (his tick doesn't run dead, and a corpse stayed on the wall to others: found playing, #115)
+		s.wallRide = 0;
+		player.removeAttached(HeroManager.LUCIO_WALL);
+		s.barrierCast = -1;
+		s.songSwap = -1;
+		if (s.ampUp > 0 || s.ampDelay > 0) {
+			// Amp It Up ends with him (it ran on silently), and costs its cooldown
+			s.ampUp = 0;
+			s.ampDelay = 0;
+			if (!s.ampFree) {
+				s.ability2Cooldown = Ow.ticks(AMP_UP_COOLDOWN);
+			}
+			s.ampFree = false;
+		}
+		s.volleyLeft = 0;
+		player.setAttached(dev.overcraft.hero.HeroManager.SONG, 0);
 	}
 }

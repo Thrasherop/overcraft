@@ -1,0 +1,161 @@
+TREE (git at launch; the client itself can't say): 8023e8d dirty_src_files=0 launched=2026-11-05T18:24:48
+TIME 19:07:52
+/difficulty normal ['[19:07:53] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[19:07:54] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[19:07:54] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[19:07:54] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[19:07:54] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[19:07:55] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[19:07:55] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[19:07:55] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[19:07:56] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+=== the second critique, reproduced or not. Harness keys, bots with bot phase; not a person.
+--- 1 Accretion at a phased bot, a zombie behind: a bot Sigma; his ult, the rock
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  phased False target knocked None health 18.0 | behind 200.0 -> 200.0 | Sigma ult 0.0 -> 0.0 | heard ['sigma.accretion.gather_3p']
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  phased True target knocked None health 18.0 | behind 200.0 -> 200.0 | Sigma ult 0.0 -> 0.0 | heard ['sigma.accretion.gather_3p']
+--- 2 stacking on a bot target, Suzu by a bot: Hyper on Accretion; dart on a knock-down; dart on a stun
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  Accretion + Hyper Strike, Suzu False held None phase None gravity reads [0.08]
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  Accretion + Hyper Strike, Suzu True held None phase None gravity reads [0.08]
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  Accretion + dart, Suzu False held None sleeping None phase None
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  Accretion + dart, Suzu True held None sleeping None phase None
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  Rally stun + dart, Suzu False held None sleeping None phase None
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  Rally stun + dart, Suzu True held None sleeping None phase None
+--- 3 quick melee: a real Cat with Claws Out at a phased bot; a real Sigma with Hyper Strike at a phased bot and a zombie in the same swing
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  bot Cat, Claws at real client, phased False claws cooldown 120.0 speed=0.07 health=14.8 []
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  bot Cat, Claws at real client, phased True claws cooldown 0.0 speed=0.1 health=18.0 []
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  bot Sigma, Hyper, phased False target health=10.8 gravity=0.001 asleep=True zombie 200.0 -> 196.8512 charge left False ult 129.4
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  bot Sigma, Hyper, phased True target health=18.0 gravity=0.08 asleep=False zombie 200.0 -> 192.91519 charge left False ult 88.6
+    swung again zombie 192.91519 charge left False
+--- 5 phased: /kill, the void, a bed blast
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  /kill: chat ['[19:10:28] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed Kiriko'] health 0.0 phased True
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  void at y -200 for 1.2 s: health 18.0 y -200.0
+  later: health 18.0 y -200.0
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  bed in the Nether, phased: health 17.0 -> 17.0 block still there ['[19:10:55] [Render thread/INFO] (Minecraft) [System] [CHAT] Test passed']
+  control, not phased: health 17.0 -> 17.0
+--- 7 the shockwave's numbers: real Brigitte, Rally, noon and midnight, fire resistance and not; a bot Brigitte with armour, her start read
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  noon fire resistance False just after: bashed 20.0 second 20.0 bot 20.0 -> 20.0 | 1.3 s later: bashed 20.0 second 20.0 bot 20.0
+hero brigitte mode True screen OverwatchMenuScreen hp 20.0 / 20.0
+  midnight fire resistance False just after: bashed 20.0 second 20.0 bot 20.0 -> 20.0 | 1.3 s later: bashed 20.0 second 20.0 bot 20.0
+hero brigitte mode True screen OverwatchMenuScreen hp 20.0 / 20.0
+  noon fire resistance True just after: bashed 20.0 second 20.0 bot 20.0 -> 20.0 | 1.3 s later: bashed 20.0 second 20.0 bot 20.0
+--- the "off 14.4": limit=1 with no sort reads any entity with the tag that's loaded. A stale cat tagged c at 10 health 60 m off; a fresh zombie tagged c here
+hero brigitte mode True screen OverwatchMenuScreen hp 20.0 / 20.0
+hero kiriko mode True screen OverwatchMenuScreen hp 20.0 / 20.0
+  limit=1: 20.0 | sort=nearest: 20.0
+  /kill of all non-players here, then: ['[19:11:59] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 29 entities']
+  how many left with the tag ['[19:11:59] [Render thread/INFO] (Minecraft) [System] [CHAT] Test failed']
+--- a creeper by a target it can reach, EMP or not; target logged
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+   emp False +0.5 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp False +1.1 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp False +1.6 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp False +2.2 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp False +2.8 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp False +3.3 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp False +3.9 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp False +4.5 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp False +5.0 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp False +5.6 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp False +6.2 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp False +6.7 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp False +7.3 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp False +7.9 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp False +8.5 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp False +9.0 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+   emp True +0.5 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp True +1.1 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp True +1.6 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp True +2.2 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp True +2.8 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp True +3.3 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp True +3.9 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp True +4.5 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp True +5.0 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp True +5.6 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp True +6.2 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp True +6.7 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp True +7.3 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp True +7.9 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp True +8.5 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+   emp True +9.0 t passed. Count: 1 | target null | bot Sombra health=18.0 stealth False
+--- hold exits: death, G, hero switch, leave, from a stun, a knock-down, Flux
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+   stun asleep=False lifted=False held=False
+   death: dead read 0.0 asleep=False held=False lifted=False health=18.0 walks 0.0
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+   stun asleep=False lifted=False held=False
+   G: at once asleep=False held=False lifted=False ; 1.8 s on asleep=False held=False lifted=False walks 0.0
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+   stun asleep=False lifted=False held=False
+   switch {'ok': True}
+   hero switch: hero mercy at once asleep=False held=False lifted=False ; on asleep=False held=False lifted=False walks 0.0
+hero kiriko mode True screen OverwatchMenuScreen hp 20.0 / 20.0
+   stun asleep=False lifted=False held=False
+{'ok': True}
+   leave and rejoin: asleep=False held=False lifted=False health=18.0 walks 3.42
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+   knockdown asleep=False lifted=False held=False
+   death: dead read 0.0 asleep=False held=False lifted=False health=18.0 walks 0.0
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+   knockdown asleep=False lifted=False held=False
+   G: at once asleep=False held=False lifted=False ; 1.8 s on asleep=False held=False lifted=False walks 0.0
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+   knockdown asleep=False lifted=False held=False
+   switch {'ok': True}
+   hero switch: hero mercy at once asleep=False held=False lifted=False ; on asleep=False held=False lifted=False walks 0.0
+hero kiriko mode True screen OverwatchMenuScreen hp 20.0 / 20.0
+   knockdown asleep=False lifted=False held=False
+{'ok': True}
+   leave and rejoin: asleep=False held=False lifted=False health=18.0 walks 2.86
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+   flux asleep=False lifted=False held=False
+   death: dead read 0.0 asleep=False held=False lifted=False health=18.0 walks 0.0
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+   flux asleep=False lifted=False held=False
+   G: at once asleep=False held=False lifted=False ; 1.8 s on asleep=False held=False lifted=False walks 0.0
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+   flux asleep=False lifted=False held=False
+   switch {'ok': True}
+   hero switch: hero mercy at once asleep=False held=False lifted=False ; on asleep=False held=False lifted=False walks 0.0
+hero kiriko mode True screen OverwatchMenuScreen hp 20.0 / 20.0
+   flux asleep=False lifted=False held=False
+{'ok': True}
+   leave and rejoin: asleep=False held=False lifted=False health=18.0 walks 2.86
+--- Anesthetic: the real client not numbed, two bots numbed, a Suzu on one: the other's 3p
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  ally speed=0.1 other speed=0.1 me speed=0.1 {'playing': ''}
+   +0.20 ally speed=0.1 phased=False | other speed=0.1 phased=False | 
+   +0.50 ally speed=0.1 phased=False | other speed=0.1 phased=False | 
+   +0.84 ally speed=0.1 phased=False | other speed=0.1 phased=False | 
+   +1.14 ally speed=0.1 phased=False | other speed=0.1 phased=False | 
+   +1.44 ally speed=0.1 phased=False | other speed=0.1 phased=False | 
+   +1.70 ally speed=0.1 phased=False | other speed=0.1 phased=False | 
+   +2.01 ally speed=0.1 phased=False | other speed=0.1 phased=False | 
+   +2.31 ally speed=0.1 phased=False | other speed=0.1 phased=False | 
+   +2.61 ally speed=0.1 phased=False | other speed=0.1 phased=False | 
+   +2.91 ally speed=0.1 phased=False | other speed=0.1 phased=False | 
+--- #124: Life Grip on a tethered ally and on an ally in Flux (real client the ally; a bot Lifeweaver)
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  tethered carriedBy= asleep=False x=1002160.5 z=0.5
+   gripped: carried None x 1002160.5 -> 1002160.5 phase (26453, 26453, 1)
+hero mercy mode True screen OverwatchMenuScreen hp 18.0 / 18.0
+  lifted lifted=False x=1002220.5 y=-60.0
+   gripped: lifted None x 1002220.5 -> 1002220.5 y -60.0 -> -60.0 phase (26480, 26480, 1)
+DONE

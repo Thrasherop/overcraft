@@ -1,0 +1,34 @@
+MARK T3a Flashbang at a husk 5 m off (expected 75 = 6 MC, its speed halved for 1.2 s, cooldown 12 s from the cast's end)
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /summon husk 0.5 -60 5.5 {NoAI:1b,Tags:["f1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /summon husk 2.5 -60 6.5 {NoAI:1b,Tags:["f2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /summon husk 4.5 -60 9.5 {NoAI:1b,Tags:["f3"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 5.5 run tp @s ~ ~ ~ ~ ~
+sleep 1
+key ability_2 down
+sleep 0.1
+key ability_2 up
+sleep 0.3
+cmd /attribute @e[tag=f1,limit=1] minecraft:movement_speed get
+hp @e[tag=f1,limit=1]
+hp @e[tag=f2,limit=1]
+hp @e[tag=f3,limit=1]
+state
+screenshot cas_t3_flash.png
+sleep 1.3
+cmd /attribute @e[tag=f1,limit=1] minecraft:movement_speed get
+state
+MARK T3b its range: a husk 12 m off, thrown level (expected off at 7 m in the air: the husk untouched)
+sleep 11
+cmd /kill @e[type=!player]
+cmd /summon husk 0.5 -60 12.5 {NoAI:1b,Tags:["f4"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 -58.4 12.5 run tp @s ~ ~ ~ ~ ~
+sleep 1
+state
+key ability_2 down
+sleep 0.1
+key ability_2 up
+sleep 0.6
+hp @e[tag=f4,limit=1]
+state

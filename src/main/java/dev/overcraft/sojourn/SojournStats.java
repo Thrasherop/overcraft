@@ -49,8 +49,6 @@ public final class SojournStats {
 	public static final double ENERGY_HIT = 5, ENERGY_CRIT = 10, ENERGY_OBJECT = 1, ENERGY_OBJECT_CRIT = 2, ENERGY_BARRIER = 1;
 	/** Decay: 9 s after the last gain (D 1E15, #596; BZ 2025-01-07 12 -> 9) H, then 15 a second to 0 (D 191F, #590; BZ 2024-08-20) H. */
 	public static final double ENERGY_DECAY_DELAY = 9, ENERGY_DECAY = 15;
-	/** After a Railgun shot, 0.16 s before a Charged Shot (D #513 / #230) M. */
-	public static final double RAILGUN_TO_CHARGED = 0.16;
 
 	// ---- Charged Shot (1A23 #450, secondary fire; step 4) ----
 	/** Damage 20 + energy: 1CE8 20 + (04C9 120 - 20) x energy / 100 (D #745; BZ 2024-12-10; W) H. x1.5 on a crit (D 04EF 0.5) M/H. */
@@ -61,7 +59,14 @@ public final class SojournStats {
 	public static final double CHARGED_RADIUS = 0.11;
 	/** How far the hitscan reaches: no number in her data or the sources (ours: Ana's 100 m scoped shot's reach). */
 	public static final double CHARGED_RANGE = 100;
-	/** After it, 0.65 s before either fire shoots again (D v2447, #438 / #615 / #617; W rev 282755 0.64) M. */
+	/**
+	 * It fires on the press: W's cast time is "0 second startup + 0.64 seconds recovery" (rev of 2026-10-31), and in D nothing stands
+	 * between SECONDARY #421 and the volley #450 but energy > 0 (#451) H. #421 hangs off #75's always-on plug through #615 (v2447 = 0)
+	 * and #326 alone, beside the reload (#75's true plug) and the rounds (its false plug, #415 -> #617 -> #527): no reload, round or
+	 * melee gate on it H. v173's 0.16 s after a volley (#513) gates #75's reload, #415's rounds and Disruptor's start, not this:
+	 * its old 0.16 s wait here was a misreading (found by #126).
+	 * After it, 0.65 s before either fire shoots again (D v2447, #438 / #615 / #617; W rev 282755 0.64) M.
+	 */
 	public static final double CHARGED_LOCKOUT = 0.65;
 	/** Its button's buffer: a press while the gun is busy waits 0.15 s (D SECONDARY xB42D90B7, 0.15 s) H. */
 	public static final double CHARGED_BUFFER = 0.15;

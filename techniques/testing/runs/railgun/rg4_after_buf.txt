@@ -1,0 +1,35 @@
+=== #126 table. TREE e3f437f dirty_src_files=0 launched=2026-11-06T15:10:36 at 15:27:09
+WARM art ready after 0.93 s; frames over 40 ms (at ms, length): [] frames 27 misses [] of 0
+hero sojourn mode True screen  hp 18.0 fps 30
+=== rows
+### round two 15:27:17 fps 30
+BUF press gap 324 ms after the first shot: shots 1  looks 1
+BUF press gap 364 ms after the first shot: shots 1  looks 1
+BUF press gap 351 ms after the first shot: shots 1  looks 1
+BUF press gap 389 ms after the first shot: shots 1  looks 1
+BUF press gap 430 ms after the first shot: shots 1  looks 1
+BUF press gap 451 ms after the first shot: shots 2 second at +653 looks 2
+BUF press gap 474 ms after the first shot: shots 2 second at +653 looks 2
+BUF press gap 495 ms after the first shot: shots 2 second at +654 looks 2
+BUF press gap 534 ms after the first shot: shots 2 second at +654 looks 2
+BUF press gap 590 ms after the first shot: shots 2 second at +653 looks 2
+BUF press gap 595 ms after the first shot: shots 2 second at +652 looks 2
+BUF press gap 299 ms after the first shot: shots 1  looks 1
+BUF press gap 319 ms after the first shot: shots 1  looks 1
+BUF press gap 340 ms after the first shot: shots 1  looks 1
+BUF press gap 395 ms after the first shot: shots 1  looks 1
+BUF press gap 432 ms after the first shot: shots 1  looks 1
+BUF press gap 440 ms after the first shot: shots 1  looks 1
+BUF press gap 464 ms after the first shot: shots 2 second at +653 looks 2
+BUF press gap 519 ms after the first shot: shots 2 second at +652 looks 2
+BUF press gap 556 ms after the first shot: shots 2 second at +653 looks 2
+BUF press gap 596 ms after the first shot: shots 2 second at +653 looks 2
+BUF press gap 616 ms after the first shot: shots 2 second at +653 looks 2
+BUF OC press gap 273 ms: shots 1 looks 1
+BUF OC press gap 326 ms: shots 1 looks 1
+BUF OC press gap 362 ms: shots 1 looks 1
+BUF OC press gap 382 ms: shots 1 looks 1
+BUF OC press gap 388 ms: shots 1 looks 1
+BUF OC press gap 458 ms: shots 2 looks 2
+BUF OC press gap 510 ms: shots 2 looks 2
+### done

@@ -54,7 +54,8 @@ public final class Cyberspace {
 	private static void apply(Zone z, double damage, double heal) {
 		long now = z.level.getGameTime();
 		for (LivingEntity e : z.level.getEntitiesOfClass(LivingEntity.class, new AABB(z.at, z.at).inflate(ZONE_RADIUS + 1))) {
-			if (!e.isAlive() || e.getBoundingBox().distanceToSqr(z.at) > ZONE_RADIUS * ZONE_RADIUS) {
+			if (!e.isAlive() || e.getBoundingBox().distanceToSqr(z.at) > ZONE_RADIUS * ZONE_RADIUS
+				|| dev.overcraft.brigitte.Barrier.shields(e, z.sombra, z.at)) {
 				continue;
 			}
 			if (Allies.isSelfOrAlly(z.sombra, e)) {
@@ -67,16 +68,17 @@ public final class Cyberspace {
 						Combat.addFireForHealing(z.sombra, healed);
 					}
 				}
-			} else if (Allies.canHurt(z.sombra, e)) {
+			} else if (Allies.areaHits(z.sombra, e)) {
+				// (the phased aren't in this: 6102's mask 20, M: no damage, no new weaken; what they have lingers 0.25 s)
 				WEAKENED.merge(e.getUUID(), now + Ow.ticks(ZONE_LINGER_ENEMY), Math::max);
 				if ((now - z.opened) % 10 == 0) {
 					// its look on them (7AE1), refreshed every half second while they're inside
 					Effects.play(z.level, "sombra_weakened", e.position(), Vec3.ZERO, e, 10 + Ow.ticks(ZONE_LINGER_ENEMY), z.sombra);
 				}
 				if (damage > 0) {
-					float dealt = Combat.damage(e, zoneSource(z.sombra), damage);
-					Combat.credit(z.sombra, dealt);
-					Combat.addFireForDamage(z.sombra, dealt, Ow.toOw(e.getMaxHealth()));
+					float dealt = Combat.damage(e, zoneSource(z.sombra), damage, dev.overcraft.hero.Blow.ability("cyberspace").by(dev.overcraft.hero.Hero.SOMBRA));
+					Combat.credit(z.sombra, dealt, e);
+					Combat.addFireForDamage(z.sombra, dealt, e);
 					if (dealt > 0) {
 						Effects.hitMarker(z.sombra, e, false);
 					}
@@ -111,7 +113,7 @@ public final class Cyberspace {
 		WEAKENED.values().removeIf(until -> server.overworld().getGameTime() >= until);
 	}
 
-	/** The factor on the damage this attacker deals now: halved while weakened. */
+	/** The factor on the damage this attacker deals now: 1 - WEAKEN while weakened. */
 	public static double dealtFactor(@Nullable Entity attacker) {
 		if (attacker == null) {
 			return 1;

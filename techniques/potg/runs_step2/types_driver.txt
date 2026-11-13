@@ -1,0 +1,19 @@
+=== phase types 14:05:53
+/setblock 4 -60 6 minecraft:oak_fence {'ok': True}
+/summon minecraft:cow 6 -60 6 {leash:[I;4,-60,6]} {'ok': True}
+/summon minecraft:chicken -4 -60 6 {Passengers:[{id:"minecraft:zombie",IsBaby:1b,PersistenceRequired:1b}]} {'ok': True}
+/summon minecraft:enderman 0 -60 10 {PersistenceRequired:1b} {'ok': True}
+/damage @e[type=minecraft:enderman,limit=1] 1 minecraft:arrow {'ok': True}
+/summon minecraft:splash_potion 2 -57 4 {Item:{id:"minecraft:splash_potion",components:{"minecraft:potion_contents":{potion:"minecraft:regeneration"}}}} {'ok': True}
+/particle minecraft:flame 0 -58 4 1 1 1 0 30 {'ok': True}
+/summon minecraft:creeper -6 -60 -8 {Fuse:5s,ignited:1b} {'ok': True}
+/tp @e[type=minecraft:cow,limit=1] 6 -60 7 {'ok': True}
+/damage @e[type=minecraft:enderman,limit=1] 1 minecraft:arrow {'ok': True}
+dump types [14:06:16] [Render thread/INFO] (Minecraft) [System] [CHAT] Kiriko: 0.174 ms/tick mean, 16396 B/s, ring 423 KB.
+[POTG] Kiriko: 19.5 s armed, 390 ticks recorded in hero play (0 out of it), server tick avg 4.37 ms
+[POTG] tap ms/tick: mean 0.174 p50 0.107 p99 1.240 max 7.723 (keyframe each 5 s: mean 2.67 max 7.03 ms)
+[POTG] bytes/s: stream 15715 + own track 681 = 16396; keyframes 4, avg 12820 B, max in ring 15105 B; ring now 434117 B in 4 segments
+[POTG] Kiriko: 19.5 s armed, 390 ticks recorded in hero play (0 out of it), server tick avg 4.37 ms
+[POTG] tap ms/tick: mean 0.174 p50 0.107 p99 1.240 max 7.723 (keyframe each 5 s: mean 2.67 max 7.03 ms)
+[POTG] bytes/s: stream 15715 + own track 681 = 16396; keyframes 4, avg 12820 B, max in ring 15105 B; ring now 434117 B in 4 segments
+[POTG] client decode of Kiriko: 28.5 ms; records: packets 22038 (353548 B), own track 390 (13260 B), own packets 1 (18 B); framing errors 0

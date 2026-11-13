@@ -1,0 +1,101 @@
+{'ok': True}
+hero kiriko mode True screen  fps 30
+BY idle frames over 45 ms (at, length): [] fps 30 misses 0
+{'ok': True, 'hero': 'SOJOURN'}
+art outstanding {'art': 0}
+BY ally Sojourn, first Charged Shot seen frames over 45 ms (at, length): [] fps 30 misses 0
+[12:54:13] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 425
+ours:
+345 (none of ours)
+41 model.HeroModelRenderer.emit
+12 model.HeroModelRenderer.skinned
+5 model.HeroModelRenderer.emitShadow
+4 model.Skeleton.sample
+2 effect.Fx.emit
+2 model.HeroModelRenderer.skinnedSome
+2 model.Skeleton.skin
+1 OvercraftClient.lambda$onInitializeClient$45
+BY ally Sojourn, second frames over 45 ms (at, length): [] fps 30 misses 0
+BY ally Sojourn, first rounds seen frames over 45 ms (at, length): [(70, 58)] fps 30 misses 0
+[12:54:18] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 418
+ours:
+333 (none of ours)
+42 model.HeroModelRenderer.emit
+11 model.HeroModelRenderer.skinned
+8 effect.Fx.trail
+6 model.Skeleton.sample
+3 model.HeroModelRenderer.emitShadow
+2 hud.HudText.plain
+2 model.ProjectileModelRenderer.extractRenderState
+1 dev.overcraft.entity.OwProjectile.tick
+{'ok': True, 'hero': 'SOJOURN'}
+art outstanding {'art': 0}
+BY enemy Sojourn, first Charged Shot seen frames over 45 ms (at, length): [] fps 30 misses 0
+[12:54:27] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 432
+ours:
+349 (none of ours)
+41 model.HeroModelRenderer.emit
+14 model.HeroModelRenderer.skinned
+5 model.HeroModelRenderer.emitShadow
+3 effect.Fx.emit
+3 model.Skeleton.sample
+2 OvercraftClient.lambda$onInitializeClient$45
+1 HeroArt.present
+1 OvercraftClient.lambda$onInitializeClient$43
+BY Kiriko first kunai frames over 45 ms (at, length): [(103, 80)] fps 30 misses 2
+[12:54:31] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 405
+ours:
+354 (none of ours)
+14 effect.EffectArt.coloured
+8 model.HeroModelRenderer.emit
+5 model.HeroModelRenderer.skinned
+3 ClientMercy.state
+3 model.ProjectileModelRenderer.submit
+2 LucioMusic.tick
+2 dev.overcraft.entity.OwProjectile.tick
+2 hud.HudText.plain
+BY Kiriko kunai again frames over 45 ms (at, length): [] fps 29 misses 0
+BY Kiriko first ofuda frames over 45 ms (at, length): [(136, 251), (387, 57)] fps 24 misses 54
+[12:54:37] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 405
+ours:
+292 (none of ours)
+81 effect.EffectArt.coloured
+8 model.HeroModelRenderer.emit
+6 model.HeroModelRenderer.skinned
+6 model.HeroTexture.<init>
+2 effect.KirikoFx.ofudaFlight
+2 model.Skeleton.skin
+1 LifeweaverSounds.tick
+1 dev.overcraft.hero.Allies.isAlly
+BY Kiriko first Suzu frames over 45 ms (at, length): [(136, 72), (583, 95)] fps 29 misses 10
+[12:54:40] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 411
+ours:
+350 (none of ours)
+34 effect.EffectArt.coloured
+12 model.HeroModelRenderer.emit
+4 model.HeroTexture.<init>
+2 model.HeroAnimator.driven
+1 dev.overcraft.entity.OwProjectile.tick
+1 hud.HudDraw.fill
+1 hud.HudDraw.image
+1 hud.HudText.plain
+BY Kiriko first Kitsune Rush frames over 45 ms (at, length): [(137, 66), (243, 113), (381, 47)] fps 30 misses 58
+[12:54:44] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 401
+ours:
+313 (none of ours)
+33 effect.EffectArt.coloured
+12 model.HeroModelRenderer.emit
+7 RushSound.tick
+5 model.HeroModelRenderer.isClosed
+5 model.HeroModelRenderer.skinned
+4 effect.Fx.mesh
+3 dev.overcraft.Overcraft.id
+2 effect.KirikoFx.rushLaid
+### done

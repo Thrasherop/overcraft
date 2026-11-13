@@ -38,6 +38,10 @@ public final class ClientLifeweaver {
 	/** The dash under way: its velocity (blocks a tick) and ticks left (-1 none). */
 	private static Vec3 dashVelocity = Vec3.ZERO;
 	private static int dashLeft = -1;
+	/** Game time its dash is over by: it only counts down while hero mode moves him, so G or death left it to resume later, along the old direction. */
+	private static long dashBy;
+	/** Jump was already held when the grip took them: only a press lets go (a swimmer holds Space). */
+	private static boolean gripJumpHeld;
 
 	/** Life Grip on the local player: where it takes them, when it started (game time), from far (the slow start). */
 	private static @Nullable Vec3 gripTo;
@@ -70,8 +74,10 @@ public final class ClientLifeweaver {
 		boolean jump = HeroControls.get(Action.JUMP).isDown();
 		boolean pressed = jump && !jumpWas;
 		jumpWas = jump;
-		airTicks = player.onGround() ? 0 : airTicks + 1;
-		if (ClientHero.hero() != Hero.LIFEWEAVER || !pressed || player.onGround() || airTicks < dev.overcraft.Ow.ticks(LifeweaverStats.DASH_AIR_DELAY)
+		// Space swims, climbs or drives the mount there and spends nothing (Jump in the air is the dash's only key: tools/reference/lifeweaver.md; the legacy scheme's isn't built)
+		boolean holding = dev.overcraft.hero.HeroManager.jumpIsNotAirborne(player);
+		airTicks = player.onGround() || holding ? 0 : airTicks + 1;
+		if (ClientHero.hero() != Hero.LIFEWEAVER || !pressed || player.onGround() || holding || airTicks < dev.overcraft.Ow.ticks(LifeweaverStats.DASH_AIR_DELAY)
 			|| ClientHero.sync().ability3Cooldown() > 0 || dashLeft >= 0 || gripTo != null) {
 			return 0;
 		}
@@ -89,6 +95,7 @@ public final class ClientLifeweaver {
 		double speed = LifeweaverStats.DASH_SPEED * (minor == Perk.LIFEWEAVER_DASHING_ESCAPE ? LifeweaverStats.DASHING_ESCAPE : 1);
 		dashVelocity = dir.scale(dev.overcraft.Ow.speed(speed));
 		dashLeft = dev.overcraft.Ow.ticks(LifeweaverStats.DASH_TIME);
+		dashBy = player.level().getGameTime() + dashLeft + 1;
 		return HeroInputPayload.EXTRA_JUMP;
 	}
 
@@ -97,8 +104,21 @@ public final class ClientLifeweaver {
 	 * than his walk's (ours: kept at 14 m/s, the dash carried him 12.3 m from a jump; W measures 6.9 m in the air, and the
 	 * data's 0.25 s at 28.875 m/s is 7.2 m, so little is left after it).
 	 */
+	/** G: hero mode's off, so is the dash, here at once (the server's ended it: G back inside its 0.25 s went on along the old direction with no server dash and no landing). */
+	public static void endDash() {
+		dashLeft = -1;
+	}
+
+	/** A dash is under way here: asks without spending its ticks. */
+	public static boolean dashing(LivingEntity entity) {
+		if (dashLeft >= 0 && entity.level().getGameTime() > dashBy) {
+			dashLeft = -1;
+		}
+		return entity == Minecraft.getInstance().player && dashLeft >= 0;
+	}
+
 	public static @Nullable Vec3 dash(LivingEntity entity) {
-		if (entity != Minecraft.getInstance().player || dashLeft < 0) {
+		if (entity != Minecraft.getInstance().player || !dashing(entity)) {
 			return null;
 		}
 		if (dashLeft-- == 0 || entity.horizontalCollision && dashLeft < dev.overcraft.Ow.ticks(LifeweaverStats.DASH_TIME) - 1) {
@@ -121,11 +141,17 @@ public final class ClientLifeweaver {
 		if (payload.on() && mc.player != null) {
 			gripTo = new Vec3(payload.x(), payload.y(), payload.z());
 			gripAt = mc.player.level().getGameTime();
+			gripJumpHeld = mc.player.input.keyPresses.jump();
 			gripFar = payload.far();
 			dashLeft = -1;
 		} else {
 			gripTo = null;
 		}
+	}
+
+	/** Life Grip has the local player and their Jump would let go now: its prompt shows (21EE #617, #112). */
+	public static boolean gripJumpLive(LivingEntity entity) {
+		return gripTo != null && entity.level().getGameTime() - gripAt >= dev.overcraft.Ow.ticks(LifeweaverStats.GRIP_JUMP_CANCEL);
 	}
 
 	/** Life Grip has the local player. */
@@ -145,7 +171,10 @@ public final class ClientLifeweaver {
 		long t = entity.level().getGameTime() - gripAt;
 		// their Jump lets go from 0.65 s (D 21EE), here at once: waiting for the server's word took 0.4 s more (found
 		// playing with a second player); the server ends it too, seeing the same Jump
-		if (t >= dev.overcraft.Ow.ticks(LifeweaverStats.GRIP_JUMP_CANCEL) && mc.player.input.keyPresses.jump()) {
+		if (!mc.player.input.keyPresses.jump()) {
+			gripJumpHeld = false;
+		}
+		if (t >= dev.overcraft.Ow.ticks(LifeweaverStats.GRIP_JUMP_CANCEL) && mc.player.input.keyPresses.jump() && !gripJumpHeld) {
 			gripTo = null;
 			return null;
 		}

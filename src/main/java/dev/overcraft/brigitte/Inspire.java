@@ -15,7 +15,7 @@ import static dev.overcraft.brigitte.BrigitteStats.*;
 
 /**
  * Inspire, her passive (12D8 -> 11B9 on each ally): her flail, Whip Shot and Shield Bash hitting an enemy heal her and her
- * allies within 20 m (no sight test, M) 12 at once and 45 over 4 s. The flail can start it at most every 1.25 s; Whip Shot
+ * allies within 20 m (no sight test, M) 12 at once and 45 over 4 s. The flail can start it at most every INSPIRE_COOLDOWN (1 s, BZ 2026-11-03); Whip Shot
  * and Shield Bash always do (12D8 #428 -> #443). A new one on an ally replaces what's left of the last (ours: its refresh or
  * stack policy isn't decoded, L; W: it doesn't stack).
  */
@@ -40,7 +40,7 @@ public final class Inspire {
 		}
 	}
 
-	/** An enemy hit by her flail (gated by the 1.25 s), or by Whip Shot or Shield Bash ({@code always}). */
+	/** An enemy hit by her flail (gated by INSPIRE_COOLDOWN), or by Whip Shot or Shield Bash ({@code always}). */
 	public static void trigger(ServerPlayer brigitte, HeroState s, boolean always, double seconds) {
 		long now = brigitte.level().getGameTime();
 		if (!always && now < s.inspireReadyAt) {
@@ -82,6 +82,27 @@ public final class Inspire {
 			give(h.brigitte, h.ally, h.perTick);
 			return false;
 		});
+	}
+
+	/** Her Inspire is healing someone now, herself included. */
+	public static boolean active(ServerPlayer brigitte) {
+		for (Heal heal : HEALS) {
+			if (heal.brigitte == brigitte) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** How many of her allies her Inspire is healing now, herself not counted (the widget under her crosshair). */
+	public static int healing(ServerPlayer brigitte) {
+		int count = 0;
+		for (Heal heal : HEALS) {
+			if (heal.brigitte == brigitte && heal.ally != brigitte) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	public static void clear() {

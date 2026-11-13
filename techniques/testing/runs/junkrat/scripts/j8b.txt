@@ -1,0 +1,25 @@
+MARK J8c the trap again on a fresh throw, the husk 6 m off walking in, its health and place every half second (expected 8 MC off, held 2.5 s)
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 3.5 run tp @s ~ ~ ~ ~ ~
+sleep 11
+key ability_2 down
+sleep 0.15
+key ability_2 up
+sleep 1.2
+ents Trap
+cmd /summon husk 0.5 -60 7.5 {Tags:["j8c"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100},{id:"minecraft:follow_range",base:32}],Health:100f}
+sleep 1
+hp @e[tag=j8c,limit=1] Pos
+ents Trap
+sleep 0.5
+hp @e[tag=j8c,limit=1] Pos
+hp @e[tag=j8c,limit=1]
+sleep 0.5
+hp @e[tag=j8c,limit=1] Pos
+sleep 1
+hp @e[tag=j8c,limit=1] Pos
+screenshot jr_j8c_trap.png
+sleep 1
+hp @e[tag=j8c,limit=1] Pos
+hp @e[tag=j8c,limit=1]
+ents Trap

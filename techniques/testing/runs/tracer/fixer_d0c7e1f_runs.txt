@@ -1,0 +1,420 @@
+01:47:25.779 newworld fix_old -> {"ok":true}
+01:47:50.781 screen -> {"screen":"dev.overcraft.client.HeroSelectScreen"}
+01:47:50.815 hero tracer -> {"ok":true}
+01:47:51.837 close -> {"ok":true}
+01:47:52.868 cmd /difficulty peaceful -> {"ok":true}
+01:47:52.884 cmd /gamerule minecraft:spawn_monsters false -> {"ok":true}
+01:47:52.938 cmd /gamerule doDaylightCycle false -> {"ok":true}
+01:47:52.949 cmd /time set noon -> {"ok":true}
+01:47:52.985 state -> {"screen": "", "x": -7.5, "y": -60.0, "z": -7.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 10.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:47:53.120 MARK R1 (old build) single Blinks each after a full recharge, open field, facing +z: expected 7.5 m each
+01:47:53.151 cmd /fill 30 -60 -3 50 -50 60 air -> {"ok":true}
+01:47:53.187 cmd /tp @s 40.5 -60 0.5 0 0 -> {"ok":true}
+01:47:56.690 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 29.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:47:56.723 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:47:56.857 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:48:00.365 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 8.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 47.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:48:00.398 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:48:00.532 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:48:04.040 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 15.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 66.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:48:04.074 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:48:04.207 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:48:07.716 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 23.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 84.5, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:48:07.749 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:48:07.883 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:48:08.316 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 23.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 87.5, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:48:11.524 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:48:11.657 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:48:12.058 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 23.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 106.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:48:12.058 MARK R3 (old build) oak staircase +1 a block from z=2 at x=10: expected well up the stairs
+01:48:12.092 cmd /fill 5 -60 -3 15 -45 30 air -> {"ok":true}
+01:48:12.127 cmd /fill 10 -60 2 10 -60 2 oak_stairs[facing=south] -> {"ok":true}
+01:48:12.159 cmd /fill 10 -59 3 10 -59 3 oak_stairs[facing=south] -> {"ok":true}
+01:48:12.192 cmd /fill 10 -58 4 10 -58 4 oak_stairs[facing=south] -> {"ok":true}
+01:48:12.227 cmd /fill 10 -57 5 10 -57 5 oak_stairs[facing=south] -> {"ok":true}
+01:48:12.260 cmd /fill 10 -56 6 10 -56 6 oak_stairs[facing=south] -> {"ok":true}
+01:48:12.293 cmd /fill 10 -55 7 10 -55 7 oak_stairs[facing=south] -> {"ok":true}
+01:48:12.327 cmd /fill 10 -54 8 10 -54 8 oak_stairs[facing=south] -> {"ok":true}
+01:48:12.360 cmd /fill 10 -53 9 10 -53 9 oak_stairs[facing=south] -> {"ok":true}
+01:48:12.393 cmd /fill 10 -60 3 10 -60 9 stone -> {"ok":true}
+01:48:12.427 cmd /fill 10 -59 4 10 -59 9 stone -> {"ok":true}
+01:48:12.461 cmd /fill 10 -58 5 10 -58 9 stone -> {"ok":true}
+01:48:12.494 cmd /fill 10 -57 6 10 -57 9 stone -> {"ok":true}
+01:48:12.528 cmd /fill 10 -56 7 10 -56 9 stone -> {"ok":true}
+01:48:12.561 cmd /fill 10 -55 8 10 -55 9 stone -> {"ok":true}
+01:48:12.595 cmd /fill 10 -54 9 10 -54 9 stone -> {"ok":true}
+01:48:12.628 cmd /tp @s 10.5 -60 0.5 0 0 -> {"ok":true}
+01:48:16.140 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:48:16.275 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:48:16.709 state -> {"screen": "", "x": 10.5, "y": -60.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 129.5, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:48:16.743 screenshot f_old_stairs.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\f_old_stairs.png"}
+01:48:16.743 MARK R4 (old build) wall on her left (x=18), W+A+Shift: expected a slide ~5 m along it
+01:48:16.777 cmd /fill 18 -60 -2 18 -57 20 stone -> {"ok":true}
+01:48:16.819 cmd /tp @s 17.69 -60 0.5 0 0 -> {"ok":true}
+01:48:20.327 state -> {"screen": "", "x": 17.69, "y": -60.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 147.5, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:48:20.360 key forward down -> {"key":"key.keyboard.w"}
+01:48:20.394 key left down -> {"key":"key.keyboard.a"}
+01:48:20.727 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:48:20.862 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:48:20.995 key forward up -> {"key":"key.keyboard.w"}
+01:48:21.028 key left up -> {"key":"key.keyboard.a"}
+01:48:21.362 state -> {"screen": "", "x": 17.7, "y": -60.0, "z": 4.421, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 152.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:48:21.362 MARK R2 (old build) Recall across a dimension change: 4 s in the Overworld at (40.5,-60,23), then the Nether pad at 0.5 130 0.5, E 1 s later
+01:48:21.396 cmd /execute in minecraft:the_nether run fill -2 129 -2 2 129 2 obsidian -> {"ok":true}
+01:48:21.430 cmd /tp @s 40.5 -60 23 0 0 -> {"ok":true}
+01:48:25.440 cmd /execute in minecraft:the_nether run tp @s 0.5 130 0.5 -> {"ok":true}
+01:48:26.971 state -> {"screen": "LevelLoadingScreen", "x": 0.5, "y": 130.0, "z": 0.5, "health": 14.0, "onGround": false, "heroMode": true, "hero": "tracer", "ult": 448.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:48:27.002 key ability_2 down -> {"key":"key.keyboard.e"}
+01:48:27.169 key ability_2 up -> {"key":"key.keyboard.e"}
+01:48:28.672 state -> {"screen": "LevelLoadingScreen", "x": 0.5, "y": 130.0, "z": 0.5, "health": 14.0, "onGround": false, "heroMode": true, "hero": "tracer", "ult": 448.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:48:28.706 screenshot f_old_recall_nether.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\f_old_recall_nether.png"}
+01:48:52.331 MARK R3 (old build) oak staircase +1 a block from z=2 at x=10: expected well up the stairs
+01:48:52.365 cmd /fill 5 -60 -3 15 -45 30 air -> {"ok":true}
+01:48:52.399 cmd /fill 10 -60 2 10 -60 2 oak_stairs[facing=south] -> {"ok":true}
+01:48:52.432 cmd /fill 10 -59 3 10 -59 3 oak_stairs[facing=south] -> {"ok":true}
+01:48:52.465 cmd /fill 10 -58 4 10 -58 4 oak_stairs[facing=south] -> {"ok":true}
+01:48:52.499 cmd /fill 10 -57 5 10 -57 5 oak_stairs[facing=south] -> {"ok":true}
+01:48:52.533 cmd /fill 10 -56 6 10 -56 6 oak_stairs[facing=south] -> {"ok":true}
+01:48:52.565 cmd /fill 10 -55 7 10 -55 7 oak_stairs[facing=south] -> {"ok":true}
+01:48:52.600 cmd /fill 10 -54 8 10 -54 8 oak_stairs[facing=south] -> {"ok":true}
+01:48:52.633 cmd /fill 10 -53 9 10 -53 9 oak_stairs[facing=south] -> {"ok":true}
+01:48:52.667 cmd /fill 10 -60 3 10 -60 9 stone -> {"ok":true}
+01:48:52.700 cmd /fill 10 -59 4 10 -59 9 stone -> {"ok":true}
+01:48:52.734 cmd /fill 10 -58 5 10 -58 9 stone -> {"ok":true}
+01:48:52.767 cmd /fill 10 -57 6 10 -57 9 stone -> {"ok":true}
+01:48:52.801 cmd /fill 10 -56 7 10 -56 9 stone -> {"ok":true}
+01:48:52.834 cmd /fill 10 -55 8 10 -55 9 stone -> {"ok":true}
+01:48:52.867 cmd /fill 10 -54 9 10 -54 9 stone -> {"ok":true}
+01:48:52.901 cmd /tp @s 10.5 -60 -10 0 0 -> {"ok":true}
+01:48:56.414 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:48:56.548 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:48:56.782 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:48:56.916 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:48:56.949 cmd /tp @s 10.5 -60 0.5 0 0 -> {"ok":true}
+01:49:06.974 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:49:07.107 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:49:07.508 state -> {"screen": "DeathScreen", "x": 10.5, "y": -155.657, "z": -9.5, "health": 0.0, "onGround": false, "heroMode": false, "hero": "tracer", "ult": 558.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -2.844, "vz": 0.0}
+01:49:07.542 screenshot f_old_stairs.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\f_old_stairs.png"}
+01:49:07.542 MARK R4 (old build) wall on her left (x=18), W+A+Shift: expected a slide ~5 m along it
+01:49:07.575 cmd /fill 18 -60 -2 18 -57 20 stone -> {"ok":true}
+01:49:07.615 cmd /tp @s 17.69 -60 -10 0 0 -> {"ok":true}
+01:49:11.122 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:49:11.255 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:49:11.488 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:49:11.622 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:49:11.657 cmd /tp @s 17.69 -60 0.5 0 0 -> {"ok":true}
+01:49:21.682 state -> {"screen": "DeathScreen", "x": 10.5, "y": -155.657, "z": -9.5, "health": 0.0, "onGround": false, "heroMode": false, "hero": "tracer", "ult": 558.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -2.844, "vz": 0.0}
+01:49:21.715 key forward down -> {"key":"key.keyboard.w"}
+01:49:21.749 key left down -> {"key":"key.keyboard.a"}
+01:49:22.050 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:49:22.184 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:49:22.285 key forward up -> {"key":"key.keyboard.w"}
+01:49:22.318 key left up -> {"key":"key.keyboard.a"}
+01:49:22.652 state -> {"screen": "DeathScreen", "x": 10.5, "y": -155.657, "z": -9.5, "health": 0.0, "onGround": false, "heroMode": false, "hero": "tracer", "ult": 558.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -2.844, "vz": 0.0}
+01:49:22.652 MARK R2 retry (old build): Overworld 4 s at (40.5,-60,23), then the Nether roof (0.5 128 0.5), E 2.5 s later
+01:49:22.685 cmd /execute in minecraft:overworld run tp @s 40.5 -60 23 0 0 -> {"ok":true}
+01:49:27.194 cmd /execute in minecraft:the_nether run tp @s 0.5 128 0.5 -> {"ok":true}
+01:49:29.702 state -> {"screen": "DeathScreen", "x": 10.5, "y": -155.657, "z": -9.5, "health": 0.0, "onGround": false, "heroMode": false, "hero": "tracer", "ult": 558.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -2.844, "vz": 0.0}
+01:49:29.734 key ability_2 down -> {"key":"key.keyboard.e"}
+01:49:29.901 key ability_2 up -> {"key":"key.keyboard.e"}
+01:49:31.411 state -> {"screen": "DeathScreen", "x": 10.5, "y": -155.657, "z": -9.5, "health": 0.0, "onGround": false, "heroMode": false, "hero": "tracer", "ult": 558.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -2.844, "vz": 0.0}
+01:49:31.441 screenshot f_old_recall_nether.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\f_old_recall_nether.png"}
+01:49:45.082 respawn -> {"ok":true}
+01:49:48.099 state -> {"screen": "", "x": -8.5, "y": -60.0, "z": 10.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 574.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:49:48.099 MARK R3 (old build) oak staircase +1 a block from z=2 at x=10: expected well up the stairs
+01:49:48.133 cmd /execute in minecraft:overworld run fill 5 -60 -3 15 -45 30 air -> {"ok":true}
+01:49:48.167 cmd /execute in minecraft:overworld run fill 10 -60 2 10 -60 2 oak_stairs[facing=south] -> {"ok":true}
+01:49:48.200 cmd /execute in minecraft:overworld run fill 10 -59 3 10 -59 3 oak_stairs[facing=south] -> {"ok":true}
+01:49:48.233 cmd /execute in minecraft:overworld run fill 10 -58 4 10 -58 4 oak_stairs[facing=south] -> {"ok":true}
+01:49:48.267 cmd /execute in minecraft:overworld run fill 10 -57 5 10 -57 5 oak_stairs[facing=south] -> {"ok":true}
+01:49:48.300 cmd /execute in minecraft:overworld run fill 10 -56 6 10 -56 6 oak_stairs[facing=south] -> {"ok":true}
+01:49:48.333 cmd /execute in minecraft:overworld run fill 10 -55 7 10 -55 7 oak_stairs[facing=south] -> {"ok":true}
+01:49:48.367 cmd /execute in minecraft:overworld run fill 10 -54 8 10 -54 8 oak_stairs[facing=south] -> {"ok":true}
+01:49:48.400 cmd /execute in minecraft:overworld run fill 10 -53 9 10 -53 9 oak_stairs[facing=south] -> {"ok":true}
+01:49:48.433 cmd /execute in minecraft:overworld run fill 10 -60 3 10 -60 9 stone -> {"ok":true}
+01:49:48.466 cmd /execute in minecraft:overworld run fill 10 -59 4 10 -59 9 stone -> {"ok":true}
+01:49:48.499 cmd /execute in minecraft:overworld run fill 10 -58 5 10 -58 9 stone -> {"ok":true}
+01:49:48.533 cmd /execute in minecraft:overworld run fill 10 -57 6 10 -57 9 stone -> {"ok":true}
+01:49:48.566 cmd /execute in minecraft:overworld run fill 10 -56 7 10 -56 9 stone -> {"ok":true}
+01:49:48.599 cmd /execute in minecraft:overworld run fill 10 -55 8 10 -55 9 stone -> {"ok":true}
+01:49:48.633 cmd /execute in minecraft:overworld run fill 10 -54 9 10 -54 9 stone -> {"ok":true}
+01:49:48.667 cmd /execute in minecraft:overworld run tp @s 10.5 -60 -10 0 0 -> {"ok":true}
+01:49:52.177 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:49:52.311 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:49:52.512 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:49:52.646 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:49:52.680 cmd /execute in minecraft:overworld run tp @s 10.5 -60 0.5 0 0 -> {"ok":true}
+01:50:02.703 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:50:02.837 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:50:03.270 state -> {"screen": "", "x": 10.5, "y": -58.5, "z": 3.2, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 649.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:50:03.304 screenshot f_old_stairs.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\f_old_stairs.png"}
+01:50:03.304 MARK R4 (old build) wall on her left (x=18), W+A+Shift: expected a slide ~5 m along it
+01:50:03.336 cmd /execute in minecraft:overworld run fill 18 -60 -2 18 -57 20 stone -> {"ok":true}
+01:50:03.376 cmd /execute in minecraft:overworld run tp @s 17.69 -60 -10 0 0 -> {"ok":true}
+01:50:06.885 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:50:07.019 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:50:07.251 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:50:07.385 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:50:07.419 cmd /execute in minecraft:overworld run tp @s 17.69 -60 0.5 0 0 -> {"ok":true}
+01:50:17.454 state -> {"screen": "", "x": 17.69, "y": -60.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 720.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:50:17.488 key forward down -> {"key":"key.keyboard.w"}
+01:50:17.521 key left down -> {"key":"key.keyboard.a"}
+01:50:17.855 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:50:17.989 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:50:18.122 key forward up -> {"key":"key.keyboard.w"}
+01:50:18.155 key left up -> {"key":"key.keyboard.a"}
+01:50:18.457 state -> {"screen": "", "x": 17.7, "y": -60.0, "z": 4.402, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 725.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:50:18.457 MARK R2 retry (old build): Overworld 4 s at (40.5,-60,23), then the Nether roof (0.5 128 0.5), E 2.5 s later
+01:50:18.490 cmd /execute in minecraft:overworld run tp @s 40.5 -60 23 0 0 -> {"ok":true}
+01:50:22.999 cmd /execute in minecraft:the_nether run tp @s 0.5 128 0.5 -> {"ok":true}
+01:50:25.514 state -> {"screen": "", "x": 0.5, "y": 128.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 761.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:50:25.546 key ability_2 down -> {"key":"key.keyboard.e"}
+01:50:25.715 key ability_2 up -> {"key":"key.keyboard.e"}
+01:50:27.217 state -> {"screen": "", "x": 40.5, "y": -70.151, "z": 23.5, "health": 11.0, "onGround": false, "heroMode": true, "hero": "tracer", "ult": 769.5, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.25, "vx": 0.0, "vy": -1.053, "vz": 0.0}
+01:50:27.252 screenshot f_old_recall_nether.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\f_old_recall_nether.png"}
+01:50:40.527 respawn -> {"ok":true}
+01:50:43.553 hero tracer -> {"ok":true}
+01:50:44.556 close -> {"ok":true}
+01:50:45.590 state -> {"screen": "", "x": -8.5, "y": -60.0, "z": -3.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 800.5, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:50:45.590 MARK V6 self-kill by her own bomb: ult full, look at the ground at her feet, Q
+01:50:45.623 cmd /difficulty easy -> {"ok":true}
+01:50:45.657 ult 100 -> {"ok":true}
+01:50:45.690 cmd /execute in minecraft:overworld run tp @s 40.5 -60 10.5 0 90 -> {"ok":true}
+01:50:46.192 key ultimate down -> {"key":"key.keyboard.q"}
+01:50:46.359 key ultimate up -> {"key":"key.keyboard.q"}
+01:50:48.864 state -> {"screen": "DeathScreen", "x": 40.5, "y": -60.0, "z": 10.5, "health": 0.0, "onGround": true, "heroMode": false, "hero": "tracer", "ult": 5.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0}
+01:50:48.897 screenshot f_old_bomb_self.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\f_old_bomb_self.png"}
+01:50:50.908 respawn -> {"ok":true}
+01:50:53.922 state -> {"screen": "", "x": -4.5, "y": -60.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 20.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:50:53.922 MARK L1 lingering Healing cloud: health to ~1, cloud on her; expected (fix) the +50 Flanker pack once per cloud, the potion's own +4 MC each second
+01:50:53.955 cmd /difficulty peaceful -> {"ok":true}
+01:50:53.989 cmd /execute in minecraft:overworld run fill 30 -60 60 50 -50 80 air -> {"ok":true}
+01:50:54.022 cmd /execute in minecraft:overworld run tp @s 40.5 -60 70.5 0 0 -> {"ok":true}
+01:51:01.043 cmd /damage @s 13 minecraft:generic -> {"ok":true}
+01:51:01.786 hp @s -> Kiriko has the following entity data: 1.0f
+01:51:01.825 cmd /summon minecraft:area_effect_cloud 40.5 -60 70.5 {potion_contents:{potion:"minecraft:healing"},Duration:200,Radius:3f,WaitTime:0,ReapplicationDelay:20} -> {"ok":true}
+01:51:02.653 hp @s -> Kiriko has the following entity data: 8.0f
+01:51:04.090 hp @s -> Kiriko has the following entity data: 14.0f
+01:51:05.529 hp @s -> Kiriko has the following entity data: 14.0f
+01:51:05.553 cmd /kill @e[type=minecraft:area_effect_cloud] -> {"ok":true}
+01:51:05.554 MARK L2 Pulse Bomb thrown straight up, then G at once: expected (fix) the bomb gone, no blast
+01:51:05.586 ult 100 -> {"ok":true}
+01:51:05.620 cmd /execute in minecraft:overworld run tp @s 40.5 -60 70.5 0 -90 -> {"ok":true}
+01:51:06.122 key ultimate down -> {"key":"key.keyboard.q"}
+01:51:06.288 key ultimate up -> {"key":"key.keyboard.q"}
+01:51:06.658 cmd /execute if entity @e[type=overcraft:pulse_bomb] run say BOMB_BEFORE_G_PRESENT -> {"ok":true}
+01:51:06.689 press key.keyboard.g -> {"key":"key.keyboard.g"}
+01:51:07.196 cmd /execute if entity @e[type=overcraft:pulse_bomb] run say BOMB_AFTER_G_PRESENT -> {"ok":true}
+01:51:07.204 cmd /execute unless entity @e[type=overcraft:pulse_bomb] run say BOMB_AFTER_G_GONE -> {"ok":true}
+01:51:07.213 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 70.5, "health": 14.0, "onGround": true, "heroMode": false, "hero": "tracer", "ult": 4.5, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0}
+01:51:07.719 press key.keyboard.g -> {"key":"key.keyboard.g"}
+01:51:08.723 state -> {"screen": "DeathScreen", "x": 40.5, "y": -60.0, "z": 70.5, "health": 0.0, "onGround": true, "heroMode": false, "hero": "tracer", "ult": 10.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0}
+01:51:08.723 MARK L3 Recall then G 0.2 s in, then 0.3 s later a 2 MC hit: expected (fix) the hit lands (no phase left on plain Minecraft)
+01:51:08.732 cmd /execute in minecraft:overworld run tp @s 40.5 -60 70.5 0 0 -> {"ok":true}
+01:51:22.151 hp @s -> Kiriko has the following entity data: 0.0f
+01:51:22.154 key ability_2 down -> {"key":"key.keyboard.e"}
+01:51:22.306 key ability_2 up -> {"key":"key.keyboard.e"}
+01:51:22.412 press key.keyboard.g -> {"key":"key.keyboard.g"}
+01:51:22.721 state -> {"screen": "DeathScreen", "x": 40.5, "y": -60.0, "z": 70.5, "health": 0.0, "onGround": true, "heroMode": false, "hero": "tracer", "ult": 10.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0}
+01:51:22.729 cmd /damage @s 2 minecraft:generic -> {"ok":true}
+01:51:23.447 hp @s -> Kiriko has the following entity data: 0.0f
+01:51:23.452 press key.keyboard.g -> {"key":"key.keyboard.g"}
+01:51:24.454 state -> {"screen": "DeathScreen", "x": 40.5, "y": -60.0, "z": 70.5, "health": 0.0, "onGround": true, "heroMode": false, "hero": "tracer", "ult": 10.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0}
+01:51:36.692 respawn -> {"ok":true}
+01:51:39.695 state -> {"screen": "", "x": -9.5, "y": -60.0, "z": -2.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 25.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:51:39.703 hero tracer -> {"ok":true}
+01:51:40.708 close -> {"ok":true}
+01:51:41.709 MARK L3 Recall then G 0.2 s in, then 0.3 s later a 2 MC hit: expected (fix) the hit lands (no phase left on plain Minecraft)
+01:51:41.711 cmd /execute in minecraft:overworld run tp @s 40.5 -60 70.5 0 0 -> {"ok":true}
+01:51:55.139 hp @s -> Kiriko has the following entity data: 14.0f
+01:51:55.146 key ability_2 down -> {"key":"key.keyboard.e"}
+01:51:55.299 key ability_2 up -> {"key":"key.keyboard.e"}
+01:51:55.399 press key.keyboard.g -> {"key":"key.keyboard.g"}
+01:51:55.704 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 70.5, "health": 14.0, "onGround": true, "heroMode": false, "hero": "tracer", "ult": 105.5, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.7, "vx": 0.0, "vy": -0.078, "vz": 0.0}
+01:51:55.712 cmd /damage @s 2 minecraft:generic -> {"ok":true}
+01:51:56.429 hp @s -> Kiriko has the following entity data: 14.0f
+01:51:56.436 press key.keyboard.g -> {"key":"key.keyboard.g"}
+01:51:57.438 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 70.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 114.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 10.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:53:38.944 newworld fix_new -> {"ok":true}
+01:54:03.949 screen -> {"screen":"dev.overcraft.client.HeroSelectScreen"}
+01:54:03.958 hero tracer -> {"ok":true}
+01:54:04.960 close -> {"ok":true}
+01:54:05.979 cmd /difficulty peaceful -> {"ok":true}
+01:54:05.985 cmd /gamerule minecraft:spawn_monsters false -> {"ok":true}
+01:54:05.992 cmd /gamerule doDaylightCycle false -> {"ok":true}
+01:54:06.000 cmd /time set noon -> {"ok":true}
+01:54:06.039 state -> {"screen": "", "x": -4.5, "y": -60.0, "z": -4.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 10.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:54:06.039 MARK R1 (new build) single Blinks each after a full recharge, open field, facing +z: expected 7.5 m each
+01:54:06.053 cmd /execute in minecraft:overworld run fill 30 -60 -3 50 -50 60 air -> {"ok":true}
+01:54:06.063 cmd /execute in minecraft:overworld run tp @s 40.5 -60 0.5 0 0 -> {"ok":true}
+01:54:09.567 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 28.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:54:09.574 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:54:09.701 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:54:13.202 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 8.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 46.25, "mode": 256, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:54:13.210 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:54:13.337 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:54:16.839 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 15.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 64.25, "mode": 512, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:54:16.848 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:54:16.974 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:54:20.501 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 23.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 82.5, "mode": 768, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:54:20.535 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:54:20.669 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:54:21.102 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 30.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 85.5, "mode": 1024, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:54:24.308 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:54:24.444 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:54:24.878 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 38.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 104.5, "mode": 1280, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:54:24.878 MARK R3 (new build) oak staircase +1 a block from z=2 at x=10: expected well up the stairs
+01:54:24.911 cmd /execute in minecraft:overworld run fill 5 -60 -3 15 -45 30 air -> {"ok":true}
+01:54:24.946 cmd /execute in minecraft:overworld run fill 10 -60 2 10 -60 2 oak_stairs[facing=south] -> {"ok":true}
+01:54:24.978 cmd /execute in minecraft:overworld run fill 10 -59 3 10 -59 3 oak_stairs[facing=south] -> {"ok":true}
+01:54:25.012 cmd /execute in minecraft:overworld run fill 10 -58 4 10 -58 4 oak_stairs[facing=south] -> {"ok":true}
+01:54:25.045 cmd /execute in minecraft:overworld run fill 10 -57 5 10 -57 5 oak_stairs[facing=south] -> {"ok":true}
+01:54:25.079 cmd /execute in minecraft:overworld run fill 10 -56 6 10 -56 6 oak_stairs[facing=south] -> {"ok":true}
+01:54:25.112 cmd /execute in minecraft:overworld run fill 10 -55 7 10 -55 7 oak_stairs[facing=south] -> {"ok":true}
+01:54:25.145 cmd /execute in minecraft:overworld run fill 10 -54 8 10 -54 8 oak_stairs[facing=south] -> {"ok":true}
+01:54:25.178 cmd /execute in minecraft:overworld run fill 10 -53 9 10 -53 9 oak_stairs[facing=south] -> {"ok":true}
+01:54:25.212 cmd /execute in minecraft:overworld run fill 10 -60 3 10 -60 9 stone -> {"ok":true}
+01:54:25.245 cmd /execute in minecraft:overworld run fill 10 -59 4 10 -59 9 stone -> {"ok":true}
+01:54:25.279 cmd /execute in minecraft:overworld run fill 10 -58 5 10 -58 9 stone -> {"ok":true}
+01:54:25.312 cmd /execute in minecraft:overworld run fill 10 -57 6 10 -57 9 stone -> {"ok":true}
+01:54:25.345 cmd /execute in minecraft:overworld run fill 10 -56 7 10 -56 9 stone -> {"ok":true}
+01:54:25.378 cmd /execute in minecraft:overworld run fill 10 -55 8 10 -55 9 stone -> {"ok":true}
+01:54:25.412 cmd /execute in minecraft:overworld run fill 10 -54 9 10 -54 9 stone -> {"ok":true}
+01:54:25.445 cmd /execute in minecraft:overworld run tp @s 10.5 -60 -10 0 0 -> {"ok":true}
+01:54:28.955 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:54:29.088 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:54:29.289 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:54:29.423 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:54:29.457 cmd /execute in minecraft:overworld run tp @s 10.5 -60 0.5 0 0 -> {"ok":true}
+01:54:39.476 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:54:39.609 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:54:40.044 state -> {"screen": "", "x": 10.5, "y": -53.5, "z": 8.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 180.25, "mode": 2048, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:54:40.078 screenshot f_new_stairs.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\f_new_stairs.png"}
+01:54:40.078 MARK R4 (new build) wall on her left (x=18), W+A+Shift: expected a slide ~5 m along it
+01:54:40.111 cmd /execute in minecraft:overworld run fill 18 -60 -2 18 -57 20 stone -> {"ok":true}
+01:54:40.156 cmd /execute in minecraft:overworld run tp @s 17.69 -60 -10 0 0 -> {"ok":true}
+01:54:43.664 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:54:43.797 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:54:43.998 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:54:44.132 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:54:44.164 cmd /execute in minecraft:overworld run tp @s 17.69 -60 0.5 0 0 -> {"ok":true}
+01:54:54.189 state -> {"screen": "", "x": 17.69, "y": -60.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 251.0, "mode": 2560, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:54:54.223 key forward down -> {"key":"key.keyboard.w"}
+01:54:54.256 key left down -> {"key":"key.keyboard.a"}
+01:54:54.590 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:54:54.724 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:54:54.825 key forward up -> {"key":"key.keyboard.w"}
+01:54:54.858 key left up -> {"key":"key.keyboard.a"}
+01:54:55.191 state -> {"screen": "", "x": 17.7, "y": -60.0, "z": 9.434, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 256.0, "mode": 2816, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:54:55.191 MARK R4b (new build) straight into the wall (A alone, wall on her left): expected ~0 m, charge spent (as Overwatch)
+01:54:55.226 cmd /execute in minecraft:overworld run tp @s 17.69 -60 0.5 0 0 -> {"ok":true}
+01:54:58.735 key left down -> {"key":"key.keyboard.a"}
+01:54:58.969 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:54:59.103 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:54:59.236 key left up -> {"key":"key.keyboard.a"}
+01:54:59.538 state -> {"screen": "", "x": 17.7, "y": -60.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 277.75, "mode": 3072, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:54:59.538 MARK R3b (new build) half-block slope (critic C1b) at x=14: expected up the slope
+01:54:59.570 cmd /execute in minecraft:overworld run fill 14 -60 2 14 -60 2 stone_slab -> {"ok":true}
+01:54:59.604 cmd /execute in minecraft:overworld run fill 14 -60 3 14 -60 3 stone -> {"ok":true}
+01:54:59.638 cmd /execute in minecraft:overworld run fill 14 -59 4 14 -59 4 stone_slab -> {"ok":true}
+01:54:59.672 cmd /execute in minecraft:overworld run fill 14 -60 4 14 -60 20 stone -> {"ok":true}
+01:54:59.705 cmd /execute in minecraft:overworld run fill 14 -59 5 14 -59 20 stone -> {"ok":true}
+01:54:59.738 cmd /execute in minecraft:overworld run fill 14 -58 6 14 -58 6 stone_slab -> {"ok":true}
+01:54:59.771 cmd /execute in minecraft:overworld run fill 14 -58 7 14 -58 20 stone -> {"ok":true}
+01:54:59.804 cmd /execute in minecraft:overworld run fill 14 -57 8 14 -57 8 stone_slab -> {"ok":true}
+01:54:59.838 cmd /execute in minecraft:overworld run fill 14 -57 9 14 -57 20 stone -> {"ok":true}
+01:54:59.871 cmd /execute in minecraft:overworld run tp @s 14.5 -60 0.5 0 0 -> {"ok":true}
+01:55:03.381 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:55:03.515 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:55:03.916 state -> {"screen": "", "x": 14.5, "y": -56.5, "z": 8.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 299.75, "mode": 3328, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:55:03.949 screenshot f_new_slope.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\f_new_slope.png"}
+01:55:03.949 MARK R2 (new build): Overworld 4.5 s at (40.5,-60,23), then the Nether roof (0.5 128 0.5), E 2.5 s later: expected no Recall (no history in this level), cooldown 0, she stays
+01:55:03.983 cmd /execute in minecraft:overworld run tp @s 40.5 -60 23 0 0 -> {"ok":true}
+01:55:08.500 cmd /execute in minecraft:the_nether run tp @s 0.5 128 0.5 -> {"ok":true}
+01:55:11.004 state -> {"screen": "", "x": 0.5, "y": 85.68, "z": 0.5, "health": 14.0, "onGround": false, "heroMode": true, "hero": "tracer", "ult": 598.0, "mode": 3328, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -1.353, "vz": 0.0}
+01:55:11.038 key ability_2 down -> {"key":"key.keyboard.e"}
+01:55:11.204 key ability_2 up -> {"key":"key.keyboard.e"}
+01:55:12.708 state -> {"screen": "", "x": 0.5, "y": 36.859, "z": 0.5, "health": 14.0, "onGround": false, "heroMode": true, "hero": "tracer", "ult": 598.0, "mode": 3328, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -1.48, "vz": 0.0}
+01:55:12.708 MARK R2c (new build) 4 s in the Nether, then E: expected Recall works within the Nether
+01:55:12.740 cmd /execute in minecraft:the_nether run tp @s 3.5 128 0.5 -> {"ok":true}
+01:55:13.788 key ability_2 down -> {"key":"key.keyboard.e"}
+01:55:13.954 key ability_2 up -> {"key":"key.keyboard.e"}
+01:55:15.465 state -> {"screen": "", "x": 0.5, "y": 128.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 610.0, "mode": 3328, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 10.5, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:55:15.498 screenshot f_new_recall_nether.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\f_new_recall_nether.png"}
+01:55:15.498 MARK V2b after the Nether: back in the Overworld, walk 4 s, Recall goes back to the Overworld place (control: Recall still works)
+01:55:15.532 cmd /execute in minecraft:overworld run tp @s 40.5 -60 23 0 0 -> {"ok":true}
+01:55:28.556 cmd /execute in minecraft:overworld run tp @s 40.5 -60 30 0 0 -> {"ok":true}
+01:55:29.558 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 30.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 680.5, "mode": 3328, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:55:29.591 key ability_2 down -> {"key":"key.keyboard.e"}
+01:55:29.758 key ability_2 up -> {"key":"key.keyboard.e"}
+01:55:31.261 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 23.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 689.0, "mode": 3328, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.25, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:55:31.262 MARK V5 Recall into a spot since filled: stand at (40.5,-60,40) 1 s, tp 6 m on, fill her old place with stone, E
+01:55:31.294 cmd /execute in minecraft:overworld run fill 39 -60 39 42 -57 42 air -> {"ok":true}
+01:55:31.328 cmd /execute in minecraft:overworld run tp @s 40.5 -60 40.5 0 0 -> {"ok":true}
+01:55:44.333 cmd /execute in minecraft:overworld run tp @s 40.5 -60 47.5 0 0 -> {"ok":true}
+01:55:44.367 cmd /execute in minecraft:overworld run fill 40 -60 40 40 -59 40 stone -> {"ok":true}
+01:55:45.369 key ability_2 down -> {"key":"key.keyboard.e"}
+01:55:45.537 key ability_2 up -> {"key":"key.keyboard.e"}
+01:55:47.042 state -> {"screen": "", "x": 39.5, "y": -60.0, "z": 40.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 767.75, "mode": 3328, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.25, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:55:47.485 hp @s -> Kiriko has the following entity data: 14.0f
+01:55:47.485 MARK V7 lag 150 ms: three presses 0.15 s apart then a 4th 0.15 s later, facing +z on open ground; expected 3 Blinks (22.5 m), 3 charges, the 4th refused with no move
+01:55:47.509 cmd /execute in minecraft:overworld run fill 30 -60 -3 50 -50 60 air -> {"ok":true}
+01:55:47.543 cmd /execute in minecraft:overworld run fill 40 -60 40 40 -59 40 air -> {"ok":true}
+01:55:47.577 cmd /execute in minecraft:overworld run tp @s 40.5 -60 0.5 0 0 -> {"ok":true}
+01:55:57.606 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 820.75, "mode": 3328, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.65, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:55:57.640 presstrace lag 150 -> {}
+01:55:57.673 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:55:57.772 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:55:57.873 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:55:57.974 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:55:58.074 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:55:58.175 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:55:58.276 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:55:58.376 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:55:58.978 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 23.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 826.75, "mode": 4096, "primaryAmmo": 40, "secondaryAmmo": 0, "ability1Cooldown": 2.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:55:59.011 presstrace lag 0 -> {}
+01:55:59.544 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 23.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 830.25, "mode": 4096, "primaryAmmo": 40, "secondaryAmmo": 0, "ability1Cooldown": 1.3, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:55:59.544 MARK V6 self-kill by her own bomb: ult full, look at the ground at her feet, Q
+01:55:59.578 cmd /difficulty easy -> {"ok":true}
+01:55:59.612 ult 100 -> {"ok":true}
+01:55:59.644 cmd /execute in minecraft:overworld run tp @s 40.5 -60 10.5 0 90 -> {"ok":true}
+01:56:00.146 key ultimate down -> {"key":"key.keyboard.q"}
+01:56:00.315 key ultimate up -> {"key":"key.keyboard.q"}
+01:56:02.822 state -> {"screen": "DeathScreen", "x": 40.5, "y": -60.0, "z": 10.5, "health": 0.0, "onGround": true, "heroMode": false, "hero": "tracer", "ult": 5.25, "mode": 4096, "primaryAmmo": 40, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0}
+01:56:02.856 screenshot f_new_bomb_self.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\f_new_bomb_self.png"}
+01:56:04.863 respawn -> {"ok":true}
+01:56:07.872 state -> {"screen": "", "x": -1.5, "y": -60.0, "z": -2.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 20.25, "mode": 4096, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:56:07.872 MARK L1 lingering Healing cloud: health to ~1, cloud on her; expected (fix) the +50 Flanker pack once per cloud, the potion's own +4 MC each second
+01:56:07.905 cmd /difficulty peaceful -> {"ok":true}
+01:56:07.938 cmd /execute in minecraft:overworld run fill 30 -60 60 50 -50 80 air -> {"ok":true}
+01:56:07.972 cmd /execute in minecraft:overworld run tp @s 40.5 -60 70.5 0 0 -> {"ok":true}
+01:56:14.998 cmd /damage @s 13 minecraft:generic -> {"ok":true}
+01:56:15.742 hp @s -> Kiriko has the following entity data: 1.0f
+01:56:15.780 cmd /summon minecraft:area_effect_cloud 40.5 -60 70.5 {potion_contents:{potion:"minecraft:healing"},Duration:200,Radius:3f,WaitTime:0,ReapplicationDelay:20} -> {"ok":true}
+01:56:16.609 hp @s -> Kiriko has the following entity data: 8.0f
+01:56:18.045 hp @s -> Kiriko has the following entity data: 11.0f
+01:56:19.484 hp @s -> Kiriko has the following entity data: 14.0f
+01:56:19.509 cmd /kill @e[type=minecraft:area_effect_cloud] -> {"ok":true}
+01:56:19.509 MARK L2 Pulse Bomb thrown straight up, then G at once: expected (fix) the bomb gone, no blast
+01:56:19.541 ult 100 -> {"ok":true}
+01:56:19.574 cmd /execute in minecraft:overworld run tp @s 40.5 -60 70.5 0 -90 -> {"ok":true}
+01:56:20.075 key ultimate down -> {"key":"key.keyboard.q"}
+01:56:20.242 key ultimate up -> {"key":"key.keyboard.q"}
+01:56:20.612 cmd /execute if entity @e[type=overcraft:pulse_bomb] run say BOMB_BEFORE_G_PRESENT -> {"ok":true}
+01:56:20.643 press key.keyboard.g -> {"key":"key.keyboard.g"}
+01:56:21.144 cmd /execute if entity @e[type=overcraft:pulse_bomb] run say BOMB_AFTER_G_PRESENT -> {"ok":true}
+01:56:21.153 cmd /execute unless entity @e[type=overcraft:pulse_bomb] run say BOMB_AFTER_G_GONE -> {"ok":true}
+01:56:21.161 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 70.5, "health": 14.0, "onGround": true, "heroMode": false, "hero": "tracer", "ult": 4.75, "mode": 4096, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0}
+01:56:21.665 press key.keyboard.g -> {"key":"key.keyboard.g"}
+01:56:22.674 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 70.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 12.25, "mode": 4096, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:56:22.675 MARK L3 Recall then G 0.2 s in, then 0.3 s later a 2 MC hit: expected (fix) the hit lands (no phase left on plain Minecraft)
+01:56:22.682 cmd /execute in minecraft:overworld run tp @s 40.5 -60 70.5 0 0 -> {"ok":true}
+01:56:36.104 hp @s -> Kiriko has the following entity data: 14.0f
+01:56:36.106 key ability_2 down -> {"key":"key.keyboard.e"}
+01:56:36.257 key ability_2 up -> {"key":"key.keyboard.e"}
+01:56:36.360 press key.keyboard.g -> {"key":"key.keyboard.g"}
+01:56:36.662 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 70.5, "health": 14.0, "onGround": true, "heroMode": false, "hero": "tracer", "ult": 82.25, "mode": 4096, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.7, "vx": 0.0, "vy": -0.078, "vz": 0.0}
+01:56:36.670 cmd /damage @s 2 minecraft:generic -> {"ok":true}
+01:56:37.389 hp @s -> Kiriko has the following entity data: 13.0f
+01:56:37.394 press key.keyboard.g -> {"key":"key.keyboard.g"}
+01:56:38.398 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 70.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 90.75, "mode": 4096, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 10.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}

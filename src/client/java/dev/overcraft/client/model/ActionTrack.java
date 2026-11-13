@@ -41,6 +41,8 @@ final class ActionTrack {
 	private float cancelledAt = -1;
 	/** The last step loops until another action (Jetpack Cat's Catnapper aim, held until she dives or lets go). */
 	private boolean holdLast;
+	/** The last step holds its last frame, no fade, until another action (Cassidy's Deadeye stance through the channel). */
+	private boolean holdEnd;
 
 	/** An action was triggered (by name, as the server sends them). */
 	void trigger(String action, float now) {
@@ -83,7 +85,9 @@ final class ActionTrack {
 			}
 			// Lúcio (lucio-map.md): his volleys and Soundwave are additive layers (HeroAnimator), not clips over the arms;
 			// Amp It Up is one clip, Sound Barrier the leap then the slam
-			case "fire", "soundwave" -> {
+			// Sojourn's Charged Shot is a layer too (add_charged_shot alone: tools/clipmaps/sojourn*.txt): started as a step with no clip, it
+			// ended whatever played in one frame, a melee, Disruptor's cast (found by the second critique, #126)
+			case "fire", "soundwave", "charged_shot" -> {
 			}
 			case "amp_it_up" -> start(now, "amp");
 			case "sound_barrier" -> start(now, "ult_cast", "ult_end");
@@ -96,6 +100,25 @@ final class ActionTrack {
 			case "ult_dive" -> start(now, "ult_dive_start", "ult_dive");
 			// Mercy: Valkyrie's cast is one clip (alias 0x1B8), as are Resurrect and Guardian Angel's launch
 			case "ult_cast_blaster" -> start(now, "ult_cast_blaster");
+			// Juno's first-person Pulsar Torpedoes (alias 0x165 by df 0x1A0, juno_1p.txt): the lock's start (cat 0x6E, 13/30 s),
+			// then its hold (the default, 39/30 s) looping for the whole lock window until the fire (cat 0x82) or a cancel.
+			// The start alone ran out after 0.43 s and the gun came back up mid-lock (#86)
+			case "torpedo_lock_view" -> {
+				start(now, "torpedo_lock_start", "torpedo_lock");
+				holdLast = true;
+			}
+			// the lock given up (nothing locked, or cancelled): the pods fold away from where they are
+			case "torpedo_cancel" -> cancel("torpedo_lock", now);
+			// Cassidy's Deadeye (cassidy.txt alias 173: the draw at its start, replayed after each shot, 022F #308): its stance
+			// held through the channel until the end's clip (alias 19F)
+			case "deadeye" -> {
+				start(now, "deadeye");
+				holdEnd = true;
+			}
+			case "deadeye_fire" -> {
+				start(now, "deadeye_fire", "deadeye");
+				holdEnd = true;
+			}
 			default -> start(now, action);
 		}
 	}
@@ -130,6 +153,7 @@ final class ActionTrack {
 	private void start(float now, String... names) {
 		stepLength = -1;
 		holdLast = false;
+		holdEnd = false;
 		steps.clear();
 		steps.addAll(List.of(names));
 		step = 0;
@@ -214,6 +238,9 @@ final class ActionTrack {
 			// swinging in: ease from the movement pose to the clip's first frame
 			float in = 1 + local / SWING_IN;
 			weight = Math.max(0, in * in * (3 - 2 * in));
+		}
+		if (holdEnd && step == steps.size() - 1 && local > clip.duration()) {
+			local = clip.duration();
 		}
 		if (step == steps.size() - 1 && local > clip.duration() && !holdLast) {
 			if (fadingOutFrom < 0) {

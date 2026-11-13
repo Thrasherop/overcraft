@@ -1,0 +1,171 @@
+TREE (git at launch; the client itself can't say): 3aaa947 dirty_src_files=0 launched=2026-11-10T15:46:37
+TIME 15:48:50
+TREE (git at launch): 3aaa947 dirty_src_files=0 launched=2026-11-10T15:46:37 15:48:50
+/difficulty normal ['[15:48:50] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[15:48:50] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[15:48:51] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[15:48:51] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[15:48:51] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[15:48:52] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[15:48:52] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[15:48:52] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[15:48:53] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 70 entities']
+TREE7 3aaa947 dirty_src_files=0 launched=2026-11-10T15:46:37 15:48:54
+### Lifeweaver, hurt, on a horse, boat or minecart: tap Space: cd3 and health 1 s on
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  horse (passenger): health 14.0 -> 14.0, cd3 0.00 -> 0.00, dash sound []
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  boat (passenger): health 14.0 -> 14.0, cd3 0.00 -> 0.00, dash sound []
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  minecart (passenger): health 14.0 -> 14.0, cd3 0.00 -> 0.00, dash sound []
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  horse (passenger): health 14.0 -> 14.0, cd3 0.00 -> 0.00, dash sound []
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  boat (passenger): health 14.0 -> 14.0, cd3 0.00 -> 0.00, dash sound []
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  minecart (passenger): health 14.0 -> 14.0, cd3 0.00 -> 0.00, dash sound []
+### Lifeweaver hung 2 m up inside lava, powder snow (leather boots), a cobweb: tap Space: z, cd3. Fire resistance in lava
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  lava: z 0.50 -> 0.50, y -59.28 -> -59.28, cd3 0.00, dash sound []
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  snow: z 0.50 -> 0.50, y -60.00 -> -60.00, cd3 0.00, dash sound []
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  web: z 0.50 -> 0.50, y -58.06 -> -58.09, cd3 0.00, dash sound []
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  lava: z 0.50 -> 0.50, y -59.24 -> -59.24, cd3 0.00, dash sound []
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  snow: z 0.50 -> 0.50, y -60.00 -> -60.00, cd3 0.00, dash sound []
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  web: z 0.50 -> 0.50, y -58.06 -> -58.08, cd3 0.00, dash sound []
+### G in the dash: cd3; G back at once: does the client go on?
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  G stays off: z at G 9.06 -> 14.05, y -60.00, cd3 3.90
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  G back at once: z at G 5.02 -> 11.35, y -60.00, cd3 3.90
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  G stays off: z at G 5.29 -> 12.79, y -60.00, cd3 3.90
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  G back at once: z at G 2.25 -> 3.79, y -60.00, cd3 0.00
+### picking a hero mid-fall in Minecraft mode, from a ledge at the spawnpoint: Kiriko 15 m (hero rule 7, plain 12)
+hero brigitte mode True screen  hp 20.0 / 20.0
+  {'ok': True}: now kiriko, health 18.5 -> 8.0 of max?, inHeroPlay at the pick False
+hero brigitte mode True screen  hp 20.0 / 20.0
+  {'ok': True}: now kiriko, health 18.5 -> 8.0 of max?, inHeroPlay at the pick False
+### owner rule: an ability landing running, G off mid-fall, land as Steve: bash and dash off a 12 m ledge
+hero brigitte mode True screen  hp 20.0 / 20.0
+  brigitte: soft before G True, health 18.5 -> 14.6, mode False, pain 1
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  lifeweaver: soft before G True, health 17.0 -> 14.0, mode False, pain 1
+hero brigitte mode True screen  hp 20.0 / 20.0
+  brigitte: soft before G True, health 18.5 -> 14.6, mode False, pain 1
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  lifeweaver: soft before G True, health 17.0 -> 14.0, mode False, pain 1
+DONE
+TREE (git at launch; the client itself can't say): 3aaa947 dirty_src_files=0 launched=2026-11-10T15:46:37
+TIME 15:53:23
+TREE (git at launch): 3aaa947 dirty_src_files=0 launched=2026-11-10T15:46:37 15:53:23
+/difficulty normal ['[15:53:23] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[15:53:23] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[15:53:24] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[15:53:24] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[15:53:24] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[15:53:25] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[15:53:25] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[15:53:25] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[15:53:26] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+TREE7 3aaa947 dirty_src_files=0 launched=2026-11-10T15:46:37 15:53:27
+### Juno: Minecraft mode, walk off, G on partway, Shift to glide: inHeroPlay read through; let it end and drop. Control: no glide
+hero juno mode True screen  hp 18.0 / 18.0
+  glide: health 15.0 -> 18.0, end y -60.0 | -40.7H -40.7H -40.7H -40.7H -40.7H -40.7H -50.7H -52.5H -54.4H -56.4H -58.4H -60.0Hg
+hero juno mode True screen  hp 18.0 / 18.0
+  none: health 15.0 -> 0.0, end y -60.0 | -38.6p -40.7p -43.0p -45.3p -47.6p -50.1p -47.6p -50.1p -52.6p -55.1p -57.7p -60.0pg
+hero juno mode True screen  hp 18.0 / 18.0
+  glide: health 15.0 -> 18.0, end y -60.0 | -40.7H -40.7H -40.7H -40.7H -40.7H -40.7H -51.6H -53.4H -55.3H -57.4H -59.5H -60.0Hg
+hero juno mode True screen  hp 18.0 / 18.0
+  none: health 15.0 -> 0.0, end y -60.0 | -38.6p -40.7p -42.8p -45.1p -47.4p -49.8p -49.8p -52.2p -54.8p -57.3p -59.9p -60.0pg
+### an ability after G on mid-fall: inHeroPlay read through it. Lifeweaver's dash; landing from 20 m
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  dash: health 17.0 -> 20.0 | -45.6Hs -45.6Hs -45.6Hs -45.6Hs -45.7Hs -45.8Hs -45.9Hs -46.4Hs -46.6Hs -47.0Hs -47.7Hs -48.2Hs -48.7Hs -49.8Hs -50.4Hs -51.0Hs -52.4Hs -53.1Hs -53.9Hs -55.6Hs -56.4Hs -57.3H -59.2H -60.0Hg
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  dash: health 17.0 -> 1.0 | -47.7p -48.7p -49.8p -52.1p -53.3p -54.4p -56.8p -58.1p -59.3H -60.0Hg
+DONE
+TREE (git at launch; the client itself can't say): 3aaa947 dirty_src_files=0 launched=2026-11-10T15:46:37
+TIME 15:54:56
+TREE (git at launch): 3aaa947 dirty_src_files=0 launched=2026-11-10T15:46:37 15:54:56
+/difficulty normal ['[15:54:56] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[15:54:56] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[15:54:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[15:54:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[15:54:57] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[15:54:58] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[15:54:58] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[15:54:58] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[15:54:59] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+TREE7 3aaa947 dirty_src_files=0 launched=2026-11-10T15:46:37 15:55:00
+### the dash's control: a jump, Space again 0.25 s into it in the air, forward. z and cd3 read through it. Ground, then a ladder (facing out, jump off), deep water treading
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  jump then Space in the air, W: z 0.50, at the press z 2.38 y -59.04 ground False; +0.4 s z 10.70; end z 11.96, cd3 4.45
+hero lifeweaver mode True screen  hp 20.0 / 20.0
+  jump then Space in the air, W: z 0.50, at the press z 1.68 y -59.02 ground False; +0.4 s z 10.00; end z 11.27, cd3 4.45
+### a landing and a mount: bash off 12 m, then /ride onto a NoGravity horse hung 20 m up; read soft 2 s; dismount there: 20 m
+hero brigitte mode True screen  hp 20.0 / 20.0
+  horse: soft at the mount True, after 2 s riding False, y -39.2 (T] Kiriko started riding Horse): health 18.5 -> 3.6, end y -60.00, pain 1 | -49.1 -50.0 -50.8 -52.7 -53.6 -55.6 -56.6 -58.7 -59.8 -60.0g
+hero brigitte mode True screen  hp 20.0 / 20.0
+  no horse: health 18.5 -> 20.0, end y -60.00, pain 0 | -52.8s -54.1s -54.8s -55.6s -57.1s -57.9 -58.8 -60.0g
+hero brigitte mode True screen  hp 20.0 / 20.0
+  horse: soft at the mount True, after 2 s riding False, y -39.2 (T] Kiriko started riding Horse): health 18.5 -> 3.6, end y -60.00, pain 1 | -50.0 -50.8 -51.7 -53.6 -54.6 -55.6 -57.7 -58.7 -59.8 -60.0g
+hero brigitte mode True screen  hp 20.0 / 20.0
+  no horse: health 18.5 -> 20.0, end y -60.00, pain 0 | -52.8s -54.1s -54.8s -55.6s -57.1s -57.9 -58.8 -60.0g
+### the same into lava and a cobweb: soft read after 1 s
+hero brigitte mode True screen  hp 20.0 / 20.0
+  lava: y -58.21, soft False, health 20.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+  web: y -55.25, soft False, health 20.0
+### on a ladder after a bash: holding Left Ctrl (hero mode's crouch) 0.8 s, then off
+hero brigitte mode True screen  hp 20.0 / 20.0
+  ladder, ctrl: at y -48.4 soft False: health 18.5 -> 13.6, end y -60.00, pain 1 | -51.8 -52.3 -53.4 -54.0 -54.7 -56.1 -56.8 -57.6 -59.2 -60.0g
+hero brigitte mode True screen  hp 20.0 / 20.0
+  ladder, slide: at y -49.3 soft True: health 18.5 -> 20.0, end y -60.00, pain 0 | -52.3s -53.8s -56.0s -58.8 -60.0g
+hero brigitte mode True screen  hp 20.0 / 20.0
+  ladder, ctrl: at y -49.3 soft False: health 18.5 -> 14.6, end y -60.00, pain 1 | -51.6 -53.2 -55.4 -58.2 -60.0g
+hero brigitte mode True screen  hp 20.0 / 20.0
+  ladder, slide: at y -49.3 soft True: health 18.5 -> 20.0, end y -60.00, pain 0 | -52.3s -53.8s -56.0s -58.8 -60.0g
+DONE
+TREE (git at launch; the client itself can't say): 3aaa947 dirty_src_files=0 launched=2026-11-10T15:46:37
+TIME 15:57:50
+TREE (git at launch): 3aaa947 dirty_src_files=0 launched=2026-11-10T15:46:37 15:57:50
+/difficulty normal ['[15:57:50] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[15:57:51] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[15:57:51] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[15:57:52] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[15:57:52] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[15:57:53] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[15:57:53] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[15:57:53] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[15:57:54] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+TREE7 3aaa947 dirty_src_files=0 launched=2026-11-10T15:46:37 15:57:55
+### a landing and a mount: bash off 12 m, then /ride onto a NoGravity horse hung 20 m up; read soft 2 s; dismount there: 20 m
+### the same into lava and a cobweb: soft read after 1 s
+hero brigitte mode True screen  hp 20.0 / 20.0
+  lava: y -58.25, soft False, health 20.0
+hero brigitte mode True screen  hp 20.0 / 20.0
+  web: y -55.65, soft False, health 20.0
+### Life Grip let go in deep water by Jump; swim to a ladder; climb; step off onto stone. A grip's real landing: control. Mob: control
+hero mercy mode True screen  hp 18.0 / 18.0
+  let go in water at z 1.8 x -10.7; climbed to y -36.8: health 18.0 -> 7.6, end y -59.00, pain 1 | -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g
+hero mercy mode True screen  hp 18.0 / 18.0
+  let go in water at z 1.7 x -9.2; climbed to y -36.9: health 18.0 -> 7.6, end y -59.00, pain 1 | -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g
+hero mercy mode True screen  hp 18.0 / 18.0
+  control, hero mode: gripped, let go by Jump over the gap at x -10.0, 12 m up: health 18.0 -> 18.0, end y -48.00, pain 0 | -48.0g -48.0g -48.0g -48.0g -48.0g -48.0g -48.0g -48.0g
+hero mercy mode True screen  hp 18.0 / 18.0
+  control, minecraft mode: gripped, let go by Jump over the gap at x -10.0, 12 m up: health 18.0 -> 18.0, end y -48.00, pain 0 | -48.0g -48.0g -48.0g -48.0g -48.0g -48.0g -48.0g -48.0g
+hero mercy mode True screen  hp 18.0 / 18.0
+  control, hero mode: gripped, let go by Jump over the gap at x -7.5, 12 m up: health 18.0 -> 18.0, end y -60.00, pain 0 | -48.2 -49.2 -50.9 -53.2 -56.1 -59.5 -60.0g
+hero mercy mode True screen  hp 18.0 / 18.0
+  control, minecraft mode: gripped, let go by Jump over the gap at x -10.0, 12 m up: health 18.0 -> 18.0, end y -48.00, pain 0 | -48.0g -48.0g -48.0g -48.0g -48.0g -48.0g -48.0g -48.0g
+### control for the grip row: the same pool, ladder and step, no grip at all
+hero mercy mode True screen  hp 18.0 / 18.0
+  no grip; climbed to y -36.7: health 18.0 -> 7.7, end y -59.00, pain 1 | -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g
+hero mercy mode True screen  hp 18.0 / 18.0
+  no grip; climbed to y -36.7: health 18.0 -> 7.6, end y -59.00, pain 1 | -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g
+DONE

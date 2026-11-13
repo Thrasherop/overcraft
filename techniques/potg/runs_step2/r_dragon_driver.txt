@@ -1,0 +1,28 @@
+=== phase r_dragon 14:34:51
+in the end {'screen': '', 'fps': 30, 'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 2, 'secondaryAmmo': 10, 'anim': 'idle'} {'zombie': 0, 'skeleton': 0, 'ender_dragon': 1, 'end_crystal': 10}
+  t 5 {'screen': '', 'fps': 30, 'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 6, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 11 {'screen': '', 'fps': 30, 'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 11, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 16 {'screen': '', 'fps': 30, 'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 0, 'secondaryAmmo': 10, 'anim': 'idle+reload'}
+  t 22 {'screen': '', 'fps': 30, 'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 5, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 27 {'screen': '', 'fps': 30, 'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 10, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 32 {'screen': '', 'fps': 30, 'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 0, 'secondaryAmmo': 10, 'anim': 'idle+reload'}
+dragon before {'screen': '', 'fps': 30, 'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 0, 'secondaryAmmo': 10, 'anim': 'idle+reload'} server [30.5d, 62.0d, 0.5d] {'zombie': 0, 'skeleton': 0, 'ender_dragon': 1, 'end_crystal': 10} game time is 3922 tick(s)
+    0.0s {'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'heroMode': True, 'fps': 30, 'screen': ''}
+    1.0s {'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'heroMode': True, 'fps': 26, 'screen': ''}
+    1.9s {'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'heroMode': True, 'fps': 25, 'screen': ''}
+    2.9s {'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'heroMode': True, 'fps': 26, 'screen': ''}
+    3.8s {'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'heroMode': True, 'fps': 25, 'screen': ''}
+    4.8s {'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'heroMode': True, 'fps': 26, 'screen': ''}
+    5.7s {'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'heroMode': True, 'fps': 25, 'screen': ''}
+    6.7s {'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'heroMode': True, 'fps': 26, 'screen': ''}
+    7.6s {'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'heroMode': True, 'fps': 25, 'screen': ''}
+    8.6s {'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'heroMode': True, 'fps': 26, 'screen': ''}
+    9.5s {'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'heroMode': True, 'fps': 25, 'screen': ''}
+   10.5s {'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'heroMode': True, 'fps': 26, 'screen': ''}
+   11.4s {'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'heroMode': True, 'fps': 25, 'screen': ''}
+  log [14:35:40] [Server thread/INFO] (Overcraft) [POTG] replay for Kiriko from tick 5140, world frozen (was false)
+  log [14:35:40] [Render thread/INFO] (Overcraft) [POTG] replay: 3673 records (241 in the keyframe), run-in 29 ticks in 4.4 ms, 85 ghosts, hero ghost RemotePlayer minecraft:slime_ball
+  log [14:35:52] [Render thread/INFO] (Overcraft) [POTG] live world after the replay: 83 before, 79 unchanged, 4 settled (under 0.5 m, nothing else), 0 new
+  log [14:35:52] [Render thread/INFO] (Overcraft) [POTG] replay ended (window played): 241 steps, step ms mean 0.249 max 0.722; frames 306, frame ms mean 39.2 max 184.5; most ghosts 88; packets applied 3127; errors none
+  log [14:35:52] [Server thread/INFO] (Overcraft) [POTG] replay ended (client done) after 242 server ticks, world thawed
+dragon after {'screen': '', 'fps': 30, 'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 15, 'secondaryAmmo': 10, 'anim': 'idle'} server [30.5d, 62.0d, 0.5d] {'zombie': 0, 'skeleton': 0, 'ender_dragon': 1, 'end_crystal': 10} game time is 3974 tick(s)

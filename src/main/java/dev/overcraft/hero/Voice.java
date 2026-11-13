@@ -167,7 +167,62 @@ public final class Voice {
 		java.util.Map.entry("sojourn.overclock_kill_3", new Stimulus(60, 0, 0, false)), // 113D (kills 3 and 4)
 		java.util.Map.entry("sojourn.overclock_kill_5", new Stimulus(60, 10, 10, false)), // 113E
 		java.util.Map.entry("sojourn.overclock_end", new Stimulus(50, 20, 20, false)), // 0E87
-		java.util.Map.entry("sojourn.ultimate", new Stimulus(95, 1, 1, false))); // 185C
+		java.util.Map.entry("sojourn.ultimate", new Stimulus(95, 1, 1, false)), // 185C
+		// Sigma's (tools/soundmaps/sigma.txt, the voice section; his set 01E5.05F; tools/reference/sigma-sounds.md 7)
+		java.util.Map.entry("sigma.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("sigma.melee_kill", new Stimulus(65, 10, 14, false)), // 0032
+		java.util.Map.entry("sigma.hyperspheres", new Stimulus(60, 5, 5, false)), // 0B99
+		java.util.Map.entry("sigma.grasp", new Stimulus(60, 20, 20, false)), // 0B9A
+		java.util.Map.entry("sigma.grasp_absorb", new Stimulus(60, 5, 5, false)), // 0B9B
+		java.util.Map.entry("sigma.accretion", new Stimulus(60, 1, 1, false)), // 0B9C
+		java.util.Map.entry("sigma.accretion_kill", new Stimulus(60, 10, 10, false)), // 0B9D
+		java.util.Map.entry("sigma.barrier", new Stimulus(60, 40, 50, false)), // 0B9E
+		java.util.Map.entry("sigma.barrier_recall", new Stimulus(60, 30, 45, false)), // 0B9F
+		java.util.Map.entry("sigma.barrier_broken", new Stimulus(60, 15, 20, true)), // 0BA2
+		java.util.Map.entry("sigma.barrier_damaged", new Stimulus(60, 40, 80, false)), // 0BA0
+		java.util.Map.entry("sigma.barrier_low", new Stimulus(60, 5, 12, false)), // 0BA1
+		java.util.Map.entry("sigma.flux_kill", new Stimulus(50, 5, 5, false)), // 0BA5
+		java.util.Map.entry("sigma.ultimate", new Stimulus(95, 1, 1, false)), // 185B
+		// D.Va's (tools/soundmaps/dva.txt, the voice section; her set 0057.05F)
+		java.util.Map.entry("dva.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("dva.melee_kill", new Stimulus(65, 10, 14, false)), // 0032
+		java.util.Map.entry("dva.boosters", new Stimulus(60, 2, 2, false)), // 03DA
+		java.util.Map.entry("dva.matrix", new Stimulus(50, 2, 2, false)), // 03DB
+		java.util.Map.entry("dva.matrix_absorb", new Stimulus(85, 10, 15, false)), // 06C1 (its pair 15 / 10, read as 10-15)
+		java.util.Map.entry("dva.call_mech", new Stimulus(60, 2, 2, false)), // 0479
+		java.util.Map.entry("dva.call_mech_kill", new Stimulus(50, 20, 20, false)), // 11CE
+		java.util.Map.entry("dva.eject", new Stimulus(60, 2, 2, false)), // 0497
+		java.util.Map.entry("dva.mech_back", new Stimulus(60, 2, 2, false)), // 049D
+		java.util.Map.entry("dva.pilot_kill", new Stimulus(70, 15, 15, false)), // 10AF
+		java.util.Map.entry("dva.ultimate", new Stimulus(95, 1, 1, false)), // 183C
+		// Pharah's (tools/soundmaps/pharah.txt; her set 0004.05F). Jet Dash has no stimulus in the data (4B92 names none): its
+		// Voice.say falls to OTHER and plays nothing (the map has no pharah.voice.jet_dash file).
+		java.util.Map.entry("pharah.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("pharah.jump_jet", new Stimulus(50, 20, 30, false)), // 07F9 (0027 #111)
+		java.util.Map.entry("pharah.concussive", new Stimulus(50, 2, 5, false)), // 008E (007B #215)
+		java.util.Map.entry("pharah.ultimate", new Stimulus(95, 1, 1, false)), // 1857 (002B #367, the own key F1AC)
+		// Tracer's (tools/soundmaps/tracer.txt; her set 0003.05F)
+		java.util.Map.entry("tracer.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("tracer.blink", new Stimulus(60, 2, 2, false)), // 0080 (criteria 05A6: the third in a row)
+		java.util.Map.entry("tracer.recall", new Stimulus(50, 2, 5, false)), // 0084 (criteria 05A7)
+		java.util.Map.entry("tracer.pulse_bomb_stick", new Stimulus(85, 0.1f, 0.1f, false)), // 0082
+		java.util.Map.entry("tracer.pulse_bomb_kill", new Stimulus(50, 2, 5, false)), // 0083
+		java.util.Map.entry("tracer.ultimate", new Stimulus(95, 2, 2, false)), // 0081
+		// Cassidy's (tools/soundmaps/cassidy.txt; his stimuli's .078)
+		java.util.Map.entry("cassidy.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("cassidy.roll", new Stimulus(30, 2, 5, false)), // 01D3 (01F0 #140)
+		java.util.Map.entry("cassidy.flashbang", new Stimulus(65, 2, 5, false)), // 01D4 (01E9 #116)
+		java.util.Map.entry("cassidy.deadeye_fire", new Stimulus(60, 0.1f, 0.1f, false)), // 020C (022F #473)
+		java.util.Map.entry("cassidy.deadeye_kill", new Stimulus(50, 2, 5, false)), // 01D6 (022F #452)
+		java.util.Map.entry("cassidy.ultimate", new Stimulus(95, 1, 1, false)), // 183B (022F #621, the own key F1AC)
+		// Junkrat's (tools/soundmaps/junkrat.txt; his stimuli's .078)
+		java.util.Map.entry("junkrat.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("junkrat.mine_throw", new Stimulus(60, 15, 20, false)), // 03DE (096A #586)
+		java.util.Map.entry("junkrat.mine_jump", new Stimulus(60, 10, 15, false)), // 0454 (096A #550)
+		java.util.Map.entry("junkrat.mine_kill", new Stimulus(60, 10, 10, false)), // 0415
+		java.util.Map.entry("junkrat.trap", new Stimulus(60, 1, 1, false)), // 043D (09BB #791)
+		java.util.Map.entry("junkrat.tire_kill", new Stimulus(75, 5, 5, false)), // 0414
+		java.util.Map.entry("junkrat.ultimate", new Stimulus(95, 1, 1, false))); // 184C (0232 #572, the own key F1AC)
 
 	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
 	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);
@@ -293,13 +348,14 @@ public final class Voice {
 	 * A hero player killed an enemy (a hostile mob or an enemy player: Overwatch's lines are for enemies, not a cow): a
 	 * multikill line on the burst's second kill (within KILL_CHAIN, once per burst, not again for 15-20 s), else a melee
 	 * remark or an elimination line, a headshot's or a kill in the air's among them. (Their own pain and death cries
-	 * are their hurt and death sounds: PlayerMixin.) Multikill used to fire on any two kills of anything within 4 s, on
+	 * are their hurt and death sounds: PlayerMixin.) Called by KillFeed with the hero the kill is credited to and the blow
+	 * that made it, so a fall after a boop counts as the hero's kill here too (its line, the multikill chain, Overclock's
+	 * count). Multikill used to fire on any two kills of anything within 4 s, on
 	 * every kill of a chain: "Now I'm having fun" seemed to come with every kill (#13).
 	 */
-	public static void onDeath(LivingEntity victim, DamageSource source) {
-		if (source.getEntity() instanceof ServerPlayer killer && killer != victim
-			&& (victim instanceof net.minecraft.world.entity.monster.Enemy || victim instanceof net.minecraft.world.entity.player.Player)
-			&& !Allies.wasAlly(killer, victim)) {
+	public static void onKill(LivingEntity victim, DamageSource source, net.minecraft.world.entity.@org.jspecify.annotations.Nullable Entity credited,
+							  @org.jspecify.annotations.Nullable Blow blow) {
+		if (credited instanceof ServerPlayer killer && killer != victim && Allies.wasEnemy(killer, victim)) {
 			HeroState state = HeroManager.state(killer);
 			if (state == null || state.hero == null) {
 				return;
@@ -309,15 +365,27 @@ public final class Voice {
 				// her own kill lines first (the Charged Shot's, Overclock's count): the shared ones below wait while she speaks
 				dev.overcraft.sojourn.Sojourn.killed(killer, state);
 			}
+			if (state.hero == Hero.SIGMA) {
+				// his own kill lines (the rock's "Collision!", the slam's "To the void!") first
+				dev.overcraft.sigma.Sigma.killed(killer, source);
+			}
+			if (state.hero == Hero.JUNKRAT) {
+				// Specialist, Mine Recycling and his mine's kill line
+				dev.overcraft.junkrat.Junkrat.killed(killer, state, blow);
+			}
+			if (state.hero == Hero.DVA) {
+				// her own: Call Mech's "Squished!", the pilot's "No mech? No problem!"
+				dev.overcraft.dva.Dva.killed(killer, state, blow);
+			}
 			state.killChain = now - state.lastKillAt <= KILL_CHAIN ? state.killChain + 1 : 1;
 			state.lastKillAt = now;
 			if (state.killChain == 2 && now >= state.voiceReadyAt.getOrDefault("multikill", Long.MIN_VALUE)) {
 				say(killer, "multikill", 1);
-			} else if (source.getDirectEntity() == killer) {
+			} else if (blow != null ? blow.kind() == Blow.Kind.MELEE : source.getDirectEntity() == killer) {
 				// ours: the data has no gate in front of it that could be read
 				say(killer, "melee_kill", 0.6f);
 			} else {
-				boolean headshot = state.critAt == now;
+				boolean headshot = blow != null ? blow.crit() : state.critAt == now;
 				boolean inAir = !victim.onGround() && !victim.isInWater() && !victim.onClimbable() && !victim.isPassenger();
 				// the kill graph (33B4) tests something like random(0,1) < 0.66 on this path (a guess at its bytecode: L)
 				say(killer, "elimination", 0.66f, headshot ? "headshot" : null, inAir ? "in_air" : null);

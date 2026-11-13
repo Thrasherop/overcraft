@@ -62,7 +62,16 @@ public final class Torpedoes {
 		}
 		s.junoLock++;
 		track(player, s);
-		if (leftPressed || rightPressed || s.junoLock >= Ow.ticks(LOCK_WINDOW)) {
+		// the buttons go live 0.4 s in, or with the first lock (4695 #893 v15541 -> #921, #922 -> #923: v24728). With her default
+		// options (Toggle on, Swap off: #869, #1052 false) the left button fires, only with something locked (#1055 -> #1053 ->
+		// #1056), and the right cancels, with or without (#1057 -> #1054 sets the end and skips the launches, #928 true); the prompts
+		// say the same (#1051). Four seconds up, what's locked goes (#1110 -> #952)
+		boolean live = s.junoLock >= Ow.ticks(LOCK_BUTTONS_FROM) || !s.junoLocked.isEmpty();
+		if (live && rightPressed) {
+			// nothing launched, so the 2 s of a lock with no targets (#962 -> #931; 10 s comes with a launch, M)
+			s.junoLocked.clear();
+			fire(player, s);
+		} else if (live && leftPressed && !s.junoLocked.isEmpty() || s.junoLock >= Ow.ticks(LOCK_WINDOW)) {
 			fire(player, s);
 		}
 	}
@@ -75,7 +84,7 @@ public final class Torpedoes {
 		double cos = Math.cos(Math.toRadians(LOCK_CONE / 2));
 		java.util.Set<Integer> filling = new java.util.HashSet<>();
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(LOCK_RANGE + LOCK_FORGIVE),
-			e -> e != player && e.isAlive() && !e.isSpectator() && (Allies.isAlly(player, e) || Allies.canHurt(player, e)))) {
+			e -> e != player && e.isAlive() && !e.isSpectator() && (Allies.isAlly(player, e) || Allies.areaHits(player, e)))) {
 			int id = e.getId();
 			if (s.junoLocked.contains(id)) {
 				continue;
@@ -139,6 +148,7 @@ public final class Torpedoes {
 		if (s.junoLocked.isEmpty()) {
 			s.ability3Cooldown = Ow.ticks(TORPEDO_COOLDOWN_NONE);
 			Combat.animate(player, "torpedo_cancel");
+			locksGone(player);
 			return;
 		}
 		// "Support inbound!" with more allies locked than enemies (#1239 op73(v9293, v58608) true -> #1165, M), else
@@ -229,9 +239,9 @@ public final class Torpedoes {
 					JunoSounds.at(level, "torpedo.heal_3p", f.target.getEyePosition(), 12, f.juno);
 				}
 			} else {
-				float dealt = Combat.damage(f.target, source(f.juno), TORPEDO_DAMAGE);
-				Combat.credit(f.juno, dealt);
-				Combat.addFireForDamage(f.juno, dealt, Ow.toOw(f.target.getMaxHealth()));
+				float dealt = Combat.damage(f.target, source(f.juno), TORPEDO_DAMAGE, dev.overcraft.hero.Blow.ability("pulsar_torpedoes").by(dev.overcraft.hero.Hero.JUNO));
+				Combat.credit(f.juno, dealt, f.target);
+				Combat.addFireForDamage(f.juno, dealt, f.target);
 				// contact set 07E9 type 0 (M: characters): B3C5 hers, B3E2 at the hit for the rest (500 m)
 				JunoSounds.own(f.juno, "torpedo.hit");
 				JunoSounds.at(level, "torpedo.hit_3p", next, 500, f.juno);
@@ -282,11 +292,22 @@ public final class Torpedoes {
 			.getOrThrow(DamageTypes.ARROW), null, owner);
 	}
 
+	/** Her client's rings on what she'd locked go with a lock that launched nothing (else they stayed for 5 s: the critique's B2). */
+	private static void locksGone(ServerPlayer player) {
+		Effects.send(player, "juno_locks_gone", player.position(), null, 0, player);
+	}
+
 	/** Her lock and her torpedoes gone (another hero, death), its targets' ticking stopped. */
 	static void clear(ServerPlayer player, HeroState s) {
 		if (!s.junoLockTicking.isEmpty()) {
 			JunoSounds.stopFor(player, "torpedo.locking.loop");
 			s.junoLockTicking.clear();
+		}
+		// a lock cut any way but its fire (death, G, sleep, a stun, a hack, another hero): her clients' lock pose ends with it.
+		// Silent, the first person's looping hold outlived the lock: no gun and the pods up, even after a respawn (critique H1)
+		if (s.junoLock >= 0) {
+			Combat.animate(player, "torpedo_cancel");
+			locksGone(player);
 		}
 		s.junoLock = -1;
 		s.junoLockProgress.clear();

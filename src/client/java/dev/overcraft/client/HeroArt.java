@@ -52,7 +52,9 @@ public final class HeroArt {
 	/** An ability's icon, by its in-game name's slug ("kunai", "swift_step", ...). */
 	public static @Nullable Identifier ability(Hero hero, String ability) {
 		// Mercy's staff has one icon for both its beams (her data's loadouts)
-		return art(hero, "abilities/" + (ability.equals("damage_boost") ? "caduceus_staff" : ability));
+		Identifier icon = art(hero, "abilities/" + (ability.equals("damage_boost") ? "caduceus_staff" : ability));
+		// a perk that is an ability (D.Va's Precision Fusion) has only its perk icon
+		return icon != null ? icon : perk(hero, ability);
 	}
 
 	/** The hero's ultimate's icon (the ready ult on the HUD, Sombra's Conspirator marker). */
@@ -67,7 +69,13 @@ public final class HeroArt {
 			case SOMBRA -> "emp";
 			case BRIGITTE -> "rally";
 			case JUNO -> "orbital_ray";
+			case SIGMA -> "gravitic_flux";
+			case DVA -> "self_destruct";
 			case SOJOURN -> "overclock";
+			case PHARAH -> "barrage";
+			case TRACER -> "pulse_bomb";
+			case CASSIDY -> "deadeye";
+			case JUNKRAT -> "rip_tire";
 			case ILLARI -> "captive_sun";
 		});
 	}

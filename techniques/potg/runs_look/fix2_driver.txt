@@ -1,0 +1,8 @@
+=== phase fix2 19:14:00
+cmd /damage @e[type=minecraft:ender_dragon,limit=1] 1000 minecraft:explosion {'ok': True}
+=== phase fix2 19:14:01
+press key.keyboard.k {'key': 'key.keyboard.k'}
+=== phase fix2 19:14:02
+press key.keyboard.enter {'key': 'key.keyboard.enter'}
+=== phase fix2 19:14:09
+screenshot fix2_solo_before199.png {'file': 'E:\\claude\\mods\\overcraft_potgb\\run\\screenshots\\fix2_solo_before199.png'}

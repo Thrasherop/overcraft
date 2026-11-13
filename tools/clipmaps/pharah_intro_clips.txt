@@ -1,0 +1,12 @@
+# Pharah's Play of the Game highlight intro: the clip only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/pharah.glb by bone name (HeroModels, from hero_models/pharah_intro_clips.glb), as Kiriko's (kiriko_intro_clips.txt).
+# From DataTool's extract-unlocks "Pharah|highlightintro=*" (build 154088, archived: research\pharah\extract\Unlocks\Heroes\Pharah\
+# HighlightIntro). The default Overwatch plays: "Heroic" (unlock 021D.0A5, name 172F.07C), one of the two highlight intros in her
+# progression's default list (0017.058 STUProgressionUnlocks m_7846C401, beside the default emote Heroic 0903 and the default
+# skin themes); the other is "Random from Favorites" (0230.0A5), a picker, not a clip (D H, scripts\hero_unlocks_pharah.py,
+# intro_names_pharah.py). Heroic holds five clips (Animations\0\32: BE1B / BE1C / BE1D / BF1D 3.867 s, C0CD 3.133 s, each its
+# own animation effect 4730 / 4770 / 4771 / 476F / 49E7): which one a match plays isn't read; BE1B, the first, taken (M).
+# Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <F2A5.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/pharah_intro_clips.txt --clips-from=<...>\Heroes\Pharah\HighlightIntro\Overwatch\Heroic
+emote_00000000BE1B = potg_intro

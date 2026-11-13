@@ -1,0 +1,18 @@
+=== phase potg_mercy_ow 15:25:33
+bot {'ok': True, 'hero': 'ANA'}
+before {'screen': '', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 52.75, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'} {'alive': True, 'health': 20.0, 'barrierUp': False, 'barrierHealth': 0.0, 'sigmaBarrier': -1, 'asleep': False, 'x': 3.0, 'z': 2.0}
+healing {'screen': '', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 160.0, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'} {'alive': True, 'health': 8.0700035, 'barrierUp': False, 'barrierHealth': 0.0, 'sigmaBarrier': -1, 'asleep': False, 'x': 3.0, 'z': 2.0}
+dead {'screen': 'DeathScreen', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 0.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': False, 'ult': 160.25, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'knockdown'}
+respawned {'screen': '', 'fps': 29, 'x': 10.5, 'y': -60.0, 'z': -1.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 175.5, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'}
+after {'screen': 'PauseScreen', 'fps': 117, 'x': 10.5, 'y': -60.0, 'z': -1.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': False, 'ult': 243.0, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'}
+  log [15:25:42] [Server thread/INFO] (Overcraft) [POTG] anaB: new best High Score 221 (pinned 13 KB)
+  log [15:26:02] [Server thread/INFO] (Overcraft) [POTG] the dragon died, killer (none) (allows a POTG); scoring closed
+  log [15:26:12] [Server thread/INFO] (Overcraft) [POTG] at the dragon's tick 199: anaB High Score 221; plays: Kiriko[HS 0, LS 0, SS 0, SD 0] anaB[HS 221, LS 0, SS 0, SD 0]; scoring ms/tick: mean 0.0170 max 2.181 over 503 ticks
+  log [15:26:12] [Server thread/INFO] (Overcraft) [POTG] showing anaB (High Score) to 2 viewer(s), ring to tick 420, world frozen (was false)
+  log [15:26:12] [Render thread/INFO] (Overcraft) [POTG] card: anaB as Ana, High Score
+  log [15:26:16] [Render thread/INFO] (Overcraft) [POTG] replay: 234 records (3 in the keyframe), run-in 0 ticks in 2.3 ms, 1 ghosts, hero ghost RemotePlayer minecraft:air
+  log [15:26:20] [Render thread/INFO] (Overcraft) [POTG] live world after the replay: 162 before, 103 unchanged, 59 settled (under 0.5 m, nothing else), 0 new
+  log [15:26:20] [Render thread/INFO] (Overcraft) [POTG] replay ended (window played): 65 id-keyed client maps swapped; 75 steps, step ms mean 0.135 max 0.810; frames 343, frame ms mean 24.6 max 189.0; most ghosts 6; packets applied 86; errors none
+  log [15:26:20] [Server thread/INFO] (Overcraft) [POTG] replay ended (client done) after 173 server ticks, world thawed
+  log [15:26:20] [Server thread/INFO] (Overcraft) [POTG] disarmed, 2 recorders dropped
+  log [15:26:20] [Server thread/INFO] (Overcraft) [POTG] the dragon fight is over: nothing recorded any more

@@ -1,0 +1,27 @@
+TREE (git at launch; the client itself can't say): e586e77 dirty_src_files=0 launched=2026-11-06T13:16:46
+TIME 13:19:39
+TREE (git at launch): e586e77 dirty_src_files=0 launched=2026-11-06T13:16:46 13:19:39
+/difficulty normal ['[13:19:39] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[13:19:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is now set to false']
+/gamerule minecraft:natural_health_regeneration false ['[13:19:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is now set to false']
+/time set noon ['[13:19:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[13:19:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[13:19:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [red]']
+/team add blue ['[13:19:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Created team [blue]']
+/team join blue @s ['[13:19:41] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[13:19:42] [Render thread/INFO] (Minecraft) [System] [CHAT] Killed 71 entities']
+TREE7 e586e77 dirty_src_files=0 launched=2026-11-06T03:53:39 13:19:43
+### Life Grip let go in deep water by Jump; swim to a ladder; climb; step off onto stone. A grip's real landing: control. Mob: control
+hero mercy mode True screen  hp 18.0 / 18.0
+  let go in water at z 1.7 x -10.1; climbed to y -47.7: health 18.0 -> 18.0, end y -59.00, pain 0 | -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g
+hero mercy mode True screen  hp 18.0 / 18.0
+  let go in water at z 1.6 x -8.8; climbed to y -47.5: health 18.0 -> 18.0, end y -59.00, pain 0 | -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g -59.0g
+hero mercy mode True screen  hp 18.0 / 18.0
+  control, hero mode: gripped, let go by Jump over the gap at x -8.7, 12 m up: health 18.0 -> 18.0, end y -60.00, pain 0 | -53.2 -53.9 -54.6 -56.1 -56.9 -58.6 -59.5 -60.0g
+hero mercy mode True screen  hp 18.0 / 18.0
+  control, minecraft mode: gripped, let go by Jump over the gap at x -10.0, 12 m up: health 18.0 -> 18.0, end y -60.00, pain 0 | -51.9 -52.7 -54.4 -55.4 -56.4 -58.6 -59.8 -60.0g
+hero mercy mode True screen  hp 18.0 / 18.0
+  control, hero mode: gripped, let go by Jump over the gap at x -8.7, 12 m up: health 18.0 -> 18.0, end y -60.00, pain 0 | -53.2 -53.9 -55.3 -56.1 -56.9 -58.6 -59.5 -60.0g
+hero mercy mode True screen  hp 18.0 / 18.0
+  control, minecraft mode: gripped, let go by Jump over the gap at x -10.0, 12 m up: health 18.0 -> 18.0, end y -60.00, pain 0 | -51.9 -52.7 -54.4 -55.4 -56.4 -58.6 -59.8 -60.0g
+DONE

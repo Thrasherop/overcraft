@@ -1,0 +1,1216 @@
+# Tracer's sound effects: <sound id> = <file under E:/Overwatch Archive/extracted/154088/> (build 154088). Same format as
+# pharah_sfx.txt; her voice is tracer.txt (tracer_voice_gen.py). build_asset_pack.py sounds copies / mixes them into
+#  the local pack.
+# Read 2026-11-11 offline (Overwatch and Battle.net checked closed before every archive read and DataTool / TankLib run):
+# her 02C sounds' Wwise banks decoded (ww.py, dump_banks.py), the Init bank's game parameter defaults (1E818, stmg.py).
+# Scripts: E:/Overwatch Archive/research/tracer/scripts/sounds/ (tracer_gen.py writes this file from tracer_table.py; Pharah's
+# pipeline copied and retargeted: fx_graph_tracer.py, fx_sounds2_tracer.py, clip_sounds_tracer.py, fx_nodes.py,
+# fx_timed.py, contacts.py, ww.py, dump_banks.py, extract_banks.py, measure_tracer.py, overview.py, stmg.py); their data:
+# research/tracer/sounds/ (tracer_ww.json, banks_raw.json, tracer_measure.json, fx_proj.json, contacts.json, overview.txt,
+# fx_nodes_out.txt, clip_sounds.txt). The kit: research/tracer/work_kit/kit_tracer_weapon.md / kit_tracer_move.md. Her skin
+# extraction is research/tracer/extract and the 17 banks it lacked (the bullet's slot and contact sounds, the bomb's contact
+# sets, the perks') were extracted into research/tracer/sounds/ExtraSounds/Tracer (extract_banks.py; groups Bullet,
+#  PulseBomb, Perks).
+# Not mapped: a per-shot fire clip sound (her fire clips 1P B0 / F8 / 194-196 and 3P C1 have no animation effect: the shot is
+# 0633's stream); the bullet's 0F97 (17FE's twin) and 000C's other 22 materials and type 4 (08EA, 40 dB down); 9054 /
+#  9029 / 1812 /
+# 96F0 (same-file copies, the louder built); 10D0 (00BA's 5 m copy: no files); the shared ability-denied 0186 / 0FCB; 0043's
+# 6BD4 (5D97, gated on v68945); the second blast 6F29 (DCB4 / E88D, 0C1B #540 on owner flags no graph writes: a mode, L) and 6F2A
+# (272E.134); 0016 #354 3E3F / #356 2701 (Stadium 0123 / 010A); 001A #547 3FA4, #643 6F0E (273F / Stadium); Blink Packs and
+# Chronal Dash (no effect); 004B / 0033 / 01C7 shared effects (ult charge, health, regen); footsteps.
+# Ids: 02C sounds (5DC5 = 000000005DC5.02C), 00D effects, 006 clips, 08F clip animation effects, 049 contact sets; graphs
+# 01B with their node numbers. Confidence: H read in the data, M inferred, L guess. Stadium powers' sets are left out.
+# Gains: Wwise volume + make-up gain summed from each file up through its containers and mixers (the middle of a random
+# range included) plus its output bus chain, plus RTPC curves (dB scaling 20*log10(1+y); linear between points) and
+# SetVolume actions. RTPCs are read at their game parameter's default (the Init bank's list); modulators: an LFO at its
+# middle, a time modulator at its start on one-shots and at its end on loops. As in sojourn.txt, ONE offset per family keeps
+# her sounds' balance with each other, bringing the family's loudest single layer to -1 dBFS (the builder's limiter catches
+# sums): own -1.5 dB (loudest: tracer.pulse_bomb.stick), 3p -3 dB (loudest: tracer.pulse_bomb.stick_3p).
+# Pitch: cents as a speed factor (*). Low / high-pass filters, random pitch / volume per play, fades, Seek, Wwise states
+# and the voice priority RTPCs are not reproduced. Layers more than 60 dB down are left out, and in loops those 20 dB
+# under the loudest loop. A loop's LOOP LENGTH is its longest bed within 6 dB of the loudest layer; shorter layers are
+# tiled across it and beds more than 15 % longer are left out.
+# Own vs others: audience-1 copies and no-range copies are the player the effect plays on ('own': Tracer, or the shooter for
+# a hit, M as in Sigma's map); ranged copies are everyone else's ('3p'); where two ranged copies hold the same files the
+# louder is built (L which team's / near or far). A sound with no own copy is built once for everyone ('both').
+
+# ===== How each game event is put together (rules)
+# tracer.pistol.fire_first: Pulse Pistols first shot, own: 5D75 (no range, audience 1: hers, H): the once set (a
+#  random 4 of 0.18 s) and one trigger of the stream sets (a random 25 of 0.16-0.23 s, a random 19 at +600 cents 0.08
+#  s late, a random 20 of 0.14-0.16 s, a 0.63 s body at +800). Built per shot, as Sojourn's Railgun / Sombra's pistol:
+#  one trigger of each stream container per shot (20 a second, M); the 2.5-3.1 s ring-out container goes to fire_end,
+#  else 20 tails a second pile up.
+# Trigger: PRIMARY held (0016 #16 -> #78 StateStack -> #17 StateWeaponVolley + #74 STU_691BFA55 holding effect 0633 on
+#  pistol v49, H); the first shot of a burst: 5D75's once set (538207986) plus one trigger of the stream sets.
+# Layers: a 5D75 173568349 RanSeq 0.16-0.23 s x25, net -8; b 5D75 856897906 RanSeq 0.14-0.16 s x20, net -14.5; c 5D75
+#  602939125 RanSeq 0.16-0.23 s x19 +600 cents, net -13.5; d 5D75 538207986 RanSeq 0.18-0.19 s x4, net -3.5; e 5D75
+#  602727460 RanSeq 0.63 s +800 cents, net -22.
+# Left out: 5D75 325174016 (-91 dB).
+@tracer.pistol.fire_first = tracer.pistol.fire_first.a:-9.5 + tracer.pistol.fire_first.b:-16 + tracer.pistol.fire_first.c*1.414@0.08:-15 + tracer.pistol.fire_first.d:-5 + tracer.pistol.fire_first.e*1.587@0.005:-23.5
+# tracer.pistol.fire: Pulse Pistols shot, own: one trigger of 5D75's stream containers (the once set left to
+#  fire_first). Built per shot, as Sojourn's Railgun / Sombra's pistol: one trigger of each stream container per shot
+#  (20 a second, M); the 2.5-3.1 s ring-out container goes to fire_end, else 20 tails a second pile up.
+# Trigger: PRIMARY held (0016 #16 -> #78 StateStack -> #17 StateWeaponVolley + #74 STU_691BFA55 holding effect 0633 on
+#  pistol v49, H); every later shot of the burst.
+# Layers: a 5D75 173568349 RanSeq 0.16-0.23 s x25, net -8; b 5D75 856897906 RanSeq 0.14-0.16 s x20, net -14.5; c 5D75
+#  602939125 RanSeq 0.16-0.23 s x19 +600 cents, net -13.5; d 5D75 602727460 RanSeq 0.63 s +800 cents, net -22.
+# Left out: 5D75 325174016 (-91 dB).
+@tracer.pistol.fire = tracer.pistol.fire.a:-9.5 + tracer.pistol.fire.b:-16 + tracer.pistol.fire.c*1.414@0.08:-15 + tracer.pistol.fire.d*1.587@0.005:-23.5
+# tracer.pistol.fire_end: Pulse Pistols burst tail, own: 5D75's ring-out container (a random 10 of 2.54-3.06 s at +114
+#  cents) and its Stop set (a random 10 of 1.23-1.69 s).
+# Trigger: the burst ends (PRIMARY let go, the magazine empty, or a higher v33 state: #78 ends and 0633 stops; 5D75's
+#  Stop event, H).
+# Layers: a 5D75 59493070 RanSeq 2.54-3.06 s x10 +114 cents, net -21; b 5D75 Stop-event 1037603276 RanSeq 1.23-1.69 s
+#  x10 +90 cents, net -9.
+@tracer.pistol.fire_end = tracer.pistol.fire_end.a*1.068:-22.5 + tracer.pistol.fire_end.b*1.053:-10
+# tracer.pistol.fire_first_3p: Pulse Pistols first shot heard by others: 6D24 (200 m): its once set (a random 3 of
+#  0.18 s) and one trigger of the stream sets (a random 36 of 0.16-0.17 s, a random 11 of 0.35-0.48 s).
+# Trigger: PRIMARY held (0016 #16 -> #78 StateStack -> #17 StateWeaponVolley + #74 STU_691BFA55 holding effect 0633 on
+#  pistol v49, H); the same first shot, at her for everyone else: 0633's 6D24 (200 m, audience 2, H).
+# Layers: a 6D24 637774298 RanSeq 0.16-0.17 s x36, net -15; b 6D24 1050019626 RanSeq 0.35-0.48 s x11, net -20.5; c
+#  6D24 699810140 RanSeq 0.18-0.19 s x3, net -11.
+@tracer.pistol.fire_first_3p = tracer.pistol.fire_first_3p.a@0.005:-18 + tracer.pistol.fire_first_3p.b:-23.5 + tracer.pistol.fire_first_3p.c:-14
+# tracer.pistol.fire_3p: Pulse Pistols shot heard by others: one trigger of 6D24's stream containers.
+# Trigger: PRIMARY held (0016 #16 -> #78 StateStack -> #17 StateWeaponVolley + #74 STU_691BFA55 holding effect 0633 on
+#  pistol v49, H); every later shot, for everyone else.
+# Layers: a 6D24 637774298 RanSeq 0.16-0.17 s x36, net -15; b 6D24 1050019626 RanSeq 0.35-0.48 s x11, net -20.5.
+@tracer.pistol.fire_3p = tracer.pistol.fire_3p.a@0.005:-18 + tracer.pistol.fire_3p.b:-23.5
+# tracer.pistol.fire_end_3p: Pulse Pistols burst tail heard by others: 6D24's ring-out (2.54-3.06 s) and Stop set (1.23-1.69 s).
+# Trigger: the burst ends, at her for everyone else (6D24's ring-out and Stop set, H).
+# Layers: a 6D24 212808286 RanSeq 2.54-3.06 s x10 +114 cents, net -21; b 6D24 Stop-event 1034264544 RanSeq 1.23-1.69 s
+#  x10 +90 cents, net -19.5.
+@tracer.pistol.fire_end_3p = tracer.pistol.fire_end_3p.a*1.068:-24 + tracer.pistol.fire_end_3p.b*1.053:-22.5
+# tracer.pistol.bullet_3p: Pulse Pistols bullet crack heard by others: 17FE (60 m: a random 20 of 0.34-0.61 s at +500 cents).
+# Trigger: each bullet as it is made: the bullet entity 0018 (0016 #17's projectile, two per shot)
+#  STUProjectileVisualComponent m_2170A015 'sound only' slot (Juno's / Ana's reading) effect 0071 -> 0F97 and 17FE,
+#  both 60 m audience 2 with the same files: the louder 17FE built (H slot and ids, L which copy). Two bullets per
+#  shot: play it once per shot (M).
+# Layers: a 17FE 203962665 RanSeq 0.34-0.61 s x20 +500 cents, net -12.5.
+@tracer.pistol.bullet_3p = tracer.pistol.bullet_3p.a*1.335:-15.5
+# tracer.pistol.empty: Pulse Pistols dry click, own: 167B (a 0.59 s click at +20 cents).
+# Trigger: the volley ends with the magazine empty: #17 onEnd -> #62 (v53 == 0) -> #60 effect 0254 and #112 effect
+#  3506, both 167B (no range, audience 1: hers, H); 167B built once.
+# Layers: a 167B 683213282 Sound 0.59 s +20 cents, net -12.
+@tracer.pistol.empty = tracer.pistol.empty.a*1.012:-13.5
+# tracer.pistol.hit_enemy: Pulse Pistols hit on an enemy, own: 8D36 (four sets of 0.13-0.46 s, two at +200 / +900 cents).
+# Trigger: a bullet hits a character: 0018's m_contactSet 000C, type 0, material 0001 -> 8D36 (no range: the
+#  shooter's, as Brigitte's type-0 reading, M); type 1 holds the same three.
+# Layers: a 8D36 870881486 RanSeq 0.18-0.46 s x10, net 0; b 8D36 923138318 RanSeq 0.28-0.30 s x8 +200 cents, net -7.5;
+#  c 8D36 21462275 RanSeq 0.13-0.31 s x7 +200 cents, net -18.5; d 8D36 607390467 RanSeq 0.13-0.31 s x7 +900 cents, net
+#  -11.5.
+@tracer.pistol.hit_enemy = tracer.pistol.hit_enemy.a:-1.5 + tracer.pistol.hit_enemy.b*1.122:-9 + tracer.pistol.hit_enemy.c*1.122:-20 + tracer.pistol.hit_enemy.d*1.682@0.035:-13
+# tracer.pistol.hit_enemy_3p: Pulse Pistols hit heard by others: 9058 (500 m: a random 7 of 0.17-0.25 s and a random
+#  10 of 0.18-0.46 s).
+# Trigger: the same hit, at the target for everyone else: type 0's 9058 (500 m) and 9054 (12 m) hold the same files:
+#  the louder 9058 built (L which copy).
+# Layers: a 9058 409339046 RanSeq 0.18-0.46 s x10, net -2; b 9058 1035846985 RanSeq 0.17-0.25 s x7, net +2.5.
+@tracer.pistol.hit_enemy_3p = tracer.pistol.hit_enemy_3p.a:-5 + tracer.pistol.hit_enemy_3p.b:-0.5
+# tracer.pistol.hit_block: Pulse Pistols bullet hits the world: 899F (90 m, +500 cents) + 89A1 (32 m) ricochets (0.16-0.30 s).
+# Trigger: a bullet hits the world: 000C type 2, material 0001 -> 899F (90 m, +500 cents) + 89A1 (32 m), built
+#  together (Pharah's rocket rule); the other 22 materials have their own (contacts.json).
+# Layers: a 899F 1051993922 RanSeq 0.16-0.30 s x15 +500 cents, net -14; b 89A1 831707544 RanSeq 0.16-0.30 s x15, net -18.
+@tracer.pistol.hit_block = tracer.pistol.hit_block.a*1.335:-17 + tracer.pistol.hit_block.b:-21
+# tracer.reload: Pulse Pistols reload, own: 0FE9 (magazines out, 0.38-0.46 s), 168E (0.81 s), 0FE8 (0.80-0.83 s), 1105
+#  and 1680 (cloth and whirs), 0FE7 (magazines in, 0.29-0.40 s at +180 cents) over 0.73 s.
+# Trigger: RELOAD or an empty magazine after the 0.2 s lock (0016 #76 -> #1 StateAnim alias 0004, 1.0 s): her 1P
+#  reload clip 0065's effect 000B: 0FE9 @0, 168E @0.133, 0FE8 @0.2, 1105 @0.233, 1680 @0.267, 0FE7 @0.733 (all no
+#  range, H).
+# Layers: a 0FE9 72303796 RanSeq 0.38-0.46 s x3, net -16; b 0FE8 696081795 RanSeq 0.80-0.83 s x3, net -23.5; c 1105
+#  710771223 RanSeq 0.41-0.75 s x3 +175 cents, net -24.5; d 0FE7 550847241 RanSeq 0.29-0.40 s x3 +180 cents, net
+#  -19.5; e 168E 27959067 RanSeq 0.81-0.82 s x2, net -18; f 1680 730473742 RanSeq 0.57 s x2 +352 cents, net -32.5; g
+#  1105 993218909 Sound 0.29 s, net -19.5; h 1680 83345027 Sound 0.51 s +588 cents, net -17.
+@tracer.reload = tracer.reload.a@0.05:-17.5 + tracer.reload.b@0.2:-25 + tracer.reload.c*1.106@0.2333:-26 + tracer.reload.d*1.110@0.7333:-21 + tracer.reload.e@0.1333:-19.5 + tracer.reload.f*1.225@0.4472:-34 + tracer.reload.g@0.2333:-21 + tracer.reload.h*1.404@0.2667:-19
+# tracer.reload_3p: Pulse Pistols reload heard by others: the three magazine clacks (45 m).
+# Trigger: the same reload for everyone else: the 3P clip 011A's effect 0021: 0FEB @0, 0FEC @0.2, 0FEA @0.967 of its
+#  1.3 s (45 m, H), scaled to the 1.0 s reload (0.154, 0.744: M).
+# Layers: a 0FEB 360095055 RanSeq 0.38-0.46 s x3, net -29.5; b 0FEC 984352953 RanSeq 0.80-0.83 s x3, net -29.5; c 0FEA
+#  465660706 RanSeq 0.29-0.40 s x3, net -29.5.
+@tracer.reload_3p = tracer.reload_3p.a:-32.5 + tracer.reload_3p.b@0.1538:-32.5 + tracer.reload_3p.c@0.7438:-32.5
+# tracer.blink_1: Blink 1, own: 5D78 (a 0.64-1.02 s whoosh and a 0.16-0.20 s tick; each blink in a row its own take).
+# Trigger: ABILITY 1 or SECONDARY (0024 #27 / #147 -> #153 0.1 s -> #57 -> #34 the blink; success #453 -> #101 the
+#  blink counter v59); the first blink (v59 == 1, #104 -> #94): effect 0079's 5D78 (audience 1, no range: hers, H).
+# Layers: a 5D78 819273263 RanSeq 0.64-0.75 s x10, net -10.5; b 5D78 441091535 Sound 0.20 s, net -24.
+@tracer.blink_1 = tracer.blink_1.a:-12 + tracer.blink_1.b:-25.5
+# tracer.blink_1_3p: Blink 1 heard by others: 0FDC (70 m: a 0.94-1.24 s whoosh pitched +150 cents, a 0.19 s and a 0.35 s tick).
+# Trigger: ABILITY 1 or SECONDARY (0024 #27 / #147 -> #153 0.1 s -> #57 -> #34 the blink; success #453 -> #101 the
+#  blink counter v59); the first blink (v59 == 1, #104 -> #94): effect 0079's 0FDC (70 m, everyone else, H).
+# Layers: a 0FDC 195047378 RanSeq 0.94-1.24 s x5 +150 cents, net -18; b 0FDC 593469649 Sound 0.19 s +400 cents, net
+#  -18; c 0FDC 997561881 Sound 0.35 s, net -20.5.
+@tracer.blink_1_3p = tracer.blink_1_3p.a*1.091:-21 + tracer.blink_1_3p.b*1.260:-21 + tracer.blink_1_3p.c:-23.5
+# tracer.blink_2: Blink 2, own: 5D76 (a 0.64-1.02 s whoosh and a 0.16-0.20 s tick; each blink in a row its own take).
+# Trigger: ABILITY 1 or SECONDARY (0024 #27 / #147 -> #153 0.1 s -> #57 -> #34 the blink; success #453 -> #101 the
+#  blink counter v59); the second within 2 s (v59 == 2, #103 -> #97): effect 007A's 5D76 (audience 1, no range: hers,
+#  H).
+# Layers: a 5D76 373925310 RanSeq 0.78-0.96 s x12, net -10.5; b 5D76 240036964 Sound 0.16 s -150 cents, net -23.
+@tracer.blink_2 = tracer.blink_2.a:-12 + tracer.blink_2.b*0.917:-24.5
+# tracer.blink_2_3p: Blink 2 heard by others: 0FDA (70 m: a 0.94-1.24 s whoosh pitched -350 cents, a 0.19 s and a 0.35 s tick).
+# Trigger: ABILITY 1 or SECONDARY (0024 #27 / #147 -> #153 0.1 s -> #57 -> #34 the blink; success #453 -> #101 the
+#  blink counter v59); the second within 2 s (v59 == 2, #103 -> #97): effect 007A's 0FDA (70 m, everyone else, H).
+# Layers: a 0FDA 1016507345 RanSeq 0.94-1.24 s x5 -350 cents, net -19; b 0FDA 130627917 Sound 0.35 s, net -21.5; c
+#  0FDA 543772547 Sound 0.19 s +200 cents, net -18.
+@tracer.blink_2_3p = tracer.blink_2_3p.a*0.817:-22 + tracer.blink_2_3p.b:-24.5 + tracer.blink_2_3p.c*1.122:-21
+# tracer.blink_3: Blink 3, own: 5D77 (a 0.64-1.02 s whoosh and a 0.16-0.20 s tick; each blink in a row its own take).
+# Trigger: ABILITY 1 or SECONDARY (0024 #27 / #147 -> #153 0.1 s -> #57 -> #34 the blink; success #453 -> #101 the
+#  blink counter v59); the third or later within 2 s (#103 false -> #98): effect 007B's 5D77 (audience 1, no range:
+#  hers, H).
+# Layers: a 5D77 690421799 RanSeq 0.75-1.02 s x15, net -10.5; b 5D77 954377315 Sound 0.18 s -100 cents, net -22.
+@tracer.blink_3 = tracer.blink_3.a:-12 + tracer.blink_3.b*0.944:-23.5
+# tracer.blink_3_3p: Blink 3 heard by others: 0FDB (70 m: a 0.94-1.24 s whoosh pitched -850 cents, a 0.19 s and a 0.35 s tick).
+# Trigger: ABILITY 1 or SECONDARY (0024 #27 / #147 -> #153 0.1 s -> #57 -> #34 the blink; success #453 -> #101 the
+#  blink counter v59); the third or later within 2 s (#103 false -> #98): effect 007B's 0FDB (70 m, everyone else, H).
+# Layers: a 0FDB 311738854 RanSeq 0.94-1.24 s x5 -850 cents, net -19; b 0FDB 105078501 Sound 0.19 s, net -17; c 0FDB
+#  760334920 Sound 0.35 s, net -21.5.
+@tracer.blink_3_3p = tracer.blink_3_3p.a*0.612:-22 + tracer.blink_3_3p.b:-20 + tracer.blink_3_3p.c:-24.5
+# tracer.blink_empty: Blink unavailable, own: 0FDD (a 1.0 s denial tone).
+# Trigger: a Blink press that fails (0024 #57 false -> #200 [the press is hers] -> #77 effect 007F, then #120 the
+#  shared 0186): 0FDD (no range: hers, M; L that it means 'no charge').
+# Layers: a 0FDD 319390601 RanSeq 1.00 s, net -18.5.
+@tracer.blink_empty = tracer.blink_empty.a:-20
+# tracer.blink_recharge_1: Blink charge 1 back, own: 0FE1 (a 0.64-0.68 s chime and the shared 0.77 s tone).
+# Trigger: a Blink charge comes back (0024 #143 StateChaseVar onFinished -> #56 v11 += 1; #450 watches v11 -> #449 ->
+#  #195 ActionSwitch on v11: case 1 -> effect 0088): 0FE1 (no range: hers, H nodes; M that the switch picks the chime
+#  by the charges now held).
+# Layers: a 0FE1 661951425 Sound 0.64 s, net -8.5; b 0FE1 355261787 Sound 0.77 s, net -11.5.
+@tracer.blink_recharge_1 = tracer.blink_recharge_1.a:-10 + tracer.blink_recharge_1.b:-13
+# tracer.blink_recharge_2: Blink charge 2 back, own: 0FDF (a 0.64-0.68 s chime and the shared 0.77 s tone).
+# Trigger: a Blink charge comes back (0024 #143 StateChaseVar onFinished -> #56 v11 += 1; #450 watches v11 -> #449 ->
+#  #195 ActionSwitch on v11: case 2 -> effect 0089): 0FDF (no range: hers, H nodes; M that the switch picks the chime
+#  by the charges now held).
+# Layers: a 0FDF 141180587 Sound 0.68 s, net -8.5; b 0FDF 355261787 Sound 0.77 s, net -11.5.
+@tracer.blink_recharge_2 = tracer.blink_recharge_2.a:-10 + tracer.blink_recharge_2.b:-13
+# tracer.blink_recharge_3: Blink charge 3 back, own: 0FE0 (a 0.64-0.68 s chime and the shared 0.77 s tone).
+# Trigger: a Blink charge comes back (0024 #143 StateChaseVar onFinished -> #56 v11 += 1; #450 watches v11 -> #449 ->
+#  #195 ActionSwitch on v11: case 3 -> effect 008A): 0FE0 (no range: hers, H nodes; M that the switch picks the chime
+#  by the charges now held).
+# Layers: a 0FE0 481578781 Sound 0.67 s, net -8.5; b 0FE0 355261787 Sound 0.77 s, net -11.5.
+@tracer.blink_recharge_3 = tracer.blink_recharge_3.a:-10 + tracer.blink_recharge_3.b:-13
+# tracer.recall.start: Recall starts, own: 10D1 (a 0.23 s click).
+# Trigger: ABILITY 2 (001A #224 StateAbility -> #94 State); #94 onBegin -> #167 ActionEffect 00B9: 10D1 (audience 1,
+#  no range: hers only; no copy for others, H).
+# Layers: a 10D1 655241385 Sound 0.23 s, net -17.
+@tracer.recall.start = tracer.recall.start.a:-18.5
+# tracer.recall.rewind: Recall rewind, own: 5D79 (1.06-1.23 s rushes, 0.94 s at +100 cents 0.15 s late, a 0.80 s
+#  sweep) + 0E96 (1.67-2.20 s at -75 cents).
+# Trigger: ABILITY 2 (001A #224 StateAbility -> #94 State) -> #1 STU_41B3FC2B (the 0.9 s rewind) onBegin -> #24
+#  ActionEffect 00BA: 5D79 + 0E96 (audience 1, no range: hers, H).
+# Layers: a 0E96 914744159 RanSeq 1.67-2.20 s x3 -75 cents, net -17; b 5D79 892371751 RanSeq 0.94-0.95 s x3 +100
+#  cents, net -11; c 5D79 61014892 RanSeq 1.07-1.23 s x2, net -11.5; d 5D79 371834348 RanSeq 1.06-1.23 s x2, net
+#  -15.5; e 5D79 25603429 Sound 0.80 s, net -8.
+@tracer.recall.rewind = tracer.recall.rewind.a*0.958:-18.5 + tracer.recall.rewind.b*1.059@0.15:-12.5 + tracer.recall.rewind.c:-13 + tracer.recall.rewind.d:-17 + tracer.recall.rewind.e:-9.5
+# tracer.recall.rewind_3p: Recall rewind heard by others: 0E95 (1.52-2.44 s) + 19BE (its quieter rushes).
+# Trigger: ABILITY 2 (001A #224 StateAbility -> #94 State); the same rewind for everyone else: 00BA's 0E95 + 19BE
+#  (both 70 m, different files, H).
+# Layers: a 0E95 553841642 RanSeq 1.52-2.44 s x7, net -1.5; b 19BE 729083093 RanSeq 1.67-2.20 s x3 -75 cents, net -41;
+#  c 19BE 603061355 RanSeq 0.94-0.95 s x3, net -41; d 19BE 80548779 RanSeq 1.07-1.23 s x2, net -35.5; e 19BE 896459676
+#  RanSeq 1.06-1.23 s x2, net -39.5.
+@tracer.recall.rewind_3p = tracer.recall.rewind_3p.a:-4.5 + tracer.recall.rewind_3p.b*0.958:-44 + tracer.recall.rewind_3p.c@0.15:-44 + tracer.recall.rewind_3p.d:-38.5 + tracer.recall.rewind_3p.e:-42.5
+# tracer.recall.end: Recall lands, own: 0F77 (a 0.61 s snap).
+# Trigger: ABILITY 2 (001A #224 StateAbility -> #94 State); the rewind ends (#1 onEnd -> #25 ActionEffect 00BB): 0F77
+#  (audience 1, no range: hers, H).
+# Layers: a 0F77 1014250037 Sound 0.61 s, net -22.
+@tracer.recall.end = tracer.recall.end.a:-23.5
+# tracer.recall.end_3p: Recall lands heard by others: 0F75 (70 m).
+# Trigger: ABILITY 2 (001A #224 StateAbility -> #94 State); the same landing for everyone else: 00BB's 0F75 and 96F0
+#  (both 70 m, the same file): the louder 0F75 built (L which).
+# Layers: a 0F75 683203016 Sound 0.61 s, net -14.5.
+@tracer.recall.end_3p = tracer.recall.end_3p.a:-17.5
+# tracer.pulse_bomb.throw: Pulse Bomb throw, own: 10A6 (a random 7 of 0.50-0.73 s).
+# Trigger: ULTIMATE (0034 #115 StateAbility -> #41 0.15 s -> #21 the throw; anim #38 alias 0016); her 1P clip 01BC's
+#  effect 0039: 10A6 @0.167 (no range, H).
+# Layers: a 10A6 922547293 RanSeq 0.50-0.73 s x7, net -20.
+@tracer.pulse_bomb.throw = tracer.pulse_bomb.throw.a@0.1667:-21.5
+# tracer.pulse_bomb.throw_3p: Pulse Bomb throw heard by others: 1813 (75 m: a random 4 of 0.43-0.50 s).
+# Trigger: ULTIMATE (0034 #115 StateAbility -> #41 0.15 s -> #21 the throw; anim #38 alias 0016); her 3P clip 01DE
+#  (and 01E0-01E7) effect 004D: 1812 (no range) + 1813 (75 m), the same files: the ranged 1813 built for everyone else
+#  (H ids; M which: 1812, 11 dB louder, reads as an audience-2 copy heard near her).
+# Layers: a 1813 635219065 RanSeq 0.43-0.50 s x4, net -23.
+@tracer.pulse_bomb.throw_3p = tracer.pulse_bomb.throw_3p.a:-26
+# tracer.pulse_bomb.stick: Pulse Bomb sticks to an enemy, own: 1140 (0.41-0.45 s and 0.33-0.42 s at +500 cents) + 8BC5
+#  (the shared character hit).
+# Trigger: the bomb sticks to a character: 0045's m_contactSet 0049, type 0, material 0001 -> 1140 (no range: the
+#  thrower's, M) and its m_D02E414F set 0015, type 0 -> 8BC5 (no range, the shared character hit, as D.Va's missiles;
+#  M that both play on the stick).
+# Layers: a 8BC5 855585076 RanSeq 0.28-0.54 s x10, net +2; b 8BC5 20109607 RanSeq 0.42-0.61 s x10 -160 cents, net -12;
+#  c 8BC5 587249142 RanSeq 0.13-0.31 s x7 +600 cents, net -9.5; d 1140 95776878 RanSeq 0.41-0.45 s x4, net -7; e 1140
+#  435015330 RanSeq 0.33-0.42 s x4 +500 cents, net +5.
+@tracer.pulse_bomb.stick = tracer.pulse_bomb.stick.a@0.03:+0.5 + tracer.pulse_bomb.stick.b*0.912@0.15:-13.5 + tracer.pulse_bomb.stick.c*1.414@0.035:-11 + tracer.pulse_bomb.stick.d:-8.5 + tracer.pulse_bomb.stick.e*1.335@0.05:+3.5
+# tracer.pulse_bomb.stick_3p: Pulse Bomb sticks heard by others: 1141 (75 m) + 9025 (500 m).
+# Trigger: the same stick for everyone else: 0049 type 0's 1141 (75 m) + 0015 type 0's 9025 (500 m; 9029, 12 m, the
+#  same files: the louder built, L).
+# Layers: a 9025 531118399 RanSeq 0.42-0.61 s x10 -160 cents, net -11; b 9025 152029602 RanSeq 0.33-0.52 s x9, net +4;
+#  c 1141 634608368 RanSeq 0.41-0.45 s x4, net -12; d 1141 1003415624 RanSeq 0.33-0.42 s x4 -500 cents, net -6.
+@tracer.pulse_bomb.stick_3p = tracer.pulse_bomb.stick_3p.a*0.912@0.2:-14 + tracer.pulse_bomb.stick_3p.b@0.03:+1 + tracer.pulse_bomb.stick_3p.c:-15 + tracer.pulse_bomb.stick_3p.d*0.749:-9
+# tracer.pulse_bomb.stick_block: Pulse Bomb sticks to a surface: 1142 (a random 4 of 0.48-0.54 s).
+# Trigger: the bomb sticks to the world: 0049 type 2, material 0001 -> 1142 (75 m, the set's only world contact, H;
+#  0015 has no type 2).
+# Layers: a 1142 89682222 RanSeq 0.48-0.54 s x4, net -16.
+@tracer.pulse_bomb.stick_block = tracer.pulse_bomb.stick_block.a:-19
+# tracer.pulse_bomb.fuse: Pulse Bomb fuse: 18AF / 5D7A / 5E79 (60 m: a random 7 of 1.07-1.14 s ticking, 1.48 s and
+#  1.47 s rising beds).
+# Trigger: the 1 s fuse from the stick (0C1B 05D4 -> #445 -> #448 -> #497 -> #136 StateWait v12209 = 1B7B 1.0 s, whose
+#  subgraph #552 plays 016E unless 0131.134): 18AF + 5D7A + 5E79 @0.033, all 60 m audience 2 (H); their 04C lists are
+#  game-parameter feeds (STU_221B83D5 m_parameter / m_dataFlow, read: not conditions), so all three play (M).
+# Layers: a 18AF 181317122 RanSeq 1.07-1.14 s x7, net -4; b 5D7A 221207574 RanSeq 1.07-1.14 s x7, net +5; c 5E79
+#  138785762 RanSeq 1.07-1.14 s x7, net +2; d 5D7A 877080133 Sound 1.48 s, net -8; e 5D7A 470327124 Sound 1.47 s, net
+#  -9; f 5E79 863497487 Sound 1.48 s, net -2; g 5E79 849588094 Sound 1.47 s, net -13.
+@tracer.pulse_bomb.fuse = tracer.pulse_bomb.fuse.a@0.0333:-7 + tracer.pulse_bomb.fuse.b@0.0333:+2 + tracer.pulse_bomb.fuse.c@0.0333:-1 + tracer.pulse_bomb.fuse.d@0.0333:-11 + tracer.pulse_bomb.fuse.e@0.0333:-12 + tracer.pulse_bomb.fuse.f@0.0333:-5 + tracer.pulse_bomb.fuse.g@0.0333:-16
+# tracer.pulse_bomb.explode: Pulse Bomb explosion: 603F (200 m: a 1.01-1.06 s blast, 3.35-3.80 s and 4.70-6.09 s tails
+#  from 0.3 s) + 6040 (60 m: a 2.37-3.00 s body).
+# Trigger: the bomb goes off (0C1B #138 message 1896 -> #69 -> #137 ActionEffect 0153 unless 0131.134 / Stadium 0142):
+#  603F (200 m) + 6040 (60 m), both audience 2 (H).
+# Layers: a 603F 525401241 RanSeq 3.35-3.80 s x10, net -18.5; b 6040 795928533 RanSeq 2.37-3.00 s x7, net +1; c 603F
+#  741222748 RanSeq 4.70-6.09 s x7, net -12.5; d 603F 118268875 RanSeq 1.01-1.06 s x3, net -2.
+@tracer.pulse_bomb.explode = tracer.pulse_bomb.explode.a@0.3:-21.5 + tracer.pulse_bomb.explode.b:-2 + tracer.pulse_bomb.explode.c@0.3:-15.5 + tracer.pulse_bomb.explode.d:-5
+# tracer.melee: Quick melee swing: 1788 (30 m: a random 3 of 0.22-0.36 s and a random 5 of 0.29-0.35 s whooshes, quiet).
+# Trigger: quick melee (0043 #117 alias D): her 3P melee clip 01BE's effect 003A: 1788 @0.133 (30 m, H); the 1P clip
+#  0072's 0838 has none (H), so one rule for everyone (M). 0043's 6BD4 (5D97) is gated on v68945 (#408, a mode flag,
+#  L): left out.
+# Layers: a 1788 990084119 RanSeq 0.29-0.35 s x5, net -44.5; b 1788 342979617 RanSeq 0.22-0.36 s x3, net -44.5.
+@tracer.melee = tracer.melee.a@0.1333:-47.5 + tracer.melee.b@0.1333:-47.5
+# tracer.perk.kinetic_reload: Kinetic Reload, own: 6553 (0.29-0.39 s at +300 cents and 0.39-0.47 s at +900, 0.15-0.17 s late).
+# Trigger: Kinetic Reload (26B6): a quick melee hit refills 12 (#393 message 278A) and, while the magazine is not
+#  full, #441 StateWait onFinished -> #433 ActionEffect 37AA: 6553 (no range, H nodes; L the exact moment).
+# Layers: a 6553 1049623379 RanSeq 0.39-0.47 s x7 +900 cents, net -14; b 6553 111282755 RanSeq 0.29-0.39 s x6 +300
+#  cents, net -13.5.
+@tracer.perk.kinetic_reload = tracer.perk.kinetic_reload.a*1.682@0.17:-15.5 + tracer.perk.kinetic_reload.b*1.189@0.15:-15
+# tracer.perk.quantum: Quantum Entanglement, own: C27B (a 1.45 s shimmer, 0.08 s late).
+# Trigger: Quantum Entanglement (259D): Recall's v10473 -> #416 StateHealthPool 50, whose subgraph #419 plays 6528:
+#  C27B (no range, H).
+# Layers: a C27B 189727875 Sound 1.45 s, net -16.5.
+@tracer.perk.quantum = tracer.perk.quantum.a@0.08:-18
+# tracer.perk.temporal_regen: Temporal Regen, own: C936 (a 0.61 s and a 1.08 s tone, pitched -500 / +500 cents).
+# Trigger: Temporal Regen (2AC7): #465 on v66161 -> #467 (!v478) -> #466 ActionEffect 6564: C936 (no range, H nodes;
+#  L: the regen-starts cue).
+# Layers: a C936 364416519 Sound 0.02 s +500 cents, net -27; b C936 444253236 Sound 0.61 s -500 cents, net -9; c C936
+#  840942032 Sound 1.08 s +500 cents, net -3.
+@tracer.perk.temporal_regen = tracer.perk.temporal_regen.a*1.335:-28.5 + tracer.perk.temporal_regen.b*0.749:-10.5 + tracer.perk.temporal_regen.c*1.335:-4.5
+
+# ===== Sources (layers of the rules above; not events of their own). One line per file (random variants).
+# tracer.pistol.fire_first.a: 5D75 play 173568349 (25 files, 0.159-0.233 s, 2ch); net -8 dB, +0 cents, @0.000 s,
+#  period 0.040 s, avoid repeat 10. H.
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27F7.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2887.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27FE.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27FA.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27F0.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2841.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2899.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27F1.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28AA.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B288D.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27C6.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B282B.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2827.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B287F.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27E9.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B289F.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28A0.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27ED.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28B7.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28B9.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28AB.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28AC.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27E8.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27E1.03F.ogg
+tracer.pistol.fire_first.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2824.03F.ogg
+# tracer.pistol.fire_first.b: 5D75 play 856897906 (20 files, 0.145-0.164 s, 2ch); net -14.5 dB, +0 cents, @0.000 s,
+#  period 0.037 s. H.
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27D2.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27DD.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28A2.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27CC.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28A1.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27F9.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27F4.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27E0.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27EE.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27E3.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27CF.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27F3.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B282E.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28B6.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2896.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2826.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28A7.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28B2.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28A8.03F.ogg
+tracer.pistol.fire_first.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B282A.03F.ogg
+# tracer.pistol.fire_first.c: 5D75 play 602939125 (19 files, 0.156-0.225 s, 2ch); net -13.5 dB, +600 cents, @0.080 s,
+#  period 0.045 s, avoid repeat 4. H.
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28A9.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27DB.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2892.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27CE.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B288E.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28A4.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2801.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27F8.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27CD.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2894.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2883.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2897.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27FF.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28BB.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2830.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2890.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2882.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27F6.03F.ogg
+tracer.pistol.fire_first.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27EB.03F.ogg
+# tracer.pistol.fire_first.d: 5D75 play 538207986 (4 files, 0.180-0.188 s, 2ch); net -3.5 dB, +0 cents, @0.000 s. H.
+tracer.pistol.fire_first.d = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27D1.03F.ogg
+tracer.pistol.fire_first.d = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28B1.03F.ogg
+tracer.pistol.fire_first.d = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2891.03F.ogg
+tracer.pistol.fire_first.d = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28BC.03F.ogg
+# tracer.pistol.fire_first.e: 5D75 play 602727460 (1 file, 0.628 s, 1ch); net -22 dB, +800 cents, @0.005 s, period 0.060 s. H.
+tracer.pistol.fire_first.e = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002A62BF.03F.ogg
+# tracer.pistol.fire.a: 5D75 play 173568349 (25 files, 0.159-0.233 s, 2ch); net -8 dB, +0 cents, @0.000 s, period
+#  0.040 s, avoid repeat 10. H.
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27F7.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2887.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27FE.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27FA.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27F0.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2841.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2899.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27F1.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28AA.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B288D.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27C6.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B282B.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2827.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B287F.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27E9.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B289F.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28A0.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27ED.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28B7.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28B9.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28AB.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28AC.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27E8.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27E1.03F.ogg
+tracer.pistol.fire.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2824.03F.ogg
+# tracer.pistol.fire.b: 5D75 play 856897906 (20 files, 0.145-0.164 s, 2ch); net -14.5 dB, +0 cents, @0.000 s, period 0.037 s. H.
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27D2.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27DD.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28A2.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27CC.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28A1.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27F9.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27F4.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27E0.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27EE.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27E3.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27CF.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27F3.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B282E.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28B6.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2896.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2826.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28A7.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28B2.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28A8.03F.ogg
+tracer.pistol.fire.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B282A.03F.ogg
+# tracer.pistol.fire.c: 5D75 play 602939125 (19 files, 0.156-0.225 s, 2ch); net -13.5 dB, +600 cents, @0.080 s, period
+#  0.045 s, avoid repeat 4. H.
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28A9.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27DB.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2892.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27CE.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B288E.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28A4.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2801.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27F8.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27CD.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2894.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2883.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2897.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27FF.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28BB.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2830.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2890.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B2882.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27F6.03F.ogg
+tracer.pistol.fire.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27EB.03F.ogg
+# tracer.pistol.fire.d: 5D75 play 602727460 (1 file, 0.628 s, 1ch); net -22 dB, +800 cents, @0.005 s, period 0.060 s. H.
+tracer.pistol.fire.d = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002A62BF.03F.ogg
+# tracer.pistol.fire_end.a: 5D75 play 59493070 (10 files, 2.543-3.055 s, 2ch); net -21 dB, +114 cents, @0.000 s,
+#  period 0.040 s. H.
+tracer.pistol.fire_end.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002AD92E.03F.ogg
+tracer.pistol.fire_end.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002AD95F.03F.ogg
+tracer.pistol.fire_end.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002AD947.03F.ogg
+tracer.pistol.fire_end.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002AD97D.03F.ogg
+tracer.pistol.fire_end.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002AD988.03F.ogg
+tracer.pistol.fire_end.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002AD93A.03F.ogg
+tracer.pistol.fire_end.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002AD946.03F.ogg
+tracer.pistol.fire_end.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002AD9A3.03F.ogg
+tracer.pistol.fire_end.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002AD98C.03F.ogg
+tracer.pistol.fire_end.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002AD971.03F.ogg
+# tracer.pistol.fire_end.b: 5D75 stop 1037603276 (10 files, 1.228-1.687 s, 2ch); net -9 dB, +90 cents, @0.000 s. H.
+tracer.pistol.fire_end.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B282C.03F.ogg
+tracer.pistol.fire_end.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B288F.03F.ogg
+tracer.pistol.fire_end.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B282F.03F.ogg
+tracer.pistol.fire_end.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B289D.03F.ogg
+tracer.pistol.fire_end.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28A3.03F.ogg
+tracer.pistol.fire_end.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B288A.03F.ogg
+tracer.pistol.fire_end.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27D9.03F.ogg
+tracer.pistol.fire_end.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27F5.03F.ogg
+tracer.pistol.fire_end.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B28AE.03F.ogg
+tracer.pistol.fire_end.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000005D75.02C/0000002B27C9.03F.ogg
+# tracer.pistol.fire_first_3p.a: 6D24 play 637774298 (36 files, 0.156-0.169 s, 2ch); net -15 dB, +0 cents, @0.005 s,
+#  period 0.040 s, avoid repeat 10. H.
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B287E.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27FD.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2886.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27E2.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2880.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27FC.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2828.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28AD.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27D6.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27D5.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27EC.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B289C.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B288C.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27E7.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28B4.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B288B.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27FB.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2829.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B289E.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27E6.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27D7.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2898.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27C7.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27DC.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28B0.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2802.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27DE.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B289A.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27D8.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2825.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27D4.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28A6.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B282D.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28A5.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27DF.03F.ogg
+tracer.pistol.fire_first_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2884.03F.ogg
+# tracer.pistol.fire_first_3p.b: 6D24 play 1050019626 (11 files, 0.353-0.481 s, 2ch); net -20.5 dB, +0 cents, @0.000
+#  s, period 0.040 s. H.
+tracer.pistol.fire_first_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28BA.03F.ogg
+tracer.pistol.fire_first_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B289B.03F.ogg
+tracer.pistol.fire_first_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27D3.03F.ogg
+tracer.pistol.fire_first_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2895.03F.ogg
+tracer.pistol.fire_first_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2842.03F.ogg
+tracer.pistol.fire_first_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28B5.03F.ogg
+tracer.pistol.fire_first_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27E5.03F.ogg
+tracer.pistol.fire_first_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27C8.03F.ogg
+tracer.pistol.fire_first_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28B8.03F.ogg
+tracer.pistol.fire_first_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27CB.03F.ogg
+tracer.pistol.fire_first_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27CA.03F.ogg
+# tracer.pistol.fire_first_3p.c: 6D24 play 699810140 (3 files, 0.185-0.188 s, 2ch); net -11 dB, +0 cents, @0.000 s. H.
+tracer.pistol.fire_first_3p.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28AF.03F.ogg
+tracer.pistol.fire_first_3p.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28B3.03F.ogg
+tracer.pistol.fire_first_3p.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2885.03F.ogg
+# tracer.pistol.fire_3p.a: 6D24 play 637774298 (36 files, 0.156-0.169 s, 2ch); net -15 dB, +0 cents, @0.005 s, period
+#  0.040 s, avoid repeat 10. H.
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B287E.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27FD.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2886.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27E2.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2880.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27FC.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2828.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28AD.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27D6.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27D5.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27EC.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B289C.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B288C.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27E7.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28B4.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B288B.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27FB.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2829.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B289E.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27E6.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27D7.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2898.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27C7.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27DC.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28B0.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2802.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27DE.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B289A.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27D8.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2825.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27D4.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28A6.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B282D.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28A5.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27DF.03F.ogg
+tracer.pistol.fire_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2884.03F.ogg
+# tracer.pistol.fire_3p.b: 6D24 play 1050019626 (11 files, 0.353-0.481 s, 2ch); net -20.5 dB, +0 cents, @0.000 s,
+#  period 0.040 s. H.
+tracer.pistol.fire_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28BA.03F.ogg
+tracer.pistol.fire_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B289B.03F.ogg
+tracer.pistol.fire_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27D3.03F.ogg
+tracer.pistol.fire_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2895.03F.ogg
+tracer.pistol.fire_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B2842.03F.ogg
+tracer.pistol.fire_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28B5.03F.ogg
+tracer.pistol.fire_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27E5.03F.ogg
+tracer.pistol.fire_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27C8.03F.ogg
+tracer.pistol.fire_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28B8.03F.ogg
+tracer.pistol.fire_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27CB.03F.ogg
+tracer.pistol.fire_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27CA.03F.ogg
+# tracer.pistol.fire_end_3p.a: 6D24 play 212808286 (10 files, 2.543-3.055 s, 2ch); net -21 dB, +114 cents, @0.000 s,
+#  period 0.040 s. H.
+tracer.pistol.fire_end_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002AD92E.03F.ogg
+tracer.pistol.fire_end_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002AD95F.03F.ogg
+tracer.pistol.fire_end_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002AD947.03F.ogg
+tracer.pistol.fire_end_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002AD97D.03F.ogg
+tracer.pistol.fire_end_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002AD988.03F.ogg
+tracer.pistol.fire_end_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002AD93A.03F.ogg
+tracer.pistol.fire_end_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002AD946.03F.ogg
+tracer.pistol.fire_end_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002AD9A3.03F.ogg
+tracer.pistol.fire_end_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002AD98C.03F.ogg
+tracer.pistol.fire_end_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002AD971.03F.ogg
+# tracer.pistol.fire_end_3p.b: 6D24 stop 1034264544 (10 files, 1.228-1.687 s, 2ch); net -19.5 dB, +90 cents, @0.000 s. H.
+tracer.pistol.fire_end_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B282C.03F.ogg
+tracer.pistol.fire_end_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B288F.03F.ogg
+tracer.pistol.fire_end_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B282F.03F.ogg
+tracer.pistol.fire_end_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B289D.03F.ogg
+tracer.pistol.fire_end_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28A3.03F.ogg
+tracer.pistol.fire_end_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B288A.03F.ogg
+tracer.pistol.fire_end_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27D9.03F.ogg
+tracer.pistol.fire_end_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27F5.03F.ogg
+tracer.pistol.fire_end_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B28AE.03F.ogg
+tracer.pistol.fire_end_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000633.00D/Sounds/000000006D24.02C/0000002B27C9.03F.ogg
+# tracer.pistol.bullet_3p.a: 17FE play 203962665 (20 files, 0.340-0.609 s, 1ch); net -12.5 dB, +500 cents, @0.000 s,
+#  avoid repeat 12. H.
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B2574.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B2576.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B2458.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B257D.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B2434.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B257A.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B2575.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B257B.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B2433.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B2578.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B257C.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B257E.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B2435.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B24D6.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B24D7.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B2579.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B2577.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B2552.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B2436.03F.ogg
+tracer.pistol.bullet_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000017FE.02C/0000002B2432.03F.ogg
+# tracer.pistol.empty.a: 167B play 683213282 (1 file, 0.593 s, 2ch); net -12 dB, +20 cents, @0.000 s. H.
+tracer.pistol.empty.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000254.00D/Sounds/00000000167B.02C/0000002B2881.03F.ogg
+# tracer.pistol.hit_enemy.a: 8D36 play 870881486 (10 files, 0.185-0.460 s, 2ch); net 0 dB, +0 cents, @0.000 s, avoid repeat 6. H.
+tracer.pistol.hit_enemy.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002B1885.03F.ogg
+tracer.pistol.hit_enemy.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002B1837.03F.ogg
+tracer.pistol.hit_enemy.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002B1863.03F.ogg
+tracer.pistol.hit_enemy.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002B189F.03F.ogg
+tracer.pistol.hit_enemy.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002B1897.03F.ogg
+tracer.pistol.hit_enemy.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002B183D.03F.ogg
+tracer.pistol.hit_enemy.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002B189C.03F.ogg
+tracer.pistol.hit_enemy.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002B183B.03F.ogg
+tracer.pistol.hit_enemy.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002B183A.03F.ogg
+tracer.pistol.hit_enemy.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002B188F.03F.ogg
+# tracer.pistol.hit_enemy.b: 8D36 play 923138318 (8 files, 0.284-0.300 s, 2ch); net -7.5 dB, +200 cents, @0.000 s. H.
+tracer.pistol.hit_enemy.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002AE2D4.03F.ogg
+tracer.pistol.hit_enemy.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002AE2A0.03F.ogg
+tracer.pistol.hit_enemy.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002AE27D.03F.ogg
+tracer.pistol.hit_enemy.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002AE2E6.03F.ogg
+tracer.pistol.hit_enemy.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002AE338.03F.ogg
+tracer.pistol.hit_enemy.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002AE32F.03F.ogg
+tracer.pistol.hit_enemy.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002AE297.03F.ogg
+tracer.pistol.hit_enemy.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002AE275.03F.ogg
+# tracer.pistol.hit_enemy.c: 8D36 play 21462275 (7 files, 0.127-0.311 s, 1ch); net -18.5 dB, +200 cents, @0.000 s,
+#  avoid repeat 3. H.
+tracer.pistol.hit_enemy.c = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002ABC29.03F.ogg
+tracer.pistol.hit_enemy.c = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002ABC26.03F.ogg
+tracer.pistol.hit_enemy.c = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002ABC1B.03F.ogg
+tracer.pistol.hit_enemy.c = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002ABC32.03F.ogg
+tracer.pistol.hit_enemy.c = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002ABC27.03F.ogg
+tracer.pistol.hit_enemy.c = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002ABC53.03F.ogg
+tracer.pistol.hit_enemy.c = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002ABC4B.03F.ogg
+# tracer.pistol.hit_enemy.d: 8D36 play 607390467 (7 files, 0.127-0.311 s, 1ch); net -11.5 dB, +900 cents, @0.035 s,
+#  avoid repeat 3. H.
+tracer.pistol.hit_enemy.d = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002ABB7F.03F.ogg
+tracer.pistol.hit_enemy.d = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002ABC22.03F.ogg
+tracer.pistol.hit_enemy.d = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002ABC51.03F.ogg
+tracer.pistol.hit_enemy.d = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002ABC2B.03F.ogg
+tracer.pistol.hit_enemy.d = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002ABC46.03F.ogg
+tracer.pistol.hit_enemy.d = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002ABC48.03F.ogg
+tracer.pistol.hit_enemy.d = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000008D36.02C/0000002ABC41.03F.ogg
+# tracer.pistol.hit_enemy_3p.a: 9058 play 409339046 (10 files, 0.185-0.460 s, 2ch); net -2 dB, +0 cents, @0.000 s,
+#  avoid repeat 6. H.
+tracer.pistol.hit_enemy_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000009058.02C/0000002B1885.03F.ogg
+tracer.pistol.hit_enemy_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000009058.02C/0000002B1837.03F.ogg
+tracer.pistol.hit_enemy_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000009058.02C/0000002B1863.03F.ogg
+tracer.pistol.hit_enemy_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000009058.02C/0000002B189F.03F.ogg
+tracer.pistol.hit_enemy_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000009058.02C/0000002B1897.03F.ogg
+tracer.pistol.hit_enemy_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000009058.02C/0000002B183D.03F.ogg
+tracer.pistol.hit_enemy_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000009058.02C/0000002B189C.03F.ogg
+tracer.pistol.hit_enemy_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000009058.02C/0000002B183B.03F.ogg
+tracer.pistol.hit_enemy_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000009058.02C/0000002B183A.03F.ogg
+tracer.pistol.hit_enemy_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000009058.02C/0000002B188F.03F.ogg
+# tracer.pistol.hit_enemy_3p.b: 9058 play 1035846985 (7 files, 0.175-0.247 s, 1ch); net +2.5 dB, +0 cents, @0.000 s,
+#  avoid repeat 6. H.
+tracer.pistol.hit_enemy_3p.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000009058.02C/0000002AE29A.03F.ogg
+tracer.pistol.hit_enemy_3p.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000009058.02C/0000002AE2E5.03F.ogg
+tracer.pistol.hit_enemy_3p.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000009058.02C/0000002AE2D9.03F.ogg
+tracer.pistol.hit_enemy_3p.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000009058.02C/0000002AE2A8.03F.ogg
+tracer.pistol.hit_enemy_3p.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000009058.02C/0000002AE341.03F.ogg
+tracer.pistol.hit_enemy_3p.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000009058.02C/0000002AE33B.03F.ogg
+tracer.pistol.hit_enemy_3p.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/000000009058.02C/0000002AE2CE.03F.ogg
+# tracer.pistol.hit_block.a: 899F play 1051993922 (15 files, 0.159-0.297 s, 1ch); net -14 dB, +500 cents, @0.000 s,
+#  avoid repeat 10. H.
+tracer.pistol.hit_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/00000000899F.02C/0000002AC4D1.03F.ogg
+tracer.pistol.hit_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/00000000899F.02C/0000002ABF96.03F.ogg
+tracer.pistol.hit_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/00000000899F.02C/0000002ABF83.03F.ogg
+tracer.pistol.hit_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/00000000899F.02C/0000002ABFB4.03F.ogg
+tracer.pistol.hit_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/00000000899F.02C/0000002AC4DD.03F.ogg
+tracer.pistol.hit_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/00000000899F.02C/0000002AC4CD.03F.ogg
+tracer.pistol.hit_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/00000000899F.02C/0000002ABF88.03F.ogg
+tracer.pistol.hit_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/00000000899F.02C/0000002AC4CA.03F.ogg
+tracer.pistol.hit_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/00000000899F.02C/0000002AC4C5.03F.ogg
+tracer.pistol.hit_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/00000000899F.02C/0000002AC4B2.03F.ogg
+tracer.pistol.hit_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/00000000899F.02C/0000002ABF86.03F.ogg
+tracer.pistol.hit_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/00000000899F.02C/0000002ABFB7.03F.ogg
+tracer.pistol.hit_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/00000000899F.02C/0000002ABFA0.03F.ogg
+tracer.pistol.hit_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/00000000899F.02C/0000002AC4A9.03F.ogg
+tracer.pistol.hit_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/00000000899F.02C/0000002ABFBE.03F.ogg
+# tracer.pistol.hit_block.b: 89A1 play 831707544 (15 files, 0.159-0.297 s, 1ch); net -18 dB, +0 cents, @0.000 s, avoid
+#  repeat 10. H.
+tracer.pistol.hit_block.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000089A1.02C/0000002AC4D1.03F.ogg
+tracer.pistol.hit_block.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000089A1.02C/0000002ABF96.03F.ogg
+tracer.pistol.hit_block.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000089A1.02C/0000002ABF83.03F.ogg
+tracer.pistol.hit_block.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000089A1.02C/0000002ABFB4.03F.ogg
+tracer.pistol.hit_block.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000089A1.02C/0000002AC4DD.03F.ogg
+tracer.pistol.hit_block.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000089A1.02C/0000002AC4CD.03F.ogg
+tracer.pistol.hit_block.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000089A1.02C/0000002ABF88.03F.ogg
+tracer.pistol.hit_block.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000089A1.02C/0000002AC4CA.03F.ogg
+tracer.pistol.hit_block.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000089A1.02C/0000002AC4C5.03F.ogg
+tracer.pistol.hit_block.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000089A1.02C/0000002AC4B2.03F.ogg
+tracer.pistol.hit_block.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000089A1.02C/0000002ABF86.03F.ogg
+tracer.pistol.hit_block.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000089A1.02C/0000002ABFB7.03F.ogg
+tracer.pistol.hit_block.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000089A1.02C/0000002ABFA0.03F.ogg
+tracer.pistol.hit_block.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000089A1.02C/0000002AC4A9.03F.ogg
+tracer.pistol.hit_block.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Bullet/Sounds/0000000089A1.02C/0000002ABFBE.03F.ogg
+# tracer.reload.a: 0FE9 play 72303796 (3 files, 0.383-0.463 s, 2ch); net -16 dB, +0 cents, @0.050 s. H.
+tracer.reload.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/000000000FE9.02C/0000002A7353.03F.ogg
+tracer.reload.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/000000000FE9.02C/0000002A738C.03F.ogg
+tracer.reload.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/000000000FE9.02C/0000002A732D.03F.ogg
+# tracer.reload.b: 0FE8 play 696081795 (3 files, 0.801-0.833 s, 2ch); net -23.5 dB, +0 cents, @0.200 s. H.
+tracer.reload.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/000000000FE8.02C/0000002ABEB6.03F.ogg
+tracer.reload.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/000000000FE8.02C/0000002ABE92.03F.ogg
+tracer.reload.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/000000000FE8.02C/0000002ABEC7.03F.ogg
+# tracer.reload.c: 1105 play 710771223 (3 files, 0.408-0.753 s, 2ch); net -24.5 dB, +175 cents, @0.233 s. H.
+tracer.reload.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/000000001105.02C/0000002ABE99.03F.ogg
+tracer.reload.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/000000001105.02C/0000002ABEC6.03F.ogg
+tracer.reload.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/000000001105.02C/0000002ABEB9.03F.ogg
+# tracer.reload.d: 0FE7 play 550847241 (3 files, 0.292-0.404 s, 2ch); net -19.5 dB, +180 cents, @0.733 s. H.
+tracer.reload.d = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/000000000FE7.02C/0000002A7376.03F.ogg
+tracer.reload.d = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/000000000FE7.02C/0000002A7328.03F.ogg
+tracer.reload.d = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/000000000FE7.02C/0000002A7389.03F.ogg
+# tracer.reload.e: 168E play 27959067 (2 files, 0.809-0.823 s, 2ch); net -18 dB, +0 cents, @0.133 s. H.
+tracer.reload.e = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/00000000168E.02C/0000002B1AD3.03F.ogg
+tracer.reload.e = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/00000000168E.02C/0000002B1AF9.03F.ogg
+# tracer.reload.f: 1680 play 730473742 (2 files, 0.569-0.572 s, 2ch); net -32.5 dB, +352 cents, @0.447 s. H.
+tracer.reload.f = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/000000001680.02C/0000002A7322.03F.ogg
+tracer.reload.f = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/000000001680.02C/0000002A734F.03F.ogg
+# tracer.reload.g: 1105 play 993218909 (1 file, 0.287 s, 2ch); net -19.5 dB, +0 cents, @0.233 s. H.
+tracer.reload.g = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/000000001105.02C/0000002ABEC5.03F.ogg
+# tracer.reload.h: 1680 play 83345027 (1 file, 0.505 s, 2ch); net -17 dB, +588 cents, @0.267 s. H.
+tracer.reload.h = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/000000000065/Sounds/000000001680.02C/0000002A7381.03F.ogg
+# tracer.reload_3p.a: 0FEB play 360095055 (3 files, 0.383-0.463 s, 2ch); net -29.5 dB, +0 cents, @0.000 s. H.
+tracer.reload_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/000000000115/Sounds/000000000FEB.02C/0000002A7353.03F.ogg
+tracer.reload_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/000000000115/Sounds/000000000FEB.02C/0000002A738C.03F.ogg
+tracer.reload_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/000000000115/Sounds/000000000FEB.02C/0000002A732D.03F.ogg
+# tracer.reload_3p.b: 0FEC play 984352953 (3 files, 0.801-0.833 s, 2ch); net -29.5 dB, +0 cents, @0.154 s. H.
+tracer.reload_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/000000000115/Sounds/000000000FEC.02C/0000002ABEB6.03F.ogg
+tracer.reload_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/000000000115/Sounds/000000000FEC.02C/0000002ABE92.03F.ogg
+tracer.reload_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/000000000115/Sounds/000000000FEC.02C/0000002ABEC7.03F.ogg
+# tracer.reload_3p.c: 0FEA play 465660706 (3 files, 0.292-0.404 s, 2ch); net -29.5 dB, +0 cents, @0.744 s. H.
+tracer.reload_3p.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/000000000115/Sounds/000000000FEA.02C/0000002A7376.03F.ogg
+tracer.reload_3p.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/000000000115/Sounds/000000000FEA.02C/0000002A7328.03F.ogg
+tracer.reload_3p.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/000000000115/Sounds/000000000FEA.02C/0000002A7389.03F.ogg
+# tracer.blink_1.a: 5D78 play 819273263 (10 files, 0.639-0.751 s, 2ch); net -10.5 dB, +0 cents, @0.000 s. H.
+tracer.blink_1.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000005D78.02C/0000002AA828.03F.ogg
+tracer.blink_1.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000005D78.02C/0000002AAD57.03F.ogg
+tracer.blink_1.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000005D78.02C/0000002AAD48.03F.ogg
+tracer.blink_1.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000005D78.02C/0000002AA81B.03F.ogg
+tracer.blink_1.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000005D78.02C/0000002AAA85.03F.ogg
+tracer.blink_1.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000005D78.02C/0000002AA84B.03F.ogg
+tracer.blink_1.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000005D78.02C/0000002AAD40.03F.ogg
+tracer.blink_1.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000005D78.02C/0000002AA81D.03F.ogg
+tracer.blink_1.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000005D78.02C/0000002AA825.03F.ogg
+tracer.blink_1.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000005D78.02C/0000002AAAC4.03F.ogg
+# tracer.blink_1.b: 5D78 play 441091535 (1 file, 0.201 s, 1ch); net -24 dB, +0 cents, @0.000 s. H.
+tracer.blink_1.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000005D78.02C/0000002A78BC.03F.ogg
+# tracer.blink_1_3p.a: 0FDC play 195047378 (5 files, 0.942-1.244 s, 2ch); net -18 dB, +150 cents, @0.000 s. H.
+tracer.blink_1_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000000FDC.02C/0000002AAD47.03F.ogg
+tracer.blink_1_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000000FDC.02C/0000002AAD52.03F.ogg
+tracer.blink_1_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000000FDC.02C/0000002AAD60.03F.ogg
+tracer.blink_1_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000000FDC.02C/0000002AA84E.03F.ogg
+tracer.blink_1_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000000FDC.02C/0000002AA84D.03F.ogg
+# tracer.blink_1_3p.b: 0FDC play 593469649 (1 file, 0.191 s, 2ch); net -18 dB, +400 cents, @0.000 s. H.
+tracer.blink_1_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000000FDC.02C/0000002AADA0.03F.ogg
+# tracer.blink_1_3p.c: 0FDC play 997561881 (1 file, 0.353 s, 2ch); net -20.5 dB, +0 cents, @0.000 s. H.
+tracer.blink_1_3p.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000079.00D/Sounds/000000000FDC.02C/0000002AA844.03F.ogg
+# tracer.blink_2.a: 5D76 play 373925310 (12 files, 0.775-0.959 s, 2ch); net -10.5 dB, +0 cents, @0.000 s. H.
+tracer.blink_2.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000005D76.02C/0000002AA831.03F.ogg
+tracer.blink_2.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000005D76.02C/0000002AA824.03F.ogg
+tracer.blink_2.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000005D76.02C/0000002AAD51.03F.ogg
+tracer.blink_2.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000005D76.02C/0000002AA81F.03F.ogg
+tracer.blink_2.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000005D76.02C/0000002AA847.03F.ogg
+tracer.blink_2.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000005D76.02C/0000002AAD73.03F.ogg
+tracer.blink_2.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000005D76.02C/0000002AA843.03F.ogg
+tracer.blink_2.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000005D76.02C/0000002AA82D.03F.ogg
+tracer.blink_2.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000005D76.02C/0000002AAD59.03F.ogg
+tracer.blink_2.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000005D76.02C/0000002AAD37.03F.ogg
+tracer.blink_2.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000005D76.02C/0000002AAD64.03F.ogg
+tracer.blink_2.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000005D76.02C/0000002AA827.03F.ogg
+# tracer.blink_2.b: 5D76 play 240036964 (1 file, 0.159 s, 1ch); net -23 dB, -150 cents, @0.000 s. H.
+tracer.blink_2.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000005D76.02C/0000002A788D.03F.ogg
+# tracer.blink_2_3p.a: 0FDA play 1016507345 (5 files, 0.942-1.244 s, 2ch); net -19 dB, -350 cents, @0.000 s. H.
+tracer.blink_2_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000000FDA.02C/0000002AAD47.03F.ogg
+tracer.blink_2_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000000FDA.02C/0000002AAD52.03F.ogg
+tracer.blink_2_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000000FDA.02C/0000002AAD60.03F.ogg
+tracer.blink_2_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000000FDA.02C/0000002AA84E.03F.ogg
+tracer.blink_2_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000000FDA.02C/0000002AA84D.03F.ogg
+# tracer.blink_2_3p.b: 0FDA play 130627917 (1 file, 0.353 s, 2ch); net -21.5 dB, +0 cents, @0.000 s. H.
+tracer.blink_2_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000000FDA.02C/0000002AA844.03F.ogg
+# tracer.blink_2_3p.c: 0FDA play 543772547 (1 file, 0.191 s, 2ch); net -18 dB, +200 cents, @0.000 s. H.
+tracer.blink_2_3p.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007A.00D/Sounds/000000000FDA.02C/0000002AADA0.03F.ogg
+# tracer.blink_3.a: 5D77 play 690421799 (15 files, 0.748-1.025 s, 2ch); net -10.5 dB, +0 cents, @0.000 s. H.
+tracer.blink_3.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000005D77.02C/0000002AAD5E.03F.ogg
+tracer.blink_3.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000005D77.02C/0000002AAD42.03F.ogg
+tracer.blink_3.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000005D77.02C/0000002AAD99.03F.ogg
+tracer.blink_3.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000005D77.02C/0000002AAD4D.03F.ogg
+tracer.blink_3.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000005D77.02C/0000002AAD9C.03F.ogg
+tracer.blink_3.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000005D77.02C/0000002AAD5C.03F.ogg
+tracer.blink_3.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000005D77.02C/0000002AAD56.03F.ogg
+tracer.blink_3.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000005D77.02C/0000002AAD9B.03F.ogg
+tracer.blink_3.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000005D77.02C/0000002AAD96.03F.ogg
+tracer.blink_3.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000005D77.02C/0000002AAD4B.03F.ogg
+tracer.blink_3.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000005D77.02C/0000002AAD68.03F.ogg
+tracer.blink_3.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000005D77.02C/0000002AA82F.03F.ogg
+tracer.blink_3.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000005D77.02C/0000002AAD53.03F.ogg
+tracer.blink_3.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000005D77.02C/0000002AA846.03F.ogg
+tracer.blink_3.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000005D77.02C/0000002AAD66.03F.ogg
+# tracer.blink_3.b: 5D77 play 954377315 (1 file, 0.180 s, 1ch); net -22 dB, -100 cents, @0.000 s. H.
+tracer.blink_3.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000005D77.02C/0000002AA82A.03F.ogg
+# tracer.blink_3_3p.a: 0FDB play 311738854 (5 files, 0.942-1.244 s, 2ch); net -19 dB, -850 cents, @0.000 s. H.
+tracer.blink_3_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000000FDB.02C/0000002AAD47.03F.ogg
+tracer.blink_3_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000000FDB.02C/0000002AAD52.03F.ogg
+tracer.blink_3_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000000FDB.02C/0000002AAD60.03F.ogg
+tracer.blink_3_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000000FDB.02C/0000002AA84E.03F.ogg
+tracer.blink_3_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000000FDB.02C/0000002AA84D.03F.ogg
+# tracer.blink_3_3p.b: 0FDB play 105078501 (1 file, 0.191 s, 2ch); net -17 dB, +0 cents, @0.000 s. H.
+tracer.blink_3_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000000FDB.02C/0000002AADA0.03F.ogg
+# tracer.blink_3_3p.c: 0FDB play 760334920 (1 file, 0.353 s, 2ch); net -21.5 dB, +0 cents, @0.000 s. H.
+tracer.blink_3_3p.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007B.00D/Sounds/000000000FDB.02C/0000002AA844.03F.ogg
+# tracer.blink_empty.a: 0FDD play 319390601 (1 file, 0.996 s, 2ch); net -18.5 dB, +0 cents, @0.000 s. H.
+tracer.blink_empty.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000007F.00D/Sounds/000000000FDD.02C/0000002AAD58.03F.ogg
+# tracer.blink_recharge_1.a: 0FE1 play 661951425 (1 file, 0.639 s, 2ch); net -8.5 dB, +0 cents, @0.000 s. H.
+tracer.blink_recharge_1.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000088.00D/Sounds/000000000FE1.02C/0000002AAD49.03F.ogg
+# tracer.blink_recharge_1.b: 0FE1 play 355261787 (1 file, 0.769 s, 2ch); net -11.5 dB, +0 cents, @0.000 s. H.
+tracer.blink_recharge_1.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000088.00D/Sounds/000000000FE1.02C/0000002AA823.03F.ogg
+# tracer.blink_recharge_2.a: 0FDF play 141180587 (1 file, 0.679 s, 2ch); net -8.5 dB, +0 cents, @0.000 s. H.
+tracer.blink_recharge_2.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000089.00D/Sounds/000000000FDF.02C/0000002AADA2.03F.ogg
+# tracer.blink_recharge_2.b: 0FDF play 355261787 (1 file, 0.769 s, 2ch); net -11.5 dB, +0 cents, @0.000 s. H.
+tracer.blink_recharge_2.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000089.00D/Sounds/000000000FDF.02C/0000002AA823.03F.ogg
+# tracer.blink_recharge_3.a: 0FE0 play 481578781 (1 file, 0.671 s, 2ch); net -8.5 dB, +0 cents, @0.000 s. H.
+tracer.blink_recharge_3.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000008A.00D/Sounds/000000000FE0.02C/0000002AAD41.03F.ogg
+# tracer.blink_recharge_3.b: 0FE0 play 355261787 (1 file, 0.769 s, 2ch); net -11.5 dB, +0 cents, @0.000 s. H.
+tracer.blink_recharge_3.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000008A.00D/Sounds/000000000FE0.02C/0000002AA823.03F.ogg
+# tracer.recall.start.a: 10D1 play 655241385 (1 file, 0.233 s, 2ch); net -17 dB, +0 cents, @0.000 s. H.
+tracer.recall.start.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000B9.00D/Sounds/0000000010D1.02C/0000002AAD43.03F.ogg
+# tracer.recall.rewind.a: 0E96 play 914744159 (3 files, 1.665-2.196 s, 2ch); net -17 dB, -75 cents, @0.000 s. H.
+tracer.recall.rewind.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000000E96.02C/0000002AA81A.03F.ogg
+tracer.recall.rewind.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000000E96.02C/0000002AAD5F.03F.ogg
+tracer.recall.rewind.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000000E96.02C/0000002AAD65.03F.ogg
+# tracer.recall.rewind.b: 5D79 play 892371751 (3 files, 0.943-0.953 s, 2ch); net -11 dB, +100 cents, @0.150 s. H.
+tracer.recall.rewind.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000005D79.02C/0000002AA816.03F.ogg
+tracer.recall.rewind.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000005D79.02C/0000002AAD3D.03F.ogg
+tracer.recall.rewind.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000005D79.02C/0000002AA826.03F.ogg
+# tracer.recall.rewind.c: 5D79 play 61014892 (2 files, 1.071-1.231 s, 2ch); net -11.5 dB, +0 cents, @0.000 s. H.
+tracer.recall.rewind.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000005D79.02C/0000002AAD6D.03F.ogg
+tracer.recall.rewind.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000005D79.02C/0000002AA84F.03F.ogg
+# tracer.recall.rewind.d: 5D79 play 371834348 (2 files, 1.060-1.228 s, 2ch); net -15.5 dB, +0 cents, @0.000 s. H.
+tracer.recall.rewind.d = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000005D79.02C/0000002AA82B.03F.ogg
+tracer.recall.rewind.d = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000005D79.02C/0000002A8D12.03F.ogg
+# tracer.recall.rewind.e: 5D79 play 25603429 (1 file, 0.799 s, 1ch); net -8 dB, +0 cents, @0.000 s. H.
+tracer.recall.rewind.e = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000005D79.02C/0000002AAD78.03F.ogg
+# tracer.recall.rewind_3p.a: 0E95 play 553841642 (7 files, 1.524-2.444 s, 2ch); net -1.5 dB, +0 cents, @0.000 s. H.
+tracer.recall.rewind_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000000E95.02C/0000002AAD9E.03F.ogg
+tracer.recall.rewind_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000000E95.02C/0000002AAD4A.03F.ogg
+tracer.recall.rewind_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000000E95.02C/0000002AAD50.03F.ogg
+tracer.recall.rewind_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000000E95.02C/0000002AAD75.03F.ogg
+tracer.recall.rewind_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000000E95.02C/0000002AAD7B.03F.ogg
+tracer.recall.rewind_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000000E95.02C/0000002AAD98.03F.ogg
+tracer.recall.rewind_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/000000000E95.02C/0000002AA81E.03F.ogg
+# tracer.recall.rewind_3p.b: 19BE play 729083093 (3 files, 1.665-2.196 s, 2ch); net -41 dB, -75 cents, @0.000 s. H.
+tracer.recall.rewind_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/0000000019BE.02C/0000002AA81A.03F.ogg
+tracer.recall.rewind_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/0000000019BE.02C/0000002AAD5F.03F.ogg
+tracer.recall.rewind_3p.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/0000000019BE.02C/0000002AAD65.03F.ogg
+# tracer.recall.rewind_3p.c: 19BE play 603061355 (3 files, 0.943-0.953 s, 2ch); net -41 dB, +0 cents, @0.150 s. H.
+tracer.recall.rewind_3p.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/0000000019BE.02C/0000002AA816.03F.ogg
+tracer.recall.rewind_3p.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/0000000019BE.02C/0000002AAD3D.03F.ogg
+tracer.recall.rewind_3p.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/0000000019BE.02C/0000002AA826.03F.ogg
+# tracer.recall.rewind_3p.d: 19BE play 80548779 (2 files, 1.071-1.231 s, 2ch); net -35.5 dB, +0 cents, @0.000 s. H.
+tracer.recall.rewind_3p.d = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/0000000019BE.02C/0000002AAD6D.03F.ogg
+tracer.recall.rewind_3p.d = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/0000000019BE.02C/0000002AA84F.03F.ogg
+# tracer.recall.rewind_3p.e: 19BE play 896459676 (2 files, 1.060-1.228 s, 2ch); net -39.5 dB, +0 cents, @0.000 s. H.
+tracer.recall.rewind_3p.e = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/0000000019BE.02C/0000002AA82B.03F.ogg
+tracer.recall.rewind_3p.e = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BA.00D/Sounds/0000000019BE.02C/0000002A8D12.03F.ogg
+# tracer.recall.end.a: 0F77 play 1014250037 (1 file, 0.608 s, 2ch); net -22 dB, +0 cents, @0.000 s. H.
+tracer.recall.end.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BB.00D/Sounds/000000000F77.02C/0000002AAD94.03F.ogg
+# tracer.recall.end_3p.a: 0F75 play 683203016 (1 file, 0.608 s, 2ch); net -14.5 dB, +0 cents, @0.000 s. H.
+tracer.recall.end_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000000BB.00D/Sounds/000000000F75.02C/0000002AAD94.03F.ogg
+# tracer.pulse_bomb.throw.a: 10A6 play 922547293 (7 files, 0.500-0.732 s, 1ch); net -20 dB, +0 cents, @0.167 s. H.
+tracer.pulse_bomb.throw.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/0000000001BC/Sounds/0000000010A6.02C/0000002A73E8.03F.ogg
+tracer.pulse_bomb.throw.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/0000000001BC/Sounds/0000000010A6.02C/0000002A7325.03F.ogg
+tracer.pulse_bomb.throw.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/0000000001BC/Sounds/0000000010A6.02C/0000002A7341.03F.ogg
+tracer.pulse_bomb.throw.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/0000000001BC/Sounds/0000000010A6.02C/0000002A7344.03F.ogg
+tracer.pulse_bomb.throw.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/0000000001BC/Sounds/0000000010A6.02C/0000002A7334.03F.ogg
+tracer.pulse_bomb.throw.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/0000000001BC/Sounds/0000000010A6.02C/0000002A73EA.03F.ogg
+tracer.pulse_bomb.throw.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D868.00C/AnimationEffects/0000000001BC/Sounds/0000000010A6.02C/0000002A73E5.03F.ogg
+# tracer.pulse_bomb.throw_3p.a: 1813 play 635219065 (4 files, 0.428-0.497 s, 1ch); net -23 dB, +0 cents, @0.000 s. H.
+tracer.pulse_bomb.throw_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/0000000001DE/Sounds/000000001813.02C/0000002AAD6B.03F.ogg
+tracer.pulse_bomb.throw_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/0000000001DE/Sounds/000000001813.02C/0000002AAD6F.03F.ogg
+tracer.pulse_bomb.throw_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/0000000001DE/Sounds/000000001813.02C/0000002AAD95.03F.ogg
+tracer.pulse_bomb.throw_3p.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/0000000001DE/Sounds/000000001813.02C/0000002AA832.03F.ogg
+# tracer.pulse_bomb.stick.a: 8BC5 play 855585076 (10 files, 0.279-0.543 s, 1ch); net +2 dB, +0 cents, @0.030 s, avoid repeat 6. H.
+tracer.pulse_bomb.stick.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002AFE9D.03F.ogg
+tracer.pulse_bomb.stick.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002AFE44.03F.ogg
+tracer.pulse_bomb.stick.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002AFCEB.03F.ogg
+tracer.pulse_bomb.stick.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002AFE6A.03F.ogg
+tracer.pulse_bomb.stick.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002AFE8B.03F.ogg
+tracer.pulse_bomb.stick.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002AFEA9.03F.ogg
+tracer.pulse_bomb.stick.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002AFCE7.03F.ogg
+tracer.pulse_bomb.stick.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002AFCE5.03F.ogg
+tracer.pulse_bomb.stick.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002AFE56.03F.ogg
+tracer.pulse_bomb.stick.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002AFD2E.03F.ogg
+# tracer.pulse_bomb.stick.b: 8BC5 play 20109607 (10 files, 0.420-0.612 s, 2ch); net -12 dB, -160 cents, @0.150 s. H.
+tracer.pulse_bomb.stick.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002A84FB.03F.ogg
+tracer.pulse_bomb.stick.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002A8525.03F.ogg
+tracer.pulse_bomb.stick.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002A8507.03F.ogg
+tracer.pulse_bomb.stick.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002A8522.03F.ogg
+tracer.pulse_bomb.stick.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002A84BC.03F.ogg
+tracer.pulse_bomb.stick.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002A84F2.03F.ogg
+tracer.pulse_bomb.stick.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002A84F4.03F.ogg
+tracer.pulse_bomb.stick.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002A84F0.03F.ogg
+tracer.pulse_bomb.stick.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002A8506.03F.ogg
+tracer.pulse_bomb.stick.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002A84EF.03F.ogg
+# tracer.pulse_bomb.stick.c: 8BC5 play 587249142 (7 files, 0.127-0.311 s, 1ch); net -9.5 dB, +600 cents, @0.035 s,
+#  avoid repeat 3. H.
+tracer.pulse_bomb.stick.c = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002ABB7F.03F.ogg
+tracer.pulse_bomb.stick.c = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002ABC22.03F.ogg
+tracer.pulse_bomb.stick.c = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002ABC51.03F.ogg
+tracer.pulse_bomb.stick.c = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002ABC2B.03F.ogg
+tracer.pulse_bomb.stick.c = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002ABC46.03F.ogg
+tracer.pulse_bomb.stick.c = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002ABC48.03F.ogg
+tracer.pulse_bomb.stick.c = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000008BC5.02C/0000002ABC41.03F.ogg
+# tracer.pulse_bomb.stick.d: 1140 play 95776878 (4 files, 0.412-0.449 s, 1ch); net -7 dB, +0 cents, @0.000 s. H.
+tracer.pulse_bomb.stick.d = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001140.02C/0000002AA850.03F.ogg
+tracer.pulse_bomb.stick.d = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001140.02C/0000002AA833.03F.ogg
+tracer.pulse_bomb.stick.d = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001140.02C/0000002AA830.03F.ogg
+tracer.pulse_bomb.stick.d = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001140.02C/0000002AA848.03F.ogg
+# tracer.pulse_bomb.stick.e: 1140 play 435015330 (4 files, 0.327-0.417 s, 1ch); net +5 dB, +500 cents, @0.050 s, avoid
+#  repeat 2. H.
+tracer.pulse_bomb.stick.e = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001140.02C/0000002AA819.03F.ogg
+tracer.pulse_bomb.stick.e = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001140.02C/0000002AAD62.03F.ogg
+tracer.pulse_bomb.stick.e = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001140.02C/0000002AAD39.03F.ogg
+tracer.pulse_bomb.stick.e = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001140.02C/0000002AA82E.03F.ogg
+# tracer.pulse_bomb.stick_3p.a: 9025 play 531118399 (10 files, 0.420-0.612 s, 2ch); net -11 dB, -160 cents, @0.200 s. H.
+tracer.pulse_bomb.stick_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002A84FB.03F.ogg
+tracer.pulse_bomb.stick_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002A8525.03F.ogg
+tracer.pulse_bomb.stick_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002A8507.03F.ogg
+tracer.pulse_bomb.stick_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002A8522.03F.ogg
+tracer.pulse_bomb.stick_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002A84BC.03F.ogg
+tracer.pulse_bomb.stick_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002A84F2.03F.ogg
+tracer.pulse_bomb.stick_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002A84F4.03F.ogg
+tracer.pulse_bomb.stick_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002A84F0.03F.ogg
+tracer.pulse_bomb.stick_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002A8506.03F.ogg
+tracer.pulse_bomb.stick_3p.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002A84EF.03F.ogg
+# tracer.pulse_bomb.stick_3p.b: 9025 play 152029602 (9 files, 0.327-0.519 s, 1ch); net +4 dB, +0 cents, @0.030 s,
+#  avoid repeat 6. H.
+tracer.pulse_bomb.stick_3p.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002AE339.03F.ogg
+tracer.pulse_bomb.stick_3p.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002AE2DF.03F.ogg
+tracer.pulse_bomb.stick_3p.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002AE33A.03F.ogg
+tracer.pulse_bomb.stick_3p.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002AE32B.03F.ogg
+tracer.pulse_bomb.stick_3p.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002AE2AD.03F.ogg
+tracer.pulse_bomb.stick_3p.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002AE2DE.03F.ogg
+tracer.pulse_bomb.stick_3p.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002AE343.03F.ogg
+tracer.pulse_bomb.stick_3p.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002AE2D7.03F.ogg
+tracer.pulse_bomb.stick_3p.b = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000009025.02C/0000002AE2B3.03F.ogg
+# tracer.pulse_bomb.stick_3p.c: 1141 play 634608368 (4 files, 0.412-0.449 s, 1ch); net -12 dB, +0 cents, @0.000 s. H.
+tracer.pulse_bomb.stick_3p.c = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001141.02C/0000002AA848.03F.ogg
+tracer.pulse_bomb.stick_3p.c = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001141.02C/0000002AA830.03F.ogg
+tracer.pulse_bomb.stick_3p.c = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001141.02C/0000002AA833.03F.ogg
+tracer.pulse_bomb.stick_3p.c = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001141.02C/0000002AA850.03F.ogg
+# tracer.pulse_bomb.stick_3p.d: 1141 play 1003415624 (4 files, 0.327-0.417 s, 1ch); net -6 dB, -500 cents, @0.000 s,
+#  avoid repeat 2. H.
+tracer.pulse_bomb.stick_3p.d = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001141.02C/0000002AA819.03F.ogg
+tracer.pulse_bomb.stick_3p.d = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001141.02C/0000002AAD62.03F.ogg
+tracer.pulse_bomb.stick_3p.d = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001141.02C/0000002AAD39.03F.ogg
+tracer.pulse_bomb.stick_3p.d = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001141.02C/0000002AA82E.03F.ogg
+# tracer.pulse_bomb.stick_block.a: 1142 play 89682222 (4 files, 0.476-0.543 s, 1ch); net -16 dB, +0 cents, @0.000 s. H.
+tracer.pulse_bomb.stick_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001142.02C/0000002AA849.03F.ogg
+tracer.pulse_bomb.stick_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001142.02C/0000002AAD72.03F.ogg
+tracer.pulse_bomb.stick_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001142.02C/0000002AAD90.03F.ogg
+tracer.pulse_bomb.stick_block.a = ../../research/tracer/sounds/ExtraSounds/Tracer/PulseBomb/Sounds/000000001142.02C/0000002AAD7A.03F.ogg
+# tracer.pulse_bomb.fuse.a: 18AF play 181317122 (7 files, 1.069-1.143 s, 2ch); net -4 dB, +0 cents, @0.033 s. H.
+tracer.pulse_bomb.fuse.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/0000000018AF.02C/0000002AAD55.03F.ogg
+tracer.pulse_bomb.fuse.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/0000000018AF.02C/0000002AA821.03F.ogg
+tracer.pulse_bomb.fuse.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/0000000018AF.02C/0000002AAD44.03F.ogg
+tracer.pulse_bomb.fuse.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/0000000018AF.02C/0000002AADAD.03F.ogg
+tracer.pulse_bomb.fuse.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/0000000018AF.02C/0000002AAD38.03F.ogg
+tracer.pulse_bomb.fuse.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/0000000018AF.02C/0000002AADA4.03F.ogg
+tracer.pulse_bomb.fuse.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/0000000018AF.02C/0000002AAD3A.03F.ogg
+# tracer.pulse_bomb.fuse.b: 5D7A play 221207574 (7 files, 1.069-1.143 s, 2ch); net +5 dB, +0 cents, @0.033 s. H.
+tracer.pulse_bomb.fuse.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005D7A.02C/0000002AAD55.03F.ogg
+tracer.pulse_bomb.fuse.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005D7A.02C/0000002AA821.03F.ogg
+tracer.pulse_bomb.fuse.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005D7A.02C/0000002AAD44.03F.ogg
+tracer.pulse_bomb.fuse.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005D7A.02C/0000002AADAD.03F.ogg
+tracer.pulse_bomb.fuse.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005D7A.02C/0000002AAD38.03F.ogg
+tracer.pulse_bomb.fuse.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005D7A.02C/0000002AADA4.03F.ogg
+tracer.pulse_bomb.fuse.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005D7A.02C/0000002AAD3A.03F.ogg
+# tracer.pulse_bomb.fuse.c: 5E79 play 138785762 (7 files, 1.069-1.143 s, 2ch); net +2 dB, +0 cents, @0.033 s. H.
+tracer.pulse_bomb.fuse.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005E79.02C/0000002AAD55.03F.ogg
+tracer.pulse_bomb.fuse.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005E79.02C/0000002AA821.03F.ogg
+tracer.pulse_bomb.fuse.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005E79.02C/0000002AAD44.03F.ogg
+tracer.pulse_bomb.fuse.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005E79.02C/0000002AADAD.03F.ogg
+tracer.pulse_bomb.fuse.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005E79.02C/0000002AAD38.03F.ogg
+tracer.pulse_bomb.fuse.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005E79.02C/0000002AADA4.03F.ogg
+tracer.pulse_bomb.fuse.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005E79.02C/0000002AAD3A.03F.ogg
+# tracer.pulse_bomb.fuse.d: 5D7A play 877080133 (1 file, 1.481 s, 2ch); net -8 dB, +0 cents, @0.033 s. H.
+tracer.pulse_bomb.fuse.d = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005D7A.02C/0000002AA84A.03F.ogg
+# tracer.pulse_bomb.fuse.e: 5D7A play 470327124 (1 file, 1.471 s, 1ch); net -9 dB, +0 cents, @0.033 s. H.
+tracer.pulse_bomb.fuse.e = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005D7A.02C/0000002AADAF.03F.ogg
+# tracer.pulse_bomb.fuse.f: 5E79 play 863497487 (1 file, 1.481 s, 2ch); net -2 dB, +0 cents, @0.033 s. H.
+tracer.pulse_bomb.fuse.f = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005E79.02C/0000002AA84A.03F.ogg
+# tracer.pulse_bomb.fuse.g: 5E79 play 849588094 (1 file, 1.471 s, 1ch); net -13 dB, +0 cents, @0.033 s. H.
+tracer.pulse_bomb.fuse.g = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/00000000016E.00D/Sounds/000000005E79.02C/0000002AADAF.03F.ogg
+# tracer.pulse_bomb.explode.a: 603F play 525401241 (10 files, 3.353-3.801 s, 2ch); net -18.5 dB, +0 cents, @0.300 s. H.
+tracer.pulse_bomb.explode.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002A5B11.03F.ogg
+tracer.pulse_bomb.explode.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002A5B74.03F.ogg
+tracer.pulse_bomb.explode.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002A5B7F.03F.ogg
+tracer.pulse_bomb.explode.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002A5B3D.03F.ogg
+tracer.pulse_bomb.explode.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002A5B6E.03F.ogg
+tracer.pulse_bomb.explode.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002A5B77.03F.ogg
+tracer.pulse_bomb.explode.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002A5B6B.03F.ogg
+tracer.pulse_bomb.explode.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002A5ACE.03F.ogg
+tracer.pulse_bomb.explode.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002A5BA4.03F.ogg
+tracer.pulse_bomb.explode.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002A5AE9.03F.ogg
+# tracer.pulse_bomb.explode.b: 6040 play 795928533 (7 files, 2.372-2.996 s, 2ch); net +1 dB, +0 cents, @0.000 s. H.
+tracer.pulse_bomb.explode.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/000000006040.02C/0000002AAD74.03F.ogg
+tracer.pulse_bomb.explode.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/000000006040.02C/0000002AAD6E.03F.ogg
+tracer.pulse_bomb.explode.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/000000006040.02C/0000002AAD76.03F.ogg
+tracer.pulse_bomb.explode.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/000000006040.02C/0000002AAD3C.03F.ogg
+tracer.pulse_bomb.explode.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/000000006040.02C/0000002AAAC5.03F.ogg
+tracer.pulse_bomb.explode.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/000000006040.02C/0000002AADA6.03F.ogg
+tracer.pulse_bomb.explode.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/000000006040.02C/0000002AADAA.03F.ogg
+# tracer.pulse_bomb.explode.c: 603F play 741222748 (7 files, 4.697-6.087 s, 2ch); net -12.5 dB, +0 cents, @0.300 s. H.
+tracer.pulse_bomb.explode.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002A5AD5.03F.ogg
+tracer.pulse_bomb.explode.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002A5AC2.03F.ogg
+tracer.pulse_bomb.explode.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002A5B3E.03F.ogg
+tracer.pulse_bomb.explode.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002A5B86.03F.ogg
+tracer.pulse_bomb.explode.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002A5B49.03F.ogg
+tracer.pulse_bomb.explode.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002A5AB7.03F.ogg
+tracer.pulse_bomb.explode.c = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002A5B8D.03F.ogg
+# tracer.pulse_bomb.explode.d: 603F play 118268875 (3 files, 1.012-1.060 s, 2ch); net -2 dB, +0 cents, @0.000 s. H.
+tracer.pulse_bomb.explode.d = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002AAD67.03F.ogg
+tracer.pulse_bomb.explode.d = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002AAD92.03F.ogg
+tracer.pulse_bomb.explode.d = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Effects/000000000153.00D/Sounds/00000000603F.02C/0000002AA834.03F.ogg
+# tracer.melee.a: 1788 play 990084119 (5 files, 0.292-0.353 s, 2ch); net -44.5 dB, +0 cents, @0.133 s, avoid repeat 3. H.
+tracer.melee.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/0000000001BE/Sounds/000000001788.02C/0000002A7352.03F.ogg
+tracer.melee.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/0000000001BE/Sounds/000000001788.02C/0000002A731F.03F.ogg
+tracer.melee.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/0000000001BE/Sounds/000000001788.02C/0000002A7340.03F.ogg
+tracer.melee.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/0000000001BE/Sounds/000000001788.02C/0000002A731D.03F.ogg
+tracer.melee.a = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/0000000001BE/Sounds/000000001788.02C/0000002A7385.03F.ogg
+# tracer.melee.b: 1788 play 342979617 (3 files, 0.223-0.356 s, 2ch); net -44.5 dB, +0 cents, @0.133 s, avoid repeat 2. H.
+tracer.melee.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/0000000001BE/Sounds/000000001788.02C/0000002A7348.03F.ogg
+tracer.melee.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/0000000001BE/Sounds/000000001788.02C/0000002A7343.03F.ogg
+tracer.melee.b = ../../research/tracer/extract/Heroes/Tracer/Skin/Overwatch/Overwatch/Models/00000000D748.00C/AnimationEffects/0000000001BE/Sounds/000000001788.02C/0000002A7395.03F.ogg
+# tracer.perk.kinetic_reload.a: 6553 play 1049623379 (7 files, 0.385-0.468 s, 1ch); net -14 dB, +900 cents, @0.170 s,
+#  avoid repeat 3. H.
+tracer.perk.kinetic_reload.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Perks/Sounds/000000006553.02C/0000002A9F97.03F.ogg
+tracer.perk.kinetic_reload.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Perks/Sounds/000000006553.02C/0000002AA2E4.03F.ogg
+tracer.perk.kinetic_reload.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Perks/Sounds/000000006553.02C/0000002AA2E2.03F.ogg
+tracer.perk.kinetic_reload.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Perks/Sounds/000000006553.02C/0000002AA23E.03F.ogg
+tracer.perk.kinetic_reload.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Perks/Sounds/000000006553.02C/0000002AA151.03F.ogg
+tracer.perk.kinetic_reload.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Perks/Sounds/000000006553.02C/0000002AA144.03F.ogg
+tracer.perk.kinetic_reload.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Perks/Sounds/000000006553.02C/0000002AA2A0.03F.ogg
+# tracer.perk.kinetic_reload.b: 6553 play 111282755 (6 files, 0.289-0.388 s, 2ch); net -13.5 dB, +300 cents, @0.150 s,
+#  avoid repeat 5. H.
+tracer.perk.kinetic_reload.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Perks/Sounds/000000006553.02C/0000002AA163.03F.ogg
+tracer.perk.kinetic_reload.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Perks/Sounds/000000006553.02C/0000002AA143.03F.ogg
+tracer.perk.kinetic_reload.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Perks/Sounds/000000006553.02C/0000002A9FB6.03F.ogg
+tracer.perk.kinetic_reload.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Perks/Sounds/000000006553.02C/0000002AA203.03F.ogg
+tracer.perk.kinetic_reload.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Perks/Sounds/000000006553.02C/0000002AA298.03F.ogg
+tracer.perk.kinetic_reload.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Perks/Sounds/000000006553.02C/0000002AA23A.03F.ogg
+# tracer.perk.quantum.a: C27B play 189727875 (1 file, 1.447 s, 2ch); net -16.5 dB, +0 cents, @0.080 s. H.
+tracer.perk.quantum.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Perks/Sounds/00000000C27B.02C/0000002AAE88.03F.ogg
+# tracer.perk.temporal_regen.a: C936 play 364416519 (1 file, 0.016 s, 2ch); net -27 dB, +500 cents, @0.000 s. H.
+tracer.perk.temporal_regen.a = ../../research/tracer/sounds/ExtraSounds/Tracer/Perks/Sounds/00000000C936.02C/0000002B1597.03F.ogg
+# tracer.perk.temporal_regen.b: C936 play 444253236 (1 file, 0.609 s, 2ch); net -9 dB, -500 cents, @0.000 s. H.
+tracer.perk.temporal_regen.b = ../../research/tracer/sounds/ExtraSounds/Tracer/Perks/Sounds/00000000C936.02C/0000002B1599.03F.ogg
+# tracer.perk.temporal_regen.c: C936 play 840942032 (1 file, 1.081 s, 2ch); net -3 dB, +500 cents, @0.000 s. H.
+tracer.perk.temporal_regen.c = ../../research/tracer/sounds/ExtraSounds/Tracer/Perks/Sounds/00000000C936.02C/0000002B159A.03F.ogg
+
+# ===== Subtitles (the jar's lang names none of her events)
+$tracer.pistol.fire_first = Pulse Pistols fire
+$tracer.pistol.fire = Pulse Pistols fire
+$tracer.pistol.fire_end = Pulse Pistols stop
+$tracer.pistol.fire_first_3p = Pulse Pistols fire
+$tracer.pistol.fire_3p = Pulse Pistols fire
+$tracer.pistol.fire_end_3p = Pulse Pistols stop
+$tracer.pistol.bullet_3p = Pulse Pistols crack
+$tracer.pistol.empty = Pulse Pistols click empty
+$tracer.pistol.hit_enemy = Pulse Pistols hit
+$tracer.pistol.hit_enemy_3p = Pulse Pistols hit
+$tracer.pistol.hit_block = Bullet hits a wall
+$tracer.reload = Pulse Pistols reload
+$tracer.reload_3p = Pulse Pistols reload
+$tracer.blink_1 = Tracer blinks
+$tracer.blink_1_3p = Tracer blinks
+$tracer.blink_2 = Tracer blinks
+$tracer.blink_2_3p = Tracer blinks
+$tracer.blink_3 = Tracer blinks
+$tracer.blink_3_3p = Tracer blinks
+$tracer.blink_empty = Blink unavailable
+$tracer.blink_recharge_1 = Blink recharges
+$tracer.blink_recharge_2 = Blink recharges
+$tracer.blink_recharge_3 = Blink recharges
+$tracer.recall.start = Recall starts
+$tracer.recall.rewind = Tracer rewinds
+$tracer.recall.rewind_3p = Tracer rewinds
+$tracer.recall.end = Tracer lands from Recall
+$tracer.recall.end_3p = Tracer lands from Recall
+$tracer.pulse_bomb.throw = Pulse Bomb thrown
+$tracer.pulse_bomb.throw_3p = Pulse Bomb thrown
+$tracer.pulse_bomb.stick = Pulse Bomb sticks
+$tracer.pulse_bomb.stick_3p = Pulse Bomb sticks
+$tracer.pulse_bomb.stick_block = Pulse Bomb sticks
+$tracer.pulse_bomb.fuse = Pulse Bomb ticks
+$tracer.pulse_bomb.explode = Pulse Bomb explodes
+$tracer.melee = Tracer swings
+$tracer.perk.kinetic_reload = Kinetic Reload
+$tracer.perk.quantum = Quantum Entanglement
+$tracer.perk.temporal_regen = Temporal Regen
+
+# ===== For the integration: each event, loop or one-shot, who it is built for, its length, and what triggers it
+# (own = the player the effect plays on, in the head: Tracer, or the shooter; 3p = everyone else, at her
+# / the target / the hit point / the barrier; both = one rule for everyone). 'EXTRA' = in the data but not needed for the
+# kit's moments. Not built: see 'Not mapped'.
+#   tracer.pistol.fire_first           one-shot own  0.40 s; PRIMARY held (0016 #16 -> #78 StateStack -> #17
+#     StateWeaponVolley + #74 STU_691BFA55 holding effect 0633 on pistol v49, H); the first shot of a burst: 5D75's
+#     once set (538207986) plus one trigger of the stream sets
+#   tracer.pistol.fire                 one-shot own  0.40 s; PRIMARY held (0016 #16 -> #78 StateStack -> #17
+#     StateWeaponVolley + #74 STU_691BFA55 holding effect 0633 on pistol v49, H); every later shot of the burst
+#   tracer.pistol.fire_end             one-shot own  2.86 s; the burst ends (PRIMARY let go, the magazine empty, or a
+#     higher v33 state: #78 ends and 0633 stops; 5D75's Stop event, H)
+#   tracer.pistol.fire_first_3p        one-shot 3p   0.48 s; PRIMARY held (0016 #16 -> #78 StateStack -> #17
+#     StateWeaponVolley + #74 STU_691BFA55 holding effect 0633 on pistol v49, H); the same first shot, at her for
+#     everyone else: 0633's 6D24 (200 m, audience 2, H)
+#   tracer.pistol.fire_3p              one-shot 3p   0.48 s; PRIMARY held (0016 #16 -> #78 StateStack -> #17
+#     StateWeaponVolley + #74 STU_691BFA55 holding effect 0633 on pistol v49, H); every later shot, for everyone else
+#   tracer.pistol.fire_end_3p          one-shot 3p   2.86 s; the burst ends, at her for everyone else (6D24's ring-out
+#     and Stop set, H)
+#   tracer.pistol.bullet_3p            one-shot 3p   0.46 s; each bullet as it is made: the bullet entity 0018 (0016
+#     #17's projectile, two per shot) STUProjectileVisualComponent m_2170A015 'sound only' slot (Juno's / Ana's
+#     reading) effect 0071 -> 0F97 and 17FE, both 60 m audience 2 with the same files: the louder 17FE built (H slot
+#     and ids, L which copy). Two bullets per shot: play it once per shot (M)
+#   tracer.pistol.empty                one-shot own  0.59 s; the volley ends with the magazine empty: #17 onEnd -> #62
+#     (v53 == 0) -> #60 effect 0254 and #112 effect 3506, both 167B (no range, audience 1: hers, H); 167B built once
+#   tracer.pistol.hit_enemy            one-shot own  0.46 s; a bullet hits a character: 0018's m_contactSet 000C, type
+#     0, material 0001 -> 8D36 (no range: the shooter's, as Brigitte's type-0 reading, M); type 1 holds the same three
+#   tracer.pistol.hit_enemy_3p         one-shot 3p   0.46 s; the same hit, at the target for everyone else: type 0's
+#     9058 (500 m) and 9054 (12 m) hold the same files: the louder 9058 built (L which copy)
+#   tracer.pistol.hit_block            one-shot both 0.30 s; a bullet hits the world: 000C type 2, material 0001 ->
+#     899F (90 m, +500 cents) + 89A1 (32 m), built together (Pharah's rocket rule); the other 22 materials have their
+#     own (contacts.json)
+#   tracer.reload                      one-shot own  1.10 s; RELOAD or an empty magazine after the 0.2 s lock (0016
+#     #76 -> #1 StateAnim alias 0004, 1.0 s): her 1P reload clip 0065's effect 000B: 0FE9 @0, 168E @0.133, 0FE8 @0.2,
+#     1105 @0.233, 1680 @0.267, 0FE7 @0.733 (all no range, H)
+#   tracer.reload_3p                   one-shot 3p   1.15 s; the same reload for everyone else: the 3P clip 011A's
+#     effect 0021: 0FEB @0, 0FEC @0.2, 0FEA @0.967 of its 1.3 s (45 m, H), scaled to the 1.0 s reload (0.154, 0.744:
+#     M)
+#   tracer.blink_1                     one-shot own  0.75 s; ABILITY 1 or SECONDARY (0024 #27 / #147 -> #153 0.1 s ->
+#     #57 -> #34 the blink; success #453 -> #101 the blink counter v59); the first blink (v59 == 1, #104 -> #94):
+#     effect 0079's 5D78 (audience 1, no range: hers, H)
+#   tracer.blink_1_3p                  one-shot 3p   1.14 s; ABILITY 1 or SECONDARY (0024 #27 / #147 -> #153 0.1 s ->
+#     #57 -> #34 the blink; success #453 -> #101 the blink counter v59); the first blink (v59 == 1, #104 -> #94):
+#     effect 0079's 0FDC (70 m, everyone else, H)
+#   tracer.blink_2                     one-shot own  0.96 s; ABILITY 1 or SECONDARY (0024 #27 / #147 -> #153 0.1 s ->
+#     #57 -> #34 the blink; success #453 -> #101 the blink counter v59); the second within 2 s (v59 == 2, #103 ->
+#     #97): effect 007A's 5D76 (audience 1, no range: hers, H)
+#   tracer.blink_2_3p                  one-shot 3p   1.52 s; ABILITY 1 or SECONDARY (0024 #27 / #147 -> #153 0.1 s ->
+#     #57 -> #34 the blink; success #453 -> #101 the blink counter v59); the second within 2 s (v59 == 2, #103 ->
+#     #97): effect 007A's 0FDA (70 m, everyone else, H)
+#   tracer.blink_3                     one-shot own  1.02 s; ABILITY 1 or SECONDARY (0024 #27 / #147 -> #153 0.1 s ->
+#     #57 -> #34 the blink; success #453 -> #101 the blink counter v59); the third or later within 2 s (#103 false ->
+#     #98): effect 007B's 5D77 (audience 1, no range: hers, H)
+#   tracer.blink_3_3p                  one-shot 3p   2.03 s; ABILITY 1 or SECONDARY (0024 #27 / #147 -> #153 0.1 s ->
+#     #57 -> #34 the blink; success #453 -> #101 the blink counter v59); the third or later within 2 s (#103 false ->
+#     #98): effect 007B's 0FDB (70 m, everyone else, H)
+#   tracer.blink_empty                 one-shot own  1.00 s; a Blink press that fails (0024 #57 false -> #200 [the
+#     press is hers] -> #77 effect 007F, then #120 the shared 0186): 0FDD (no range: hers, M; L that it means 'no
+#     charge')
+#   tracer.blink_recharge_1            one-shot own  0.77 s; a Blink charge comes back (0024 #143 StateChaseVar
+#     onFinished -> #56 v11 += 1; #450 watches v11 -> #449 -> #195 ActionSwitch on v11: case 1 -> effect 0088): 0FE1
+#     (no range: hers, H nodes; M that the switch picks the chime by the charges now held)
+#   tracer.blink_recharge_2            one-shot own  0.77 s; a Blink charge comes back (0024 #143 StateChaseVar
+#     onFinished -> #56 v11 += 1; #450 watches v11 -> #449 -> #195 ActionSwitch on v11: case 2 -> effect 0089): 0FDF
+#     (no range: hers, H nodes; M that the switch picks the chime by the charges now held)
+#   tracer.blink_recharge_3            one-shot own  0.77 s; a Blink charge comes back (0024 #143 StateChaseVar
+#     onFinished -> #56 v11 += 1; #450 watches v11 -> #449 -> #195 ActionSwitch on v11: case 3 -> effect 008A): 0FE0
+#     (no range: hers, H nodes; M that the switch picks the chime by the charges now held)
+#   tracer.recall.start                one-shot own  0.23 s; ABILITY 2 (001A #224 StateAbility -> #94 State); #94
+#     onBegin -> #167 ActionEffect 00B9: 10D1 (audience 1, no range: hers only; no copy for others, H)
+#   tracer.recall.rewind               one-shot own  2.29 s; ABILITY 2 (001A #224 StateAbility -> #94 State) -> #1
+#     STU_41B3FC2B (the 0.9 s rewind) onBegin -> #24 ActionEffect 00BA: 5D79 + 0E96 (audience 1, no range: hers, H)
+#   tracer.recall.rewind_3p            one-shot 3p   2.44 s; ABILITY 2 (001A #224 StateAbility -> #94 State); the same
+#     rewind for everyone else: 00BA's 0E95 + 19BE (both 70 m, different files, H)
+#   tracer.recall.end                  one-shot own  0.61 s; ABILITY 2 (001A #224 StateAbility -> #94 State); the
+#     rewind ends (#1 onEnd -> #25 ActionEffect 00BB): 0F77 (audience 1, no range: hers, H)
+#   tracer.recall.end_3p               one-shot 3p   0.61 s; ABILITY 2 (001A #224 StateAbility -> #94 State); the same
+#     landing for everyone else: 00BB's 0F75 and 96F0 (both 70 m, the same file): the louder 0F75 built (L which)
+#   tracer.pulse_bomb.throw            one-shot own  0.90 s; ULTIMATE (0034 #115 StateAbility -> #41 0.15 s -> #21 the
+#     throw; anim #38 alias 0016); her 1P clip 01BC's effect 0039: 10A6 @0.167 (no range, H)
+#   tracer.pulse_bomb.throw_3p         one-shot 3p   0.50 s; ULTIMATE (0034 #115 StateAbility -> #41 0.15 s -> #21 the
+#     throw; anim #38 alias 0016); her 3P clip 01DE (and 01E0-01E7) effect 004D: 1812 (no range) + 1813 (75 m), the
+#     same files: the ranged 1813 built for everyone else (H ids; M which: 1812, 11 dB louder, reads as an audience-2
+#     copy heard near her)
+#   tracer.pulse_bomb.stick            one-shot own  0.82 s; the bomb sticks to a character: 0045's m_contactSet 0049,
+#     type 0, material 0001 -> 1140 (no range: the thrower's, M) and its m_D02E414F set 0015, type 0 -> 8BC5 (no
+#     range, the shared character hit, as D.Va's missiles; M that both play on the stick)
+#   tracer.pulse_bomb.stick_3p         one-shot 3p   0.87 s; the same stick for everyone else: 0049 type 0's 1141 (75
+#     m) + 0015 type 0's 9025 (500 m; 9029, 12 m, the same files: the louder built, L)
+#   tracer.pulse_bomb.stick_block      one-shot both 0.54 s; the bomb sticks to the world: 0049 type 2, material 0001
+#     -> 1142 (75 m, the set's only world contact, H; 0015 has no type 2)
+#   tracer.pulse_bomb.fuse             one-shot both 1.51 s; the 1 s fuse from the stick (0C1B 05D4 -> #445 -> #448 ->
+#     #497 -> #136 StateWait v12209 = 1B7B 1.0 s, whose subgraph #552 plays 016E unless 0131.134): 18AF + 5D7A + 5E79
+#     @0.033, all 60 m audience 2 (H); their 04C lists are game-parameter feeds (STU_221B83D5 m_parameter /
+#     m_dataFlow, read: not conditions), so all three play (M)
+#   tracer.pulse_bomb.explode          one-shot both 6.39 s; the bomb goes off (0C1B #138 message 1896 -> #69 -> #137
+#     ActionEffect 0153 unless 0131.134 / Stadium 0142): 603F (200 m) + 6040 (60 m), both audience 2 (H)
+#   tracer.melee                       one-shot both 0.49 s; quick melee (0043 #117 alias D): her 3P melee clip 01BE's
+#     effect 003A: 1788 @0.133 (30 m, H); the 1P clip 0072's 0838 has none (H), so one rule for everyone (M). 0043's
+#     6BD4 (5D97) is gated on v68945 (#408, a mode flag, L): left out
+#   tracer.perk.kinetic_reload         one-shot own  0.48 s; Kinetic Reload (26B6): a quick melee hit refills 12 (#393
+#     message 278A) and, while the magazine is not full, #441 StateWait onFinished -> #433 ActionEffect 37AA: 6553 (no
+#     range, H nodes; L the exact moment)
+#   tracer.perk.quantum                one-shot own  1.53 s; Quantum Entanglement (259D): Recall's v10473 -> #416
+#     StateHealthPool 50, whose subgraph #419 plays 6528: C27B (no range, H)
+#   tracer.perk.temporal_regen         one-shot own  0.81 s; Temporal Regen (2AC7): #465 on v66161 -> #467 (!v478) ->
+#     #466 ActionEffect 6564: C936 (no range, H nodes; L: the regen-starts cue)

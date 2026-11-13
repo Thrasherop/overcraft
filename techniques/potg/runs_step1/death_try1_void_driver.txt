@@ -1,0 +1,16 @@
+=== phase dragondeath 13:52:41
+before kill {'screen': '', 'fps': 30, 'x': 5.46, 'y': 65.0, 'z': -3.12, 'health': 19.2, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 3, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'} {'zombie': 0, 'skeleton': 0, 'ender_dragon': 1, 'end_crystal': 10}
+[13:53:02] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Applied 500.0 damage to Ender Dragon]
+after death {'screen': '', 'fps': 30, 'x': -2.35, 'y': 65.0, 'z': -7.32, 'health': 18.2, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 4, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'} {'zombie': 0, 'skeleton': 0, 'ender_dragon': 1, 'end_crystal': 9}
+dump death [13:53:17] [Render thread/INFO] (Minecraft) [System] [CHAT] Kiriko: 0.059 ms/tick mean, 6571 B/s, ring 242 KB.
+[POTG] Kiriko: 35.8 s armed, 716 ticks recorded in hero play (0 out of it), server tick avg 3.13 ms
+[POTG] tap ms/tick: mean 0.059 p50 0.049 p99 0.356 max 0.512 (keyframe each 5 s: mean 0.33 max 0.46 ms)
+[POTG] bytes/s: stream 5891 + own track 681 = 6571; keyframes 8, avg 7831 B, max in ring 7990 B; ring now 248442 B in 6 segments
+[POTG] Kiriko: 35.8 s armed, 716 ticks recorded in hero play (0 out of it), server tick avg 3.13 ms
+[POTG] tap ms/tick: mean 0.059 p50 0.049 p99 0.356 max 0.512 (keyframe each 5 s: mean 0.33 max 0.46 ms)
+[POTG] bytes/s: stream 5891 + own track 681 = 6571; keyframes 8, avg 7831 B, max in ring 7990 B; ring now 248442 B in 6 segments
+[POTG] client decode of Kiriko: 14.7 ms; records: packets 10851 (196791 B), own track 516 (17544 B), own packets 0 (0 B); framing errors 0
+[13:53:20] [Render thread/INFO] (Minecraft) [System] [CHAT] POTG tap off (1 recorders dropped)
+after stop {'screen': '', 'fps': 30, 'x': 9.6, 'y': 66.13, 'z': -5.2, 'health': 18.6, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 4, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'} {'zombie': 0, 'skeleton': 0, 'ender_dragon': 1, 'end_crystal': 9}
+G after stop {'screen': '', 'fps': 50, 'x': 13.05, 'y': 64.0, 'z': -5.51, 'health': 19.13, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': False, 'ult': 2725.0, 'primaryAmmo': 4, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+G again {'screen': '', 'fps': 119, 'x': 11.31, 'y': 65.17, 'z': -5.44, 'health': 19.6, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 4, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}

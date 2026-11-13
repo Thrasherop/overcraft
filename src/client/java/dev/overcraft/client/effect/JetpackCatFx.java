@@ -22,6 +22,119 @@ public final class JetpackCatFx {
 	private static boolean enemy;
 	/** Each Jetpack Cat towing or carrying someone: her entity id -> {theirs, 1 if she's an enemy's}. */
 	private static final Map<Integer, int[]> TETHERS = new HashMap<>();
+	/** Dev only (DevServer's "devtowed"): shows the towed one's prompt with one client on the machine, no second player to tow. */
+	public static boolean devTowed;
+	/** When the local player's tow began (the effects' clock), -1 not towed. */
+	private static float towedAt = -1;
+
+	/**
+	 * How long a Jetpack Cat's Lifeline has towed the local player (s), -1 not towed: their Detach prompt (#85). Catnapper's carry
+	 * (a tether's third value) isn't a tow: jump does nothing there.
+	 */
+	public static float towedFor(net.minecraft.client.player.LocalPlayer player) {
+		boolean towed = devTowed;
+		for (int[] tether : TETHERS.values()) {
+			towed |= tether[0] == player.getId() && tether[2] == 0;
+		}
+		if (!towed) {
+			towedAt = -1;
+			return -1;
+		}
+		if (towedAt < 0) {
+			towedAt = dev.overcraft.client.effect.Fx.now();
+		}
+		return dev.overcraft.client.effect.Fx.now() - towedAt;
+	}
+
+	/**
+	 * Dev only (DevServer's "devtow"): ties the local player's rope to any entity, with no second player to tow them: ClientTow
+	 * and the rope's look on the towed one's own screen, not the server's side of a tow. -1 lets go.
+	 */
+	public static void devTow(net.minecraft.client.player.LocalPlayer player, int anchor) {
+		TETHERS.entrySet().removeIf(e -> e.getValue()[0] == player.getId());
+		if (anchor >= 0) {
+			TETHERS.put(anchor, new int[] {player.getId(), 0, 0});
+			hookLeaves(anchor);
+		}
+	}
+
+	private static java.util.List<String> devFrames;
+
+	/** Dev only ("towframes"): starts recording each frame's rope ends, or stops and returns them. */
+	public static String devFrames(boolean start) {
+		String all = devFrames == null ? "" : String.join("\n", devFrames);
+		devFrames = start ? new java.util.ArrayList<>() : null;
+		return all;
+	}
+
+	/** This one hangs on a Jetpack Cat's rope (a tow or a carry). */
+	public static boolean towed(int id) {
+		for (int[] tether : TETHERS.values()) {
+			if (tether[0] == id) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static final net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey<float[]> TILT = net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey.create(() -> "overcraft tow tilt");
+	/** Each towed body's lean as last drawn: its "up", eased (entity id -> direction). */
+	private static final Map<Integer, Vec3> TILTS = new HashMap<>();
+	private static float tiltAt;
+	/** Ours: how much of the rope's angle a body takes, and how fast its lean follows (a second). */
+	private static final double TILT_SHARE = 0.8, TILT_RATE = 8;
+
+	/**
+	 * The lean of a body on her rope, ours (no data: mobs aren't in Overwatch): its up turned toward her, from the point it hangs by:
+	 * {x, y, z, w of the turn, the point's height}, or null. Heroes pose by their own clips (HeroAnimator's "pulled"), so not those.
+	 */
+	public static float @Nullable [] tilt(net.minecraft.world.entity.LivingEntity entity, float partial) {
+		if (TETHERS.isEmpty()) {
+			TILTS.clear();
+			return null;
+		}
+		int catId = -1;
+		for (Map.Entry<Integer, int[]> e : TETHERS.entrySet()) {
+			if (e.getValue()[0] == entity.getId()) {
+				catId = e.getKey();
+			}
+		}
+		net.minecraft.world.entity.Entity cat = catId < 0 ? null : entity.level().getEntity(catId);
+		Vec3 last = TILTS.get(entity.getId());
+		if (cat == null && last == null) {
+			return null;
+		}
+		Vec3 want = UP;
+		if (cat != null && !entity.onGround()) {
+			Vec3 to = cat.getPosition(partial).subtract(entity.getPosition(partial));
+			if (to.length() > 3.5) {
+				to = to.normalize();
+				want = UP.scale(1 - TILT_SHARE).add(to.scale(TILT_SHARE)).normalize();
+			}
+		}
+		float now = Fx.now();
+		float dt = Math.clamp(now - tiltAt, 0, 0.1f);
+		tiltAt = now;
+		Vec3 up = last == null ? UP : last.add(want.subtract(last).scale(Math.min(1, TILT_RATE * dt))).normalize();
+		if (cat == null && up.subtract(UP).lengthSqr() < 1.0E-4) {
+			TILTS.remove(entity.getId());
+			return null;
+		}
+		TILTS.put(entity.getId(), up);
+		org.joml.Quaternionf turn = new org.joml.Quaternionf().rotationTo(0, 1, 0, (float) up.x, (float) up.y, (float) up.z);
+		return new float[] {turn.x, turn.y, turn.z, turn.w, entity.getBbHeight()};
+	}
+
+	/** The Jetpack Cat whose Lifeline tows the local player, or -1 (Catnapper's carry isn't a tow: the server holds that). */
+	public static int towedBy(net.minecraft.client.player.LocalPlayer player) {
+		for (Map.Entry<Integer, int[]> e : TETHERS.entrySet()) {
+			if (e.getValue()[0] == player.getId() && e.getValue()[2] == 0) {
+				return e.getKey();
+			}
+		}
+		return -1;
+	}
+
 	/** Jetpack Cats with Lifeline switched on (her id -> seen as an enemy), towing or seeking. */
 	private static final Map<Integer, Boolean> SEEKING = new HashMap<>();
 	/** Jetpack Cats in Purr: her id -> when it ends (client seconds), for her range wall (70F9). */
@@ -134,8 +247,16 @@ public final class JetpackCatFx {
 				case "paw_hit_block" -> wallHit(at, dir);
 				case "purr" -> {
 					purrCast(at);
-					if (!enemy) {
+					// her range wall (70F9) only if her hero setting "Hide Purr Range Ring" (v74715) is off (5A7E #267):
+					// the server sends it as dx 1 (HeroOptions)
+					if (!enemy && e.dx() < 0.5f) {
 						PURRING.put(e.variant(), Fx.now() + (float) dev.overcraft.jetpackcat.JetpackCatStats.PURR_TIME);
+					}
+				}
+				// one who has just come to see it (JetpackCat.showState, #96): her range wall only, for what's left
+				case "purr_state" -> {
+					if (!enemy) {
+						PURRING.put(e.variant(), Fx.now() + e.dx());
 					}
 				}
 				case "purr_wave" -> purrPulse(at);
@@ -143,12 +264,12 @@ public final class JetpackCatFx {
 				case "purr_hit" -> enemyHit(at, 1);
 				case "lifeline_attach" -> {
 					TETHERS.put(e.variant(), new int[] {e.entity(), enemy ? 1 : 0, 0});
-					latch(e.variant(), e.entity());
+					hookLeaves(e.variant());
 					attach(at);
 				}
 				case "catnapper_tether" -> {
 					TETHERS.put(e.variant(), new int[] {e.entity(), enemy ? 1 : 0, 1});
-					latch(e.variant(), e.entity());
+					hookLeaves(e.variant());
 					tetherStart(at);
 				}
 				case "tether_end" -> TETHERS.remove(e.variant());
@@ -159,8 +280,26 @@ public final class JetpackCatFx {
 				case "carry_state" -> TETHERS.put(e.variant(), new int[] {e.entity(), enemy ? 1 : 0, 1});
 				case "lifeline_off" -> SEEKING.remove(e.variant());
 				case "catnapper_cast" -> {
+					net.minecraft.client.multiplayer.ClientLevel level = net.minecraft.client.Minecraft.getInstance().level;
+					net.minecraft.world.entity.Entity cat = level == null ? null : level.getEntity(e.variant());
+					if (cat != null) {
+						cast(cat);
+						DIVES.put(e.variant(), new Dive(Fx.now(), dir, enemy));
+					}
 				}
-				case "catnapper_land" -> landing(at);
+				case "catnapper_land" -> {
+					DIVES.remove(e.variant());
+					landing(at);
+				}
+				case "catnapper_hit" -> landingHit(at, dir);
+				case "claws_out" -> claws(at, dir);
+				case "transport_shield" -> {
+					net.minecraft.client.player.LocalPlayer me = net.minecraft.client.Minecraft.getInstance().player;
+					// shown to her alone (5A8F #1036 tests the local player: M)
+					if (me != null && e.entity() == me.getId()) {
+						shieldUntil = Fx.now() + (float) dev.overcraft.jetpackcat.JetpackCatStats.TRANSPORT_SHIELD_TIME;
+					}
+				}
 				default -> {
 					return false;
 				}
@@ -209,9 +348,10 @@ public final class JetpackCatFx {
 			for (int i = 0; i < sparks; i++) {
 				Particle s = Fx.particle("spark#4", blue(Palette.CAT_SPARK));
 				if (s != null) {
-					// ours: 0.05-0.15 m (the data's spawn size of its blob is 0.15-0.5, a 4-frame flipbook mostly empty)
+					// the data's spawn size, 0.15-0.504 m of the 1F35 blob (707A C15 / 7079 C13); its blob fills about half the
+					// quad
 					Fx.add(s.at(at.add(randomUnit().scale(0.05))).life(range(0.055f, centre ? 0.18f : 0.118f))
-						.size(range(0.05f, 0.15f), 0.02f).nearFade(1.5f).fade(0.02f, 0.6f));
+						.size(range(0.15f, 0.504f), 0.02f).nearFade(1.5f).fade(0.02f, 0.6f));
 				}
 			}
 			// her own shots start at her eyes in first person, not at the view model's paw: a flare there covered the
@@ -270,27 +410,31 @@ public final class JetpackCatFx {
 	}
 
 	/**
-	 * The centre shot on a creature (709F): a paw print of five quads, a pad and four toes, standing across the shot
-	 * (the data's layout scaled up five times, ours, so it reads at Minecraft's distances), a gold core and a blue rim
-	 * shrinking out over 0.2 s; flares alternating gold and blue; 3 gold streaks.
+	 * The centre shot on a creature (709F): a paw print of five quads, a pad and four toes, standing across the shot at
+	 * the data's layout and sizes (each quad the teardrop D89 x 18E48: 0.09-0.27 m gold, life 0.22 s, and 0.09-0.47 m
+	 * blue, 0.18 s; a print about 0.1 m across); flares alternating gold and blue; 3 gold streaks.
 	 */
 	private static void pawPrint(Vec3 at, Vec3 shot) {
 		Vec3 axis = shot.lengthSqr() < 1.0E-6 ? new Vec3(0, 0, 1) : shot.normalize();
 		Vec3 side = axis.cross(UP).lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : axis.cross(UP).normalize();
 		Vec3 up = side.cross(axis).normalize();
-		// pad at (0, -0.02), toes at (+-0.02, 0.03) and (+-0.03, 0.01), toes 0.4545 of the pad
-		double[][] parts = {{0, -0.02, 1}, {0.02, 0.03, 0.4545}, {-0.02, 0.03, 0.4545}, {0.03, 0.01, 0.4545}, {-0.03, 0.01, 0.4545}};
+		// its hardpoint table: the pad at (0, -0.02) and 0.048 behind, toes at (+-0.02, 0.03) and (+-0.03, 0.01), toes
+		// 0.4545 of the pad; each set's quads share one size, between the data's two (C45-C50, C55-C60)
+		double[][] parts = {{0, -0.02, 1, 0.048}, {0.02, 0.03, 0.4545, 0}, {-0.02, 0.03, 0.4545, 0}, {0.03, 0.01, 0.4545, 0},
+			{-0.03, 0.01, 0.4545, 0}};
+		float gold = range(0.0909f, 0.271f);
+		float blue = range(0.0909f, 0.471f);
 		for (double[] part : parts) {
-			Vec3 where = at.add(side.scale(part[0] * 5)).add(up.scale(part[1] * 5)).subtract(axis.scale(0.05));
-			float size = (float) (0.27 * part[2]);
-			Particle glow = Fx.particle("cat_soft", gold(Palette.CAT_PAW_PRINT));
+			Vec3 where = at.add(side.scale(part[0])).add(up.scale(part[1])).subtract(axis.scale(0.02 + part[3]));
+			Particle glow = Fx.particle("cat_paw_toe", gold(Palette.CAT_PAW_PRINT));
 			if (glow != null) {
-				Fx.add(glow.at(where).shape(Shape.FLAT).normal(axis).life(0.22f).size(size, size * 0.4f).fade(0.01f, 0.7f));
+				float size = (float) (gold * part[2]);
+				Fx.add(glow.at(where).shape(Shape.FLAT).normal(axis).life(0.22f).size(size, size).fade(0.01f, 0.7f));
 			}
-			Particle rim = Fx.particle("cat_soft", blue(Palette.CAT_STAMP_BLUE));
+			Particle rim = Fx.particle("cat_paw_toe", blue(Palette.CAT_PAW_PRINT_BLUE));
 			if (rim != null) {
-				Fx.add(rim.at(where).shape(Shape.FLAT).normal(axis).life(0.18f).size(size * 1.7f, size * 0.5f).alpha(0.7f)
-					.fade(0.01f, 0.6f));
+				float size = (float) (blue * part[2]);
+				Fx.add(rim.at(where).shape(Shape.FLAT).normal(axis).life(0.18f).size(size, size).alpha(0.7f).fade(0.01f, 0.6f));
 			}
 		}
 		for (int i = 0; i < 4; i++) {
@@ -472,7 +616,7 @@ public final class JetpackCatFx {
 
 	/**
 	 * Each client tick: every rope, every Lifeline seeking (its marker, rings and hook glow) and every Jetpack Cat's boost
-	 * trails. The rope (assets2.md 2: 71B0, Catnapper's 71C4) runs straight, as the data's two-point beam, from her arm's
+	 * trails, and each hook's way out and back. The rope (assets2.md 2: 71B0, Catnapper's 71C4) runs straight, as the data's two-point beam, from her arm's
 	 * tip (0283) to the hook over the ally (their hardpoint 0520, 2.2 m up: in Minecraft, just over their head).
 	 */
 	public static void tethers(net.minecraft.client.multiplayer.ClientLevel level) {
@@ -487,30 +631,122 @@ public final class JetpackCatFx {
 			}
 			enemy = t.getValue()[1] == 1;
 			try {
-				rope(t.getKey(), armTip(cat), hook(towed), t.getValue()[2] == 1);
-				hookGlow(t.getKey(), towed);
+				Hook out = HOOKS.computeIfAbsent(t.getKey(), k -> new Hook(1));
+				out.at = hook(towed, 1);
+				out.carry = t.getValue()[2] == 1;
+				out.enemy = t.getValue()[1] == 1;
+				if (out.out < 1) {
+					out.out = Math.min(1, out.out + HOOK_OUT / 20);
+					if (out.out >= 1) {
+						latch(t.getKey(), t.getValue()[0]);
+					}
+				} else {
+					hookGlow(t.getKey(), towed);
+				}
 			} finally {
 				enemy = false;
 			}
 		}
+		ARCS.keySet().retainAll(TETHERS.keySet());
+		// let go: the hook goes back to her arm from where it was (D #874: at 3.5 a second)
+		HOOKS.entrySet().removeIf(h -> {
+			if (TETHERS.containsKey(h.getKey())) {
+				return false;
+			}
+			h.getValue().out -= HOOK_BACK / 20;
+			return h.getValue().out <= 0 || level.getEntity(h.getKey()) == null;
+		});
 		seekers(level);
 		purrWalls(level);
 		boostTrails(level);
+		dives(level);
+		shield();
 	}
 
 	/** Her jetpack arm's tip (0283), posed; else ours, behind and above her middle (her own first person). */
-	private static Vec3 armTip(net.minecraft.world.entity.Entity cat) {
+	private static Vec3 armTip(net.minecraft.world.entity.Entity cat, float partial) {
 		Posed p = posed(cat);
 		if (p != null && p.at.length > ARM) {
 			return p.at[ARM];
 		}
-		double yaw = Math.toRadians(cat.getYRot());
-		return cat.position().add(0, 0.8, 0).add(new Vec3(Math.sin(yaw), 0, -Math.cos(yaw)).scale(0.3));
+		double yaw = Math.toRadians(cat.getYRot(partial));
+		return cat.getPosition(partial).add(0, 0.8, 0).add(new Vec3(Math.sin(yaw), 0, -Math.cos(yaw)).scale(0.3));
 	}
 
 	/** Where the hook sits on a towed ally: their 0520, 2.2 m over their feet (H); ours, just over a mob's head. */
-	private static Vec3 hook(net.minecraft.world.entity.Entity towed) {
-		return towed.position().add(0, Math.min(2.2, towed.getBbHeight() + 0.25), 0);
+	private static Vec3 hook(net.minecraft.world.entity.Entity towed, float partial) {
+		return towed.getPosition(partial).add(0, Math.min(2.2, towed.getBbHeight() + 0.25), 0);
+	}
+
+	/** The hook's way out to the ally and back, a second (D 5A8F #1175: v73806 chases 1 at 4.5, 0 at 3.5; H). */
+	private static final float HOOK_OUT = 4.5f, HOOK_BACK = 3.5f;
+
+	/**
+	 * The rope's outer glow. 71B0 C22's 0.2573 m strip is 1344 x the noise 18F00, so most of its width is dark; as a plain soft line at 0.45 it
+	 * read as a thick glowing bar. 0.18 is ours: about that strength less the noise's mean.
+	 */
+	private static final float ROPE_GLOW = 0.18f;
+
+	/** A hook out of her arm: how far (0 at her arm, 1 on the ally) and the point it's going to or last had. */
+	private static final class Hook {
+		float out;
+		Vec3 at = Vec3.ZERO;
+		boolean carry;
+		boolean enemy;
+
+		Hook(float out) {
+			this.out = out;
+		}
+	}
+
+	/** Each Jetpack Cat's hook while it's out of her arm. A player who starts to see her mid-tow sees it already there. */
+	private static final Map<Integer, Hook> HOOKS = new HashMap<>();
+
+	/** Thrown (again, from where it had got to if it was on its way back). */
+	private static void hookLeaves(int catId) {
+		HOOKS.computeIfAbsent(catId, k -> new Hook(0));
+	}
+
+	/**
+	 * Each frame, ahead of the effects' own step: the rope from where her arm is drawn to where the hook is, at this frame's
+	 * partial tick. Fed once a tick it stood still between ticks while she and the ally were drawn moving: 0.4 m out at her
+	 * 7 m/s, and over a metre at a boost. Straight whatever it's doing: the data's beam (5A8F #966) has two points and no
+	 * sag or noise of its own (H), so it swings and goes slack only as its two ends move.
+	 */
+	static void ropes() {
+		net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+		if (mc.level == null || HOOKS.isEmpty()) {
+			return;
+		}
+		float partial = mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+		for (Map.Entry<Integer, Hook> e : HOOKS.entrySet()) {
+			net.minecraft.world.entity.Entity cat = mc.level.getEntity(e.getKey());
+			if (cat == null || !cat.isAlive()) {
+				continue;
+			}
+			Hook h = e.getValue();
+			int[] tether = TETHERS.get(e.getKey());
+			net.minecraft.world.entity.Entity towed = tether == null ? null : mc.level.getEntity(tether[0]);
+			Vec3 to = towed == null ? h.at : hook(towed, partial);
+			if (devFrames != null && towed != null) {
+				Vec3 a = cat.getPosition(partial);
+				Vec3 b = towed.getPosition(partial);
+				devFrames.add(String.format(java.util.Locale.ROOT, "%.3f %.3f %.3f %.3f %.3f %.3f %.3f", Fx.now(), a.x, a.y, a.z, b.x, b.y, b.z));
+			}
+			Vec3 from = armTip(cat, partial);
+			if (towed == mc.player && mc.options.getCameraType().isFirstPerson()) {
+				// on the towed one's own screen the hook is 0.25 m over their eyes and the rope's width fans out to fill the sky
+				// (found on the rope, s2_first_up): theirs starts a metre up it (ours)
+				Vec3 up = from.subtract(to);
+				to = to.add(up.normalize().scale(Math.min(1, up.length())));
+			}
+			enemy = h.enemy;
+			try {
+				rope(e.getKey(), from, from.add(to.subtract(from).scale(h.out)), h.carry);
+			} finally {
+				enemy = false;
+			}
+		}
 	}
 
 	/**
@@ -528,7 +764,7 @@ public final class JetpackCatFx {
 		strip("rope/braid/" + id, from, piece, "cat_rope_braid", cable, 0.04f, 1);
 		strip("rope/noise/" + id, from, piece, "cat_glow_noise", glow, 0.13f, 0.7f);
 		// (the data's 1344 strip is multiplied by a scrolling noise there; alone it drew a wedge: a soft line instead)
-		strip("rope/soft/" + id, from, piece, "cat_soft", glow, 0.257f, 0.45f);
+		strip("rope/soft/" + id, from, piece, "cat_soft", glow, 0.257f, ROPE_GLOW);
 		if (carry) {
 			strip("rope/carry/" + id, from, piece, "cat_cloud", glow, 0.32f, 0.35f);
 		}
@@ -538,12 +774,12 @@ public final class JetpackCatFx {
 
 	/**
 	 * At the hook over the one she tows or carries (71B1, held on the hook at its origin 0282): a cone (1B972, size 1.48:
-	 * 0.36 m) turned over (pointing up) 0.36 m below it (the data's 3 a second for 1 s, as one held), and cyan bubbles (DBF) rising 1.6-1.8 m/s from about
-	 * their middle, 5 a second for 0.8 s (ours: the data's 0.88 m bubbles as 0.25 m soft glows); and around them
-	 * two half-ring bands (7454: 14874, 2 m), cyan to white.
+	 * 0.36 m) turned over (pointing up) 0.36 m below it (the data's 3 a second for 1 s, as one held), and its bubbles
+	 * (spheres DBF, 1.76 m, a noisy band round their middle) rising 1.58-1.79 m/s from 1.28 m under the hook, 5 a second
+	 * for 0.8 s; and round them the arcs (7454).
 	 */
 	private static void hookGlow(int catId, net.minecraft.world.entity.Entity towed) {
-		Vec3 hook = hook(towed);
+		Vec3 hook = hook(towed, 1);
 		float[] cone = Fx.mesh("cat_cone");
 		if (cone != null) {
 			// held on the hook (spawned free, they were left behind as she towed: found playing); the cone is stored
@@ -557,34 +793,72 @@ public final class JetpackCatFx {
 				c.at(hook.subtract(0, 0.36, 0));
 			}
 		}
-		if (Fx.RANDOM.nextFloat() < 5 / 20f) {
-			Particle b = Fx.particle("cat_soft", blue(enemy ? Palette.CAT_TETHER_ENEMY : Palette.CAT_HALO));
+		float[] bubble = Fx.mesh("cat_bubble");
+		if (bubble != null && Fx.RANDOM.nextFloat() < 5 / 20f) {
+			// the data's sphere DBF at size 1.79 (1.76 m across), its noisy band (299E3 x 16E9D x 6C057) round its middle,
+			// from 1.28 m under the hook; the mesh stands on its base, so it starts half its size lower. Fading over its
+			// life (its over-life row 800999B8 r3 runs cyan to dark: M); its strength 0.5 is ours (4 overlap at once)
+			Particle b = Fx.particle("cat_bubble_band", enemy ? Palette.CAT_TETHER_ENEMY : Palette.CAT_BUBBLE);
 			if (b != null) {
-				Vec3 from = towed.position().add(randomUnit().multiply(0.4, 0, 0.4)).add(0, towed.getBbHeight() * 0.4, 0);
-				Fx.add(b.at(from).velocity(new Vec3(0, range(1.6f, 1.8f), 0)).life(0.8f).size(0.25f, 0.1f).alpha(0.6f)
-					.nearFade(1).fade(0.1f, 0.6f));
+				Vec3 centre = hook.subtract(0, 1.28, 0);
+				Fx.add(b.at(centre.subtract(0, BUBBLE / 2, 0)).mesh(bubble, new Vec3(1, 0, 0))
+					.velocity(new Vec3(0, range(1.578f, 1.789f), 0)).life(0.8f).size(BUBBLE, BUBBLE).alpha(0.5f).nearFade(1)
+					.fade(0.05f, 0.9f));
 			}
 		}
+		arcs(catId, towed);
+	}
+
+	/** The hook's bubbles' size (71B1 C9: the sphere DBF, 0.984 m, at 1.79). */
+	private static final float BUBBLE = 1.76f;
+	/** Each tow's arcs (7454): when its 1 s loop started, and its two arcs alive, kept on the towed one. */
+	private static final Map<Integer, Object[]> ARCS = new HashMap<>();
+
+	/**
+	 * Round the one she tows (7454, held on them, a 1 s loop): the half ring 14874 at size 2 (2 m across, standing at
+	 * their feet, facing as they do: the data's ECIM 40, M), a cyan flash for 0.35 s at the loop's start (C6) and, from
+	 * 0.067 s, its lines for 1 s (C8), each with its own four masks baked (build_asset_pack bake_cat_arcs).
+	 */
+	private static void arcs(int catId, net.minecraft.world.entity.Entity towed) {
 		float[] arc = Fx.mesh("cat_half_ring");
-		if (arc != null) {
-			for (int i = 0; i < 2; i++) {
-				int side = i;
-				Particle a = Fx.attach("hook_arc/" + catId + "/" + i, towed.position(), () -> {
-					Particle p = Fx.particle("cat_band", blue(enemy ? Palette.CAT_TETHER_ENEMY : Palette.CAT_HALO));
-					return p == null ? null : p.mesh(arc, side == 0 ? new Vec3(1, 0, 0) : new Vec3(0, 0, 1)).life(0.35f)
-						.size(2, 2).alpha(0.6f).fade(0.05f, 0.5f);
-				});
-				if (a != null) {
-					a.at(towed.position());
-				}
+		if (arc == null) {
+			return;
+		}
+		float now = Fx.now();
+		Object[] state = ARCS.computeIfAbsent(catId, k -> new Object[] {now - 1, null, null});
+		float start = (float) state[0];
+		if (now - start >= 1 || now < start) {
+			start = now;
+			state[0] = start;
+			state[1] = arcPart(arc, "cat_arc_flash", enemy ? Palette.CAT_TETHER_ENEMY : Palette.CAT_ARC_FLASH, 0.35f);
+			state[2] = null;
+		}
+		if (state[2] == null && now - start >= 0.0667f) {
+			Particle lines = arcPart(arc, "cat_arc_lines", enemy ? Palette.CAT_TETHER_ENEMY : Palette.CAT_ARC_LINES, 1);
+			state[2] = lines == null ? Boolean.FALSE : lines;
+		}
+		double yaw = Math.toRadians(towed instanceof net.minecraft.world.entity.LivingEntity l ? l.yBodyRot : towed.getYRot());
+		Vec3 side = new Vec3(Math.cos(yaw), 0, Math.sin(yaw));
+		for (int i = 1; i <= 2; i++) {
+			if (state[i] instanceof Particle p && !p.removed) {
+				p.at(towed.position()).mesh(arc, side);
 			}
 		}
 	}
 
+	private static @Nullable Particle arcPart(float[] arc, String mask, Palette palette, float life) {
+		Particle p = Fx.particle(mask, palette);
+		if (p == null) {
+			return null;
+		}
+		Fx.add(p.mesh(arc, new Vec3(1, 0, 0)).life(life).size(2, 2).alpha(0.9f).fade(0.05f, 0.5f));
+		return p;
+	}
+
 	/**
 	 * Purr's range (70F9), held on her while it lasts, seen by her side: an open cylinder (19181) at size 20, 9.8 m out
-	 * and 20 m tall, centred 6 m below her, gold to white, lit by the 1C7A strip up its height. (The game hides it with
-	 * a hero setting, "Hide Purr Range Ring": not yet here.)
+	 * and 20 m tall, centred 6 m below her, gold to white, lit by the 1C7A strip up its height times the noises 18F00
+	 * and 19167. Not made at all when her hero setting "Hide Purr Range Ring" is on (dispatch "purr").
 	 */
 	private static void purrWalls(net.minecraft.client.multiplayer.ClientLevel level) {
 		float now = Fx.now();
@@ -603,7 +877,7 @@ public final class JetpackCatFx {
 			// standing on its base: 6 m below her, then half its 20 m height further down
 			Vec3 base = cat.position().subtract(0, 6 + 10, 0);
 			Particle w = Fx.attach("purr_wall/" + e.getKey(), base, () -> {
-				Particle p = Fx.particle("cat_band", gold(Palette.CAT_PURR_GOLD));
+				Particle p = Fx.particle("cat_purr_wall_band", gold(Palette.CAT_PURR_GOLD));
 				return p == null ? null : p.mesh(wall, new Vec3(1, 0, 0)).life(0.3f).size(19.6f, 19.6f).alpha(0.35f)
 					.fade(0.1f, 0.5f);
 			});
@@ -648,8 +922,8 @@ public final class JetpackCatFx {
 		if (cat == null || towed == null) {
 			return;
 		}
-		Vec3 from = armTip(cat);
-		Vec3 piece = hook(towed).subtract(from);
+		Vec3 from = armTip(cat, 1);
+		Vec3 piece = hook(towed, 1).subtract(from);
 		float len = (float) piece.length();
 		if (len < 1.0E-3f) {
 			return;
@@ -707,7 +981,7 @@ public final class JetpackCatFx {
 					// the cone 1B972 with its gradient (2C41F, an 8 x 256 strip along it), kept on her arm's tip
 					Particle cone = Fx.particle("cat_cone_noise", enemy ? Palette.CAT_TETHER_ENEMY : Palette.CAT_HOOK);
 					if (cone != null) {
-						Vec3 tip = armTip(cat);
+						Vec3 tip = armTip(cat, 1);
 						Fx.add(cone.at(tip.add(0, -0.58, 0)).mesh(coneMesh, new Vec3(1, 0, 0)).life(1).size(0.3f, 0.3f)
 							.alpha(0.8f).fade(0.1f, 0.7f));
 					}
@@ -792,11 +1066,11 @@ public final class JetpackCatFx {
 
 	/**
 	 * Her jetpack, every frame she's drawn (HeroModelRenderer hands in her points as posed): the idle flames (7064, "always
-	 * while flying") on the high nozzles 0075 / 0077. Each is the data's open tube (0.13 m wide, 0.17 m long) in three
-	 * layers: a blue one and a gold one at 1.1 times, a white-hot core at 0.55, flickering; a 0.08 m glow on each low nozzle
-	 * (0078 / 007A); gold sparks falling from 0.13 m under the nozzle (the data's 50 a second of 0.011 m dots drawn as 6 a
-	 * second of 0.03 m: ours, so they show at Minecraft's distances); an exhaust ring (0.2 m) 4 times a second drifting
-	 * down. Her heat haze isn't drawn. Out of hero mode she walks: no flames.
+	 * while flying") on the high nozzles 0075 / 0077. Each is the data's open tube 1B580 (0.128 m wide, 0.17 m long) in
+	 * three layers: a teal one and a gold one at 1.1, a white-hot core at 0.55, its noise scrolling down it; a 0.08 m glow
+	 * on each low nozzle (0078 / 007A); sparks from 0.13 m under the nozzle, 50 gold and 45 pale a second of 0.011-0.014 m
+	 * blobs; an exhaust ring (0.2 m) 4 times a second drifting down. Her heat haze isn't drawn. Out of hero mode she
+	 * walks: no flames.
 	 */
 	public static void jetpack(net.minecraft.world.entity.LivingEntity cat, Vec3[] at, Vec3[] down) {
 		POSED.put(cat.getId(), new Posed(at, down, cat.level().getGameTime()));
@@ -807,21 +1081,26 @@ public final class JetpackCatFx {
 		try {
 			int id = cat.getId();
 			float dt = Fx.since(-(id * 8 + 7) - 1);
-			float t = Fx.now();
 			for (int n = HIGH_LEFT; n <= HIGH_RIGHT; n++) {
 				Vec3 nozzle = at[n];
 				Vec3 axis = down[n];
-				float flicker = 0.85f + 0.15f * Mth.sin(t * 37 + n * 2.1f);
-				flame(id, n, 0, nozzle, axis, 0.143f, 0.187f * flicker, "cat_soft", blue(Palette.CAT_FLAME), 0.55f, false);
-				flame(id, n, 1, nozzle, axis, 0.143f, 0.187f * (2 - flicker), "cat_soft", gold(Palette.CAT_FLAME_GOLD), 0.8f, true);
-				flame(id, n, 2, nozzle, axis, 0.0715f, 0.094f, "cat_soft", gold(Palette.CAT_FLAME), flicker, false);
-				Vec3 under = nozzle.add(axis.scale(0.13));
-				int sparks = (int) (6 * dt + Fx.RANDOM.nextFloat());
-				for (int i = 0; i < sparks; i++) {
-					Particle spark = Fx.particle("cat_soft", gold(Palette.CAT_FLAME_GOLD));
-					if (spark != null) {
-						Fx.add(spark.at(under).velocity(axis.scale(1).add(randomUnit().scale(0.3))).life(range(0.07f, 0.25f))
-							.size(0.03f, 0.01f).nearFade(0.5f).fade(0.02f, 0.6f));
+				// C24 (1.1, deep blue to teal, steady), C41 (1.1, gold, 4 a second), C30 (0.55, blue to white-hot)
+				flame("jetpack_flame/" + id + "/" + n + "/0", nozzle, axis, 1.1f, blue(Palette.CAT_FLAME_TEAL), 0.7f, false);
+				flame("jetpack_flame/" + id + "/" + n + "/1", nozzle, axis, 1.1f, gold(Palette.CAT_FLAME_GOLD), 0.8f, true);
+				flame("jetpack_flame/" + id + "/" + n + "/2", nozzle, axis, 0.55f, gold(Palette.CAT_FLAME), 1, false);
+				Vec3 under = nozzle.add(axis.scale(0.1292));
+				// C44 / C47: the blobs 18BC2 stretched 6 along their way (a6DFA 5.995); their speed is an engine input
+				// (ECIN): ours, 1 m/s down
+				for (int kind = 0; kind < 2; kind++) {
+					int sparks = (int) ((kind == 0 ? 50 : 45) * dt + Fx.RANDOM.nextFloat());
+					Palette palette = enemy ? Palette.CAT_SPARK_ENEMY : kind == 0 ? Palette.CAT_SPARK_GOLD : Palette.CAT_SPARK_PALE;
+					for (int i = 0; i < sparks; i++) {
+						Particle spark = Fx.particle("cat_blob#4", palette);
+						if (spark != null) {
+							float size = range(0.0114f, 0.0136f);
+							Fx.add(spark.at(under).shape(Shape.STREAK).velocity(axis.scale(1).add(randomUnit().scale(0.3)))
+								.life(range(0.0701f, 0.25f)).size(size * 6, size * 6).aspect(1 / 6f).nearFade(0.5f).fade(0.02f, 0.6f));
+						}
 					}
 				}
 				if (Fx.RANDOM.nextFloat() < 4 * dt) {
@@ -844,27 +1123,51 @@ public final class JetpackCatFx {
 		}
 	}
 
+	/** The flame tube 1B580: 0.128 m wide, 0.17 m long (its length over its width). */
+	private static final float FLAME_LONG = 0.17f / 0.128f;
+
 	/**
-	 * One layer of a nozzle's flame: a soft tapered streak from the nozzle along its down axis, kept on it frame by
-	 * frame (the data's open tube 1B580 with scrolled flame noise: ours, a soft dot stretched, as a box-shaped strip
-	 * read as a rectangle). The gold layer is blended: added over bright grass it turned lime (found playing).
+	 * One layer of a nozzle's flame, kept on it frame by frame: the data's open tube 1B580 at its size (1.1: 0.14 m wide,
+	 * 0.19 m long) hanging from the nozzle along its down axis, its masks (2C41F x 7A9 x the noise 299E3) baked into 8
+	 * frames of the noise scrolling down it (build_asset_pack bake_cat_flame), looped. The gold layer is blended: added
+	 * over bright grass it turned lime (found playing).
 	 */
-	private static void flame(int id, int nozzle, int layer, Vec3 from, Vec3 axis, float width, float length, String mask,
-		Palette palette, float alpha, boolean blended) {
-		Particle p = Fx.attach("jetpack_flame/" + id + "/" + nozzle + "/" + layer, from.add(axis.scale(length / 2)), () -> {
-			Particle f = blended ? Fx.soft(mask, palette) : Fx.particle(mask, palette);
-			return f == null ? null : f.shape(Shape.STREAK).life(0.1f).fade(0.02f, 0.5f).nearFade(0.5f);
+	private static void flame(String key, Vec3 from, Vec3 axis, float scale, Palette palette, float alpha, boolean blended) {
+		float[] tube = Fx.mesh("cat_flame");
+		if (tube == null) {
+			return;
+		}
+		float width = 0.128f * scale;
+		// the mesh stands on its far end (its V 1) and reaches up to the nozzle (V 0)
+		Vec3 tip = from.add(axis.scale(width * FLAME_LONG));
+		Particle p = Fx.attach(key, tip, () -> {
+			Particle f = blended ? Fx.soft("cat_flame_tube#8", palette) : Fx.particle("cat_flame_tube#8", palette);
+			return f == null ? null : f.loop(20).life(0.1f).fade(0.02f, 0.5f).nearFade(0.5f);
 		});
 		if (p != null) {
-			p.axis(axis).size(length, length).aspect(width / length).alpha(alpha);
+			p.mesh(tube, axis.cross(UP).lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : axis.cross(UP), axis.scale(-1)).size(width, width)
+				.alpha(alpha);
 		}
+	}
+
+	/** A flame tube flaring once, not kept on the nozzle (the cast 7373, its life 0.13-0.2 s). */
+	private static void flare(Vec3 from, Vec3 axis, float scale, Palette palette, float life, boolean blended) {
+		float[] tube = Fx.mesh("cat_flame");
+		Particle f = tube == null ? null : blended ? Fx.soft("cat_flame_tube#8", palette) : Fx.particle("cat_flame_tube#8", palette);
+		if (f == null) {
+			return;
+		}
+		float width = 0.128f * scale;
+		Fx.add(f.at(from.add(axis.scale(width * FLAME_LONG))).mesh(tube, axis.cross(UP).lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0)
+			: axis.cross(UP), axis.scale(-1)).loop(20).size(width, width).life(life).nearFade(0.5f).fade(0.02f, 0.6f));
 	}
 
 	// ---- Catnapper ----
 
 	/**
 	 * Catnapper's aim, each tick while she aims (71B3 at the target point, shown to her): cyan rings about 3-4 m across
-	 * pulsing out 3 times a second, a blue glow disc under them, and two thin cyan lines from her paws to it (71AF).
+	 * pulsing out 3 times a second, a deep blue disc on a darkened spot under them, and from each paw three thin lines to
+	 * it (71AF).
 	 */
 	/** Dev only (DevServer's "state"): where Catnapper's aim marker was last drawn. */
 	public static @Nullable Vec3 aimSeen;
@@ -894,22 +1197,24 @@ public final class JetpackCatFx {
 		// 0.45 and 1 m)
 		float[] torus = Fx.mesh("cat_torus");
 		if (torus != null && Fx.RANDOM.nextFloat() < 3 / 20f) {
-			// masked by the 1C7A strip alone (the data's 18E48 cloud over it, 0.68 to 1, is left out): a thin lit rim
-			Particle ring = Fx.particle("cat_band", Palette.CAT_NAP_MARKER);
+			// masked by the 1C7A strip times the 18E48 cloud, as the data pairs them (build_asset_pack PRODUCTS): a lit rim
+			Particle ring = Fx.particle("cat_nap_ring", Palette.CAT_NAP_MARKER);
 			if (ring != null) {
 				Fx.add(ring.at(ground.add(0, 0.1, 0)).mesh(torus, new Vec3(1, 0, 0)).life(1.5f).size(1.5f, 4.1f).easeOut()
 					.alpha(0.85f).fade(0.1f, 0.6f));
 				AIM_RINGS.add(ring);
 			}
 		}
-		float[] glows = {0.45f, 1};
-		for (int i = 0; i < glows.length; i++) {
-			float size = glows[i];
-			Fx.attach("catnapper_aim_disc/" + i, ground, () -> {
-				Particle d = Fx.particle("cat_soft", Palette.CAT_HALO);
-				return d == null ? null : d.shape(Shape.FLAT).normal(UP).life(0.3f).size(size, size).alpha(0.7f).fade(0.05f, 0.5f);
-			});
-		}
+		// its two decals (4C09): 0.45 m deep blue (800C0DD7 r1 #00002F to #005CF4), and a 1 m one near black at half
+		// strength (8002F509 r1 / r2), which darkens the ground: drawn blended
+		Fx.attach("catnapper_aim_disc/0", ground, () -> {
+			Particle d = Fx.particle("cat_soft", Palette.CAT_STAMP_BLUE);
+			return d == null ? null : d.shape(Shape.FLAT).normal(UP).life(0.3f).size(0.45f, 0.45f).fade(0.05f, 0.5f);
+		});
+		Fx.attach("catnapper_aim_disc/1", ground.subtract(0, 0.01, 0), () -> {
+			Particle d = Fx.soft("cat_soft", Palette.NATURAL);
+			return d == null ? null : d.shape(Shape.FLAT).normal(UP).tint(0x000002).life(0.3f).size(1, 1).alpha(0.5f).fade(0.05f, 0.5f);
+		});
 		// the lines (71AF) from her paws (000A / 000B) as posed; ours, beside her below the eyes, without the pose
 		net.minecraft.world.entity.player.Player cat = mc.player;
 		Posed posed = posed(cat);
@@ -918,34 +1223,340 @@ public final class JetpackCatFx {
 		for (int s = -1; s <= 1; s += 2) {
 			Vec3 paw = posed != null ? posed.at[s < 0 ? PAW_A : PAW_B] : cat.getEyePosition().add(side.scale(0.25 * s)).add(0, -0.35, 0);
 			Vec3 piece = ground.subtract(paw);
-			float len = (float) piece.length();
-			if (len < 0.1f) {
+			if (piece.length() < 0.1f) {
 				continue;
 			}
-			Particle line = Fx.attach("catnapper_line/" + s, paw.add(piece.scale(0.5)), () -> {
-				Particle l = Fx.particle("cat_rope", Palette.CAT_TETHER);
-				return l == null ? null : l.shape(Shape.STREAK).life(0.15f).alpha(0.8f).fade(0.02f, 0.5f);
-			});
-			if (line != null) {
-				line.axis(piece).size(len, len).aspect(0.045f / len);
+			// its three ribbons (71AF C8 / C11 / C14): 0.01 m and 0.02 m of the 299E3 noise, cyan and cyan to white, and
+			// 0.0455 m of the 1344 strip times 18E48, blue
+			strip("catnapper_line/" + s + "/a", paw, piece, "cat_ring_line", Palette.CAT_TETHER, 0.01f, 1);
+			strip("catnapper_line/" + s + "/b", paw, piece, "cat_ring_line", Palette.CAT_FLASH_BLUE, 0.02f, 1);
+			strip("catnapper_line/" + s + "/c", paw, piece, "cat_nap_line", Palette.CAT_NAP_MARKER, 0.0455f, 0.9f);
+		}
+	}
+
+	/** A Catnapper on its way: when she confirmed (the cast), her way to the point, seen as an enemy's. */
+	private record Dive(float start, Vec3 way, boolean enemy) {
+	}
+
+	/** Jetpack Cats in Catnapper's windup or dive: her id -> the dive (until "catnapper_land" or it runs out). */
+	private static final Map<Integer, Dive> DIVES = new HashMap<>();
+	/** Catnapper's windup (graph 5B7B: 0.35 s) and the server's longest dive (JetpackCat.DIVE_LIMIT, 1.5 s). */
+	private static final float WINDUP = 0.35f, DIVE_LONGEST = 1.5f;
+
+	/** Her two high nozzles (0075 / 0077) and their down axes as posed; where she isn't drawn, behind her middle (ours). */
+	private static Vec3[][] nozzles(net.minecraft.world.entity.Entity cat) {
+		Posed p = posed(cat);
+		if (p != null) {
+			return new Vec3[][] {{p.at[HIGH_LEFT], p.at[HIGH_RIGHT]}, {p.down[HIGH_LEFT], p.down[HIGH_RIGHT]}};
+		}
+		double yaw = Math.toRadians(cat.getYRot());
+		Vec3 side = new Vec3(Math.cos(yaw), 0, Math.sin(yaw));
+		Vec3 back = new Vec3(Math.sin(yaw), 0, -Math.cos(yaw));
+		Vec3 mid = cat.position().add(0, 0.9, 0).add(back.scale(0.25));
+		Vec3 down = new Vec3(0, -1, 0);
+		return new Vec3[][] {{mid.add(side.scale(-0.15)), mid.add(side.scale(0.15))}, {down, down}};
+	}
+
+	/**
+	 * Catnapper's cast (7373, at the start of the 0.35 s windup), on both nozzles: the flames flare (the tube at 0.55
+	 * white-hot and at 1.1 teal and gold, 0.13-0.2 s), two exhaust rings each (the torus 1BD54 at 0.05 cyan and 0.07
+	 * gold, 1C7A x 18E48) shot out along the nozzle at 6.9 m/s for 0.15 s, and a gold bell (19370 at 1.1: 2.2 m wide, 1.43
+	 * m tall, its wide end 0.43 m under her feet) for 0.2 s.
+	 */
+	private static void cast(net.minecraft.world.entity.Entity cat) {
+		Vec3[][] noz = nozzles(cat);
+		float[] torus = Fx.mesh("cat_purr_torus");
+		for (int n = 0; n < 2; n++) {
+			Vec3 at = noz[0][n], axis = noz[1][n];
+			flare(at, axis, 0.55f, gold(Palette.CAT_FLAME), 0.13f, false);
+			flare(at, axis, 1.1f, blue(Palette.CAT_FLAME_TEAL), 0.13f, false);
+			flare(at, axis, 1.1f, gold(Palette.CAT_FLAME_GOLD), 0.2f, true);
+			if (torus != null) {
+				exhaustRing(torus, at, axis, 0.05f, blue(Palette.CAT_RING_CYAN), 6.9352f);
+				exhaustRing(torus, at, axis, 0.07f, gold(Palette.CAT_RING_GOLD), 6.9352f);
+			}
+		}
+		float[] bell = Fx.mesh("cat_bell");
+		Particle b = bell == null ? null : Fx.particle("cat_bell_band", gold(Palette.CAT_BELL_GOLD));
+		if (b != null) {
+			// (its orientation: the data's mesh as it stands, its narrow end up: M)
+			Fx.add(b.at(cat.position().subtract(0, 0.4276, 0)).mesh(bell, new Vec3(1, 0, 0)).size(2.2f, 2.2f).life(0.2f)
+				.alpha(0.8f).fade(0.02f, 0.6f));
+		}
+	}
+
+	/** An exhaust ring (the torus 1BD54, 1.42 m at size 1) flying out along axis, its hole along it, for 0.15 s. */
+	private static void exhaustRing(float[] torus, Vec3 at, Vec3 axis, float scale, Palette palette, float speed) {
+		Particle r = Fx.particle("cat_nap_ring", palette);
+		if (r == null) {
+			return;
+		}
+		Vec3 a = axis.normalize();
+		Vec3 up = Math.abs(a.y) > 0.9 ? new Vec3(1, 0, 0).cross(a).normalize() : UP.cross(a).cross(a).normalize();
+		float width = 1.42f * scale;
+		Fx.add(r.at(at.subtract(up.scale(width / 2))).mesh(torus, up.cross(a), up).velocity(a.scale(speed)).size(width, width)
+			.life(0.15f).nearFade(0.5f).fade(0.02f, 0.6f));
+	}
+
+	/**
+	 * Each tick, every Catnapper in its windup or dive: after the 0.35 s windup, the dive (7163) from both nozzles (their
+	 * trails, sparks and rings) and, for its first 0.2 s, the head slash (71B8).
+	 */
+	private static void dives(net.minecraft.client.multiplayer.ClientLevel level) {
+		float now = Fx.now();
+		java.util.Iterator<Map.Entry<Integer, Dive>> it = DIVES.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<Integer, Dive> e = it.next();
+			net.minecraft.world.entity.Entity cat = level.getEntity(e.getKey());
+			float t = now - e.getValue().start - WINDUP;
+			if (cat == null || !cat.isAlive() || t > DIVE_LONGEST + 0.1f || now < e.getValue().start) {
+				it.remove();
+				continue;
+			}
+			if (t < 0) {
+				continue;
+			}
+			enemy = e.getValue().enemy;
+			try {
+				Vec3 way = e.getValue().way.lengthSqr() < 1.0E-6 ? cat.getLookAngle() : e.getValue().way.normalize();
+				dive(cat, way, t);
+				if (t < 0.2f) {
+					slash(cat, way);
+				}
+			} finally {
+				enemy = false;
 			}
 		}
 	}
 
 	/**
-	 * The landing (71C2): a 5.9 m violet-cyan flash, a ground flash, a 1.9 m sphere, 15 smoke puffs thrown up 12-19 m/s,
-	 * and the crater's glowing cracks, 10 m across, fading over 2.5 s.
+	 * The dive (7163, held), from each high nozzle: three tube trails (16E9D: 0.17 m cyan for 0.067 s, 0.21 m blue for
+	 * 0.14 s, 0.56 m gold for 0.13 s), two strip trails (219FA x 16E9D: 0.073 m and 0.17 m, cyan, 0.15 / 0.2 s), sparks
+	 * (18BC2: 30 at the start at 4.4-13.6 m/s in a 7-degree cone, then 144 pale and 50 gold a second), gold exhaust rings
+	 * 7 a second at 6-7.3 m/s (a cyan one at 11.3-12.6 m/s at the start). The flames are her jetpack's own (7064, drawn
+	 * anyway). Not drawn: its heat streaks (distortion) and its speed lines (placed by an engine input not decoded).
+	 */
+	private static void dive(net.minecraft.world.entity.Entity cat, Vec3 way, float t) {
+		Vec3[][] noz = nozzles(cat);
+		int id = cat.getId();
+		float dt = Fx.since(-(id * 8 + 3) - 1);
+		boolean first = t < 0.06f;
+		float[] torus = Fx.mesh("cat_purr_torus");
+		for (int n = 0; n < 2; n++) {
+			Vec3 at = noz[0][n];
+			// out of the nozzle: behind her as she dives
+			Vec3 axis = way.scale(-1);
+			int trail = 2_000_000 + id * 16 + n * 8;
+			Fx.trail(trail, at, "cat_cone_line", enemy ? Palette.CAT_DIVE_ENEMY : Palette.CAT_DIVE_CYAN, 0.1727f, 0.0673f, 1);
+			Fx.trail(trail + 1, at, "cat_cone_line", enemy ? Palette.CAT_DIVE_ENEMY : Palette.CAT_DIVE_BLUE, 0.2091f, 0.14f, 1);
+			Fx.trail(trail + 2, at, "cat_cone_line", enemy ? Palette.CAT_DIVE_ENEMY : Palette.CAT_DIVE_GOLD, 0.5636f, 0.13f, 0.8f);
+			Fx.trail(trail + 3, at, "cat_dive_band", enemy ? Palette.CAT_BOOST_ENEMY : Palette.CAT_BOOST, 0.0727f, 0.15f, 1);
+			Fx.trail(trail + 4, at, "cat_dive_band", enemy ? Palette.CAT_BOOST_ENEMY : Palette.CAT_DIVE_STRIP, 0.1727f, 0.2f, 1);
+			int burst = first ? 30 : 0;
+			int pale = (int) (144 * dt + Fx.RANDOM.nextFloat());
+			int gold = (int) (50 * dt + Fx.RANDOM.nextFloat());
+			for (int i = 0; i < burst + pale + gold; i++) {
+				boolean isBurst = i < burst;
+				boolean isPale = !isBurst && i < burst + pale;
+				Palette palette = enemy ? Palette.CAT_SPARK_ENEMY : isPale ? Palette.CAT_SPARK_PALE : Palette.CAT_SPARK_GOLD;
+				Particle s = Fx.particle("cat_blob#4", palette);
+				if (s == null) {
+					break;
+				}
+				float size = isBurst ? range(0.0114f, 0.0682f) : isPale ? range(0.0114f, 0.05f) : range(0.0114f, 0.0318f);
+				float speed = isBurst ? range(4.4046f, 13.6096f) : isPale ? range(2.5564f, 7.3917f) : range(2.5564f, 12.7275f);
+				float stretch = isPale ? range(2.671f, 3.447f) : range(1.73f, 2.507f);
+				Vec3 v = cone(axis, isBurst ? 0.1277 : 0.0873).scale(speed);
+				Fx.add(s.at(at).shape(Shape.STREAK).velocity(v).life(isBurst ? range(0.1065f, 0.1955f) : range(0.0701f, 0.25f))
+					.size(size * stretch, size * stretch).aspect(1 / stretch).nearFade(1).fade(0.02f, 0.6f));
+			}
+			if (torus != null) {
+				if (first) {
+					exhaustRing(torus, at, axis, 0.05f, blue(Palette.CAT_RING_CYAN), range(11.28f, 12.55f));
+				}
+				if (Fx.RANDOM.nextFloat() < 7 * dt) {
+					exhaustRing(torus, at, axis, 0.05f, gold(Palette.CAT_RING_GOLD), range(5.996f, 7.264f));
+				}
+			}
+		}
+	}
+
+	/**
+	 * The head slash (71B8, the dive's first 0.2 s), 1.6 m ahead of her middle (its hardpoint 01DA, M): claw arcs (152B9,
+	 * 37021 x 299E3 x 2C41F) 100 a second at sizes 2.6-4.6 (0.51-0.9 m), each at a random roll round her way, for
+	 * 0.15-0.2 s; and two domes (1B2FF at 2.58: 2.58 m across) facing her way 0.21 m ahead of her middle, kept on her.
+	 */
+	private static void slash(net.minecraft.world.entity.Entity cat, Vec3 way) {
+		Vec3 middle = cat.position().add(0, cat.getBbHeight() / 2, 0);
+		float dt = Fx.since(-(cat.getId() * 8 + 4) - 1);
+		float[] arc = Fx.mesh("cat_slash_arc");
+		Vec3 p1 = Math.abs(way.y) > 0.9 ? new Vec3(1, 0, 0).cross(way).normalize() : UP.cross(way).normalize();
+		Vec3 p2 = way.cross(p1).normalize();
+		int arcs = (int) (100 * dt + Fx.RANDOM.nextFloat());
+		for (int i = 0; arc != null && i < arcs; i++) {
+			Particle a = Fx.particle("cat_slash_band", enemy ? Palette.CAT_SLASH_ENEMY : Palette.CAT_SLASH);
+			if (a == null) {
+				break;
+			}
+			double roll = Fx.RANDOM.nextDouble() * Mth.TWO_PI;
+			Vec3 normal = p1.scale(Math.cos(roll)).add(p2.scale(Math.sin(roll)));
+			float width = 0.196f * range(2.5971f, 4.5866f);
+			// the arc lies in its own plane (X, Y), standing on its Y 0: centred on the point by half its 0.89 height
+			Vec3 at = middle.add(way.scale(1.5958)).subtract(way.scale(width * 0.45));
+			Fx.add(a.at(at).mesh(arc, way.cross(normal), way).size(width, width).life(range(0.1545f, 0.2f)).nearFade(1)
+				.fade(0.02f, 0.6f));
+		}
+		float[] dome = Fx.mesh("cat_dome");
+		if (dome == null) {
+			return;
+		}
+		// the dome's pole lies along its own Z (side x up): up square to her way, side = up x way
+		Vec3 up = p2;
+		Vec3 base = middle.add(way.scale(0.2079)).subtract(up.scale(2.5778 / 2));
+		String[][] layers = {{"cat_dome_glow", "0"}, {"cat_dome_band", "1"}};
+		for (String[] layer : layers) {
+			Palette palette = enemy ? Palette.CAT_DOME_ENEMY : layer[1].equals("0") ? Palette.CAT_DOME : Palette.CAT_DOME_DEEP;
+			Particle d = Fx.attach("catnapper_dome/" + cat.getId() + "/" + layer[1], base, () -> {
+				Particle p = Fx.particle(layer[0], palette);
+				// (strengths ours: at full, the inner dome's mostly white strip 55A46 drew a solid cyan disc, found playing)
+				return p == null ? null : p.life(0.2f).size(2.5778f, 2.5778f).alpha(layer[1].equals("0") ? 0.6f : 0.35f)
+					.fade(0.02f, 0.5f);
+			});
+			if (d != null) {
+				d.mesh(dome, up.cross(way), up);
+			}
+		}
+	}
+
+	/**
+	 * The landing's shockwave reaching an enemy (7256, its per-target slot; at the enemy, thrown out from her along
+	 * way): a 0.26 m sphere (DBF, 16E9D x 18A1 x 18E48 x 1C7A) and a puff of smoke (377D5, tan) flung 1.9-5.2 m/s, a
+	 * small flame burst (F7D2, 0.05-0.09 m), a dust puff (5429) flung 5-17 m/s, and 2-4 sparks (1F35) back toward her at
+	 * 5-13 m/s. The data's directions are the effect's own (up 0.3, out 0.98: M that out is away from her).
+	 */
+	private static void landingHit(Vec3 at, Vec3 way) {
+		Vec3 out = new Vec3(way.x, 0, way.z).lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : new Vec3(way.x, 0, way.z).normalize();
+		Vec3 kick = out.scale(0.9816).add(0, 0.3, 0).normalize();
+		Vec3 low = at.add(0, 0.3, 0);
+		float[] sphere = Fx.mesh("cat_bubble");
+		Particle s = sphere == null ? null : Fx.particle("cat_shock_sphere", blue(Palette.CAT_SHOCK));
+		if (s != null) {
+			float size = range(0.2551f, 0.2712f);
+			Fx.add(s.at(low.subtract(0, size / 2, 0)).mesh(sphere, new Vec3(1, 0, 0)).velocity(kick.scale(range(1.92f, 5.2369f)))
+				.size(size, size).life(range(0.0864f, 0.1273f)).fade(0.02f, 0.6f));
+		}
+		Particle smoke = Fx.soft("smoke#48", Palette.NATURAL);
+		if (smoke != null) {
+			Fx.add(smoke.at(low).velocity(kick.scale(range(1.92f, 5.2369f))).tint(0xC5A565).spin(range(-Mth.PI, Mth.PI), 0)
+				.size(range(0.2369f, 0.8086f), 0.9f).life(range(0.0683f, 0.1818f)).alpha(0.8f).fade(0.05f, 0.6f));
+		}
+		Particle flame = Fx.particle("cat_claw_flame#4", enemy ? Palette.CAT_SHOCK_FLAME_ENEMY : Palette.CAT_SHOCK_FLAME);
+		if (flame != null) {
+			float size = range(0.0545f, 0.0909f);
+			Fx.add(flame.at(low).velocity(UP.scale(0.05)).size(size, size).life(0.2f).fade(0.01f, 0.6f));
+		}
+		Particle dust = Fx.soft("cat_dust_puff#4", Palette.NATURAL);
+		if (dust != null) {
+			float size = range(0.2983f, 0.3364f);
+			Fx.add(dust.at(low).velocity(out.scale(1).add(0, 0.3818, 0).normalize().scale(range(5, 17.1921f))).tint(0xCCB179)
+				.size(size, size).life(range(0.1091f, 0.1909f)).alpha(0.8f).fade(0.02f, 0.6f));
+		}
+		int sparks = 2 + Fx.RANDOM.nextInt(3);
+		for (int i = 0; i < sparks; i++) {
+			Particle sp = Fx.particle("spark#4", blue(Palette.CAT_SHOCK_SPARK));
+			if (sp != null) {
+				float size = range(0.0155f, 0.03f);
+				Fx.add(sp.at(low).velocity(cone(out.scale(-1), 0.2428).scale(range(5, 13.1f))).gravity(9.8f).size(size, size)
+					.life(range(0.3526f, 0.859f)).spin(0, -1.9209f).fade(0.02f, 0.6f));
+			}
+		}
+	}
+
+	// ---- perks ----
+
+	/**
+	 * Claws Out's wound (74D0, held 1 s on the clawed enemy at their chest 0001): two claw marks (720CE x 18E48, 0.49-1.01
+	 * m: the data's size runs on an input not decoded, ours its middle) at a random turn between -141 and 40 degrees, a
+	 * third 0.067 s later, each 0.25-0.3 s; 5 sparks (1F35) at 3.8-4.4 m/s. Teal for her side, pink-red for the enemy's.
+	 */
+	private static void claws(Vec3 inside, Vec3 way) {
+		// on the clawed one's front, toward her (ours: at the chest's middle a zombie's own body hid them, found playing)
+		Vec3 flat = new Vec3(way.x, 0, way.z);
+		Vec3 chest = flat.lengthSqr() < 1.0E-6 ? inside : inside.subtract(flat.normalize().scale(0.4));
+		Palette marks = enemy ? Palette.CAT_CLAWS_ENEMY : Palette.CAT_CLAWS;
+		for (int i = 0; i < 3; i++) {
+			Particle c = Fx.particle("cat_claw_marks", marks);
+			if (c != null) {
+				// the third waits its 0.067 s by fading in over it
+				Fx.add(c.at(chest).size(0.75f, 0.75f).spin(range(-2.4671f, 0.6981f), 0).life(range(0.25f, 0.3f))
+					.fade(i == 2 ? 0.25f : 0.02f, 0.6f).nearFade(1));
+			}
+		}
+		for (int i = 0; i < 5; i++) {
+			Particle s = Fx.particle("spark#4", enemy ? Palette.CAT_CLAW_SPARK_ENEMY : Palette.CAT_CLAW_SPARK);
+			if (s != null) {
+				float size = range(0.02f, 0.05f);
+				Fx.add(s.at(chest).velocity(randomUnit().scale(range(3.7611f, 4.3656f))).size(size, size).spin(0, -5)
+					.life(range(0.2f, 0.2136f)).fade(0.02f, 0.6f));
+			}
+		}
+	}
+
+	/** When the local player's Transport Shielding hexes end (client seconds; 0: none). */
+	private static float shieldUntil;
+
+	/**
+	 * Transport Shielding (5513, held on her while her shields last, shown to her alone): the frame 5C75 (a square with
+	 * an octagon cut out) at size 2 with the hex grid 18F9B (tiled 4.75 x 4) under the edge mask 18400, teal: hexes in its
+	 * corners. The mask is black wherever the frame is open, so it's drawn as the square facing the camera. Through her
+	 * own eyes it stands 1.45 m before the camera, its corners at the view's top and bottom (ours: M that it reads as
+	 * hexes at the screen's edge); from a camera off her (third person, the lifted ability camera) at her chest.
+	 */
+	private static void shield() {
+		net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+		net.minecraft.client.player.LocalPlayer me = mc.player;
+		if (me == null || shieldUntil <= 0) {
+			return;
+		}
+		// (her absorption reaches the client a moment after this effect: the first ticks don't look at it, found playing)
+		boolean started = Fx.now() > shieldUntil - (float) dev.overcraft.jetpackcat.JetpackCatStats.TRANSPORT_SHIELD_TIME + 0.5f;
+		if (Fx.now() > shieldUntil || started && me.getAbsorptionAmount() <= 0 || !me.isAlive()) {
+			shieldUntil = 0;
+			return;
+		}
+		// her own eyes, or a camera off her (third person, and the lifted camera Lifeline and Catnapper's carry use)
+		boolean firstPerson = mc.gameRenderer.mainCamera().position().distanceTo(me.getEyePosition()) < 0.3;
+		Vec3 chest = me.position().add(0, me.getBbHeight() * 0.7, 0);
+		Particle p = Fx.attach("transport_shield", firstPerson ? Vec3.ZERO : chest, () -> {
+			Particle h = Fx.particle("cat_hex_frame", Palette.CAT_HEX);
+			return h == null ? null : h.life(0.3f).size(2, 2).near().fade(0.1f, 0.5f);
+		});
+		if (p == null) {
+			return;
+		}
+		if (firstPerson && p.follow == null) {
+			p.follow(() -> new org.joml.Vector3f(net.minecraft.client.Minecraft.getInstance().gameRenderer.mainCamera().forwardVector())
+				.mul(1.45f));
+		} else if (!firstPerson && p.follow != null) {
+			p.follow = null;
+			p.at(chest);
+		}
+	}
+
+	/**
+	 * The landing (71C2): a 5.9 m violet-cyan flash, the 21.7 m ground flash, a 1.9 m sphere, 15 smoke puffs thrown up
+	 * 12-19 m/s, and the crater's glowing cracks, 10 m across, fading over 2.5 s.
 	 */
 	private static void landing(Vec3 feet) {
 		Particle flash = Fx.particle("cat_soft", gold(Palette.CAT_NAP_IMPACT));
 		if (flash != null) {
 			Fx.add(flash.at(feet.add(0, 1, 0)).life(0.25f).size(3, 5.9f).easeOut().nearFade(2).fade(0.01f, 0.7f));
 		}
-		Particle ground = Fx.particle("cat_soft", blue(Palette.CAT_HALO));
+		// the ground flash (C19): 21.7 m of 4C09 x the noise 16E9D, navy to deep blue (800C2FC5 r3: never brighter than
+		// #0004FF, so at its full size it darkens nothing and whitens nothing), 0.25 s
+		Particle ground = Fx.particle("cat_ground_flash", enemy ? Palette.CAT_NAP_GROUND_ENEMY : Palette.CAT_NAP_GROUND);
 		if (ground != null) {
-			// the data's 21.7 m ground flash, kept to 12 m (ours: at full size it would light the whole view in first person)
-			Fx.add(ground.at(feet.add(0, 0.05, 0)).shape(Shape.FLAT).normal(UP).life(0.25f).size(6, 12).alpha(0.6f).easeOut()
-				.fade(0.01f, 0.7f));
+			Fx.add(ground.at(feet.add(0, 0.05, 0)).shape(Shape.FLAT).normal(UP).life(0.25f).size(21.71f, 21.71f).fade(0.01f, 0.7f));
 		}
 		Particle sphere = Fx.particle("cat_soft", blue(Palette.CAT_PURR_BLUE));
 		if (sphere != null) {

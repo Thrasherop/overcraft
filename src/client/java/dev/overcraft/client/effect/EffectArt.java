@@ -140,6 +140,12 @@ public final class EffectArt {
 		CAT_TETHER_ENEMY(0, 0, 0, 0, .25f, 1, .131f, 0, .5f, 1, .263f, 0, .75f, 1, .629f, 0, 1, 1, 1, 0),
 		/** Lifeline's hook glow (6EA2 / 71B1 cone, r3): #7FA8FF to white. */
 		CAT_HOOK(0, 0, 0, 0, .25f, .25f, .33f, .5f, .5f, .5f, .66f, 1, .75f, .75f, .83f, 1, 1, 1, 1, 1),
+		/** The hook's bubbles (71B1 C9, 80047234 r3, HDR 3.6), normalised: deep blue to cyan. */
+		CAT_BUBBLE(0, 0, 0, 0, .25f, 0, .05f, .3f, .5f, 0, .35f, .53f, .75f, 0, .68f, .76f, 1, 0, 1, 1),
+		/** The towed ally's arc flash (7454 C6, 800EFD5D r6 #42FFFF), its brightness the mask's: black to cyan. */
+		CAT_ARC_FLASH(0, 0, 0, 0, .25f, .013f, .25f, .25f, .5f, .025f, .5f, .5f, .75f, .038f, .75f, .75f, 1, .05f, 1, 1),
+		/** The towed ally's arc lines (7454 C8, 8007D524 r8): slate blue to white . */
+		CAT_ARC_LINES(0, 0, 0, 0, .25f, .21f, .28f, .58f, .5f, .34f, .42f, .67f, .75f, .79f, .86f, .99f, 1, 1, 1, 1),
 		/** Lifeline's paw marker decal (7432, 800333C5 r3): blue to cyan. */
 		CAT_MARKER(0, 0, 0, 0, .25f, .001f, .175f, .976f, .5f, 0, .404f, .975f, .75f, 0, .671f, .992f, 1, .072f, 1, .991f),
 		/** Jetpack flame core (7064, 8004B7CE r7, HDR 11): blue to cyan to white. */
@@ -154,6 +160,65 @@ public final class EffectArt {
 		CAT_NAP_MARKER(0, 0, 0, 0, .25f, 0, .393f, 1, .5f, 0, .067f, 1, .75f, 0, .067f, 1, 1, 0, .067f, 1),
 		/** Catnapper's landing flash (71C2, 8006A53D r0, from black, HDR 7): violet-pink to sky to cyan. */
 		CAT_NAP_IMPACT(0, 0, 0, 0, .25f, .307f, .109f, .744f, .5f, .237f, .218f, 1, .75f, .13f, .614f, 1, 1, .009f, 1, 1),
+		// the rest of #59 (CatPalettes: the enum's initializer is at the class file's limit)
+		/** The jetpack's outer flame (7064 C24, 80063381 r7): deep blue to teal. */
+		CAT_FLAME_TEAL(CatPalettes.CAT_FLAME_TEAL),
+		/** The Catnapper cast's bell (7373 C37, 8007DA82 r7, from black): gold to pale yellow. */
+		CAT_BELL_GOLD(CatPalettes.CAT_BELL_GOLD),
+		/** The cast's and the dive's exhaust rings (7373 C18 / 7163 C73, 80038B2E r4, HDR 4.65): blue to cyan. */
+		CAT_RING_CYAN(CatPalettes.CAT_RING_CYAN),
+		/** The same rings' gold pair (7373 C21 / 7163 C84, 800BD8BA r4, HDR 3.4): yellow to white. */
+		CAT_RING_GOLD(CatPalettes.CAT_RING_GOLD),
+		/** The head slash's arcs (71B8 C8, 8005B765 r8, HDR 17): cyan to white. */
+		CAT_SLASH(CatPalettes.CAT_SLASH),
+		/** The same, the enemy row (8005B765 r9): red to white. */
+		CAT_SLASH_ENEMY(CatPalettes.CAT_SLASH_ENEMY),
+		/** The head slash's domes (71B8 C10, 8007E2E6 r7, HDR 6.2): sky to cyan to white. */
+		CAT_DOME(CatPalettes.CAT_DOME),
+		/** The inner dome (71B8 C12, 8000B7F8 r6, HDR 3): deep blue to cyan. */
+		CAT_DOME_DEEP(CatPalettes.CAT_DOME_DEEP),
+		/** Both domes' enemy rows (8007E2E6 r8 / 8000B7F8 r5): red to white. */
+		CAT_DOME_ENEMY(CatPalettes.CAT_DOME_ENEMY),
+		/** The landing's ground flash (71C2 C19, 800C2FC5 r3): navy to deep blue. */
+		CAT_NAP_GROUND(CatPalettes.CAT_NAP_GROUND),
+		/** The same, the enemy row (800C2FC5 r4): maroon to red. */
+		CAT_NAP_GROUND_ENEMY(CatPalettes.CAT_NAP_GROUND_ENEMY),
+		/** Transport Shielding's hexes (5513 C3, 800D0BB1 r3): teal to cyan. */
+		CAT_HEX(CatPalettes.CAT_HEX),
+		/** Claws Out's marks (74D0 C13, 8006D576 r4, from black): teal to pale cyan. */
+		CAT_CLAWS(CatPalettes.CAT_CLAWS),
+		/** The same, the enemy row (8006D576 r3): dark red to pale pink. */
+		CAT_CLAWS_ENEMY(CatPalettes.CAT_CLAWS_ENEMY),
+		/** Claws Out's sparks (74D0 C15, 800D0510 r1, from black): navy to cyan. */
+		CAT_CLAW_SPARK(CatPalettes.CAT_CLAW_SPARK),
+		/** The same, the enemy row (800D0510 r0): red to yellow. */
+		CAT_CLAW_SPARK_ENEMY(CatPalettes.CAT_CLAW_SPARK_ENEMY),
+		/** The landing hit's sphere (7256 C13, 800C7EF8 r5, HDR 4.8): blue to cyan. */
+		CAT_SHOCK(CatPalettes.CAT_SHOCK),
+		/** The landing hit's flame burst (7256 C17, 800CFAE7 r3, HDR 22): blue to sky to cyan. */
+		CAT_SHOCK_FLAME(CatPalettes.CAT_SHOCK_FLAME),
+		/** The same, the enemy row (800CFAE7 r4): dark red to orange. */
+		CAT_SHOCK_FLAME_ENEMY(CatPalettes.CAT_SHOCK_FLAME_ENEMY),
+		/** The landing hit's sparks (7256 C21, 8008B3B1 r1, from black): violet to blue to white. */
+		CAT_SHOCK_SPARK(CatPalettes.CAT_SHOCK_SPARK),
+		/** The dive's thin tube trail (7163 C57, 8009F6ED r3, HDR 3.6): white head, cyan. */
+		CAT_DIVE_CYAN(CatPalettes.CAT_DIVE_CYAN),
+		/** The dive's middle tube trail (7163 C61, 800C202B r3, HDR 2.7): cyan to blue. */
+		CAT_DIVE_BLUE(CatPalettes.CAT_DIVE_BLUE),
+		/** The dive's wide tube trail (7163 C65, 8000C8DF r3, HDR 2.7): white head, gold. */
+		CAT_DIVE_GOLD(CatPalettes.CAT_DIVE_GOLD),
+		/** The dive trails' enemy rows (r4): white head, orange. */
+		CAT_DIVE_ENEMY(CatPalettes.CAT_DIVE_ENEMY),
+		/** The dive's strip trails (7163 C103, 8004F990 r3, HDR 2.7): blue to cyan. */
+		CAT_DIVE_STRIP(CatPalettes.CAT_DIVE_STRIP),
+		/** The jetpack's and the dive's gold sparks (7064 C44 / 7163 C92, r1): gold to pale yellow. */
+		CAT_SPARK_GOLD(CatPalettes.CAT_SPARK_GOLD),
+		/** The jetpack's pale sparks (7064 C47 / 7163 C113, 800A522D r1): slate to pale blue. */
+		CAT_SPARK_PALE(CatPalettes.CAT_SPARK_PALE),
+		/** The jetpack sparks' enemy row (800D5B12 r2): red to pale pink. */
+		CAT_SPARK_ENEMY(CatPalettes.CAT_SPARK_ENEMY),
+		/** The paw print's second set (709F C56, 800751FB r4, HDR 2.4): deep blue to white. */
+		CAT_PAW_PRINT_BLUE(CatPalettes.CAT_PAW_PRINT_BLUE),
 		// Lifeweaver's (tools/reference/lifeweaver-effects.md "Palettes", generated from his LUT rows)
 		/** His hex sparkles 3EB7D (8005B0D22D52 r0, HDR 5): magenta-pink to white. */
 		LW_PINK(0, 0, 0, 0, .25f, 1, .343f, 1, .5f, 1, .83f, 1, .75f, 1, 1, 1, 1, 1, 1, 1),
@@ -940,6 +1005,121 @@ public final class EffectArt {
 		/** Overclock's material effect on her (333B C0, hp 0004): cyan falling to black, HDR 6.6 (80035FEA47FC r1, peak 6.59, falls; game hex #00FFFF #009E98 #005350 #001A19 #000000). */
 		SOJ_OC_BODY(SojournPalettes.SOJ_OC_BODY),
 		SOJ_OC_BODY_N(SojournPalettes.SOJ_OC_BODY_N),
+		// Sigma's (tools/reference/sigma-effects.md; their stops in SigmaPalettes, which holds every row his pass read: only those
+		// drawn are named here, the enum's initializer being near the class file's 64 KB)
+		SIG_SPHERE_LAUNCH(SigmaPalettes.SIG_SPHERE_LAUNCH),
+		SIG_SPHERE_LAUNCH_RING(SigmaPalettes.SIG_SPHERE_LAUNCH_RING),
+		SIG_SPHERE_LAUNCH_RING_ENEMY(SigmaPalettes.SIG_SPHERE_LAUNCH_RING_ENEMY),
+		SIG_SPHERE_CORE(SigmaPalettes.SIG_SPHERE_CORE),
+		SIG_SPHERE_CORE_ENEMY(SigmaPalettes.SIG_SPHERE_CORE_ENEMY),
+		SIG_SPHERE_TRAIL(SigmaPalettes.SIG_SPHERE_TRAIL),
+		SIG_SPHERE_TRAIL_ENEMY(SigmaPalettes.SIG_SPHERE_TRAIL_ENEMY),
+		SIG_SPHERE_TRAIL_THIN(SigmaPalettes.SIG_SPHERE_TRAIL_THIN),
+		SIG_SPHERE_TRAIL_THIN_ENEMY(SigmaPalettes.SIG_SPHERE_TRAIL_THIN_ENEMY),
+		SIG_SPHERE_HALO(SigmaPalettes.SIG_SPHERE_HALO),
+		SIG_SPHERE_HALO_ENEMY(SigmaPalettes.SIG_SPHERE_HALO_ENEMY),
+		SIG_SPHERE_MOTE(SigmaPalettes.SIG_SPHERE_MOTE),
+		SIG_BURST_RING(SigmaPalettes.SIG_BURST_RING),
+		SIG_BURST_RING_ENEMY(SigmaPalettes.SIG_BURST_RING_ENEMY),
+		SIG_BURST_STREAK(SigmaPalettes.SIG_BURST_STREAK),
+		SIG_BURST_STREAK_ENEMY(SigmaPalettes.SIG_BURST_STREAK_ENEMY),
+		SIG_BURST_SHELL(SigmaPalettes.SIG_BURST_SHELL),
+		SIG_BURST_SHELL_ENEMY(SigmaPalettes.SIG_BURST_SHELL_ENEMY),
+		SIG_BURST_FLASH(SigmaPalettes.SIG_BURST_FLASH),
+		SIG_BURST_FLASH_ENEMY(SigmaPalettes.SIG_BURST_FLASH_ENEMY),
+		SIG_HAND_CORE(SigmaPalettes.SIG_HAND_CORE),
+		SIG_HAND_SPARK(SigmaPalettes.SIG_HAND_SPARK),
+		SIG_HAND_SPARK_ENEMY(SigmaPalettes.SIG_HAND_SPARK_ENEMY),
+		SIG_HAND_GLOW(SigmaPalettes.SIG_HAND_GLOW),
+		SIG_HAND_MATERIAL(SigmaPalettes.SIG_HAND_MATERIAL),
+		SIG_HAND_EMISSION(SigmaPalettes.SIG_HAND_EMISSION),
+		SIG_BARRIER(SigmaPalettes.SIG_BARRIER),
+		SIG_BARRIER_ENEMY(SigmaPalettes.SIG_BARRIER_ENEMY),
+		SIG_BARRIER_MOTE(SigmaPalettes.SIG_BARRIER_MOTE),
+		SIG_BARRIER_MOTE_ENEMY(SigmaPalettes.SIG_BARRIER_MOTE_ENEMY),
+		SIG_BARRIER_SEND(SigmaPalettes.SIG_BARRIER_SEND),
+		SIG_BARRIER_HAND(SigmaPalettes.SIG_BARRIER_HAND),
+		SIG_BARRIER_FLYBACK(SigmaPalettes.SIG_BARRIER_FLYBACK),
+		SIG_BARRIER_FLYBACK_ENEMY(SigmaPalettes.SIG_BARRIER_FLYBACK_ENEMY),
+		SIG_BARRIER_RECALL_FLASH(SigmaPalettes.SIG_BARRIER_RECALL_FLASH),
+		SIG_BARRIER_RECALL_FLASH_ENEMY(SigmaPalettes.SIG_BARRIER_RECALL_FLASH_ENEMY),
+		SIG_BARRIER_RECALL_GLOW(SigmaPalettes.SIG_BARRIER_RECALL_GLOW),
+		SIG_BARRIER_RECALL_GLOW_ENEMY(SigmaPalettes.SIG_BARRIER_RECALL_GLOW_ENEMY),
+		SIG_BARRIER_BREAK(SigmaPalettes.SIG_BARRIER_BREAK),
+		SIG_BARRIER_BREAK_ENEMY(SigmaPalettes.SIG_BARRIER_BREAK_ENEMY),
+		SIG_BARRIER_BREAK_SPARK(SigmaPalettes.SIG_BARRIER_BREAK_SPARK),
+		SIG_BARRIER_BREAK_SPARK_ENEMY(SigmaPalettes.SIG_BARRIER_BREAK_SPARK_ENEMY),
+		SIG_BARRIER_BREAK_STREAK(SigmaPalettes.SIG_BARRIER_BREAK_STREAK),
+		SIG_BARRIER_SHATTER(SigmaPalettes.SIG_BARRIER_SHATTER),
+		SIG_BARRIER_HEAL(SigmaPalettes.SIG_BARRIER_HEAL),
+		SIG_BARRIER_HEAL_ENEMY(SigmaPalettes.SIG_BARRIER_HEAL_ENEMY),
+		SIG_GRASP_FIELD(SigmaPalettes.SIG_GRASP_FIELD),
+		SIG_GRASP_SHELL(SigmaPalettes.SIG_GRASP_SHELL),
+		SIG_GRASP_SHELL_ENEMY(SigmaPalettes.SIG_GRASP_SHELL_ENEMY),
+		SIG_GRASP_GLOW(SigmaPalettes.SIG_GRASP_GLOW),
+		SIG_GRASP_GLOW_ENEMY(SigmaPalettes.SIG_GRASP_GLOW_ENEMY),
+		SIG_GRASP_ORB(SigmaPalettes.SIG_GRASP_ORB),
+		SIG_GRASP_ORB_ENEMY(SigmaPalettes.SIG_GRASP_ORB_ENEMY),
+		SIG_GRASP_HAZE(SigmaPalettes.SIG_GRASP_HAZE),
+		SIG_GRASP_ABSORB(SigmaPalettes.SIG_GRASP_ABSORB),
+		SIG_GRASP_ABSORB_ENEMY(SigmaPalettes.SIG_GRASP_ABSORB_ENEMY),
+		SIG_GRASP_ABSORB_RING(SigmaPalettes.SIG_GRASP_ABSORB_RING),
+		SIG_GRASP_ABSORB_RING_ENEMY(SigmaPalettes.SIG_GRASP_ABSORB_RING_ENEMY),
+		SIG_OVERHEALTH(SigmaPalettes.SIG_OVERHEALTH),
+		SIG_OVERHEALTH_ENEMY(SigmaPalettes.SIG_OVERHEALTH_ENEMY),
+		SIG_OVERHEALTH_STREAK(SigmaPalettes.SIG_OVERHEALTH_STREAK),
+		SIG_OVERHEALTH_SHELL(SigmaPalettes.SIG_OVERHEALTH_SHELL),
+		SIG_OVERHEALTH_SHELL_ENEMY(SigmaPalettes.SIG_OVERHEALTH_SHELL_ENEMY),
+		SIG_ROCK_GATHER(SigmaPalettes.SIG_ROCK_GATHER),
+		SIG_ROCK_GATHER_ENEMY(SigmaPalettes.SIG_ROCK_GATHER_ENEMY),
+		SIG_ROCK_GATHER_DISC(SigmaPalettes.SIG_ROCK_GATHER_DISC),
+		SIG_ROCK_GATHER_FLASH(SigmaPalettes.SIG_ROCK_GATHER_FLASH),
+		SIG_ROCK_TRAIL(SigmaPalettes.SIG_ROCK_TRAIL),
+		SIG_ROCK_TRAIL_ENEMY(SigmaPalettes.SIG_ROCK_TRAIL_ENEMY),
+		SIG_ROCK_IMPACT_FLASH(SigmaPalettes.SIG_ROCK_IMPACT_FLASH),
+		SIG_ROCK_IMPACT_FLASH_ENEMY(SigmaPalettes.SIG_ROCK_IMPACT_FLASH_ENEMY),
+		SIG_ROCK_IMPACT_GLOW(SigmaPalettes.SIG_ROCK_IMPACT_GLOW),
+		SIG_ROCK_IMPACT_GLOW_ENEMY(SigmaPalettes.SIG_ROCK_IMPACT_GLOW_ENEMY),
+		SIG_ROCK_IMPACT_DUST(SigmaPalettes.SIG_ROCK_IMPACT_DUST),
+		SIG_ROCK_IMPACT_DUST_ENEMY(SigmaPalettes.SIG_ROCK_IMPACT_DUST_ENEMY),
+		SIG_ROCK_SCORCH(SigmaPalettes.SIG_ROCK_SCORCH),
+		SIG_ROCK_SCORCH_ENEMY(SigmaPalettes.SIG_ROCK_SCORCH_ENEMY),
+		SIG_ROCK_SMOKE(SigmaPalettes.SIG_ROCK_SMOKE),
+		SIG_ROCK_CORE(SigmaPalettes.SIG_ROCK_CORE),
+		SIG_FLUX_RETICLE(SigmaPalettes.SIG_FLUX_RETICLE),
+		SIG_FLUX_RETICLE_DECAL(SigmaPalettes.SIG_FLUX_RETICLE_DECAL),
+		SIG_FLUX_BODY(SigmaPalettes.SIG_FLUX_BODY),
+		SIG_FLUX_BODY_ENEMY(SigmaPalettes.SIG_FLUX_BODY_ENEMY),
+		SIG_FLUX_BODY_HALO(SigmaPalettes.SIG_FLUX_BODY_HALO),
+		SIG_FLUX_BODY_HALO_ENEMY(SigmaPalettes.SIG_FLUX_BODY_HALO_ENEMY),
+		SIG_FLUX_COLUMN(SigmaPalettes.SIG_FLUX_COLUMN),
+		SIG_FLUX_COLUMN_ENEMY(SigmaPalettes.SIG_FLUX_COLUMN_ENEMY),
+		SIG_FLUX_COLUMN_OUTER(SigmaPalettes.SIG_FLUX_COLUMN_OUTER),
+		SIG_FLUX_COLUMN_OUTER_ENEMY(SigmaPalettes.SIG_FLUX_COLUMN_OUTER_ENEMY),
+		SIG_FLUX_DECAL(SigmaPalettes.SIG_FLUX_DECAL),
+		SIG_FLUX_DECAL_ENEMY(SigmaPalettes.SIG_FLUX_DECAL_ENEMY),
+		SIG_FLUX_SPARK(SigmaPalettes.SIG_FLUX_SPARK),
+		SIG_FLUX_PULL(SigmaPalettes.SIG_FLUX_PULL),
+		SIG_FLUX_PULL_ENEMY(SigmaPalettes.SIG_FLUX_PULL_ENEMY),
+		SIG_FLUX_PULL_SPARK(SigmaPalettes.SIG_FLUX_PULL_SPARK),
+		SIG_FLUX_PULL_SPARK_ENEMY(SigmaPalettes.SIG_FLUX_PULL_SPARK_ENEMY),
+		SIG_LIFT_RING(SigmaPalettes.SIG_LIFT_RING),
+		SIG_LIFT_RING_ENEMY(SigmaPalettes.SIG_LIFT_RING_ENEMY),
+		SIG_LIFT_TRAIL(SigmaPalettes.SIG_LIFT_TRAIL),
+		SIG_LIFT_TRAIL_ENEMY(SigmaPalettes.SIG_LIFT_TRAIL_ENEMY),
+		SIG_LIFT_TRAIL_DARK(SigmaPalettes.SIG_LIFT_TRAIL_DARK),
+		SIG_LIFT_TRAIL_DARK_ENEMY(SigmaPalettes.SIG_LIFT_TRAIL_DARK_ENEMY),
+		SIG_LIFTED_GLOW(SigmaPalettes.SIG_LIFTED_GLOW),
+		SIG_LIFTED_GLOW_ENEMY(SigmaPalettes.SIG_LIFTED_GLOW_ENEMY),
+		SIG_LIFTED_RING(SigmaPalettes.SIG_LIFTED_RING),
+		SIG_LIFTED_RING_ENEMY(SigmaPalettes.SIG_LIFTED_RING_ENEMY),
+		SIG_LIFTOFF_DUST(SigmaPalettes.SIG_LIFTOFF_DUST),
+		SIG_LEVITATE(SigmaPalettes.SIG_LEVITATE),
+		SIG_LEVITATE_ENEMY(SigmaPalettes.SIG_LEVITATE_ENEMY),
+		SIG_HYPER_STRIKE(SigmaPalettes.SIG_HYPER_STRIKE),
+		SIG_HYPER_STRIKE_ENEMY(SigmaPalettes.SIG_HYPER_STRIKE_ENEMY),
+		SIG_HYPER_STRIKE_SPARK(SigmaPalettes.SIG_HYPER_STRIKE_SPARK),
+		SIG_HYPER_STRIKE_SPARK_ENEMY(SigmaPalettes.SIG_HYPER_STRIKE_SPARK_ENEMY),
 		/** A colour texture used as it is (with its alpha): drawn blended, not added. */
 		NATURAL;
 
@@ -1094,6 +1274,18 @@ public final class EffectArt {
 	}
 
 	private static @Nullable Identifier load(String name, Palette palette, boolean soft, String key) {
+		dev.overcraft.hero.PressTrace.mark("art_miss:" + key);
+		NativeImage out = coloured(name, palette, soft);
+		if (out == null) {
+			return null;
+		}
+		Identifier id = Overcraft.id("effect/" + key);
+		Minecraft.getInstance().getTextureManager().register(id, new HeroTexture(id, out, MipmapStrategy.MEAN));
+		return id;
+	}
+
+	/** The mask coloured with the palette, not yet a texture: read from the pack and worked out pixel by pixel. */
+	private static @Nullable NativeImage coloured(String name, Palette palette, boolean soft) {
 		Identifier source = Overcraft.id("textures/effect/" + name + ".png");
 		Minecraft mc = Minecraft.getInstance();
 		NativeImage made = generated(name);
@@ -1131,9 +1323,7 @@ public final class EffectArt {
 					}
 				}
 			}
-			Identifier id = Overcraft.id("effect/" + key);
-			mc.getTextureManager().register(id, new HeroTexture(id, out, MipmapStrategy.MEAN));
-			return id;
+			return out;
 		} catch (IOException e) {
 			Overcraft.LOG.warn("Effect texture {} didn't load: {}", name, e.toString());
 			return null;
@@ -1202,5 +1392,105 @@ public final class EffectArt {
 	/** Resource packs changed: colour them again when next asked. */
 	public static void clear() {
 		CACHE.clear();
+		QUEUED.clear();
+		generation++;
+	}
+
+	// ---- ahead of its first use (#126) ----
+
+	/** One piece of a hero's art: a mask ("name", or "name#frames" as Fx.particle has it), its palette, blended or added. */
+	public record Art(String mask, Palette palette, boolean soft) {
+	}
+
+	private record Made(String key, NativeImage image, int generation) {
+	}
+
+	/** Coloured on the worker, waiting for the client's thread to make them textures. */
+	private static final java.util.Queue<Made> MADE = new java.util.concurrent.ConcurrentLinkedQueue<>();
+	private static final java.util.concurrent.atomic.AtomicInteger OUTSTANDING = new java.util.concurrent.atomic.AtomicInteger();
+	/** Sent to the worker: CACHE only knows what's finished, and she and another Sojourn's list share art. */
+	private static final java.util.Set<String> QUEUED = new java.util.HashSet<>();
+	private static long madeBytes;
+	/** What a frame may spend turning them into textures: ours, under a frame at 144 Hz by far. */
+	private static final long FRAME_BUDGET_NANOS = 1_500_000;
+	private static volatile int generation;
+	private static java.util.concurrent.@Nullable ExecutorService maker;
+
+	public static int generation() {
+		return generation;
+	}
+
+	/** Texture memory of what was made ahead, mips included (the harness). */
+	public static long madeBytes() {
+		return madeBytes;
+	}
+
+	/** How many are still on their way (the harness). */
+	public static int outstanding() {
+		return OUTSTANDING.get();
+	}
+
+	/**
+	 * A hero's art made before it's wanted. Its first use read every mask from the pack and coloured it pixel by pixel on the client's
+	 * thread, in the frame of the shot: 930 ms of two frames on Sojourn's first Charged Shot, 252 of 290 samples of the thread in
+	 * {@link #load} (#126). Here a low-priority worker does that part, and each frame makes a few textures of what's ready. Asked for
+	 * before it's ready, it loads as it did, and the worker's copy is dropped.
+	 */
+	public static void prepare(java.util.List<Art> arts) {
+		if (maker == null) {
+			maker = java.util.concurrent.Executors.newSingleThreadExecutor(r -> {
+				Thread t = new Thread(r, "Overcraft effect art");
+				t.setDaemon(true);
+				t.setPriority(Thread.MIN_PRIORITY);
+				return t;
+			});
+		}
+		int now = generation;
+		for (Art art : arts) {
+			int hash = art.mask().indexOf('#');
+			int frames = hash >= 0 ? Integer.parseInt(art.mask().substring(hash + 1)) : 1;
+			for (int i = 0; i < frames; i++) {
+				String name = hash >= 0 ? art.mask().substring(0, hash) + "_" + i : art.mask();
+				String key = name + "/" + art.palette().name().toLowerCase(Locale.ROOT) + (art.soft() ? "_soft" : "");
+				if (!CACHE.containsKey(key) && QUEUED.add(key)) {
+					OUTSTANDING.incrementAndGet();
+					maker.execute(() -> {
+						try {
+							NativeImage image = coloured(name, art.palette(), art.soft());
+							if (image != null) {
+								MADE.add(new Made(key, image, now));
+								return;
+							}
+						} catch (RuntimeException e) {
+							Overcraft.LOG.warn("Effect art {} wasn't made ahead: {}", key, e.toString());
+						}
+						OUTSTANDING.decrementAndGet();
+					});
+				}
+			}
+		}
+	}
+
+	/** Each frame, on the client's thread: textures from what the worker has made, within the budget. */
+	public static void frame() {
+		Made made = MADE.peek();
+		if (made == null) {
+			return;
+		}
+		long end = System.nanoTime() + FRAME_BUDGET_NANOS;
+		while ((made = MADE.poll()) != null) {
+			OUTSTANDING.decrementAndGet();
+			if (made.generation() == generation && !CACHE.containsKey(made.key())) {
+				Identifier id = Overcraft.id("effect/" + made.key());
+				madeBytes += made.image().getWidth() * (long) made.image().getHeight() * 4 * 4 / 3;
+				Minecraft.getInstance().getTextureManager().register(id, new HeroTexture(id, made.image(), MipmapStrategy.MEAN));
+				CACHE.put(made.key(), Optional.of(id));
+			} else {
+				made.image().close();
+			}
+			if (System.nanoTime() >= end) {
+				return;
+			}
+		}
 	}
 }

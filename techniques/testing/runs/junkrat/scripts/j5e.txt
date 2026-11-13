@@ -1,0 +1,23 @@
+MARK J5e the mine through death, read on the server each half second (expected it stays: HeroKit.leavePlay, DEATH keeps what's placed)
+cmd /tp @s 0.5 -60 0.5 0 0
+sleep 1
+state
+key ability_1 down
+sleep 0.15
+key ability_1 up
+sleep 1
+servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J5E_BEFORE_KILL_EXISTS
+cmd /kill @s
+servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J5E_0.0_EXISTS
+sleep 0.5
+servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J5E_0.5_EXISTS
+sleep 0.5
+servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J5E_1.0_EXISTS
+sleep 0.5
+servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J5E_1.5_EXISTS
+sleep 1
+servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J5E_2.5_EXISTS
+respawn
+sleep 1.5
+servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J5E_RESPAWNED_EXISTS
+ents Mine

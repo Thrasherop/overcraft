@@ -1,0 +1,271 @@
+# Tracer's voice: <sound id> = <file under E:/Overwatch Archive/extracted/154088/> (build 154088). Same format as dva.txt;
+# build_asset_pack.py sounds copies / mixes them into the local pack. Read 2026-11-11 offline (Overwatch and Battle.net
+# checked closed before every archive read and TankLib run). Scripts: E:/Overwatch Archive/research/tracer/scripts/sounds/
+# (voiceset_tracer.py, tracer_voice.py, tracer_voice_gen.py, which writes this file; D.Va's voice pipeline retargeted); data:
+# research/tracer/sounds/voice_lines.json. Her sound effects are in tracer_sfx.txt.
+
+# ===== Voice (HeroVoice/Tracer): the voice set 0003.05F's lines by moment (421 stimuli, 1365 lines; from tracer_voice.py:
+# each line's 0B2, stimulus, weight and decoded criteria; files from DataTool's extract-hero-voice --subtitles-with-sounds,
+# in research/tracer/extract). w = the line's weight. Lines with criteria are left out, as D.Va's are (hero interactions,
+# skins, maps, Overwatch Classic, scripted moments: counted per moment), except 'NOT ScriptedEvent 191E', treated as
+# always true (kiriko-voice.md). Stimulus numbers (the .078): priority, radius m, volume dB, interrupt, cooldown s
+# (m_A73F2EBE-m_DD27AC95 read as min-max, M); Voice.java's table takes priority, cooldown and interrupt.
+# Not mapped: 0019 (UltimateSeenRemark), 0575 (a teammate's ult ready), 3DCE's low-health callout, 0084's low-health
+# lines (criteria C16D: 001A #585, raised 1.5 s after a Recall that healed over 50; the mod raises no C16D yet), perk lines,
+# the match / objective / PvE lines.
+# Elimination 0008: 17 files; prio 70, 30 m, +2 dB, interrupt 0, cooldown 15-15 s; left out: 34 a hero interaction, 13 Overwatch Classic only, 5 a scripted condition
+tracer.voice.elimination = ../../research/tracer/extract/HeroVoice/Tracer/Elimination/00000005F260.0B2-Whoo! Nice!.ogg | w=1
+tracer.voice.elimination = ../../research/tracer/extract/HeroVoice/Tracer/Elimination/00000005F261.0B2-Way ahead of you!.ogg | w=1
+tracer.voice.elimination = ../../research/tracer/extract/HeroVoice/Tracer/Elimination/00000005F262.0B2-Nice try!.ogg | w=0.2
+tracer.voice.elimination = ../../research/tracer/extract/HeroVoice/Tracer/Elimination/00000005F25D.0B2-(laughs) Cheers!.ogg | w=1
+tracer.voice.elimination = ../../research/tracer/extract/HeroVoice/Tracer/Elimination/00000005F25A.0B2-Haha! Jog on, mate!.ogg | w=1
+tracer.voice.elimination = ../../research/tracer/extract/HeroVoice/Tracer/Elimination/00000005F25B.0B2-Go on, then! Bye!.ogg | w=1
+tracer.voice.elimination = ../../research/tracer/extract/HeroVoice/Tracer/Elimination/00000006177A.0B2-Knocked you off your rocker!.ogg | w=1
+tracer.voice.elimination = ../../research/tracer/extract/HeroVoice/Tracer/Elimination/000000061785.0B2-No hard feelings, love!.ogg | w=1
+tracer.voice.elimination = ../../research/tracer/extract/HeroVoice/Tracer/Elimination/000000061783.0B2-Bop!.ogg | w=1
+tracer.voice.elimination = ../../research/tracer/extract/HeroVoice/Tracer/Elimination/000000061784.0B2-Blimey, I'm good!.ogg | w=1
+tracer.voice.elimination = ../../research/tracer/extract/HeroVoice/Tracer/Elimination/00000006177F.0B2-Zip zap zop!.ogg | w=0.8
+tracer.voice.elimination = ../../research/tracer/extract/HeroVoice/Tracer/Elimination/00000006177E.0B2-Your time's up!.ogg | w=1
+tracer.voice.elimination = ../../research/tracer/extract/HeroVoice/Tracer/Elimination/00000006177D.0B2-Farewell!.ogg | w=1
+tracer.voice.elimination = ../../research/tracer/extract/HeroVoice/Tracer/Elimination/00000006177C.0B2-Easy peasy!.ogg | w=1
+tracer.voice.elimination = ../../research/tracer/extract/HeroVoice/Tracer/Elimination/000000061781.0B2-Aw, having a rough time_.ogg | w=1
+tracer.voice.elimination = ../../research/tracer/extract/HeroVoice/Tracer/Elimination/000000061780.0B2-Ta-ta!.ogg | w=1
+tracer.voice.elimination = ../../research/tracer/extract/HeroVoice/Tracer/Elimination/000000061782.0B2-I'll cheers to that!.ogg | w=1
+# Multikill 00C9: 4 files; prio 70, 35 m, +2 dB, interrupt 0, cooldown 15-20 s; left out: 2 Overwatch Classic only
+tracer.voice.multikill = ../../research/tracer/extract/HeroVoice/Tracer/Multikill/000000061799.0B2-Now that's efficient!.ogg | w=1
+tracer.voice.multikill = ../../research/tracer/extract/HeroVoice/Tracer/Multikill/00000006179A.0B2-That was wicked!.ogg | w=1
+tracer.voice.multikill = ../../research/tracer/extract/HeroVoice/Tracer/Multikill/00000006179B.0B2-Wait 'til I tell Em about that one!.ogg | w=1
+tracer.voice.multikill = ../../research/tracer/extract/HeroVoice/Tracer/Multikill/000000061798.0B2-(laugh) I'm chuffed!.ogg | w=1
+# MeleeEnemyKilledRemark 0032 (an enemy killed in melee range): 7 files; prio 65, 30 m, +2 dB, interrupt 0, cooldown 10-14 s; left out: 7 a scripted condition, 2 Overwatch Classic only, 1 a hero interaction
+tracer.voice.melee_kill = ../../research/tracer/extract/HeroVoice/Tracer/MeleeEnemyKilledRemark/00000000A3C3.0B2-Pow!.ogg | w=0.01
+tracer.voice.melee_kill = ../../research/tracer/extract/HeroVoice/Tracer/MeleeEnemyKilledRemark/00000006177B.0B2-Slugged ya!.ogg | w=1
+tracer.voice.melee_kill = ../../research/tracer/extract/HeroVoice/Tracer/MeleeEnemyKilledRemark/0000000617A2.0B2-Smashing! Get it_.ogg | w=1
+tracer.voice.melee_kill = ../../research/tracer/extract/HeroVoice/Tracer/MeleeEnemyKilledRemark/0000000617A1.0B2-Gave it the ol' wallop!.ogg | w=1
+tracer.voice.melee_kill = ../../research/tracer/extract/HeroVoice/Tracer/MeleeEnemyKilledRemark/0000000617A0.0B2-Clobbered!.ogg | w=1
+tracer.voice.melee_kill = ../../research/tracer/extract/HeroVoice/Tracer/MeleeEnemyKilledRemark/00000006179F.0B2-A new meaning to crunch time!.ogg | w=0
+tracer.voice.melee_kill = ../../research/tracer/extract/HeroVoice/Tracer/MeleeEnemyKilledRemark/00000006712F.0B2-Slugged ya! With my gun.ogg | w=0.01
+# On Fire 0583: 3 files; prio 60, 35 m, +2 dB, interrupt 0, cooldown 2-5 s; left out: 3 Overwatch Classic only
+tracer.voice.on_fire = ../../research/tracer/extract/HeroVoice/Tracer/OnFire/0000000617E7.0B2-In tip-top shape!.ogg | w=1
+tracer.voice.on_fire = ../../research/tracer/extract/HeroVoice/Tracer/OnFire/0000000617E6.0B2-Who's on fire_ I am!.ogg | w=1
+tracer.voice.on_fire = ../../research/tracer/extract/HeroVoice/Tracer/OnFire/00000006190D.0B2-Look at me go!.ogg | w=1
+# Respawn 002C: 11 files; prio 40, 35 m, +0 dB, interrupt 0, cooldown 15-15 s; left out: 6 Overwatch Classic only, 1 a hero interaction
+tracer.voice.respawn = ../../research/tracer/extract/HeroVoice/Tracer/Respawn/00000000A3A3.0B2-Well, that just happened.ogg | w=0.01
+tracer.voice.respawn = ../../research/tracer/extract/HeroVoice/Tracer/Respawn/00000000B1A4.0B2-And she's back in the game!.ogg | w=1
+tracer.voice.respawn = ../../research/tracer/extract/HeroVoice/Tracer/Respawn/00000005F27E.0B2-Take it from the top!.ogg | w=0.01
+tracer.voice.respawn = ../../research/tracer/extract/HeroVoice/Tracer/Respawn/0000000617BB.0B2-Back again! Did you miss me_.ogg | w=1
+tracer.voice.respawn = ../../research/tracer/extract/HeroVoice/Tracer/Respawn/0000000617BD.0B2-Let's try that one more time.ogg | w=1
+tracer.voice.respawn = ../../research/tracer/extract/HeroVoice/Tracer/Respawn/0000000617BC.0B2-Give up_ Not in my vocabulary!.ogg | w=1
+tracer.voice.respawn = ../../research/tracer/extract/HeroVoice/Tracer/Respawn/0000000617C0.0B2-Up and at them!.ogg | w=1
+tracer.voice.respawn = ../../research/tracer/extract/HeroVoice/Tracer/Respawn/0000000617BA.0B2-As they say, try try again!.ogg | w=1
+tracer.voice.respawn = ../../research/tracer/extract/HeroVoice/Tracer/Respawn/0000000617BE.0B2-Perseverance is my middle name!.ogg | w=1
+tracer.voice.respawn = ../../research/tracer/extract/HeroVoice/Tracer/Respawn/0000000617BF.0B2-Right back up again!.ogg | w=1
+tracer.voice.respawn = ../../research/tracer/extract/HeroVoice/Tracer/Respawn/0000000617B9.0B2-You can't keep me away!.ogg | w=1
+# Melee shout 0023 (the shared melee VoiceStimulus): 9 files; prio 35, 35 m, +0 dB, interrupt 0, cooldown 0.5-0.5 s
+tracer.voice.melee = ../../research/tracer/extract/HeroVoice/Tracer/Melee/00000000A377.0B2-(shouts).ogg | w=0.7
+tracer.voice.melee = ../../research/tracer/extract/HeroVoice/Tracer/Melee/00000000A376.0B2-(shouts).ogg | w=0.7
+tracer.voice.melee = ../../research/tracer/extract/HeroVoice/Tracer/Melee/00000000A375.0B2-(shouts).ogg | w=0.7
+tracer.voice.melee = ../../research/tracer/extract/HeroVoice/Tracer/Melee/00000000A374.0B2-(shouts).ogg | w=0.7
+tracer.voice.melee = ../../research/tracer/extract/HeroVoice/Tracer/Melee/00000000A36B.0B2-(shouts).ogg | w=0.7
+tracer.voice.melee = ../../research/tracer/extract/HeroVoice/Tracer/Melee/00000000A36A.0B2-(shouts).ogg | w=0.7
+tracer.voice.melee = ../../research/tracer/extract/HeroVoice/Tracer/Melee/00000006489C.0B2-(shouts).ogg | w=1
+tracer.voice.melee = ../../research/tracer/extract/HeroVoice/Tracer/Melee/00000006489A.0B2-(shouts).ogg | w=1
+tracer.voice.melee = ../../research/tracer/extract/HeroVoice/Tracer/Melee/00000006489B.0B2-(shouts).ogg | w=1
+# Hero select 002B: 1 files; prio 100, 35 m, +0 dB, interrupt 0, cooldown 1-1 s; left out: 1 Overwatch Classic only
+tracer.voice.select = ../../research/tracer/extract/HeroVoice/Tracer/HeroSelect/00000005F271.0B2-Cheers, love! It's time to save the world!.ogg | w=1
+# Death 0001: 6 files; prio 90, 60 m, +2 dB, interrupt 0, cooldown 2-5 s
+tracer.voice.death = ../../research/tracer/extract/HeroVoice/Tracer/Death/00000000A390.0B2-(dying sounds).ogg | w=1
+tracer.voice.death = ../../research/tracer/extract/HeroVoice/Tracer/Death/00000000A38F.0B2-(dying sounds).ogg | w=1
+tracer.voice.death = ../../research/tracer/extract/HeroVoice/Tracer/Death/00000000A38E.0B2-(dying sounds).ogg | w=1
+tracer.voice.death = ../../research/tracer/extract/HeroVoice/Tracer/Death/00000000A38D.0B2-(dying sounds).ogg | w=1
+tracer.voice.death = ../../research/tracer/extract/HeroVoice/Tracer/Death/00000000A38C.0B2-(dying sounds).ogg | w=1
+tracer.voice.death = ../../research/tracer/extract/HeroVoice/Tracer/Death/00000000A373.0B2-(dying sounds).ogg | w=1
+# Pain 0003 / 0004: 19 files; prio 40, 35 m, -3 dB, interrupt 0, cooldown 1-2.5 s
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A39A.0B2-(grunts).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A399.0B2-(grunts).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A398.0B2-(grunts).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A391.0B2-(grunts).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A397.0B2-(grunts).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A372.0B2-(grunts).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A371.0B2-(grunts).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A369.0B2-(grunts).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A38B.0B2-(grunts).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A396.0B2-(painful grunt).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A395.0B2-(painful grunt).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A394.0B2-(painful grunt).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A393.0B2-(painful grunt).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A392.0B2-(painful grunt).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A370.0B2-(painful grunt).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A36F.0B2-(painful grunt).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A36E.0B2-(painful grunt).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A36D.0B2-(painful grunt).ogg | w=1
+tracer.voice.pain = ../../research/tracer/extract/HeroVoice/Tracer/Pain/00000000A36C.0B2-(painful grunt).ogg | w=1
+# Resurrected 005A (what she says when a Mercy brings her back): 2 files; prio 75, 35 m, +0 dB, interrupt 0, cooldown 10-10 s; left out: 1 a hero interaction
+tracer.voice.resurrected = ../../research/tracer/extract/HeroVoice/Tracer/Resurrected/00000000A3D1.0B2-Nice save!.ogg | w=1
+tracer.voice.resurrected = ../../research/tracer/extract/HeroVoice/Tracer/Resurrected/00000000A3D2.0B2-Yeah!.ogg | w=1
+# Ultimate/Ready 02E7 (the wheel line): 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+tracer.voice.ult_ready = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/Ready/00000000AFD3.0B2-My ultimate's ready!.ogg | w=1
+tracer.voice.ult_ready = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/Ready/00000000AFEE.0B2-Pulse bomb ready!.ogg | w=1
+# Ultimate/Charging 0574: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+tracer.voice.call_ult_charging = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/Charging/000000021E5F.0B2-My ultimate is charging.ogg | w=1
+tracer.voice.call_ult_charging = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/Charging/0000000550A1.0B2-Pulse bomb is charging!.ogg | w=1
+# Ultimate/AlmostReady 05A7: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+tracer.voice.call_ult_almost = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/AlmostReady/000000021E5E.0B2-My ultimate is almost ready!.ogg | w=1
+tracer.voice.call_ult_almost = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/AlmostReady/0000000550A3.0B2-Pulse bomb's almost ready.ogg | w=1
+# Hello 01CF: 6 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+tracer.voice.call_hello = ../../research/tracer/extract/HeroVoice/Tracer/Hello/00000000AF8A.0B2-Hiya!.ogg | w=1
+tracer.voice.call_hello = ../../research/tracer/extract/HeroVoice/Tracer/Hello/000000021E57.0B2-Heya!.ogg | w=1
+tracer.voice.call_hello = ../../research/tracer/extract/HeroVoice/Tracer/Hello/000000021E58.0B2-Hi!.ogg | w=1
+tracer.voice.call_hello = ../../research/tracer/extract/HeroVoice/Tracer/Hello/000000064540.0B2-Hiya!.ogg | w=1
+tracer.voice.call_hello = ../../research/tracer/extract/HeroVoice/Tracer/Hello/000000064541.0B2-Hi, there!.ogg | w=1
+tracer.voice.call_hello = ../../research/tracer/extract/HeroVoice/Tracer/Hello/000000064542.0B2-What's crackin'_.ogg | w=0.1
+# Thanks 01D0: 5 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+tracer.voice.call_thanks = ../../research/tracer/extract/HeroVoice/Tracer/Thanks/00000000AFFF.0B2-Thanks, love!.ogg | w=1
+tracer.voice.call_thanks = ../../research/tracer/extract/HeroVoice/Tracer/Thanks/000000021E5C.0B2-Thank you!.ogg | w=1
+tracer.voice.call_thanks = ../../research/tracer/extract/HeroVoice/Tracer/Thanks/000000021E5D.0B2-Thanks!.ogg | w=1
+tracer.voice.call_thanks = ../../research/tracer/extract/HeroVoice/Tracer/Thanks/000000064547.0B2-Thank you kindly!.ogg | w=1
+tracer.voice.call_thanks = ../../research/tracer/extract/HeroVoice/Tracer/Thanks/000000064548.0B2-Much appreciated!.ogg | w=1
+# Sorry 05E1: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+tracer.voice.call_sorry = ../../research/tracer/extract/HeroVoice/Tracer/Sorry/00000002CDF1.0B2-Oops. Sorry about that!.ogg | w=1
+tracer.voice.call_sorry = ../../research/tracer/extract/HeroVoice/Tracer/Sorry/00000002CDF2.0B2-Sorry!.ogg | w=1
+# No 01D2: 4 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+tracer.voice.call_no = ../../research/tracer/extract/HeroVoice/Tracer/No/00000000AFA1.0B2-Nuh uh.ogg | w=1
+tracer.voice.call_no = ../../research/tracer/extract/HeroVoice/Tracer/No/00000000AFDA.0B2-Nope.ogg | w=1
+tracer.voice.call_no = ../../research/tracer/extract/HeroVoice/Tracer/No/00000000AFAD.0B2-No way.ogg | w=1
+tracer.voice.call_no = ../../research/tracer/extract/HeroVoice/Tracer/No/00000000B1A5.0B2-Mm mmm.ogg | w=1
+# GroupUp 02C6: 6 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+tracer.voice.call_group_up = ../../research/tracer/extract/HeroVoice/Tracer/GroupUp/000000021E53.0B2-Join me!.ogg | w=1
+tracer.voice.call_group_up = ../../research/tracer/extract/HeroVoice/Tracer/GroupUp/000000021E54.0B2-Group up with me.ogg | w=1
+tracer.voice.call_group_up = ../../research/tracer/extract/HeroVoice/Tracer/GroupUp/000000021E55.0B2-Group up here.ogg | w=1
+tracer.voice.call_group_up = ../../research/tracer/extract/HeroVoice/Tracer/GroupUp/000000021E56.0B2-Group up.ogg | w=1
+tracer.voice.call_group_up = ../../research/tracer/extract/HeroVoice/Tracer/GroupUp/00000006453E.0B2-Form up!.ogg | w=1
+tracer.voice.call_group_up = ../../research/tracer/extract/HeroVoice/Tracer/GroupUp/00000006453F.0B2-Come together!.ogg | w=1
+# AssistanceRequired 0427: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+tracer.voice.call_need_help = ../../research/tracer/extract/HeroVoice/Tracer/AssistanceRequired/00000000BD65.0B2-Need help over here!.ogg | w=1
+tracer.voice.call_need_help = ../../research/tracer/extract/HeroVoice/Tracer/AssistanceRequired/00000000BD66.0B2-I need help!.ogg | w=1
+# Healing 0045: 3 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+tracer.voice.call_need_healing = ../../research/tracer/extract/HeroVoice/Tracer/Healing/00000000A3E1.0B2-I need healing!.ogg | w=1
+tracer.voice.call_need_healing = ../../research/tracer/extract/HeroVoice/Tracer/Healing/00000000A3E2.0B2-Hey, doc!.ogg | w=1
+tracer.voice.call_need_healing = ../../research/tracer/extract/HeroVoice/Tracer/Healing/000000021E5A.0B2-I could use some healing!.ogg | w=1
+# ping 11D9: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+tracer.voice.ping = ../../research/tracer/extract/HeroVoice/Tracer/Unknown/11D9.078/000000064534.0B2-Over there!.ogg | w=1
+# ping warning 11DA: 4 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+tracer.voice.ping_warning = ../../research/tracer/extract/HeroVoice/Tracer/Unknown/11DA.078/000000061E03.0B2-Look out!.ogg | w=1
+tracer.voice.ping_warning = ../../research/tracer/extract/HeroVoice/Tracer/Unknown/11DA.078/000000064535.0B2-Heads up!.ogg | w=1
+tracer.voice.ping_warning = ../../research/tracer/extract/HeroVoice/Tracer/Unknown/11DA.078/000000064536.0B2-Issuing an alert!.ogg | w=1
+tracer.voice.ping_warning = ../../research/tracer/extract/HeroVoice/Tracer/Unknown/11DA.078/000000064537.0B2-Keep an eye out!.ogg | w=1
+# ping enemy 1117: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+tracer.voice.ping_enemy = ../../research/tracer/extract/HeroVoice/Tracer/Unknown/1117.078/000000061E04.0B2-Enemy over here!.ogg | w=1
+tracer.voice.ping_enemy = ../../research/tracer/extract/HeroVoice/Tracer/Unknown/1117.078/000000066B41.0B2-Enemy here!.ogg | w=1
+tracer.voice.ping_enemy = ../../research/tracer/extract/HeroVoice/Tracer/Unknown/1117.078/000000066B49.0B2-Enemy spotted!.ogg | w=1
+# DamageBoosted 00CC (what she says when a Mercy boosts her): 3 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 30-30 s
+tracer.voice.damage_boosted = ../../research/tracer/extract/HeroVoice/Tracer/DamageBoosted/00000000A3B5.0B2-Yeah!.ogg | w=1
+tracer.voice.damage_boosted = ../../research/tracer/extract/HeroVoice/Tracer/DamageBoosted/00000000A3B7.0B2-Much obliged!.ogg | w=1
+tracer.voice.damage_boosted = ../../research/tracer/extract/HeroVoice/Tracer/DamageBoosted/00000000AFA3.0B2-Thanks, love!.ogg | w=1
+# NanoBoosted 05E2 (what she says when an Ana nanos her): 3 files; prio 95, 80 m, +3 dB, interrupt 1, cooldown 2-2 s; left out: 2 Overwatch Classic only
+tracer.voice.nano_boosted = ../../research/tracer/extract/HeroVoice/Tracer/NanoBoosted/0000000617E8.0B2-A sublime boost!.ogg | w=1
+tracer.voice.nano_boosted = ../../research/tracer/extract/HeroVoice/Tracer/NanoBoosted/0000000617E9.0B2-Ready to deal some damage!.ogg | w=1
+tracer.voice.nano_boosted = ../../research/tracer/extract/HeroVoice/Tracer/NanoBoosted/00000006190E.0B2-(laughing) Look out, world! Here I come!.ogg | w=1
+# Blink 0080 (criteria 05A6: 0024 #98 -> #134 ActionCriteria, the third blink in a row's effect 007B, H): 8 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 2-2 s; left out: 5 Overwatch Classic only
+tracer.voice.blink = ../../research/tracer/extract/HeroVoice/Tracer/Blink/00000005E7CC.0B2-Blinding!.ogg | w=1
+tracer.voice.blink = ../../research/tracer/extract/HeroVoice/Tracer/Blink/00000005E7DB.0B2-Zoom!.ogg | w=1
+tracer.voice.blink = ../../research/tracer/extract/HeroVoice/Tracer/Blink/00000005F259.0B2-Yes!.ogg | w=1
+tracer.voice.blink = ../../research/tracer/extract/HeroVoice/Tracer/Blink/00000005F257.0B2-Haha!.ogg | w=1
+tracer.voice.blink = ../../research/tracer/extract/HeroVoice/Tracer/Blink/00000005F258.0B2-Alright!.ogg | w=1
+tracer.voice.blink = ../../research/tracer/extract/HeroVoice/Tracer/Blink/0000000617A8.0B2-Caught you staring!.ogg | w=1
+tracer.voice.blink = ../../research/tracer/extract/HeroVoice/Tracer/Blink/0000000617A9.0B2-Think thrice!.ogg | w=1
+tracer.voice.blink = ../../research/tracer/extract/HeroVoice/Tracer/Blink/0000000617A7.0B2-Three times the charm!.ogg | w=0.5
+# Recall 0084 (criteria 05A7: 001A #84 0.25 s -> #520 -> #80 ActionCriteria after the rewind, H; its 'low health' lines need C16D, left out): 7 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 2-5 s; left out: 3 a scripted condition, 2 Overwatch Classic only
+tracer.voice.recall = ../../research/tracer/extract/HeroVoice/Tracer/Recall/00000005E820.0B2-Let's try something else.ogg | w=1
+tracer.voice.recall = ../../research/tracer/extract/HeroVoice/Tracer/Recall/00000005E7E2.0B2-Back we go!.ogg | w=1
+tracer.voice.recall = ../../research/tracer/extract/HeroVoice/Tracer/Recall/00000005E7E4.0B2-I'll take a redo.ogg | w=1
+tracer.voice.recall = ../../research/tracer/extract/HeroVoice/Tracer/Recall/00000005E7E6.0B2-Have we been here before_.ogg | w=1
+tracer.voice.recall = ../../research/tracer/extract/HeroVoice/Tracer/Recall/0000000617AC.0B2-Recalled!.ogg | w=1
+tracer.voice.recall = ../../research/tracer/extract/HeroVoice/Tracer/Recall/0000000617AD.0B2-Restart!.ogg | w=1
+tracer.voice.recall = ../../research/tracer/extract/HeroVoice/Tracer/Recall/0000000617AA.0B2-Back to the past!.ogg | w=1
+# Pulse Bomb stuck 0082 ('That's a stick!'; criteria 05A8: 0034 #102 message 012F -> #103 -> #104 -> #229 0.3 s -> #117, H; 012F = the stick, M): 8 files; prio 85, 35 m, +0 dB, interrupt 0, cooldown 0.1-0.1 s; left out: 5 Overwatch Classic only
+tracer.voice.pulse_bomb_stick = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005E7BF.0B2-Spot-on!.ogg | w=1
+tracer.voice.pulse_bomb_stick = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005E7E8.0B2-Direct hit!.ogg | w=1
+tracer.voice.pulse_bomb_stick = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005F277.0B2-That's a stick!.ogg | w=1
+tracer.voice.pulse_bomb_stick = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005F278.0B2-Right on the money!.ogg | w=1
+tracer.voice.pulse_bomb_stick = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/0000000617B8.0B2-Target locked!.ogg | w=1
+tracer.voice.pulse_bomb_stick = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/0000000617B7.0B2-Enjoy the detonation!.ogg | w=1
+tracer.voice.pulse_bomb_stick = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/0000000617B6.0B2-A perfect stick!.ogg | w=1
+tracer.voice.pulse_bomb_stick = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/0000000617B5.0B2-Looks good on you!.ogg | w=1
+# Pulse Bomb kill 0083 ('Kaboom!'; 0034 #394 -> #371 [v7287 == 0551] -> #372 message 1B27 carrying the stimulus, as Sojourn's kill lines, H nodes, M meaning): 8 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 2-5 s; left out: 3 Overwatch Classic only, 2 a scripted condition
+tracer.voice.pulse_bomb_kill = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005E7D5.0B2-Pow!.ogg | w=1
+tracer.voice.pulse_bomb_kill = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005E7D6.0B2-Knockout!.ogg | w=1
+tracer.voice.pulse_bomb_kill = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005E7D8.0B2-Blasted!.ogg | w=1
+tracer.voice.pulse_bomb_kill = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/0000000617B4.0B2-Tick tick, boom!.ogg | w=1
+tracer.voice.pulse_bomb_kill = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/0000000617B3.0B2-Out with a bang!.ogg | w=1
+tracer.voice.pulse_bomb_kill = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/0000000617B2.0B2-Detonated!.ogg | w=1
+tracer.voice.pulse_bomb_kill = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/0000000617B1.0B2-Kaboom!.ogg | w=1
+tracer.voice.pulse_bomb_kill = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/000000061905.0B2-There she goes!.ogg | w=1
+# Pulse Bomb, her own copy 0081 ('Bomb's tickin'!'; 0034 #395 STU_37D754C8 names ONE key, F1AA = 0081; no F1AB / F1AC, H): the same pool: 8 files; prio 95, 60 m, +2 dB, interrupt 0, cooldown 2-2 s; left out: 4 Overwatch Classic only, 2 a skin / celebration
+tracer.voice.ultimate = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005E7BC.0B2-Catch!.ogg | w=1
+tracer.voice.ultimate = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005E7EB.0B2-Bomb's tickin'!.ogg | w=1
+tracer.voice.ultimate = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005E7B9.0B2-Here goes nothing!.ogg | w=1
+tracer.voice.ultimate = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005E7D4.0B2-Winging it!.ogg | w=1
+tracer.voice.ultimate = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005F279.0B2-Special delivery!.ogg | w=1
+tracer.voice.ultimate = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/0000000617B0.0B2-Present for ya!.ogg | w=1
+tracer.voice.ultimate = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/0000000617AF.0B2-(giggles) Thought of you!.ogg | w=1
+tracer.voice.ultimate = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/0000000617AE.0B2-Time to drop the bomb.ogg | w=1
+# Pulse Bomb line, allies 0081 (no friendly key F1AB in 0034 #395, so the one stimulus F1AA, M): 8 files; prio 95, 60 m, +2 dB, interrupt 0, cooldown 2-2 s; left out: 4 Overwatch Classic only, 2 a skin / celebration
+tracer.ult.friendly = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005E7BC.0B2-Catch!.ogg | w=1
+tracer.ult.friendly = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005E7EB.0B2-Bomb's tickin'!.ogg | w=1
+tracer.ult.friendly = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005E7B9.0B2-Here goes nothing!.ogg | w=1
+tracer.ult.friendly = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005E7D4.0B2-Winging it!.ogg | w=1
+tracer.ult.friendly = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005F279.0B2-Special delivery!.ogg | w=1
+tracer.ult.friendly = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/0000000617B0.0B2-Present for ya!.ogg | w=1
+tracer.ult.friendly = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/0000000617AF.0B2-(giggles) Thought of you!.ogg | w=1
+tracer.ult.friendly = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/0000000617AE.0B2-Time to drop the bomb.ogg | w=1
+# Pulse Bomb line, enemies 0081 ('Bomb's tickin'!'; 0034 #395 key F1AA, the enemy key, H): 8 files; prio 95, 60 m, +2 dB, interrupt 0, cooldown 2-2 s; left out: 4 Overwatch Classic only, 2 a skin / celebration
+tracer.ult.enemy = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005E7BC.0B2-Catch!.ogg | w=1
+tracer.ult.enemy = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005E7EB.0B2-Bomb's tickin'!.ogg | w=1
+tracer.ult.enemy = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005E7B9.0B2-Here goes nothing!.ogg | w=1
+tracer.ult.enemy = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005E7D4.0B2-Winging it!.ogg | w=1
+tracer.ult.enemy = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/00000005F279.0B2-Special delivery!.ogg | w=1
+tracer.ult.enemy = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/0000000617B0.0B2-Present for ya!.ogg | w=1
+tracer.ult.enemy = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/0000000617AF.0B2-(giggles) Thought of you!.ogg | w=1
+tracer.ult.enemy = ../../research/tracer/extract/HeroVoice/Tracer/Ultimate/0000000617AE.0B2-Time to drop the bomb.ogg | w=1
+# GOOD JOB (the wheel key's tap): her set has no such category (as Sigma's); ours: her Teammate/KillSeen 001B lines
+#  (a teammate's kill seen) with no criteria.
+tracer.voice.call_good_job = ../../research/tracer/extract/HeroVoice/Tracer/Teammate/KillSeen/00000005F269.0B2-You're doing great!.ogg | w=1
+tracer.voice.call_good_job = ../../research/tracer/extract/HeroVoice/Tracer/Teammate/KillSeen/00000005F26C.0B2-Glad I'm on your side!.ogg | w=1
+tracer.voice.call_good_job = ../../research/tracer/extract/HeroVoice/Tracer/Teammate/KillSeen/000000061776.0B2-Well done, you!.ogg | w=1
+tracer.voice.call_good_job = ../../research/tracer/extract/HeroVoice/Tracer/Teammate/KillSeen/000000061779.0B2-I see you, and I like what I'm seeing!.ogg | w=1
+tracer.voice.call_good_job = ../../research/tracer/extract/HeroVoice/Tracer/Teammate/KillSeen/000000061777.0B2-That was brill!.ogg | w=1
+tracer.voice.call_good_job = ../../research/tracer/extract/HeroVoice/Tracer/Teammate/KillSeen/000000061778.0B2-Couldn't have done it better myself!.ogg | w=1
+# Voice subtitles: one per event (its lines vary); ours describe the moment, quoting a line where the pool says one thing.
+$tracer.voice.elimination = Tracer remarks on a takedown
+$tracer.voice.multikill = Tracer remarks on a multikill
+$tracer.voice.melee_kill = Tracer remarks on a melee kill
+$tracer.voice.on_fire = Tracer is on fire
+$tracer.voice.respawn = Tracer is back
+$tracer.voice.melee = Tracer shouts
+$tracer.voice.select = Tracer: Cheers, love! The cavalry's here!
+$tracer.voice.death = Tracer dies
+$tracer.voice.pain = Tracer grunts
+$tracer.voice.resurrected = Tracer is resurrected
+$tracer.voice.ult_ready = Tracer: Pulse Bomb ready
+$tracer.voice.call_ult_charging = Tracer: My ultimate is charging
+$tracer.voice.call_ult_almost = Tracer: My ultimate is almost ready
+$tracer.voice.call_hello = Tracer: Hello
+$tracer.voice.call_thanks = Tracer: Thank you
+$tracer.voice.call_sorry = Tracer: Sorry
+$tracer.voice.call_no = Tracer: Negative
+$tracer.voice.call_group_up = Tracer: Group up
+$tracer.voice.call_need_help = Tracer: I need help
+$tracer.voice.call_need_healing = Tracer: I require healing
+$tracer.voice.ping = Tracer: Over there
+$tracer.voice.ping_warning = Tracer: Heads up
+$tracer.voice.ping_enemy = Tracer: Enemy here!
+$tracer.voice.damage_boosted = Tracer is damage boosted
+$tracer.voice.nano_boosted = Tracer is nano boosted
+$tracer.voice.blink = Tracer cheers a blink
+$tracer.voice.recall = Tracer: Back to the past!
+$tracer.voice.pulse_bomb_stick = Tracer: That's a stick!
+$tracer.voice.pulse_bomb_kill = Tracer: Kaboom!
+$tracer.voice.ultimate = Tracer: Bomb's tickin'!
+$tracer.voice.call_good_job = Tracer compliments a teammate
+$tracer.ult.friendly = Tracer: Bomb's tickin'!
+$tracer.ult.enemy = Tracer: Bomb's tickin'!

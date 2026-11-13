@@ -1,0 +1,16 @@
+=== phase c2 16:48:52
+close {'ok': True}
+=== phase c2 16:53:56
+respawn {'ok': True}
+=== phase c2 17:00:46
+close {'ok': True}
+=== phase c2 17:05:29
+close {'ok': True}
+perspective first {'ok': True}
+=== phase c2 17:06:46
+close {'ok': True}
+state {'screen': 'OverwatchMenuScreen', 'fps': 30, 'fx': 0, 'inWorld': True, 'x': 7.804207216691117, 'y': 62.0, 'z': 28.56182741743392, 'yaw': 0.0, 'pitch': 0.0, 'health': 18.0, 'maxHealth': 18.0, 'onGround': True, 'crouching': False, 'sprinting': False, 'box': 'STANDING 0.60x1.80 eye 1.62', 'slot': 0, 'heroMode': True, 'hero': 'mercy', 'ult': 1969.75, 'ultCost': 2150, 'shield': 0.0, 'mode': 0, 'aimSeen': '', 'perkLevel': 1, 'perkProgress': 0.16782017, 'primaryAmmo': 25, 'primaryReload': -1.0, 'meter': 0.0, 'secondaryAmmo': 1, 'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'vx': 0.0, 'vy': 0.0, 'vz': 0.0, 'anim': 'idle', 'clothLowest': 0.29962417, 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'food': 20, 'saturation': 5.0, 'onFire': False, 'fingertip': '(-0.218 -0.247 0.217)', 'muzzle': '0.126 -0.130 1.008 pitch 0.0', 'anim1p': None, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy'}
+=== phase c2 17:11:04
+close {'ok': True}
+=== phase c2 17:12:18
+state {'screen': '', 'fps': 30, 'fx': 0, 'inWorld': True, 'x': 6.5, 'y': 62.0, 'z': 30.5, 'yaw': 115.73773, 'pitch': -28.489128, 'health': 18.0, 'maxHealth': 18.0, 'onGround': True, 'crouching': False, 'sprinting': False, 'box': 'STANDING 0.60x1.80 eye 1.62', 'slot': 0, 'heroMode': True, 'hero': 'mercy', 'ult': 2150.0, 'ultCost': 2150, 'shield': 0.0, 'mode': 0, 'aimSeen': '', 'perkLevel': 1, 'perkProgress': 0.24103542, 'primaryAmmo': 25, 'primaryReload': -1.0, 'meter': 0.0, 'secondaryAmmo': 1, 'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'vx': 0.0, 'vy': 0.0, 'vz': 0.0, 'anim': 'idle', 'clothLowest': 0.049688585, 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'food': 20, 'saturation': 5.0, 'onFire': False, 'fingertip': '(-0.184 -0.116 -0.332)', 'muzzle': '0.127 -0.133 1.007 pitch -28.5', 'anim1p': None, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy'}

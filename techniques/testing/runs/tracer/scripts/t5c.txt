@@ -1,0 +1,29 @@
+MARK T9b killed by the superflat slimes just after READY (5 health from before the rejoin); respawn
+respawn
+sleep 2
+screen
+cmd /gamerule spawn_monsters false
+cmd /time set day
+sleep 1
+state
+MARK T5c Pulse Bomb thrown point blank at a zombie 2.5 m off (so it reaches it), the debug line per target; t2 2.7 m to t1's side; herself 2.5 m off
+cmd /difficulty easy
+cmd /kill @e[type=!player]
+cmd /summon zombie 20.5 -60 3.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /summon zombie 23.2 -60 3.5 {NoAI:1b,Tags:["t2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /tp @s 20.5 -60 0.5
+cmd /execute as @s at @s anchored eyes facing 20.5 -58.8 3.5 run tp @s ~ ~ ~ ~ ~
+ult 100
+sleep 1
+hp @e[tag=t1,limit=1]
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 0.4
+hp @e[tag=t1,limit=1]
+ents PulseBomb
+sleep 1.2
+hp @e[tag=t1,limit=1]
+hp @e[tag=t2,limit=1]
+state
+heard

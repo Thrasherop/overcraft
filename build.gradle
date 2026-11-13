@@ -1,5 +1,7 @@
 plugins {
 	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+	// the vendored replay engine (Arcade's arcade-replay, MIT) stays in Kotlin, so it can be changed in place (owner, 2026-11-11)
+	id 'org.jetbrains.kotlin.jvm' version "${kotlin_version}"
 }
 
 base {
@@ -8,6 +10,7 @@ base {
 
 loom {
 	splitEnvironmentSourceSets()
+	accessWidenerPath = file("src/main/resources/overcraft-replay.classtweaker")
 
 	mods {
 		"overcraft" {
@@ -24,6 +27,7 @@ loom {
 			vmArg "-Dovercraft.assetPack=${System.getenv('OC_ASSET_PACK') ?: file('local-assets/pack').absolutePath}"
 			// dev remote control for play-testing from scripts (tools/dev.py); never on outside runClient
 			vmArg "-Dovercraft.dev=true"
+			vmArg "-Xmx3G"
 			// one name, so one player across launches (a random one each launch was a new player each time: her hero,
 			// ult and pets didn't carry over)
 			programArgs "--username", "Kiriko"
@@ -36,9 +40,31 @@ loom {
 			runDir "run2"
 			vmArg "-Dovercraft.assetPack=${System.getenv('OC_ASSET_PACK') ?: file('local-assets/pack').absolutePath}"
 			vmArg "-Dovercraft.dev=true"
-			vmArg "-Dovercraft.devPort=25600"
+			vmArg "-Xmx3G"
+			// OC_DEV_PORT2 moves it when another checkout's second client already holds 25600 (two agents on one machine)
+			vmArg "-Dovercraft.devPort=${System.getenv('OC_DEV_PORT2') ?: '25600'}"
 			programArgs "--username", "Viewer"
 		}
+		// a third, for a third agent working beside the other two (harness OC_DEV_PORT=25601)
+		client3 {
+			client()
+			name "Minecraft Client 3"
+			runDir "run3"
+			vmArg "-Dovercraft.assetPack=${System.getenv('OC_ASSET_PACK') ?: file('local-assets/pack').absolutePath}"
+			vmArg "-Dovercraft.dev=true"
+			vmArg "-Dovercraft.devPort=25601"
+			programArgs "--username", "Third"
+		}
+	}
+}
+
+// Overwatch never runs alongside a dev client (CLAUDE.md): every launch makes sure the watcher is up, so a reboot can't
+// leave a client unwatched. It stays running after the client; a second copy exits at once.
+def owWatch = file('tools/ow_watch.ps1').absolutePath
+tasks.matching { it.name ==~ /runClient\d?/ }.configureEach {
+	doFirst {
+		new ProcessBuilder('powershell', '-NoProfile', '-WindowStyle', 'Hidden', '-ExecutionPolicy', 'Bypass', '-File', owWatch)
+			.redirectOutput(ProcessBuilder.Redirect.DISCARD).redirectError(ProcessBuilder.Redirect.DISCARD).start()
 	}
 }
 
@@ -70,9 +96,16 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	// Kotlin and kotlinx (coroutines, atomicfu, io) for the vendored replay engine: players install it too
+	implementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// the vendored replay engine's MIT notice ships in the jar (src/main/kotlin/dev/overcraft/vendor/arcade/VENDORED.txt)
+tasks.named('jar') {
+	from('src/main/kotlin/dev/overcraft/vendor/arcade/LICENSE-arcade') { into 'META-INF' }
 }
 
 processResources {
@@ -92,6 +125,10 @@ java {
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 25
+}
+
+kotlin {
+	jvmToolchain(25)
 }
 
 test {

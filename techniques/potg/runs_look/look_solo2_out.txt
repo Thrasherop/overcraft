@@ -1,0 +1,16 @@
+=== phase look 18:42:28
+showing seen 18:42:29
+  shot 0.5s at 0.5s
+  shot 1s at 1.0s
+  shot 2s at 2.0s
+  shot 4s at 4.0s
+  shot 5.25s at 5.25s
+  shot 6.3s at 6.3s
+  shot 8s at 8.0s
+  shot 12s at 12.0s
+  shot 16s at 16.0s
+  shot 18s at 18.0s
+  shot 19.5s at 19.5s
+[18:42:29] [Server thread/INFO] (Overcraft) [POTG] Kiriko watches highlight 1: Watching Kiriko High Score 2637 as kiriko in minecraft:the_end (seg-3.zip t2239)
+[18:42:34] [Server thread/INFO] (Overcraft) [POTG] replay started for 1 viewer(s) 5285 ms after the card began
+[18:42:47] [Server thread/INFO] (Overcraft) [POTG] showing ended (replay done) after 18010 ms, world not held

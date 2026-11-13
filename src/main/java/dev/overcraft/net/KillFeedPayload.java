@@ -8,7 +8,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 /**
  * Server to players near a kill: a line for the kill feed. Names as shown; heroes by id ("" for none, a mob); entity
  * types by id ("minecraft:zombie", "minecraft:player"; "" for no killer), for a face where there's no hero; weapon what
- * did it ("weapon" for the hero's weapon fire, "melee", an ability's id, or "" for anything else); headshot whether
+ * did it (Blow.feed: "weapon" for weapon fire or anything else with no icon, "melee", "ability:<slug>", "perk:<slug>",
+ * "ult:<slug>"); headshot whether
  * the blow was one; the two sides' teams as this player sees them (true = their own side); killer whether it was
  * this player.
  */

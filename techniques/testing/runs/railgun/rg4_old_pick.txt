@@ -1,0 +1,110 @@
+{'ok': True}
+=== TREE e40c37c dirty_src_files=16 launched=2026-11-06T14:26:21 hero before  fps 30
+PICK frames over 40 ms (at ms, length): [(102, 117), (219, 269), (488, 51)] total frames 90 hero sojourn
+[14:28:31] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 519
+ours:
+351 (none of ours)
+23 hud.HudDraw.image
+17 model.HeroModelRenderer.emit
+14 HeroHud.lambda$allyMarkers$0
+9 HeroHud.render
+9 model.HeroModelRenderer.isClosed
+8 hud.HudShapes.cutHead
+7 effect.SojournFx.tick
+6 model.HeroAnimator.lambda$turnsInPlace$1
+6 model.HeroModelRenderer.skinned
+6 model.HeroWeapon.pose
+5 hud.HudShapes.register
+5 model.HeroTexture.<init>
+4 ClientHero.tick
+4 HeroHud.crosshair
+4 hud.HudShapes.ensure
+4 model.ClothSim.of
+3 ClientHero.wallRoll
+3 effect.SojournFx.posed
+2 hud.HudText.plain
+2 hud.ReticleHud.crosshair
+2 model.AimSheet.layout
+2 model.HeroWeapon.place
+2 model.WeaponClips.fire
+1 ClientSigma.levitating
+top:
+295 jdk.internal.misc.Unsafe.park
+65 java.io.FileInputStream.open0
+17 dev.overcraft.client.model.HeroModelRenderer.emit
+### done
+{'ok': True}
+=== TREE e3f437f dirty_src_files=17 launched=2026-11-06T15:35:07 hero before  fps 30
+PICK frames over 40 ms (at ms, length): [(134, 157), (291, 216), (507, 63), (2435, 73)] total frames 89 hero sojourn
+[15:38:07] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 531
+ours:
+361 (none of ours)
+20 hud.HudDraw.image
+16 model.HeroModelRenderer.emit
+14 model.HeroModelRenderer.isClosed
+12 effect.SojournFx.tick
+9 HeroHud.render
+8 model.HeroAnimator.lambda$turnsInPlace$1
+7 HeroHud.crosshair
+6 model.HeroModelRenderer.skinned
+5 hud.HudShapes.cutHead
+5 model.HeroModelRenderer.shadow
+5 model.HeroTexture.<init>
+5 model.HeroWeapon.place
+4 hud.HudShapes.ensure
+3 HeroHud.lambda$allyMarkers$0
+3 effect.SojournFx.posed
+3 hud.HudShapes.lambda$ensure$25
+3 hud.HudShapes.register
+3 model.AimSheet.layout
+3 model.ClothSim.of
+3 model.HeroWeapon.pose
+2 HeroArt.lambda$present$0
+2 LucioMusic.tick
+2 hud.HudShapes.circle
+2 hud.ReticleHud.crosshair
+top:
+305 jdk.internal.misc.Unsafe.park
+57 java.io.FileInputStream.open0
+16 dev.overcraft.client.model.HeroModelRenderer.emit
+OWNART n/a
+### done
+{'ok': True}
+=== TREE e3f437f dirty_src_files=17 launched=2026-11-06T15:38:14 hero before  fps 30
+PICK frames over 40 ms (at ms, length): [(102, 138), (240, 228), (468, 45), (1578, 73)] total frames 90 hero sojourn
+[15:40:13] [Overcraft sampler/INFO] (Overcraft) SAMPLE
+samples 528
+ours:
+359 (none of ours)
+22 hud.HudDraw.image
+13 model.HeroModelRenderer.emit
+10 model.HeroModelRenderer.isClosed
+8 effect.SojournFx.tick
+7 ClientHero.tick
+7 HeroHud.crosshair
+7 HeroHud.render
+6 effect.SojournFx.posed
+6 hud.HudShapes.register
+6 model.AimSheet.layout
+6 model.HeroModelRenderer.skinned
+5 HeroHud.lambda$allyMarkers$0
+5 hud.HudShapes.cutHead
+4 hud.HudShapes.ensure
+4 model.ClothSim.of
+4 model.HeroWeapon.place
+3 model.HeroAnimator.lambda$turnsInPlace$1
+3 model.HeroModelRenderer.shadow
+3 model.HeroWeapon.pose
+3 model.Skeleton.skin
+2 OvercraftClient.lambda$onInitializeClient$44
+2 hud.HudShapes.circle
+2 hud.HudShapes.lambda$ensure$25
+2 hud.ReticleHud.crosshair
+top:
+303 jdk.internal.misc.Unsafe.park
+60 java.io.FileInputStream.open0
+15 sun.nio.ch.FileDispatcherImpl.read0
+OWNART n/a
+### done

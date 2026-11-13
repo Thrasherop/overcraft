@@ -13,6 +13,7 @@ How to get answers out of Overwatch's data, offline and safely. Up: [Techniques]
   `E:\Overwatch Archive\extracted\154088`.
 
 ## The setup
+- **Display texts (.07C):** `DataTool.exe --online=false "E:\Overwatch Archive\build-154088" dump-strings` lists every one (`research\strings\strings-154088.txt`, 67,000 lines). Read a prompt's words there before writing any ([reticle](../hud/reticle.md)).
 - TankLib/TACTLib loaded with DataTool's bundled .NET runtime from Python (pythonnet), no SDK needed:
   `E:\Overwatch Archive\research\kiriko-anim\venv\Scripts\python.exe`, helpers in `...\scripts\owinit.py`
   (`o.guid(index, type)`, `o.u64`, `o.TH.OpenFile`, `o.instances(guid)` for an STU's instances as JSON-like dicts).
@@ -116,6 +117,33 @@ From [juno-effects](../../tools/reference/juno-effects.md) (scripts `research\ju
   ally look (54A6 #297 next to the +30 % damage) sit beside the status they apply, as Sombra's Cyberspace did.
 - **List the clips' effects up front** with `fx_juno_clipfx.py` (159 of her clips name one): most are footstep / camera-shake ones,
   so pick the ability clips by the clip map's state names.
+
+## Values, modes and roles (Sigma's pass, 2026-11-02)
+From [heroes/sigma](../heroes/sigma.md) (scripts `research\sigma\scripts\`, Sojourn's retargeted):
+- **A value's main number is `value_m_3E5360A1`;** its `values` row can lead with another mode's (Sigma's health 047C: 200, row 300).
+  `gvsummary_sigma.py` prints main, alt and readers together.
+- **Check a StateModifyHealth's mode before reading a rate:** `m_DD792FF0 = x60671788` is a share of max, `x00943466` an absolute amount.
+  Sigma's barrier regenerates 0.122 of its max a second: 79.3/s at 650, where the patch notes still say 85 (0.122 x the old 700).
+- **Knockback is a pair:** `m_E33EFEE1` horizontal, `m_583C208B` vertical (Accretion 6 / 3 = the wiki's 6.7 m/s). Whip Shot's 1259 #638 alone has a vector beside it: `m_1376B4DF` says 25 and 2 up against the pair's 25 / 3, unsettled; the mod plays 3 because it reaches W's 8 m in our mover ([polish4](../testing/polish4.md)). No rule to take from that. Filter `m_89831602`: 1 enemies, 4 allies not the caster, 5 both, 6 allies and something more, read as the caster, against BZ on Rally (M-L, [polish4](../testing/polish4.md) on #125).
+- **Role and sub-role passives are in the shared graph 01C7,** keyed on the hero's category (0850 Tank, 084E / 0851 the others) and
+  sub-role tags (116B Stalwart, 1173 Survivor): read them there for any hero of that role.
+- **A skin can swap every model** an entity names: map clips under the skin's `.owentity` models (106F7 for Sigma's D75A).
+
+## A hero with two bodies (D.Va's pass, 2026-11-02)
+From [dva-map](../../tools/reference/dva-map.md) (scripts `research\dva\scripts\`, Sigma's retargeted):
+- **The hero entity can be only one of the bodies.** D.Va's hero entity 040A is the pilot; the MEKA is a pet (0407, STUPetComponent) with
+  its own mover, values graph, ability graphs and weapon manager, spawned by Call Mech. Crawl from the hero file *and* from every entity
+  its graphs spawn, run `varvalues.py` once per values graph (`G=<graph>`), and read the link state (026A #98: control to the pet, rider
+  attached and untargetable) before deciding how the mod models it.
+- **Value names mislead more on an older hero.** Of D.Va's values, 1185 "11" is a pellet count, 0404 "Micro Missile Cooldown" a fire rate,
+  03BE "Self-Destruct Damage Min" Call Mech's damage, 1B57 / 1B58 "Boosters Duration" the wreck's timers, 0C6A "Outer Radius" a fuse. Name
+  each by its reader node.
+- **StateModifyHealth's x60671788 isn't always a share:** Self-Destruct's flat 1000 uses it (Sigma's barrier read it as a percent). Check the
+  amount's scale before calling it either.
+- **A heal can carry the knockback:** the eject's launch is the 9999 heal's knockback pair (6 / 7). Search heals as well as damage for
+  m_E33EFEE1 / m_583C208B.
+- **Splitting the reading between agents by body worked** (two readers, about 25 minutes each); where they differed, the one reading the graph
+  that owns the transition was right. Brief each with the entity list and which graphs are whose.
 
 ## Research agents
 - **Map a hero's data with a sub-agent before guessing.** Guessing clips by eye cost several rounds of owner

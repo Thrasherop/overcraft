@@ -15,7 +15,6 @@ import dev.overcraft.net.HeroSyncPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
 import net.minecraft.world.level.ClipContext;
@@ -175,10 +174,10 @@ public final class Sombra implements HeroKit {
 			if (nearest(e, eye).distanceTo(eye) > EMP_RADIUS || !inSight(player, e)) {
 				continue;
 			}
-			if (Allies.canHurt(player, e)) {
-				float dealt = Combat.damage(e, source, EMP_SHARE * Ow.toOw(e.getHealth()));
-				Combat.credit(player, dealt);
-				Combat.addFireForDamage(player, dealt, Ow.toOw(e.getMaxHealth()));
+			if (Allies.areaHits(player, e)) {
+				float dealt = Combat.damage(e, source, EMP_SHARE * Ow.toOw(e.getHealth()), dev.overcraft.hero.Blow.ult("emp").by(dev.overcraft.hero.Hero.SOMBRA));
+				Combat.credit(player, dealt, e);
+				Combat.addFireForDamage(player, dealt, e);
 				Effects.hitMarker(player, e, false);
 				Hack.creature(e, HACK_SILENCE, player);
 				SombraSounds.at(level, "emp.hit", e.getEyePosition(), 45);
@@ -225,15 +224,9 @@ public final class Sombra implements HeroKit {
 		return new Vec3(Math.clamp(eye.x, box.minX, box.maxX), Math.clamp(eye.y, box.minY, box.maxY), Math.clamp(eye.z, box.minZ, box.maxZ));
 	}
 
-	/** Sight to any of its hit points (0B31: several; ours its eyes, middle and feet), blocks in the way. */
+	/** Sight to any of its hit points (Combat.inSight). */
 	private static boolean inSight(ServerPlayer player, LivingEntity e) {
-		Vec3 eye = player.getEyePosition();
-		for (Vec3 to : new Vec3[] {e.getEyePosition(), e.getBoundingBox().getCenter(), e.position().add(0, 0.1, 0)}) {
-			if (player.level().clip(new ClipContext(eye, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() == HitResult.Type.MISS) {
-				return true;
-			}
-		}
-		return false;
+		return Combat.inSight(player.level(), player.getEyePosition(), e, player);
 	}
 
 	/** What EMP and Hotfix hack: Lifeweaver's platform and tree (a Sombra's beacon flies 0.17 s and can't be touched: W). */
@@ -245,7 +238,7 @@ public final class Sombra implements HeroKit {
 	private static boolean enemyDeployable(ServerPlayer player, net.minecraft.world.entity.Entity d) {
 		net.minecraft.world.entity.Entity owner = d instanceof dev.overcraft.entity.PetalPlatformEntity p ? player.level().getEntity(p.ownerId())
 			: d instanceof dev.overcraft.entity.TreeOfLifeEntity t ? player.level().getEntity(t.ownerId()) : null;
-		return owner instanceof LivingEntity living && living != player && Allies.canHurt(player, living);
+		return owner instanceof LivingEntity living && living != player && Allies.againstHero(player, living);
 	}
 
 	// ---- Cyberspace (Shift: 610E, the zone 6102) ----
@@ -352,7 +345,6 @@ public final class Sombra implements HeroKit {
 		dev.overcraft.hero.HeroSounds.at(level, SombraSounds.of("translocator.dest_3p"), to, 45, player);
 		player.teleportTo(level, to.x, to.y, to.z, java.util.Set.of(), player.getYRot(), player.getXRot(), true);
 		Effects.play(level, "sombra_teleport", to, Vec3.ZERO, player, 0, player);
-		Effects.play(level, "sombra_stealth", to, Vec3.ZERO, player, 0, player);
 		SombraSounds.at(level, "translocator.arrive", to, 45);
 		SombraSounds.split(player, "stealth.start", to, 30);
 		SombraSounds.own(player, "stealth.loop");
@@ -553,10 +545,10 @@ public final class Sombra implements HeroKit {
 		double metres = Math.sqrt(bestDist);
 		double falloff = metres <= PISTOL_FALLOFF_START ? 1 : metres >= PISTOL_FALLOFF_END ? PISTOL_FALLOFF_MIN
 			: 1 - (1 - PISTOL_FALLOFF_MIN) * (metres - PISTOL_FALLOFF_START) / (PISTOL_FALLOFF_END - PISTOL_FALLOFF_START);
-		boolean crit = bestAt.y >= best.getEyeY() - HEAD_DEPTH;
-		float dealt = Combat.damage(best, shotSource(player), PISTOL_DAMAGE * falloff * (crit ? PISTOL_CRIT : 1));
-		Combat.credit(player, dealt);
-		Combat.addFireForDamage(player, dealt, Ow.toOw(best.getMaxHealth()));
+		boolean crit = dev.overcraft.hero.Headshot.crossed(best, bestAt, bestAt.subtract(eye), PISTOL_RADIUS);
+		float dealt = Combat.damage(best, shotSource(player), PISTOL_DAMAGE * falloff * (crit ? PISTOL_CRIT : 1), dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.SOMBRA));
+		Combat.credit(player, dealt, best);
+		Combat.addFireForDamage(player, dealt, best);
 		if (dealt > 0) {
 			if (crit) {
 				s.critAt = level.getGameTime();
@@ -568,8 +560,6 @@ public final class Sombra implements HeroKit {
 	/** Her pistol's muzzle (hp 0006) from her eyes in her look's frame: ours until measured on her model (Ana's way). */
 	private static final double MUZZLE_RIGHT = 0.22, MUZZLE_UP = -0.18, MUZZLE_AHEAD = 0.55;
 
-	/** The head is the top of the box, as for Kiriko's kunai and Ana's darts (ours: 0.25 m under the eyes and up). */
-	private static final double HEAD_DEPTH = 0.25;
 
 	/** {@code dir} turned by an angle up to {@code degrees}, evenly over the cone's disc. */
 	public static Vec3 cone(Vec3 dir, double degrees, net.minecraft.util.RandomSource random) {
@@ -586,8 +576,7 @@ public final class Sombra implements HeroKit {
 
 	/** Damage from her with no projectile of its own (the pistol's shots: hitscan), so a kill isn't a melee kill. */
 	static DamageSource shotSource(ServerPlayer owner) {
-		return new DamageSource(owner.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
-			.getOrThrow(DamageTypes.ARROW), null, owner);
+		return dev.overcraft.hero.Combat.hitscan(owner);
 	}
 
 	/** R (not with a full clip or mid-reload), or the clip empty: 1.2 s, the clip full 0.48 s in. */
@@ -622,5 +611,44 @@ public final class Sombra implements HeroKit {
 			(float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0),
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
 			Perk.index(s.majorPerk), 0, 0, 0, 0);
+	}
+
+	/**
+	 * Her widgets (#85): target and target2, 0D81's two slots (614C #1798, #1831: v3544 / v11652, the allies Hotfix is healing, v77182[n],
+	 * else what she's hacking v536), so the one her channel's locked on first; preview, who Hotfix would take (as hotfix picks); left and
+	 * total, her stealth (0277 / 008B, 420C #1057: v215 / v567); left2, the hack lockout (00B1, 614C #2775: v6358 / v45433).
+	 */
+	@Override
+	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
+		long now = player.level().getGameTime();
+		float stealth = Stealth.stealthed(player, s) ? (s.stealthUntil - now) / 20f : 0;
+		float lockout = Math.max(0, s.hackLockoutUntil - now) / 20f;
+		java.util.List<Integer> slots = new java.util.ArrayList<>();
+		if (s.hotfixChannel >= 0 && s.hotfixTarget != null) {
+			slots.add(s.hotfixTarget);
+		}
+		for (int id : HotfixHeal.healing(player)) {
+			if (!slots.contains(id)) {
+				slots.add(id);
+			}
+		}
+		LivingEntity preview = s.hotfixCharges > 0 && s.hotfixChannel < 0 ? dev.overcraft.hero.Targeting.allyInView(player, HOTFIX_RANGE, HOTFIX_CONE, true) : null;
+		return new HeroSyncPayload.Widgets(slots.isEmpty() ? -1 : slots.get(0), slots.size() < 2 ? -1 : slots.get(1), preview == null ? -1 : preview.getId(),
+			false, 0, stealth, s.stealthTotal / 20f, lockout, "", "");
+	}
+
+	/** Out of play (#100: HeroKit.leavePlay): her stealth ends (invisible and 60% faster in Minecraft mode after G: found playing), Hotfix's channel; for good, her beacon. */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		Stealth.clear(player, s);
+		s.hotfixChannel = -1;
+		s.hotfixTarget = null;
+		s.hotfixHeld = false;
+		// a cast under way is cut, not resumed on G back: EMP's charge and Cyberspace's cooldown are spent at the press
+		s.empCast = -1;
+		s.castTicks = -1;
+		if (why.forGood()) {
+			clear(player, s);
+		}
 	}
 }

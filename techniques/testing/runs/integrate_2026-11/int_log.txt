@@ -1,0 +1,71 @@
+before GenericMessageScreen
+{'ok': True}
+screen HeroSelectScreen hero 
+{'ok': True}
+done HeroSelectScreen
+{}
+{}
+{'screen': 'OverwatchMenuScreen', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 30, 'anim': 'idle'}
+{'trace': ''}
+zombie 1000.0
+{'screen': 'OverwatchMenuScreen', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 119, 'anim': 'idle'}
+flickhuman 0  MISS zombie 1000.0 -> 1000.0 yaw 30.0 | 
+flickhuman 1  MISS zombie 1000.0 -> 1000.0 yaw 30.0 | 
+flickhuman 2 game not in front: Claude
+At C:\Users\ultra\AppData\Local\Temp\claude\E--claude-mods-overcraft\6635df67-fe58-47ac-a0d2-4 MISS zombie 1000.0 -> 1000.0 yaw 30.0 | 
+flickhuman 3 game not in front: Claude
+At C:\Users\ultra\AppData\Local\Temp\claude\E--claude-mods-overcraft\6635df67-fe58-47ac-a0d2-4 MISS zombie 1000.0 -> 1000.0 yaw 30.0 | 
+flickhuman 4 game not in front: Claude
+At C:\Users\ultra\AppData\Local\Temp\claude\E--claude-mods-overcraft\6635df67-fe58-47ac-a0d2-4 MISS zombie 1000.0 -> 1000.0 yaw 30.0 | 
+flickhuman 5 game not in front: Claude
+At C:\Users\ultra\AppData\Local\Temp\claude\E--claude-mods-overcraft\6635df67-fe58-47ac-a0d2-4 MISS zombie 1000.0 -> 1000.0 yaw 30.0 | 
+VOID before this: screen open OverwatchMenuScreen
+VOID before this: screen open OverwatchMenuScreen
+VOID before this: screen open OverwatchMenuScreen
+VOID before this: screen open OverwatchMenuScreen
+VOID before this: screen open OverwatchMenuScreen
+VOID before this: screen open OverwatchMenuScreen
+screen now 'OverwatchMenuScreen'
+{}
+{}
+{'screen': 'OverwatchMenuScreen', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 118, 'anim': 'idle'}
+{}
+{}
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 99, 'anim': 'idle'}
+{'trace': '466.0 sent | 513.0 srv_round | 518.2 sent'}
+zombie 998.6337
+{'screen': 'OverwatchMenuScreen', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 104, 'anim': 'idle'}
+before GenericMessageScreen
+{'ok': True}
+screen HeroSelectScreen hero 
+{'ok': True}
+done HeroSelectScreen
+{}
+{}
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 110, 'anim': 'idle'}
+{'trace': '713.3 click 0.500 -58.380 0.500 0.00 0.00 | 713.3 sent | 713.4 clip | 720.4 snd:charged.fire_mid | 720.8 snd:charged.shot | 721.1 fx | 726.0 frame | 737.0 srv_shot | 737.2 srv_eye 0.500 -58.380 0.500 0.00 | 766.2 snd:charged.hit | 766.5 snd:charged.hit_enemy | 820.7 sent'}
+zombie 991.7344
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 115, 'anim': 'idle'}
+flickhuman 0  MISS zombie 991.7344 -> 991.7344 yaw 3.75 | 1351.2 click 0.500 -58.380 0.500 3.75 0.00 | 1351.2 sent | 1351.2 clip | 1351.3 snd:charged.fire_mid | 1351.4 
+flickhuman 1  hit zombie 991.7344 -> 983.46875 yaw -0.0 | 1347.8 click 0.500 -58.380 0.500 -0.00 0.00 | 1347.9 sent | 1347.9 clip | 1348.0 snd:charged.fire_mid | 1348.1
+flickhuman 2  hit zombie 983.46875 -> 975.2031 yaw -0.0 | 1368.8 click 0.500 -58.380 0.500 -0.00 0.00 | 1368.8 sent | 1368.9 clip | 1368.9 snd:charged.fire_mid | 1369.1
+flickhuman 3  hit zombie 975.2031 -> 966.9375 yaw -0.0 | 1350.0 click 0.500 -58.380 0.500 -0.00 0.00 | 1350.0 sent | 1350.0 clip | 1350.1 snd:charged.fire_mid | 1350.2
+flickhuman 4  hit zombie 966.9375 -> 958.6719 yaw -0.0 | 1423.6 click 0.500 -58.380 0.500 -0.00 0.00 | 1423.6 sent | 1423.6 clip | 1423.7 snd:charged.fire_mid | 1424.0
+flickhuman 5  hit zombie 958.6719 -> 950.40625 yaw -0.0 | 1331.3 click 0.500 -58.380 0.500 -0.00 0.00 | 1331.3 sent | 1331.3 clip | 1331.4 snd:charged.fire_mid | 1331.5
+setup lifeweaver True y -46.0 hp 20.0 cd3 0.0
+read dash then G heroMode False y -46.0 z 0.5 hp 20.0 cd3 0.0
+setup lifeweaver True y -46.0 hp 9.0 cd3 0.0
+read walk off, dash, G heroMode False y -60.0 z 13.52 hp 13.9000025 cd3 0.0
+setup lifeweaver True y -46.0 hp 20.0 cd3 0.0
+read control: walk off, dash, no G heroMode True y -60.0 z 17.46 hp 20.0 cd3 1.0
+setup lifeweaver True y -46.0 hp 20.0 cd3 0.0
+read walk off, dash, G mid-fall heroMode False y -60.0 z 13.26 hp 10.48 cd3 0.75
+setup lifeweaver True y -46.0 hp 20.0 cd3 0.0
+water y -58.53 z 7.5 cd3 0.0
+read Space twice in deep water heroMode True y -59.28 z 7.5 hp 20.0 cd3 0.0
+mcm setup heroMode True slot 0
+mcm after placing block at 0 -60 2: none dirt items: ['[16:38:31] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Found 3 matching item(s) on player Kiriko]', '[16:38:31] [Render thread/INFO] (Minecraft) [System] [CHAT] Found 3 matching item(s) on player Kiriko']
+mcm after breaking block at 0 -60 2: none dirt items: ['[16:38:45] [Server thread/INFO] (Minecraft) System chat: [Kiriko: Found 4 matching item(s) on player Kiriko]', '[16:38:45] [Render thread/INFO] (Minecraft) [System] [CHAT] Found 4 matching item(s) on player Kiriko']
+read before G back heroMode False y -60.0 z 0.5 hp 20.0 cd3 0.0
+after kill: screen DeathScreen hp 0.0 hero lifeweaver heroMode False
+read rejoined as Mercy heroMode True y -60.0 z -2.95 hp 18.0 cd3 0.0

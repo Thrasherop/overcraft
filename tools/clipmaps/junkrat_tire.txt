@@ -1,0 +1,22 @@
+# Junkrat's RIP-Tire (pet entity 039C, model 0000000118D8.00C, base 101B; set 0462 and the preview tire's 1139 (entity 153B)), spawned by
+# 0232 #317. Mover 0.8 m tall, 0.45 m radius. Its graphs: 0234 (its own), 0233 (played on it by 0232 #1486).
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\junkrat\scripts\clipmaps_junkrat.py from the
+# compacted blend-tree sets (research\junkrat\work\clipmap_junkrat\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+0-48_00000000306D = tire_jump_sm0_se0   # 0.1 s; set 0462 alias 81188005 (the tire's jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall (M tree)); df8A=default[1] sel[1] sel[1] @81188002 sm[0] @81188005 sm[0] seq[0]
+0-48_00000000306F = tire_jump_sm0_se1_sm0   # 0.0333 s; set 0462 alias 81188005 (the tire's jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall (M tree)); df8A=default[1] sel[1] sel[1] @81188002 sm[0] @81188005 sm[0] seq[1] sm[0]
+0-48_00000000306E = tire_jump_sm0_se1_sm1   # 0.5 s; set 0462 alias 81188005 (the tire's jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall (M tree)); df8A=default[1] sel[1] sel[1] @81188002 sm[0] @81188005 sm[0] seq[1] sm[1]; on 2 paths
+0-36_000000003161 = tire_roll_ra0   # 1 s; set 0462 alias 8118800A (the tire's roll loop, 3 random picks (M)); df8A=default[1] sel[1] sel[1] @81188002 sm[1] @8118800A rand[0]
+0-36_000000003162 = tire_roll_ra1   # 2 s; set 0462 alias 8118800A (the tire's roll loop, 3 random picks (M)); df8A=default[1] sel[1] sel[1] @81188002 sm[1] @8118800A rand[1]
+0-36_000000003038 = tire_roll_ra2   # 1 s; set 0462 alias 8118800A (the tire's roll loop, 3 random picks (M)); df8A=default[1] sel[1] sel[1] @81188002 sm[1] @8118800A rand[2]; on 2 paths
+4-0_000000003070 = add_base_se1_se1_tr01   # 0.1333 s; set 0462 alias 2 (the base tree (locomotion + layers)); df8A=default[1] sel[1] sel[1] @81188002 +add() tr[0>1]; on 2 paths
+4-12_000000003086 = add_tire_layer   # 1 s; set 0462 alias 81188008 (the tire's additive layer under df102 (L)); df8A=default[1] +add(df102) @81188008
+4-6_000000003039 = add_tire_layer_2   # 0.6667 s; set 0462 alias 81188008 (the tire's additive layer under df102 (L)); df8A=default[1] +add(df102) @81188008 +add()
+4-4_0000000027AD = add_base_sm0_sm0   # 0.0333 s; set 0462 alias 2 (the base tree (locomotion + layers)); df8A=default[1] +add() sm[0] sm[0]; on 2 paths
+4-4_0000000027AE = add_base_tr01   # 0.0333 s; set 0462 alias 2 (the base tree (locomotion + layers)); df8A=default[1] +add() tr[0>1]; on 2 paths
+0-36_00000000DABD = base_se1_se1_sm1_ra0   # 1 s; set 1139 alias 2 (the base tree (locomotion + layers)); df8A=default[1] sel[1] sel[1] @844E4002 sm[1] @844E400A rand[0]
+0-36_00000000DABE = base_se1_se1_sm1_ra1   # 2 s; set 1139 alias 2 (the base tree (locomotion + layers)); df8A=default[1] sel[1] sel[1] @844E4002 sm[1] @844E400A rand[1]
+# Extracted under this model but in none of its sets (1, not named): 00B5A8

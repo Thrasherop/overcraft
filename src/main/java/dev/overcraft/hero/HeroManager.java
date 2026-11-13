@@ -86,6 +86,17 @@ public final class HeroManager {
 	public static final AttachmentType<Boolean> JUNO_LOCK = AttachmentRegistry.create(Overcraft.id("juno_lock"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
 
+	/**
+	 * Lúcio on a wall (#115): for every other client to pose him (HeroAnimator's clip and lean, LucioFx's sparks): OwMovement.wallCode's
+	 * side and ride yaw, 0 off it. Only his own client knows his ride (it moves him), so it says, in its input.
+	 */
+	public static final AttachmentType<Integer> LUCIO_WALL = AttachmentRegistry.create(Overcraft.id("lucio_wall"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
+	/** Pharah's look (dev.overcraft.pharah.Pharah.LOOK_*: hovering, a jet, Barrage), for every client to animate her. */
+	public static final AttachmentType<Integer> PHARAH_STATE = AttachmentRegistry.create(Overcraft.id("pharah_state"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
 	/** Sojourn sliding (Power Slide): for every client to animate her slide (HeroAnimator), and her own to move her. */
 	public static final AttachmentType<Boolean> SOJOURN_SLIDE = AttachmentRegistry.create(Overcraft.id("sojourn_slide"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
@@ -96,6 +107,35 @@ public final class HeroManager {
 	 */
 	public static final AttachmentType<Integer> SOJOURN_GUN = AttachmentRegistry.create(Overcraft.id("sojourn_gun"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
+	/**
+	 * D.Va's form (dev.overcraft.dva.Dva.MECH .. WRECK), for every client to give her the body's box, eye, model and keys.
+	 * Absent: not D.Va. Not saved: a fresh kit (joining, respawning) is in her mech.
+	 */
+	public static final AttachmentType<Integer> DVA_FORM = AttachmentRegistry.create(Overcraft.id("dva_form"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
+	/**
+	 * D.Va's held states as every client hears them (client.DvaSounds: Defense Matrix's and Boosters' loops, Precision Fusion's):
+	 * Dva.MODE_MATRIX / MODE_BOOSTING / MODE_PRECISION bits. Absent or 0: none.
+	 */
+	public static final AttachmentType<Integer> DVA_STATE = AttachmentRegistry.create(Overcraft.id("dva_state"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
+	/**
+	 * Sigma's state as every client draws and hears it (SigmaFx, client.SigmaSounds): Sigma.SYNC_* bits (Kinetic Grasp, the
+	 * gather, Gravitic Flux's flight and its aim, Levitation, Hyper Strike charged). Absent or 0: none of them.
+	 */
+	public static final AttachmentType<Integer> SIGMA_STATE = AttachmentRegistry.create(Overcraft.id("sigma_state"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
+	/**
+	 * Sombra's stealth as every client draws it (HeroModelRenderer's phased-out look, her stealthed clips): the game tick her
+	 * stealth began (Stealth.start: its 0.75 s fade-in counts from there) while it lasts, -1 once it's over (#87). Whether she
+	 * is hidden or seen through is still Minecraft's invisibility (Stealth.tick).
+	 */
+	public static final AttachmentType<Long> SOMBRA_STEALTH = AttachmentRegistry.create(Overcraft.id("sombra_stealth"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_LONG, AttachmentSyncPredicate.all()));
 
 	/** Asleep or stunned (Sleep): set on a sleeping or stunned player, for their client to hold them still. */
 	public static final AttachmentType<Boolean> ASLEEP = AttachmentRegistry.create(Overcraft.id("asleep"),
@@ -136,7 +176,13 @@ public final class HeroManager {
 		KITS.put(Hero.SOMBRA, new dev.overcraft.sombra.Sombra());
 		KITS.put(Hero.BRIGITTE, new dev.overcraft.brigitte.Brigitte());
 		KITS.put(Hero.JUNO, new dev.overcraft.juno.Juno());
+		KITS.put(Hero.SIGMA, new dev.overcraft.sigma.Sigma());
+		KITS.put(Hero.DVA, new dev.overcraft.dva.Dva());
 		KITS.put(Hero.SOJOURN, new dev.overcraft.sojourn.Sojourn());
+		KITS.put(Hero.PHARAH, new dev.overcraft.pharah.Pharah());
+		KITS.put(Hero.TRACER, new dev.overcraft.tracer.Tracer());
+		KITS.put(Hero.CASSIDY, new dev.overcraft.cassidy.Cassidy());
+		KITS.put(Hero.JUNKRAT, new dev.overcraft.junkrat.Junkrat());
 	}
 
 	private HeroManager() {
@@ -166,18 +212,94 @@ public final class HeroManager {
 		return hero(player) != null && heroMode(player) && player.isAlive() && !player.isSpectator() && !Sleep.asleep(player);
 	}
 
+	/** A hero in hero mode, alive, whether or not their keys are live: what a fall asks. Asleep or stunned in the air, an ability's landing and their own safe height still count (#35). A fall begun in Minecraft mode stays Minecraft's (PLAIN_FALLS). */
+	public static boolean inHeroPlay(Player player) {
+		return hero(player) != null && heroMode(player) && player.isAlive() && !player.isSpectator() && !PLAIN_FALLS.contains(player.getUUID());
+	}
+
 	/**
-	 * A fall that hurts nobody right now, whatever its height: the hook for heroes whose abilities land them safely
-	 * (later: Winston's Jump Pack, Juno's glide; the owner, #35). Kiriko has none: her falls count from her safe height.
+	 * Joined in mid-air in hero mode, every hero: the fall to the ground hurts nobody (ours, CLAUDE.md #35's rule). Leaving
+	 * ended what held them up (Pharah's hover, Mercy's flight, a jet: outOfPlay LEAVE) and the hero select screen is open on
+	 * the rejoin, so they fall with no way to act (a Pharah who left hovering at 11 m rejoined and took 87 of her 225:
+	 * critic_1 #4). Till they land, ride, swim, climb or switch to Minecraft mode (G); a fall from Minecraft mode stays
+	 * Minecraft's (not added), and so does a join on the ground (the saved onGround, read at the join: right in fix_1).
+	 * Over by the distance, as PLAIN_FALLS, once the fall has begun (true here): the server's onGround read true at y -59.06,
+	 * a tick before the landing's damage check, and the distance stays 0 while their client is still loading (fix_1).
+	 */
+	private static final java.util.Map<UUID, Boolean> JOIN_FALLS = new java.util.HashMap<>();
+
+	/** Falling when G turned hero mode on: plain Minecraft stays plain, so this fall lands as Minecraft's: G just before the ground dodged it. Till the fall's over. */
+	private static final java.util.Set<UUID> PLAIN_FALLS = new java.util.HashSet<>();
+
+	/** Coming into hero mode (G, a pick): a fall under way stays Minecraft's. */
+	private static void startPlainFall(Player player) {
+		if (player.fallDistance > 0) {
+			PLAIN_FALLS.add(player.getUUID());
+		}
+	}
+
+	/** In what holds them and stops a fall: water, lava, a cobweb. */
+	public static boolean heldInBlock(net.minecraft.world.entity.LivingEntity e) {
+		return e.isInWater() || e.isInLava() || e.level().getBlockState(e.blockPosition()).is(net.minecraft.world.level.block.Blocks.COBWEB);
+	}
+
+	/** Their Jump is Minecraft's or the mount's here, not an air ability's: riding, in what holds them, on a ladder, in powder snow with the boots to climb it (LivingEntity's own test). Client and server ask this. */
+	public static boolean jumpIsNotAirborne(net.minecraft.world.entity.LivingEntity e) {
+		return e.isPassenger() || heldInBlock(e) || e.onClimbable()
+			|| e.getInBlockState().is(net.minecraft.world.level.block.Blocks.POWDER_SNOW) && net.minecraft.world.level.block.PowderSnowBlock.canEntityWalkOnPowderSnow(e);
+	}
+
+	/** The ticks in a row a landing has stayed somewhere, this tick's included (Holds.stayed). */
+	public static int landingTouch(net.minecraft.world.entity.LivingEntity e, int touch) {
+		return Holds.stayed(heldInBlock(e), e.onClimbable(), e.getKnownMovement().y) ? touch + 1 : 0;
+	}
+
+	/** A landing not tied to hero mode (Life Grip's, on anyone) is over: riding, or stayed. */
+	public static boolean landingOver(net.minecraft.world.entity.LivingEntity e, int touch) {
+		return Holds.landingEnds(true, touch, e.isPassenger());
+	}
+
+	/**
+	 * A fall that hurts nobody right now, whatever its height: the hook for heroes whose abilities land them safely (the owner, #35). Without one, a hero's falls count from their safe
+	 * height (Hero.safeFall): Kiriko's plain fall from her climb's height, her Swift Step's by its soft landing.
 	 */
 	public static boolean fallIsSafe(Player player) {
+		if (JOIN_FALLS.containsKey(player.getUUID())) {
+			return true;
+		}
 		HeroState state = STATES.get(player.getUUID());
 		// Mercy: Guardian Angel's flight and launch, and Valkyrie's flight, land her (Angelic Descent clears the fall itself);
 		// Lifeweaver: Rejuvenating Dash lands him; Sombra: the Translocator's teleport (it can leave her 12 m up in the air)
+		// Sigma: Gravitic Flux's flight (and Levitation) land him; D.Va: the eject's launch lands her
 		// Juno: no fall hurts her (W; her data has no fall damage node: juno-map.md); Sojourn: Power Slide and its jump land her
+		// Lucio: a wall ride and whatever follows it; Brigitte: Shield Bash; Kiriko: Swift Step (softLanding, below); Pharah: her
+		// jets, her hover and her own blasts; Junkrat: his mine's launch and his frags' push
 		return state != null && ((state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA
-			|| state.hero == Hero.SOJOURN)
+			|| state.hero == Hero.SOJOURN || state.hero == Hero.SIGMA || state.hero == Hero.DVA || state.hero == Hero.LUCIO
+			|| state.hero == Hero.BRIGITTE || state.hero == Hero.KIRIKO || state.hero == Hero.PHARAH || state.hero == Hero.JUNKRAT)
 			&& state.softLanding || state.hero == Hero.JUNO);
+	}
+
+	/**
+	 * Whether a push of a hero's own blast (a frag's, a rocket's) lands them soft: only one that leaves them going up, {@code vy} their
+	 * vertical speed after it. One that only slows a fall is a fall (the critic, 2026-11-13: a frag burst under Junkrat 0.4 s into a 20 m
+	 * fall left him at -5.8 m/s, and the whole fall was forgiven; Pharah's rocket the same).
+	 */
+	public static boolean pushLandsSoft(double vy) {
+		return Holds.pushLandsSoft(vy);
+	}
+
+	/**
+	 * A movement ability's fall doesn't count until they're down after it (CLAUDE.md, #35): each tick while {@code moving} or still falling from it. {@code grace}: not down yet whatever the
+	 * ground says, just after a teleport, when the server's onGround is the place she left.
+	 */
+	public static void softLanding(Player player, HeroState s, boolean moving, boolean grace) {
+		boolean was = s.softLanding;
+		s.softLanding = Holds.softLanding(was, moving, player.onGround(), grace);
+		// (also on the tick they land: Minecraft can check the fall a tick after the server sees them down: Mercy's note)
+		if (was || s.softLanding) {
+			player.resetFallDistance();
+		}
 	}
 
 	/** Hero mode is on (on unless switched off with G). */
@@ -188,12 +310,86 @@ public final class HeroManager {
 	/** G: hero mode on or off (only with a hero picked). */
 	public static void setHeroMode(ServerPlayer player, boolean on) {
 		if (hero(player) != null) {
-			if (on != heroMode(player)) {
+			// a request for the mode she's already in changes nothing (D.Va's G-back hook fully healed a hurt mech on it: the
+			// critic's finding, 2026-11-11)
+			boolean changed = on != heroMode(player);
+			if (changed) {
 				// switching is doing something: an emote ends, as any action ends one (it kept kneeling in Minecraft mode)
 				dev.overcraft.comms.Comms.endEmote(player);
+				if (!on) {
+					// plain Minecraft from here: nothing of the hero's play carries over (#100)
+					outOfPlay(player, STATES.get(player.getUUID()), HeroKit.OutOfPlay.MINECRAFT_MODE);
+				} else {
+					startPlainFall(player);
+				}
 			}
 			player.setAttached(HERO_MODE, on);
+			HeroState state = STATES.get(player.getUUID());
+			if (changed && on && state != null && state.hero == Hero.DVA) {
+				// back in hero mode she's in the mech she left (the plan's default 9; G off is her leavePlay)
+				dev.overcraft.dva.Dva.heroMode(player, state, true);
+			} else if (changed && !on && state != null && state.hero == Hero.DVA) {
+				// her body's health once the flag is off: leavePlay ran while it was still on, so it measured the mech (54 / 54
+				// in Minecraft mode, not the pilot's 14: found in the two-player pass, 2026-11-11)
+				refreshHealth(player, state, false);
+			}
 		}
+	}
+
+	/**
+	 * The hero leaves play (#100): G, death, a hero switch, leaving the world. The one place it happens, called with the
+	 * hero's state as it was, before anything resets it. The kit ends what the hero is doing (HeroKit.leavePlay); then the
+	 * rules every hero shares: Minecraft's flight permission goes back to the game mode (Jetpack Cat's flight, Mercy's
+	 * Valkyrie), and, when the hero is gone for good, the synced looks every client draws them by.
+	 */
+	public static void outOfPlay(ServerPlayer player, @Nullable HeroState state, HeroKit.OutOfPlay why) {
+		if (state == null || state.hero == null) {
+			return;
+		}
+		HeroKit kit = kit(state.hero);
+		if (kit != null) {
+			kit.leavePlay(player, state, why);
+		}
+		// whatever ult was running has ended (its charge stays spent: HeroKit.leavePlay)
+		state.ultActive = 0;
+		dev.overcraft.jetpackcat.JetpackCat.keepFlight(player, state, false);
+		if (why.forGood()) {
+			for (AttachmentType<?> look : HERO_LOOKS) {
+				player.removeAttached(look);
+			}
+		}
+	}
+
+	/** The synced states clients draw a hero in play by (not the hero itself, nor sleep, which others put on them). */
+	private static final java.util.List<AttachmentType<?>> HERO_LOOKS = java.util.List.of(SONG, MERCY, LIFEWEAVER, JUNO_GLIDE,
+		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA, DVA_FORM, DVA_STATE, LUCIO_WALL, PHARAH_STATE);
+
+	/** Dev only (DevServer's "bot showstate off"): the rule off, to show what it does. */
+	public static boolean devNoShowState;
+
+	/**
+	 * The one rule of #96: a player who starts seeing {@code tracked} learns the state it's in. Three kinds carry every state
+	 * others see: attachments (HERO_LOOKS and the like) go by themselves on tracking; timed effects go from Effects' list; and here
+	 * the hero's emote, with the time it has run, and whatever its kit holds (HeroKit.showState).
+	 */
+	public static void showState(net.minecraft.world.entity.Entity tracked, ServerPlayer viewer) {
+		if (devNoShowState) {
+			return;
+		}
+		Effects.showHeld(tracked, viewer);
+		if (tracked instanceof ServerPlayer hero) {
+			dev.overcraft.comms.Comms.showEmote(hero, viewer);
+			HeroState state = STATES.get(hero.getUUID());
+			HeroKit kit = state == null || state.hero == null ? null : kit(state.hero);
+			if (kit != null) {
+				kit.showState(hero, state, viewer);
+			}
+		}
+	}
+
+	/** A player died (AFTER_DEATH): their hero leaves play, as at a switch, but stays theirs. */
+	public static void onDeath(ServerPlayer player) {
+		outOfPlay(player, STATES.get(player.getUUID()), HeroKit.OutOfPlay.DEATH);
 	}
 
 	/** How close to their bed (respawn point) a player must be to change heroes (owner, 2026-10-25). */
@@ -244,32 +440,13 @@ public final class HeroManager {
 			return;
 		}
 		boolean same = state.hero == hero;
+		boolean wasInPlay = state.hero != null && heroMode(player);
 		state.freePick = false;
 		if (same) {
 			return; // picking the hero you already are changes nothing (no free refill)
 		}
 		savePerks(player, state);
-		if (state.hero == Hero.MERCY) {
-			dev.overcraft.mercy.Mercy.clear(player, state);
-		}
-		if (state.hero == Hero.LIFEWEAVER) {
-			dev.overcraft.lifeweaver.Lifeweaver.clear(player, state);
-		}
-		if (state.hero == Hero.ANA) {
-			dev.overcraft.ana.Ana.clear(player, state);
-		}
-		if (state.hero == Hero.SOMBRA) {
-			dev.overcraft.sombra.Sombra.clear(player, state);
-		}
-		if (state.hero == Hero.BRIGITTE) {
-			dev.overcraft.brigitte.Brigitte.clear(player, state);
-		}
-		if (state.hero == Hero.JUNO) {
-			dev.overcraft.juno.Juno.clear(player, state);
-		}
-		if (state.hero == Hero.SOJOURN) {
-			dev.overcraft.sojourn.Sojourn.clear(player, state);
-		}
+		outOfPlay(player, state, HeroKit.OutOfPlay.SWITCH);
 		state.reset(hero);
 		loadPerks(player, state);
 		if (hero == null) {
@@ -280,25 +457,44 @@ public final class HeroManager {
 		applyKit(player, state, true);
 		if (hero != null) {
 			// picking a hero puts you in hero mode
+			if (!wasInPlay) {
+				startPlainFall(player);
+			}
 			player.setAttached(HERO_MODE, true);
 			Voice.say(player, "select", 1);
 		}
 	}
 
-	/** Health; {@code fresh} also refills health, ammo and cooldowns (a new pick or a respawn). */
-	private static void applyKit(ServerPlayer player, HeroState state, boolean fresh) {
+	/**
+	 * The hero's max health for the body they're in (D.Va's mech 675 or pilot 175); {@code full} also fills it and the top
+	 * layer (her eject's full heal, a new mech at full). Her forms call it as they change.
+	 */
+	public static void refreshHealth(ServerPlayer player, HeroState state, boolean full) {
 		AttributeInstance maxHealth = player.getAttribute(Attributes.MAX_HEALTH);
 		if (maxHealth != null) {
 			maxHealth.removeModifier(HEALTH_MODIFIER);
 			if (state.hero != null) {
-				double target = Ow.hp(state.hero.owHealth);
+				double target = Ow.hp(state.owHealth(player));
 				maxHealth.addPermanentModifier(new AttributeModifier(HEALTH_MODIFIER, target - maxHealth.getBaseValue(),
 					AttributeModifier.Operation.ADD_VALUE));
 			}
 		}
 		if (player.getHealth() > player.getMaxHealth()) {
-			player.setHealth(player.getMaxHealth());
+			// (the layer can't be more than what's left: a body with less of it)
+			state.shield = Math.min(state.shield, state.layer(player));
+			Shields.setRaw(player, player.getMaxHealth());
 		}
+		if (full && state.hero != null) {
+			state.shield = state.layer(player);
+			state.armorLost = 0;
+			Shields.setRaw(player, player.getMaxHealth());
+		}
+		state.shield = Math.min(state.shield, state.layer(player));
+	}
+
+	/** Health; {@code fresh} also refills health, ammo and cooldowns (a new pick or a respawn). */
+	private static void applyKit(ServerPlayer player, HeroState state, boolean fresh) {
+		refreshHealth(player, state, false);
 		// the hero weapon item that once held slot 1 (hero mode was "slot 1 held" until #26): taken out of old saves
 		removeWeapons(player.getInventory());
 		if (state.hero == null) {
@@ -306,7 +502,7 @@ public final class HeroManager {
 		}
 		HeroKit kit = kit(state.hero);
 		if (fresh) {
-			state.shield = state.hero.layer();
+			state.shield = state.layer(player);
 			player.setHealth(player.getMaxHealth());
 			if (kit != null) {
 				kit.equip(player, state);
@@ -327,6 +523,7 @@ public final class HeroManager {
 		String saved = player.getAttached(HERO);
 		Hero hero = saved == null ? null : Hero.byId(saved);
 		HeroState state = STATES.computeIfAbsent(player.getUUID(), id -> new HeroState());
+		dropStaleModifiers(player);
 		state.reset(hero != null && hero.playable ? hero : null);
 		state.freePick = true;
 		Double charge = player.getAttached(ULT_CHARGE);
@@ -335,34 +532,45 @@ public final class HeroManager {
 		}
 		loadPerks(player, state);
 		applyKit(player, state, true);
+		if (state.hero != null && heroMode(player) && !player.onGround()) {
+			JOIN_FALLS.put(player.getUUID(), false);
+			player.resetFallDistance();
+		}
 	}
 
 	public static void onLeave(ServerPlayer player) {
-		HeroState state = STATES.remove(player.getUUID());
+		PLAIN_FALLS.remove(player.getUUID());
+		JOIN_FALLS.remove(player.getUUID());
+		HeroState state = STATES.get(player.getUUID());
 		if (state != null && state.hero != null) {
-			player.setAttached(ULT_CHARGE, state.ultCharge);
+			// (D.Va rejoins in a mech: its charge, Dva.mechUlt)
+			player.setAttached(ULT_CHARGE, state.hero == Hero.DVA ? dev.overcraft.dva.Dva.mechUlt(state) : state.ultCharge);
 			savePerks(player, state);
-			if (state.hero == Hero.LIFEWEAVER) {
-				// his platform and tree leave with him
-				dev.overcraft.lifeweaver.Lifeweaver.clear(player, state);
-			}
-			if (state.hero == Hero.ANA) {
-				dev.overcraft.ana.Ana.clear(player, state);
-			}
-			if (state.hero == Hero.SOMBRA) {
-				dev.overcraft.sombra.Sombra.clear(player, state);
-			}
-			if (state.hero == Hero.BRIGITTE) {
-				dev.overcraft.brigitte.Brigitte.clear(player, state);
-			}
-			if (state.hero == Hero.JUNO) {
-				dev.overcraft.juno.Juno.clear(player, state);
-			}
-			if (state.hero == Hero.SOJOURN) {
-				dev.overcraft.sojourn.Sojourn.clear(player, state);
-			}
+			// what they were doing and what they placed leave with them (#100)
+			outOfPlay(player, state, HeroKit.OutOfPlay.LEAVE);
 		}
+		STATES.remove(player.getUUID());
 		OPTIONS.remove(player.getUUID());
+	}
+
+	/**
+	 * On joining: an Overcraft attribute modifier saved with the player from an older build (Lifeline's speed, Rally's
+	 * health and speed, Inspiring Strike's, the Hyper Ring's, overhealth's cap: they were permanent, so saved, and outlived
+	 * the ability, #100) is taken off. Every such modifier is transient now; only the hero's health is saved, and applyKit
+	 * sets it again.
+	 */
+	private static void dropStaleModifiers(ServerPlayer player) {
+		net.minecraft.core.registries.BuiltInRegistries.ATTRIBUTE.listElements().forEach(attribute -> {
+			AttributeInstance instance = player.getAttribute(attribute);
+			if (instance == null) {
+				return;
+			}
+			for (AttributeModifier modifier : java.util.List.copyOf(instance.getModifiers())) {
+				if (modifier.id().getNamespace().equals(Overcraft.MOD_ID) && !modifier.id().equals(HEALTH_MODIFIER)) {
+					instance.removeModifier(modifier.id());
+				}
+			}
+		});
 	}
 
 	/** Each player's hero options the server acts on (sent by their client: HeroOptionsPayload). */
@@ -382,7 +590,8 @@ public final class HeroManager {
 		if (state != null) {
 			Hero hero = state.hero;
 			// the ult's charge and the perks survive dying, as in Overwatch (the charge was being reset with everything else)
-			double charge = state.ultCharge;
+			// (D.Va respawns in a mech: the mech's Self-Destruct charge, not the pilot's Call Mech one: Dva.mechUlt)
+			double charge = hero == Hero.DVA ? dev.overcraft.dva.Dva.mechUlt(state) : state.ultCharge;
 			Perks.Progress perks = Perks.save(state);
 			state.reset(hero);
 			state.ultCharge = charge;
@@ -436,11 +645,21 @@ public final class HeroManager {
 			state.secondaryHeld = false;
 		}
 		state.wallRiding = (input.held() & HeroInputPayload.HELD_WALL_RIDE) != 0;
+		state.wallRide = state.wallRiding ? input.wall() : 0;
 		state.wallClimbing = (input.held() & HeroInputPayload.HELD_WALL_CLIMB) != 0;
+		if (state.hero == Hero.PHARAH) {
+			dev.overcraft.pharah.Pharah.hovered(player, state, (input.held() & HeroInputPayload.HELD_HOVER) != 0 && controls(player));
+		}
+		if (state.hero == Hero.CASSIDY) {
+			// his packets counted and his client's roll taken or refused, before a hack strips the presses or hero mode drops them
+			// (ClientCassidy counts the same; Cassidy.input asks controls itself)
+			dev.overcraft.cassidy.Cassidy.input(player, state, input.pressed(), input.extra());
+		}
 		if (!controls(player)) {
 			return;
 		}
-		if ((input.pressed() & HeroInputPayload.PRESS_MELEE) != 0) {
+		if ((input.pressed() & HeroInputPayload.PRESS_MELEE) != 0 && !dev.overcraft.cassidy.Cassidy.meleeBlocked(state)) {
+			// (not in Deadeye: W, no other abilities while channelling)
 			if (dev.overcraft.lifeweaver.Lifeweaver.sows(player, state)) {
 				dev.overcraft.lifeweaver.Lifeweaver.sow(player, state);
 			} else if (state.hero == Hero.BRIGITTE) {
@@ -456,6 +675,9 @@ public final class HeroManager {
 		}
 		HeroKit kit = kit(state.hero);
 		int pressed = input.pressed();
+		if ((pressed & HeroInputPayload.PRESS_CHARGED_SHOWN) != 0) {
+			dev.overcraft.sojourn.Railgun.pressedShown(player, state, input);
+		}
 		if (dev.overcraft.sombra.Hack.silenced(player)) {
 			// hacked by an enemy Sombra's EMP: no abilities, no ultimate (0B1F); the weapon and reload still work
 			pressed &= ~(HeroInputPayload.PRESS_ABILITY_1 | HeroInputPayload.PRESS_ABILITY_2 | HeroInputPayload.PRESS_ULTIMATE);
@@ -472,16 +694,20 @@ public final class HeroManager {
 		if (state.hero == Hero.SOJOURN && input.extra() != 0) {
 			dev.overcraft.sojourn.Sojourn.extra(player, state, input.extra());
 		}
+		if (state.hero == Hero.SIGMA && input.extra() != 0) {
+			dev.overcraft.sigma.Sigma.extra(player, state, input.extra());
+		}
 		if (state.hero == Hero.LIFEWEAVER && input.extra() != 0) {
 			dev.overcraft.lifeweaver.Lifeweaver.extra(player, state, input.extra());
 		}
 	}
 
 	public static void tick(MinecraftServer server) {
-		dev.overcraft.jetpackcat.JetpackCat.tickLetGo(server.overworld().getGameTime());
+		dev.overcraft.jetpackcat.JetpackCat.tickLetGo(server.getTickCount());
 		dev.overcraft.lifeweaver.Lifeweaver.tickHeals();
 		dev.overcraft.ana.Ana.tickDoses(server);
 		Sleep.tick(server);
+		dev.overcraft.sigma.GraviticFlux.tickAll(server);
 		dev.overcraft.lifeweaver.LifeGrip.tick(server);
 		dev.overcraft.entity.PetalPlatformEntity.tickLanding();
 		dev.overcraft.comms.Comms.tick();
@@ -504,7 +730,31 @@ public final class HeroManager {
 				state.primaryLetGo = state.secondaryLetGo = false;
 			}
 			if (player.isAlive()) {
+				// over by the distance, not onGround (which read true in mid-air after G): Minecraft clears it on landing, in water, on a ladder. An ability used ends it directly: its landing, Juno's glide (a level glide clears nothing), though the next packet adds to the distance again
+				if (player.fallDistance <= 0 || !heroMode(player) || player.isPassenger() || state.softLanding || state.junoGlide >= 0) {
+					PLAIN_FALLS.remove(player.getUUID());
+				}
+				// a rejoin's fall is over once Minecraft has checked its landing (the distance zeroed) or they're held
+				Boolean fell = JOIN_FALLS.get(player.getUUID());
+				if (fell != null) {
+					if (fell && player.fallDistance <= 0 || !heroMode(player) || jumpIsNotAirborne(player)) {
+						JOIN_FALLS.remove(player.getUUID());
+					} else if (player.fallDistance > 0) {
+						JOIN_FALLS.put(player.getUUID(), true);
+					}
+				}
 				tickRules(player, state);
+				// a soft landing doesn't carry over to Minecraft mode, and staying in water or on a ladder has landed them; not what the ability started in or brushes past, nor while it runs (Holds.landingEnds, stayed)
+				if (state.softLanding) {
+					boolean running = state.gaPhase != 0 || state.dashTicks >= 0 || state.sojournSlide >= 0 || state.bashTicks >= 0 || state.wallRiding || state.sigmaFluxPhase != 0;
+					state.softLandingTouch = running ? 0 : landingTouch(player, state.softLandingTouch);
+					if (Holds.landingEnds(heroMode(player), state.softLandingTouch, player.isPassenger())) {
+						state.softLanding = false;
+						state.softLandingTouch = 0;
+					}
+				} else {
+					state.softLandingTouch = 0;
+				}
 				if (kit != null) {
 					kit.tick(player, state, controls);
 				}
@@ -516,7 +766,7 @@ public final class HeroManager {
 				}
 			}
 			if (kit != null) {
-				ServerPlayNetworking.send(player, kit.sync(state).withShield((float) state.shield));
+				ServerPlayNetworking.send(player, kit.sync(state).withShield((float) state.shield).withWidgets(kit.widgets(player, state)));
 			}
 			held(state);
 		}
@@ -546,7 +796,10 @@ public final class HeroManager {
 			Combat.addUltCharge(player, Combat.ULT_PASSIVE_PER_SECOND / 20.0, true);
 		}
 		// Mercy's Swift Recovery starts it sooner; in Valkyrie it never stops (BZ 2023-04-11)
-		int regenDelay = state.hero == Hero.MERCY ? dev.overcraft.mercy.MercyStats.REGEN_DELAY : Combat.REGEN_DELAY;
+		// Tracer's Temporal Regen: 3 s (D 51EE #462 x0.5 on 01C7 #966)
+		int regenDelay = state.hero == Hero.MERCY ? dev.overcraft.mercy.MercyStats.REGEN_DELAY
+			: state.hero == Hero.TRACER && state.has(Perk.TRACER_TEMPORAL_REGEN) ? Ow.ticks(dev.overcraft.tracer.TracerStats.TEMPORAL_REGEN_DELAY)
+			: Combat.REGEN_DELAY;
 		boolean always = state.hero == Hero.MERCY && dev.overcraft.mercy.Mercy.valkyrie(state);
 		if ((always || Combat.now(player) - state.lastDamagedTick >= regenDelay) && player.getHealth() < player.getMaxHealth()) {
 			double maxOw = Ow.toOw(player.getMaxHealth());
@@ -583,5 +836,6 @@ public final class HeroManager {
 
 	public static void clear() {
 		STATES.clear();
+		PLAIN_FALLS.clear();
 	}
 }

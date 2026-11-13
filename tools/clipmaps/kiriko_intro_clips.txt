@@ -1,0 +1,10 @@
+# Kiriko's Play of the Game highlight intro: the clip only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/kiriko.glb by bone name (HeroModels, from hero_models/kiriko_intro_clips.glb). From DataTool's
+# extract-unlocks "Kiriko|highlightintro=*" (build 154088, archived: research\kiriko-anim\extract_unlocks\Heroes\Kiriko\
+# HighlightIntro): "Healing Ofuda" (Season 8), its one clip DF8F, 150 frames at 30 fps = 5.0 s (D H). Picked for the first
+# version (owner, 2026-11-11: one intro picked; design.md question 7) because she stands in place (root travel 0.23 m in
+# the survey) and fans her own ofuda (pieces of her model), so no prop is missing. Its two models (0797, 13CA) and its
+# animation effect aren't read yet. Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <Kiriko 3A.118.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/kiriko_intro_clips.txt --clips-from=<...>\Heroes\Kiriko\HighlightIntro
+emote_00000000DF8F = potg_intro

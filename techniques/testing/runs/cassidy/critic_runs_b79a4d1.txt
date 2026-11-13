@@ -1,0 +1,505 @@
+01:23:28.910 screen -> {"screen":"net.minecraft.client.gui.screens.GenericMessageScreen"}
+01:23:31.923 screen -> {"screen":"net.minecraft.client.gui.screens.AccessibilityOnboardingScreen"}
+01:23:34.033 newworld crit_d0c -> {"ok":true}
+01:23:59.038 screen -> {"screen":"dev.overcraft.client.HeroSelectScreen"}
+01:23:59.051 state -> {"screen": "HeroSelectScreen", "x": 8.5, "y": -60.0, "z": 3.5, "health": 20.0, "onGround": true, "heroMode": false, "hero": "", "ult": 0.0, "mode": 0, "primaryAmmo": 0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0}
+01:24:06.610 hero tracer -> {"ok":true}
+01:24:07.616 close -> {"ok":true}
+01:24:08.626 state -> {"screen": "", "x": 8.5, "y": -60.0, "z": 3.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 10.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:24:08.635 screenshot c0_join.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\c0_join.png"}
+01:24:14.147 MARK C1 setup: Tracer, hero mode, peaceful-ish build area
+01:24:14.157 hero tracer -> {"ok":true}
+01:24:16.198 cmd /difficulty peaceful -> {"ok":true}
+01:24:16.201 cmd /gamerule doDaylightCycle false -> {"ok":true}
+01:24:16.211 cmd /time set noon -> {"ok":true}
+01:24:16.219 state -> {"screen": "", "x": 8.5, "y": -60.0, "z": 3.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 48.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:24:16.219 MARK C1a stairs: an oak staircase rising +1 per block along +z from z=2 (x=10), 8 steps. Expected (OW: Blink follows ramps/stairs): well up the stairs, ~5+ blocks up
+01:24:16.234 cmd /fill 5 -60 -3 30 -45 30 air -> {"ok":true}
+01:24:16.237 cmd /fill 10 -60 2 10 -60 2 oak_stairs[facing=south] -> {"ok":true}
+01:24:16.295 cmd /fill 10 -59 3 10 -59 3 oak_stairs[facing=south] -> {"ok":true}
+01:24:16.310 cmd /fill 10 -58 4 10 -58 4 oak_stairs[facing=south] -> {"ok":true}
+01:24:16.320 cmd /fill 10 -57 5 10 -57 5 oak_stairs[facing=south] -> {"ok":true}
+01:24:16.328 cmd /fill 10 -56 6 10 -56 6 oak_stairs[facing=south] -> {"ok":true}
+01:24:16.336 cmd /fill 10 -55 7 10 -55 7 oak_stairs[facing=south] -> {"ok":true}
+01:24:16.348 cmd /fill 10 -54 8 10 -54 8 oak_stairs[facing=south] -> {"ok":true}
+01:24:16.355 cmd /fill 10 -53 9 10 -53 9 oak_stairs[facing=south] -> {"ok":true}
+01:24:16.368 cmd /fill 10 -60 3 10 -60 9 stone -> {"ok":true}
+01:24:16.375 cmd /fill 10 -59 4 10 -59 9 stone -> {"ok":true}
+01:24:16.384 cmd /fill 10 -58 5 10 -58 9 stone -> {"ok":true}
+01:24:16.393 cmd /fill 10 -57 6 10 -57 9 stone -> {"ok":true}
+01:24:16.401 cmd /fill 10 -56 7 10 -56 9 stone -> {"ok":true}
+01:24:16.410 cmd /fill 10 -55 8 10 -55 9 stone -> {"ok":true}
+01:24:16.420 cmd /fill 10 -54 9 10 -54 9 stone -> {"ok":true}
+01:24:16.443 cmd /tp @s 10.5 -60 0.5 0 0 -> {"ok":true}
+01:24:19.952 state -> {"screen": "", "x": 10.5, "y": -60.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 66.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:24:19.985 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:24:20.118 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:24:20.419 state -> {"screen": "", "x": 10.5, "y": -58.5, "z": 3.2, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 69.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:24:20.453 screenshot c1a_stairs.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\c1a_stairs.png"}
+01:24:20.453 MARK C1b a smooth slope of slabs+full blocks (+0.5 per block, 16 blocks) at x=14. Expected: follow the slope up ~3.75
+01:24:20.486 cmd /fill 14 -60 2 14 -60 2 stone_slab -> {"ok":true}
+01:24:20.537 cmd /fill 14 -60 3 14 -60 3 stone -> {"ok":true}
+01:24:20.571 cmd /fill 14 -59 4 14 -59 4 stone_slab -> {"ok":true}
+01:24:20.604 cmd /fill 14 -60 4 14 -60 20 stone -> {"ok":true}
+01:24:20.638 cmd /fill 14 -59 5 14 -59 20 stone -> {"ok":true}
+01:24:20.671 cmd /fill 14 -58 6 14 -58 6 stone_slab -> {"ok":true}
+01:24:20.705 cmd /fill 14 -58 7 14 -58 20 stone -> {"ok":true}
+01:24:20.737 cmd /fill 14 -57 8 14 -57 8 stone_slab -> {"ok":true}
+01:24:20.771 cmd /fill 14 -57 9 14 -57 20 stone -> {"ok":true}
+01:24:20.804 cmd /fill 14 -56 10 14 -56 10 stone_slab -> {"ok":true}
+01:24:20.838 cmd /fill 14 -56 11 14 -56 20 stone -> {"ok":true}
+01:24:20.872 cmd /tp @s 14.5 -60 0.5 0 0 -> {"ok":true}
+01:24:24.380 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:24:24.514 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:24:24.851 state -> {"screen": "", "x": 14.5, "y": -58.5, "z": 4.7, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 91.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:24:24.851 MARK C1c touching a wall on her left (+x; block x=18 along z), blink W+A (diagonal into it): expected (BZ/W: around obstacles) slides along ~5 m; a stop near 0 means no slide. Then W+D (away) as the control
+01:24:24.885 cmd /fill 18 -60 -2 18 -57 20 stone -> {"ok":true}
+01:24:24.918 cmd /tp @s 17.69 -60 0.5 0 0 -> {"ok":true}
+01:24:28.428 state -> {"screen": "", "x": 17.69, "y": -60.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 109.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:24:28.462 key forward down -> {"key":"key.keyboard.w"}
+01:24:28.495 key left down -> {"key":"key.keyboard.a"}
+01:24:28.529 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:24:28.663 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:24:28.696 key left up -> {"key":"key.keyboard.a"}
+01:24:28.730 key forward up -> {"key":"key.keyboard.w"}
+01:24:29.067 state -> {"screen": "", "x": 17.7, "y": -60.0, "z": 9.583, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 112.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:24:29.099 key forward down -> {"key":"key.keyboard.w"}
+01:24:29.132 key right down -> {"key":"key.keyboard.d"}
+01:24:29.166 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:24:29.267 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:24:29.299 key right up -> {"key":"key.keyboard.d"}
+01:24:29.333 key forward up -> {"key":"key.keyboard.w"}
+01:24:29.667 state -> {"screen": "", "x": 15.3, "y": -60.0, "z": 12.877, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 115.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:24:29.667 MARK C1d 1-high ceiling: a 2-high tunnel (blocks at y=-58) from z=3 at x=22, blink forward: expected through it 7.5 m
+01:24:29.700 cmd /fill 21 -60 3 23 -57 20 stone -> {"ok":true}
+01:24:29.733 cmd /fill 22 -60 3 22 -59 20 air -> {"ok":true}
+01:24:29.767 cmd /tp @s 22.5 -60 0.5 0 0 -> {"ok":true}
+01:24:33.275 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:24:33.408 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:24:33.741 state -> {"screen": "", "x": 22.5, "y": -60.0, "z": 8.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 135.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:24:33.741 MARK C1e a doorway (oak door open) in a wall at z=4 x=26: blink forward through
+01:24:33.775 cmd /fill 25 -60 4 27 -57 4 stone -> {"ok":true}
+01:24:33.808 cmd /setblock 26 -60 4 oak_door[half=lower,open=true,facing=south] -> {"ok":true}
+01:24:33.842 cmd /setblock 26 -59 4 oak_door[half=upper,open=true,facing=south] -> {"ok":true}
+01:24:33.875 cmd /tp @s 26.5 -60 0.5 0 0 -> {"ok":true}
+01:24:37.386 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:24:37.519 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:24:37.821 state -> {"screen": "", "x": 26.5, "y": -60.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 156.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:24:37.855 screenshot c1e_door.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\c1e_door.png"}
+01:25:27.767 MARK C2a door again, full charges, states right after
+01:25:27.794 cmd /tp @s 26.5 -60 0.5 0 0 -> {"ok":true}
+01:25:37.319 state -> {"screen": "", "x": 26.5, "y": -60.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 453.5, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:25:37.353 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:25:37.420 state -> {"screen": "", "x": 26.5, "y": -60.0, "z": 8.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 454.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:25:37.453 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:25:37.957 state -> {"screen": "", "x": 26.5, "y": -60.0, "z": 8.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 456.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:25:37.957 MARK C2b same spot, door removed (air in the gap): control
+01:25:37.989 cmd /setblock 26 -59 4 air -> {"ok":true}
+01:25:38.024 cmd /setblock 26 -60 4 air -> {"ok":true}
+01:25:38.057 cmd /tp @s 26.5 -60 0.5 0 0 -> {"ok":true}
+01:25:41.567 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:25:41.633 state -> {"screen": "", "x": 26.5, "y": -60.0, "z": 8.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 475.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:25:41.666 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:25:42.168 state -> {"screen": "", "x": 26.5, "y": -60.0, "z": 8.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 477.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:25:42.168 MARK C2c open field control at x=34
+01:25:42.201 cmd /tp @s 34.5 -60 0.5 0 0 -> {"ok":true}
+01:25:45.716 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:25:45.781 state -> {"screen": "", "x": 34.5, "y": -60.0, "z": 8.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 496.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:25:45.816 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:25:46.318 state -> {"screen": "", "x": 34.5, "y": -60.0, "z": 8.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 498.5, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:25:46.318 MARK C2d pressed against the +x wall (hold A 0.5 s first), then A only + Shift: expected 0 m and the charge spent? then W+A + Shift
+01:25:46.351 cmd /tp @s 17.6 -60 0.5 0 0 -> {"ok":true}
+01:25:49.863 key left down -> {"key":"key.keyboard.a"}
+01:25:50.397 state -> {"screen": "", "x": 17.7, "y": -60.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 519.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:25:50.430 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:25:50.564 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:25:50.665 state -> {"screen": "", "x": 17.7, "y": -60.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 520.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:25:50.698 key forward down -> {"key":"key.keyboard.w"}
+01:25:50.831 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:25:50.967 state -> {"screen": "", "x": 17.7, "y": -60.0, "z": 1.815, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 521.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.269}
+01:25:51.000 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:25:51.033 key forward up -> {"key":"key.keyboard.w"}
+01:25:51.067 key left up -> {"key":"key.keyboard.a"}
+01:25:51.368 state -> {"screen": "", "x": 17.7, "y": -60.0, "z": 2.279, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 523.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:26:15.678 MARK C3 single Blinks, each after a full recharge (3.5 s), open field, facing +z. Expected: every one 7.5 m. Suspect: the client's spent count (ClientTracer) only resets when the synced count changes, so the 4th is refused here while the server still takes the charge
+01:26:15.698 cmd /tp @s 40.5 -60 0.5 0 0 -> {"ok":true}
+01:26:25.728 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 695.5, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:26:25.761 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:26:25.828 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:26:26.130 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 8.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 697.5, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:26:29.637 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 8.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 715.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:26:29.671 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:26:29.737 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:26:30.071 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 15.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 717.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:26:33.583 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 15.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 735.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:26:33.616 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:26:33.683 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:26:33.984 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 23.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 737.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:26:37.493 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 23.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 754.5, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:26:37.526 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:26:37.593 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:26:37.927 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 23.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 756.5, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:26:41.436 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 23.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 774.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:26:41.469 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:26:41.536 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:26:41.871 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 23.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 776.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:26:41.904 screenshot c3_after5.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\c3_after5.png"}
+01:27:01.527 MARK C4 Recall across a dimension change: 2 s in the Overworld at (40.5,-60,23), then into the Nether (onto an obsidian pad at 0,130,0, above its roof), E 1 s later. Expected: back in the Nether pad area or Recall refused; suspect: the Overworld's coordinates used in the Nether (y -60 = below the Nether's floor: the void)
+01:27:01.532 cmd /execute in minecraft:the_nether run forceload add 0 0 -> {"ok":true}
+01:27:01.566 cmd /execute in minecraft:the_nether run fill -3 129 -3 3 129 3 obsidian -> {"ok":true}
+01:27:01.599 cmd /execute in minecraft:the_nether run fill -3 130 -3 3 133 3 air -> {"ok":true}
+01:27:01.632 cmd /tp @s 40.5 -60 23 0 0 -> {"ok":true}
+01:27:05.646 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 23.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 895.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:27:05.679 cmd /execute in minecraft:the_nether run tp @s 0.5 130 0.5 0 0 -> {"ok":true}
+01:27:06.703 state -> {"screen": "", "x": 0.5, "y": 130.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1170.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:27:06.736 key ability_2 down -> {"key":"key.keyboard.e"}
+01:27:06.802 key ability_2 up -> {"key":"key.keyboard.e"}
+01:27:07.139 state -> {"screen": "", "x": 0.5, "y": 130.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1170.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:27:07.472 state -> {"screen": "", "x": 0.5, "y": 130.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1170.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:27:07.517 screenshot c4_recall_nether_mid.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\c4_recall_nether_mid.png"}
+01:27:08.049 state -> {"screen": "", "x": 0.5, "y": 130.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1170.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:27:09.053 state -> {"screen": "", "x": 0.5, "y": 130.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1170.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:27:09.087 screenshot c4_recall_nether_end.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\c4_recall_nether_end.png"}
+01:27:11.103 state -> {"screen": "", "x": 0.5, "y": 130.0, "z": 0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1170.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:27:22.788 MARK C4b in the Nether: fire 0.3 s, then Blink, then E
+01:27:22.800 state -> {"screen": "DeathScreen", "x": 40.5, "y": -154.377, "z": 23.5, "health": 0.0, "onGround": false, "heroMode": false, "hero": "tracer", "ult": 1185.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 10.0, "vx": 0.0, "vy": -2.83, "vz": 0.0}
+01:27:22.832 key secondary_fire down -> {"key":"key.mouse.left"}
+01:27:23.133 key secondary_fire up -> {"key":"key.mouse.left"}
+01:27:23.336 state -> {"screen": "DeathScreen", "x": 40.5, "y": -154.377, "z": 23.5, "health": 0.0, "onGround": false, "heroMode": false, "hero": "tracer", "ult": 1185.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 10.0, "vx": 0.0, "vy": -2.83, "vz": 0.0}
+01:27:23.368 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:27:23.435 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:27:23.770 state -> {"screen": "DeathScreen", "x": 40.5, "y": -154.377, "z": 23.5, "health": 0.0, "onGround": false, "heroMode": false, "hero": "tracer", "ult": 1185.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 10.0, "vx": 0.0, "vy": -2.83, "vz": 0.0}
+01:27:23.803 key ability_2 down -> {"key":"key.keyboard.e"}
+01:27:23.870 key ability_2 up -> {"key":"key.keyboard.e"}
+01:27:24.472 state -> {"screen": "DeathScreen", "x": 40.5, "y": -154.377, "z": 23.5, "health": 0.0, "onGround": false, "heroMode": false, "hero": "tracer", "ult": 1185.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 10.0, "vx": 0.0, "vy": -2.83, "vz": 0.0}
+01:27:25.474 state -> {"screen": "DeathScreen", "x": 40.5, "y": -154.377, "z": 23.5, "health": 0.0, "onGround": false, "heroMode": false, "hero": "tracer", "ult": 1185.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 10.0, "vx": 0.0, "vy": -2.83, "vz": 0.0}
+01:27:32.026 screenshot c4_death.png -> {"file":"E:\\claude\\mods\\overcraft_tracer\\run\\screenshots\\c4_death.png"}
+01:27:59.406 respawn -> {"ok":true}
+01:28:02.440 screen -> {"screen":""}
+01:28:02.473 close -> {"ok":true}
+01:28:03.476 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -0.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1205.5, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:28:03.476 MARK C5 Pulse Bomb at a zombie walking at her (AI on, easy, 100 health, armor 0) 6 m off, aimed at its chest; expected it reaches and rides it (stick 5 + 350 = 355 OW = 28.4 MC)
+01:28:03.509 cmd /difficulty easy -> {"ok":true}
+01:28:03.544 cmd /kill @e[type=!player] -> {"ok":true}
+01:28:03.575 cmd /fill 60 -60 -5 75 -55 25 air -> {"ok":true}
+01:28:03.609 cmd /tp @s 66.5 -60 0.5 0 0 -> {"ok":true}
+01:28:03.663 cmd /summon zombie 66.5 -60 7.5 {Tags:["m1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+01:28:05.178 cmd /execute as @s at @s anchored eyes facing entity @e[tag=m1,limit=1] eyes run tp @s ~ ~ ~ ~ ~5 -> {"ok":true}
+01:28:05.212 ult 100 -> {"ok":true}
+01:28:05.654 hp @e[tag=m1,limit=1] -> Zombie has the following entity data: 99.0f
+01:28:05.680 key ultimate down -> {"key":"key.keyboard.q"}
+01:28:05.814 key ultimate up -> {"key":"key.keyboard.q"}
+01:28:06.148 ents PulseBomb -> {"ents":"618 66.38 -59.94 4.73 v 0.01 -0.43 0.75 t6 | "}
+01:28:06.480 ents PulseBomb -> {"ents":"618 66.38 -59.89 4.82 v 0.00 0.00 0.00 t17 | "}
+01:28:06.925 hp @e[tag=m1,limit=1] -> Zombie has the following entity data: 98.0f
+01:28:08.363 hp @e[tag=m1,limit=1] -> Zombie has the following entity data: 74.22251f
+01:28:08.389 state -> {"screen": "", "x": 66.493, "y": -60.0, "z": -2.882, "health": 11.5, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 12.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:28:32.798 MARK C6 Pulse Bomb at a zombie walking at her from 4 m, aimed at its chest: expected it sticks and rides it
+01:28:32.821 cmd /time set midnight -> {"ok":true}
+01:28:32.854 cmd /kill @e[type=!player] -> {"ok":true}
+01:28:32.889 cmd /tp @s 66.5 -60 0.5 0 0 -> {"ok":true}
+01:28:32.922 cmd /summon zombie 66.5 -60 4.5 {Tags:["m2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+01:28:33.956 cmd /execute as @s at @s anchored eyes facing entity @e[tag=m2,limit=1] feet run tp @s ~ ~ ~ ~ ~-12 -> {"ok":true}
+01:28:33.989 ult 100 -> {"ok":true}
+01:28:34.022 key ultimate down -> {"key":"key.keyboard.q"}
+01:28:34.157 key ultimate up -> {"key":"key.keyboard.q"}
+01:28:34.423 ents PulseBomb -> {"ents":""}
+01:28:34.457 ents Zombie -> {"ents":""}
+01:28:34.891 ents PulseBomb -> {"ents":""}
+01:28:34.924 ents Zombie -> {"ents":""}
+01:28:35.366 hp @e[tag=m2,limit=1] -> No entity was found
+01:28:36.807 hp @e[tag=m2,limit=1] -> No entity was found
+01:28:36.831 cmd /kill @e[type=!player] -> {"ok":true}
+01:28:36.831 MARK C7 Blink under 150 ms lag (presstrace lag 150): 3 quick presses 0.15 s apart, then 1 more 0.15 s later; expected 3 Blinks (22.5 m) and the 4th refused with no move
+01:28:36.864 cmd /tp @s 80.5 -60 -20.5 0 0 -> {"ok":true}
+01:28:46.890 presstrace lag 150 -> {}
+01:28:47.390 state -> {"screen": "DeathScreen", "x": 65.327, "y": -60.0, "z": -17.296, "health": 0.0, "onGround": true, "heroMode": false, "hero": "tracer", "ult": 1375.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0}
+01:28:47.425 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:28:47.491 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:28:47.624 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:28:47.694 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:28:47.825 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:28:47.893 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:28:48.026 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:28:48.094 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:28:48.728 state -> {"screen": "DeathScreen", "x": 65.327, "y": -60.0, "z": -17.296, "health": 0.0, "onGround": true, "heroMode": false, "hero": "tracer", "ult": 1375.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0}
+01:28:48.764 presstrace lag 0 -> {}
+01:29:02.702 respawn -> {"ok":true}
+01:29:05.720 close -> {"ok":true}
+01:29:06.724 cmd /difficulty easy -> {"ok":true}
+01:29:06.758 state -> {"screen": "", "x": -5.5, "y": -60.0, "z": -8.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 1375.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:29:06.758 MARK C6 Pulse Bomb at a zombie walking at her from 4 m, aimed at its chest: expected it sticks and rides it
+01:29:06.790 cmd /time set midnight -> {"ok":true}
+01:29:06.823 cmd /kill @e[type=!player] -> {"ok":true}
+01:29:06.858 cmd /tp @s 66.5 -60 0.5 0 0 -> {"ok":true}
+01:29:06.894 cmd /summon zombie 66.5 -60 4.5 {Tags:["m2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+01:29:07.897 cmd /execute as @s at @s anchored eyes facing entity @e[tag=m2,limit=1] feet run tp @s ~ ~ ~ ~ ~-12 -> {"ok":true}
+01:29:07.929 ult 100 -> {"ok":true}
+01:29:07.963 key ultimate down -> {"key":"key.keyboard.q"}
+01:29:08.097 key ultimate up -> {"key":"key.keyboard.q"}
+01:29:08.363 ents PulseBomb -> {"ents":"1024 66.35 -59.53 3.53 v 0.00 0.00 0.00 t5 | "}
+01:29:08.396 ents Zombie -> {"ents":"883 66.58 -60.00 4.05 v -0.01 -0.08 -0.06 t30 | "}
+01:29:08.831 ents PulseBomb -> {"ents":"1024 66.32 -59.53 2.48 v 0.00 0.00 0.00 t23 | "}
+01:29:08.864 ents Zombie -> {"ents":"883 66.53 -60.00 3.01 v 0.00 -0.08 -0.06 t39 | "}
+01:29:09.307 hp @e[tag=m2,limit=1] -> Kiriko was shot
+01:29:10.746 hp @e[tag=m2,limit=1] -> No entity was found
+01:29:10.771 cmd /kill @e[type=!player] -> {"ok":true}
+01:29:10.771 MARK C7 Blink under 150 ms lag (presstrace lag 150): 3 quick presses 0.15 s apart, then 1 more 0.15 s later; expected 3 Blinks (22.5 m) and the 4th refused with no move
+01:29:10.804 cmd /tp @s 80.5 -60 -20.5 0 0 -> {"ok":true}
+01:29:20.810 presstrace lag 150 -> {}
+01:29:21.311 state -> {"screen": "DeathScreen", "x": 66.482, "y": -60.0, "z": -1.307, "health": 0.0, "onGround": true, "heroMode": false, "hero": "tracer", "ult": 5.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0}
+01:29:21.344 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:29:21.411 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:29:21.544 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:29:21.611 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:29:21.745 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:29:21.814 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:29:21.945 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:29:22.013 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:29:22.616 state -> {"screen": "DeathScreen", "x": 66.482, "y": -60.0, "z": -1.307, "health": 0.0, "onGround": true, "heroMode": false, "hero": "tracer", "ult": 5.75, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0}
+01:29:22.649 presstrace lag 0 -> {}
+01:29:22.682 cmd /kill @e[type=!player] -> {"ok":true}
+01:29:22.716 cmd /difficulty peaceful -> {"ok":true}
+01:29:30.500 respawn -> {"ok":true}
+01:29:33.514 close -> {"ok":true}
+01:29:34.515 MARK C7 Blink under 150 ms lag (presstrace lag 150): 3 quick presses 0.15 s apart, then 1 more 0.15 s later; expected 3 Blinks (22.5 m) and the 4th refused with no move
+01:29:34.516 cmd /tp @s 80.5 -60 -20.5 0 0 -> {"ok":true}
+01:29:44.540 presstrace lag 150 -> {}
+01:29:45.076 state -> {"screen": "", "x": 80.5, "y": -60.0, "z": -20.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 77.5, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:29:45.109 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:29:45.175 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:29:45.309 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:29:45.375 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:29:45.509 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:29:45.577 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:29:45.710 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:29:45.777 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:29:46.381 state -> {"screen": "", "x": 80.5, "y": -60.0, "z": -5.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 84.25, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 0, "ability1Cooldown": 2.05, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:29:46.414 presstrace lag 0 -> {}
+01:30:00.147 MARK C8 E then Shift 0.05 s later (before the Recall mode reaches her client): expected no Blink (Recall going), Recall back to the start
+01:30:00.150 cmd /tp @s 90.5 -60 -20.5 0 0 -> {"ok":true}
+01:30:10.174 state -> {"screen": "", "x": 90.5, "y": -60.0, "z": -20.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 204.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:30:10.205 key ability_2 down -> {"key":"key.keyboard.e"}
+01:30:10.272 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+01:30:10.339 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+01:30:10.372 key ability_2 up -> {"key":"key.keyboard.e"}
+01:30:10.405 state -> {"screen": "", "x": 90.5, "y": -60.0, "z": -20.5, "health": 14.0, "onGround": false, "heroMode": true, "hero": "tracer", "ult": 205.25, "mode": 1, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:30:10.539 state -> {"screen": "", "x": 90.5, "y": -60.0, "z": -20.5, "health": 14.0, "onGround": false, "heroMode": true, "hero": "tracer", "ult": 206.0, "mode": 1, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:30:11.039 state -> {"screen": "", "x": 90.5, "y": -60.0, "z": -20.5, "health": 14.0, "onGround": false, "heroMode": true, "hero": "tracer", "ult": 208.5, "mode": 1, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:30:11.541 state -> {"screen": "", "x": 90.5, "y": -60.0, "z": -20.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 211.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 11.55, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:30:14.548 state -> {"screen": "", "x": 90.5, "y": -60.0, "z": -20.5, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 226.0, "mode": 0, "primaryAmmo": 40, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 8.55, "vx": 0.0, "vy": 0.0, "vz": 0.0}
+01:30:41.317 cmd /save-all -> {"ok":true}
+
+=== c0 2026-11-12 23:28:13
+23:28:21.516 screen -> {"screen":"net.minecraft.client.gui.screens.AccessibilityOnboardingScreen"}
+23:28:23.220 newworld crit_b79 -> {"ok":true}
+23:28:48.230 screen -> {"screen":"dev.overcraft.client.HeroSelectScreen"}
+
+=== c00 2026-11-12 23:28:52
+23:28:52.782 hero cassidy -> {"ok":true}
+23:28:53.788 close -> {"ok":true}
+23:28:54.791 screen -> {"screen":""}
+23:28:54.811 cmd /gamerule doDaylightCycle false -> {"ok":true}
+23:28:54.814 cmd /gamerule doMobSpawning false -> {"ok":true}
+23:28:54.836 cmd /time set noon -> {"ok":true}
+23:28:54.848 cmd /difficulty easy -> {"ok":true}
+23:28:54.867 state -> {"screen": "", "x": 8.5, "y": -60.0, "z": 10.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 10.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== c1 2026-11-12 23:28:59
+23:28:59.641 MARK C1 Deadeye fired with no target (W: "cannot be fired unless there is at least one target ... in line of sight"): expected Deadeye goes on
+23:28:59.652 cmd /kill @e[type=!player] -> {"ok":true}
+23:28:59.654 cmd /time set noon -> {"ok":true}
+23:28:59.668 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:28:59.672 cmd /overcraft ult @s 100 -> {"ok":true}
+23:29:00.488 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:29:00.489 key ultimate down -> {"key":"key.keyboard.q"}
+23:29:00.598 key ultimate up -> {"key":"key.keyboard.q"}
+23:29:01.608 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye"}
+23:29:01.615 key secondary_fire down -> {"key":"key.mouse.left"}
+23:29:01.725 key secondary_fire up -> {"key":"key.mouse.left"}
+23:29:02.530 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 33, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye_fire"}
+23:29:02.530 MARK C2 jump in Deadeye (W: "cannot jump, crouch or use other abilities while channeling"): expected no rise
+23:29:03.549 cmd /overcraft ult @s 100 -> {"ok":true}
+23:29:03.883 key ultimate down -> {"key":"key.keyboard.q"}
+23:29:04.017 key ultimate up -> {"key":"key.keyboard.q"}
+23:29:04.618 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 33, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye_fire"}
+23:29:04.651 key jump down -> {"key":"key.keyboard.space"}
+23:29:04.784 key jump up -> {"key":"key.keyboard.space"}
+23:29:05.019 state -> {"screen": "", "x": 0.5, "y": -59.021, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 33, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.006, "vz": 0.0, "anim": "idle+deadeye_fire"}
+23:29:05.620 MARK C3 quick melee in Deadeye on a husk 1.5 m ahead (100 MC, armor 0): expected no melee
+23:29:05.636 cmd /summon husk 0.5 -60 2.5 {NoAI:1b,Tags:["m1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:29:05.654 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 2.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:29:06.601 hp @e[tag=m1,limit=1] -> Husk has the following entity data: 100.0f
+23:29:06.624 key quick_melee down -> {"key":"key.keyboard.v"}
+23:29:06.758 key quick_melee up -> {"key":"key.keyboard.v"}
+23:29:07.704 hp @e[tag=m1,limit=1] -> Husk has the following entity data: 96.8f
+23:29:07.729 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 51.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:29:07.762 key primary_fire down -> {"key":"key.mouse.right"}
+23:29:07.896 key primary_fire up -> {"key":"key.mouse.right"}
+23:29:08.899 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 357.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": 0.333, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+
+=== c1b 2026-11-12 23:29:33
+23:29:33.592 MARK C1b in a sealed stone box (nothing in sight): Deadeye, then the left button 1 s in. W: cannot be fired without a target in sight -> expected Deadeye goes on
+23:29:33.595 cmd /kill @e[type=!player] -> {"ok":true}
+23:29:33.630 cmd /fill -4 -61 -4 4 -55 4 stone hollow -> {"ok":true}
+23:29:33.664 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:29:33.695 cmd /overcraft ult @s 100 -> {"ok":true}
+23:29:34.706 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:29:34.730 key ultimate down -> {"key":"key.keyboard.q"}
+23:29:34.863 key ultimate up -> {"key":"key.keyboard.q"}
+23:29:35.867 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye"}
+23:29:35.901 key secondary_fire down -> {"key":"key.mouse.left"}
+23:29:36.036 key secondary_fire up -> {"key":"key.mouse.left"}
+23:29:36.271 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 33, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye"}
+23:29:37.071 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 3.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye_end"}
+23:29:37.071 MARK C2b jump while channelling Deadeye (sealed box): expected no rise
+23:29:37.106 cmd /overcraft ult @s 100 -> {"ok":true}
+23:29:37.606 key ultimate down -> {"key":"key.keyboard.q"}
+23:29:37.740 key ultimate up -> {"key":"key.keyboard.q"}
+23:29:38.576 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye"}
+23:29:38.608 key jump down -> {"key":"key.keyboard.space"}
+23:29:38.742 key jump up -> {"key":"key.keyboard.space"}
+23:29:38.976 state -> {"screen": "", "x": 0.5, "y": -59.021, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.006, "vz": 0.0, "anim": "idle+deadeye"}
+23:29:38.976 MARK C3b quick melee while channelling on a husk 2 m ahead (100 MC): expected no melee
+23:29:39.010 cmd /summon husk 0.5 -60 2.5 {NoAI:1b,Tags:["m2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:29:39.812 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye"}
+23:29:40.254 hp @e[tag=m2,limit=1] -> Husk has the following entity data: 100.0f
+23:29:40.279 key quick_melee down -> {"key":"key.keyboard.v"}
+23:29:40.413 key quick_melee up -> {"key":"key.keyboard.v"}
+23:29:41.354 hp @e[tag=m2,limit=1] -> Husk has the following entity data: 96.8f
+23:29:41.385 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+melee_3"}
+23:29:41.416 screenshot crit_c3_melee_deadeye.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\crit_c3_melee_deadeye.png"}
+23:29:41.449 key primary_fire down -> {"key":"key.mouse.right"}
+23:29:41.555 key primary_fire up -> {"key":"key.mouse.right"}
+23:29:42.559 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 4.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye_end"}
+
+=== c2 2026-11-12 23:29:52
+23:29:52.314 MARK C4 skull vs armor: zombie 20 MC (250 OW), NoAI, iron chestplate (armor 2+6); lock until the skull shows, fire (expected: the skull means it dies)
+23:29:52.317 cmd /kill @e[type=!player] -> {"ok":true}
+23:29:52.352 cmd /fill -4 -61 -4 4 -55 4 air -> {"ok":true}
+23:29:52.383 cmd /fill -4 -61 -4 4 -61 4 grass_block -> {"ok":true}
+23:29:52.418 cmd /fill -6 -60 -2 6 -56 -2 stone -> {"ok":true}
+23:29:52.451 cmd /fill -6 -60 -2 -6 -56 14 stone -> {"ok":true}
+23:29:52.485 cmd /fill 6 -60 -2 6 -56 14 stone -> {"ok":true}
+23:29:52.517 cmd /fill -6 -60 14 6 -56 14 stone -> {"ok":true}
+23:29:52.551 cmd /fill -6 -55 -2 6 -55 14 stone -> {"ok":true}
+23:29:52.585 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:29:52.619 cmd /summon zombie 0.5 -60 8.5 {NoAI:1b,Tags:["z1"],IsBaby:0b,equipment:{chest:{id:"minecraft:iron_chestplate",count:1}},attributes:[{id:"minecraft:max_health",base:20}],Health:20f} -> {"ok":true}
+23:29:52.651 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 8.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:29:52.684 cmd /overcraft ult @s 100 -> {"ok":true}
+23:29:53.687 cmd /data get entity @e[tag=z1,limit=1] equipment -> {"ok":true}
+23:29:54.129 hp @e[tag=z1,limit=1] -> Zombie has the following entity data: 20.0f
+23:29:54.155 key ultimate down -> {"key":"key.keyboard.q"}
+23:29:54.289 key ultimate up -> {"key":"key.keyboard.q"}
+23:29:56.293 screenshot crit_c4_skull.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\crit_c4_skull.png"}
+23:29:56.326 key secondary_fire down -> {"key":"key.mouse.left"}
+23:29:56.432 key secondary_fire up -> {"key":"key.mouse.left"}
+23:29:57.674 hp @e[tag=z1,limit=1] -> No entity was found
+23:29:57.708 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 4.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== c2b 2026-11-12 23:30:10
+23:30:10.680 MARK C4b skull vs armor: zombie 40 MC (500 OW), NoAI, full iron armor (17 armor); Q, screenshot and fire ~2.95 s in (charge ~525-550 OW: the skull shows); expected (the skull's meaning, W): it dies
+23:30:10.700 cmd /kill @e[type=!player] -> {"ok":true}
+23:30:10.736 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:30:10.769 cmd /summon zombie 0.5 -60 8.5 {NoAI:1b,Tags:["z2"],equipment:{head:{id:"minecraft:iron_helmet",count:1},chest:{id:"minecraft:iron_chestplate",count:1},legs:{id:"minecraft:iron_leggings",count:1},feet:{id:"minecraft:iron_boots",count:1}},attributes:[{id:"minecraft:max_health",base:40}],Health:40f} -> {"ok":true}
+23:30:10.802 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 8.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:30:10.836 cmd /overcraft ult @s 100 -> {"ok":true}
+23:30:12.280 hp @e[tag=z2,limit=1] -> Zombie has the following entity data: 40.0f
+23:30:12.304 key ultimate down -> {"key":"key.keyboard.q"}
+23:30:12.437 key ultimate up -> {"key":"key.keyboard.q"}
+23:30:15.213 screenshot crit_c4b_skull.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\crit_c4b_skull.png"}
+23:30:15.247 key secondary_fire down -> {"key":"key.mouse.left"}
+23:30:15.351 key secondary_fire up -> {"key":"key.mouse.left"}
+23:30:16.770 hp @e[tag=z2,limit=1] -> Zombie has the following entity data: 1.6384048f
+23:30:16.795 screenshot crit_c4b_after.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\crit_c4b_after.png"}
+23:30:16.835 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 5.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye_end"}
+
+=== c2c 2026-11-12 23:30:31
+23:30:31.041 MARK C4c skull vs armor: zombie 60 MC (750 OW), NoAI, full iron armor (17 armor); Q, screenshot and fire ~3.85 s in (charge ~800 OW: the skull shows); expected (the skull's meaning, W): it dies
+23:30:31.044 cmd /kill @e[type=!player] -> {"ok":true}
+23:30:31.078 cmd /fill -6 -55 -2 6 -55 14 glass -> {"ok":true}
+23:30:31.112 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:30:31.143 cmd /summon zombie 0.5 -60 8.5 {NoAI:1b,Tags:["z3"],equipment:{head:{id:"minecraft:iron_helmet",count:1},chest:{id:"minecraft:iron_chestplate",count:1},legs:{id:"minecraft:iron_leggings",count:1},feet:{id:"minecraft:iron_boots",count:1}},attributes:[{id:"minecraft:max_health",base:60}],Health:60f} -> {"ok":true}
+23:30:31.177 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 8.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:30:31.211 cmd /overcraft ult @s 100 -> {"ok":true}
+23:30:32.655 hp @e[tag=z3,limit=1] -> Zombie has the following entity data: 60.0f
+23:30:32.679 key ultimate down -> {"key":"key.keyboard.q"}
+23:30:32.814 key ultimate up -> {"key":"key.keyboard.q"}
+23:30:36.491 cmd /time set midnight -> {"ok":true}
+23:30:36.524 screenshot crit_c4c_skull.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\crit_c4c_skull.png"}
+23:30:36.558 key secondary_fire down -> {"key":"key.mouse.left"}
+23:30:36.667 key secondary_fire up -> {"key":"key.mouse.left"}
+23:30:38.113 hp @e[tag=z3,limit=1] -> Zombie has the following entity data: 0.902401f
+23:30:38.138 screenshot crit_c4c_after.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\crit_c4c_after.png"}
+23:30:38.179 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 5.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== c3 2026-11-12 23:30:48
+23:30:48.683 MARK C5 E then Shift 0.1 s later, no lag: does the client roll while the server refuses? (state x/z, ability1Cooldown)
+23:30:48.708 cmd /kill @e[type=!player] -> {"ok":true}
+23:30:48.742 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:31:01.783 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 123.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:31:01.813 key ability_2 down -> {"key":"key.keyboard.e"}
+23:31:01.843 key ability_2 up -> {"key":"key.keyboard.e"}
+23:31:01.911 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:31:02.044 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:31:02.878 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 128.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 11.45, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+flashbang"}
+23:31:02.878 MARK C6 the same, presstrace lag 150
+23:31:02.912 presstrace lag 150 -> {}
+23:31:15.914 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:31:16.417 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 195.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:31:16.449 key ability_2 down -> {"key":"key.keyboard.e"}
+23:31:16.483 key ability_2 up -> {"key":"key.keyboard.e"}
+23:31:16.650 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:31:16.783 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:31:17.587 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 201.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 11.7, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:31:18.122 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 204.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 11.2, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:31:18.122 MARK C7 lag 150: roll, then tap Shift every 0.1 s around the cooldown's end (expected every server roll to move him)
+23:31:31.153 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:31:31.656 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:31:31.790 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:31:36.804 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 297.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.65, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+23:31:36.837 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:31:36.904 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:31:36.971 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 298.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.45, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+23:31:37.004 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:31:37.071 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:31:37.138 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 299.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.3, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+23:31:37.171 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:31:37.237 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:31:37.305 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 300.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.15, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:31:37.341 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:31:37.404 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:31:37.471 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 301.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:31:37.504 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:31:37.572 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:31:37.640 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 8.163, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 301.75, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.0, "vy": 0.0, "vz": 0.75, "anim": "idle+roll_s0"}
+23:31:38.274 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 12.825, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 304.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.7, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+23:31:38.307 presstrace lag 0 -> {}
+
+=== c4 2026-11-12 23:31:59
+23:31:59.401 MARK C8 Flashbang at a 1-thick wall 3.5 m ahead, a husk 1 m behind it (blast 3 m): expected untouched, not hindered
+23:31:59.428 cmd /kill @e[type=!player] -> {"ok":true}
+23:31:59.462 cmd /time set noon -> {"ok":true}
+23:31:59.495 cmd /fill -2 -60 4 2 -57 4 stone -> {"ok":true}
+23:31:59.528 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:31:59.562 cmd /summon husk 0.5 -60 5.6 {NoAI:1b,Tags:["w1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:31:59.595 cmd /summon husk 2.0 -60 2.8 {NoAI:1b,Tags:["w2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:31:59.628 cmd /execute as @s at @s anchored eyes facing 0.5 -58.5 4 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:32:13.074 hp @e[tag=w1,limit=1] -> Husk has the following entity data: 100.0f
+23:32:13.098 key ability_2 down -> {"key":"key.keyboard.e"}
+23:32:13.166 key ability_2 up -> {"key":"key.keyboard.e"}
+23:32:14.376 hp @e[tag=w1,limit=1] -> Husk has the following entity data: 100.0f
+23:32:14.813 hp @e[tag=w2,limit=1] -> Husk has the following entity data: 94.0f
+
+=== q1 2026-11-12 23:32:30
+23:32:30.082 press key.keyboard.escape -> {"key":"key.keyboard.escape"}
+23:32:31.086 screen -> {"screen":"dev.overcraft.client.screen.OverwatchMenuScreen"}
+23:32:31.095 screenshot crit_pause.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\crit_pause.png"}
+
+=== q2 2026-11-12 23:32:37
+23:32:40.678 screenclick 80 205 -> {"screen":"TitleScreen"}
+23:32:46.694 screen -> {"screen":"net.minecraft.client.gui.screens.TitleScreen"}
+23:32:46.711 screenshot crit_title.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\crit_title.png"}
+
+=== q3 2026-11-12 23:32:52
+23:32:52.601 screenclick 264 213 -> {"screen":"TitleScreen"}

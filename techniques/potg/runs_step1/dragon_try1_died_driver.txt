@@ -1,0 +1,34 @@
+=== phase dragon 13:48:40
+in the end {'screen': '', 'fps': 30, 'x': 30.5, 'y': 62.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 3, 'secondaryAmmo': 10, 'anim': 'idle'} {'zombie': 0, 'skeleton': 0, 'ender_dragon': 1, 'end_crystal': 10}
+  t 5 {'screen': '', 'fps': 30, 'x': 24.56, 'y': 63.13, 'z': 2.19, 'health': 17.2, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 7, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 11 {'screen': '', 'fps': 30, 'x': 21.75, 'y': 64.17, 'z': 2.2, 'health': 10.2, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 12, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 16 {'screen': '', 'fps': 30, 'x': 17.6, 'y': 64.0, 'z': 5.43, 'health': 4.6, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 1, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 21 {'screen': '', 'fps': 30, 'x': 24.9, 'y': 62.0, 'z': 5.61, 'health': 1.8, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 6, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 27 {'screen': 'DeathScreen', 'fps': 30, 'x': 25.6, 'y': 62.0, 'z': 5.29, 'health': 0.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': False, 'ult': 2725.0, 'primaryAmmo': 0, 'secondaryAmmo': 10, 'anim': 'idle+reload'}
+  t 32 {'screen': 'DeathScreen', 'fps': 29, 'x': 25.6, 'y': 62.0, 'z': 5.29, 'health': 0.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': False, 'ult': 2725.0, 'primaryAmmo': 0, 'secondaryAmmo': 10, 'anim': 'idle'}
+  t 38 {'screen': 'DeathScreen', 'fps': 30, 'x': 25.6, 'y': 62.0, 'z': 5.29, 'health': 0.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': False, 'ult': 2725.0, 'primaryAmmo': 0, 'secondaryAmmo': 10, 'anim': 'idle'}
+  t 43 {'screen': 'DeathScreen', 'fps': 30, 'x': 25.6, 'y': 62.0, 'z': 5.29, 'health': 0.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': False, 'ult': 2725.0, 'primaryAmmo': 0, 'secondaryAmmo': 10, 'anim': 'idle'}
+  t 48 {'screen': 'DeathScreen', 'fps': 27, 'x': 25.6, 'y': 62.0, 'z': 5.29, 'health': 0.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': False, 'ult': 2725.0, 'primaryAmmo': 0, 'secondaryAmmo': 10, 'anim': 'idle'}
+after dragon fight {'screen': 'DeathScreen', 'fps': 30, 'x': 25.6, 'y': 62.0, 'z': 5.29, 'health': 0.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': False, 'ult': 2725.0, 'primaryAmmo': 0, 'secondaryAmmo': 10, 'anim': 'idle'} {'zombie': 0, 'skeleton': 0, 'ender_dragon': 0, 'end_crystal': 0}
+dump dragon1 [13:49:43] [Render thread/INFO] (Minecraft) [System] [CHAT] Kiriko: 0.081 ms/tick mean, 7815 B/s, ring 97 KB.
+[POTG] Kiriko: 195.4 s armed, 3807 ticks recorded in hero play (102 out of it), server tick avg 0.12 ms
+[POTG] tap ms/tick: mean 0.081 p50 0.058 p99 0.525 max 8.022 (keyframe each 5 s: mean 0.69 max 7.29 ms)
+[POTG] bytes/s: stream 7135 + own track 680 = 7815; keyframes 39, avg 10615 B, max in ring 7471 B; ring now 99526 B in 6 segments
+[POTG] Kiriko: 195.4 s armed, 3807 ticks recorded in hero play (102 out of it), server tick avg 0.12 ms
+[POTG] tap ms/tick: mean 0.081 p50 0.058 p99 0.525 max 8.022 (keyframe each 5 s: mean 0.69 max 7.29 ms)
+[POTG] bytes/s: stream 7135 + own track 680 = 7815; keyframes 39, avg 10615 B, max in ring 7471 B; ring now 99526 B in 6 segments
+[POTG] client decode of Kiriko: 6.7 ms; records: packets 1447 (74834 B), own track 550 (18700 B), own packets 0 (0 B); framing errors 0
+  t 5 {'screen': 'DeathScreen', 'fps': 30, 'x': 25.6, 'y': 62.0, 'z': 5.29, 'health': 0.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': False, 'ult': 2725.0, 'primaryAmmo': 0, 'secondaryAmmo': 10, 'anim': 'idle'}
+  t 11 {'screen': 'DeathScreen', 'fps': 30, 'x': 25.6, 'y': 62.0, 'z': 5.29, 'health': 0.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': False, 'ult': 2725.0, 'primaryAmmo': 0, 'secondaryAmmo': 10, 'anim': 'idle'}
+after kill attempt {'screen': 'DeathScreen', 'fps': 30, 'x': 25.6, 'y': 62.0, 'z': 5.29, 'health': 0.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': False, 'ult': 2725.0, 'primaryAmmo': 0, 'secondaryAmmo': 10, 'anim': 'idle'} {'zombie': 0, 'skeleton': 0, 'ender_dragon': 0, 'end_crystal': 0}
+after death {'screen': 'DeathScreen', 'fps': 30, 'x': 25.6, 'y': 62.0, 'z': 5.29, 'health': 0.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': False, 'ult': 2725.0, 'primaryAmmo': 0, 'secondaryAmmo': 10, 'anim': 'idle'} {'zombie': 0, 'skeleton': 0, 'ender_dragon': 0, 'end_crystal': 0}
+dump dragon2 [13:50:13] [Render thread/INFO] (Minecraft) [System] [CHAT] Kiriko: 0.075 ms/tick mean, 7141 B/s, ring 82 KB.
+[POTG] Kiriko: 225.8 s armed, 4415 ticks recorded in hero play (102 out of it), server tick avg 0.11 ms
+[POTG] tap ms/tick: mean 0.075 p50 0.054 p99 0.495 max 8.022 (keyframe each 5 s: mean 0.60 max 7.29 ms)
+[POTG] bytes/s: stream 6461 + own track 680 = 7141; keyframes 45, avg 9200 B, max in ring 0 B; ring now 84701 B in 6 segments
+[POTG] Kiriko: 225.8 s armed, 4415 ticks recorded in hero play (102 out of it), server tick avg 0.11 ms
+[POTG] tap ms/tick: mean 0.075 p50 0.054 p99 0.495 max 8.022 (keyframe each 5 s: mean 0.60 max 7.29 ms)
+[POTG] bytes/s: stream 6461 + own track 680 = 7141; keyframes 45, avg 9200 B, max in ring 0 B; ring now 84701 B in 6 segments
+[POTG] client decode of Kiriko: 5.1 ms; records: packets 557 (62384 B), own track 558 (18972 B), own packets 0 (0 B); framing errors 0
+[13:50:17] [Render thread/INFO] (Minecraft) [System] [CHAT] POTG tap off (1 recorders dropped)
+after stop {'screen': 'DeathScreen', 'fps': 30, 'x': 25.6, 'y': 62.0, 'z': 5.29, 'health': 0.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': False, 'ult': 2725.0, 'primaryAmmo': 0, 'secondaryAmmo': 10, 'anim': 'idle'} {'zombie': 0, 'skeleton': 0, 'ender_dragon': 0, 'end_crystal': 0}

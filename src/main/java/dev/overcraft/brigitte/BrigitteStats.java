@@ -3,9 +3,9 @@ package dev.overcraft.brigitte;
 /**
  * Brigitte's numbers (tools/reference/brigitte.md has every quote, revision and date; the game data map is brigitte-map.md,
  * build 154088 of 2026-10-06, with its detail in E:\Overwatch Archive\research\brigitte\work_kit\). Sources: the game data
- * (D, with its value id or graph node), Blizzard patch notes (BZ), the Overwatch wiki (W). No patch has touched her since
- * the data build (BZ's last: 2026-09-08), so the data's numbers are the live ones; where none gives a value, it's ours and
- * says so. Filled in step by step (brigitte-plan.md, "Order").
+ * (D, with its value id or graph node), Blizzard patch notes (BZ), the Overwatch wiki (W). One patch has touched her since
+ * the data build: BZ 2026-11-03, Inspire's two numbers, marked below (checked again 2026-11-05: BZ's last is that one). The
+ * data's numbers are otherwise the live ones; where none gives a value, it's ours and says so. Filled in step by step (brigitte-plan.md, "Order").
  */
 public final class BrigitteStats {
 	private BrigitteStats() {
@@ -32,12 +32,13 @@ public final class BrigitteStats {
 	public static final double FLAIL_PITCH = 30;
 
 	// ---- Inspire (12D8 -> 11B9) ----
-	public static final double INSPIRE_HEAL_NOW = 12;          // D 2A2C; BZ 2026-07-14; W
+	/** BZ 2026-11-03 (12 -> 15), after the data build (D 2A2C: 12); W rev 408812 lists the patch. */
+	public static final double INSPIRE_HEAL_NOW = 15;
 	public static final double INSPIRE_HEAL_OVER_TIME = 45;    // D 0B24; BZ 2026-07-14; W
 	public static final double INSPIRE_TIME = 4;               // D 1344; W
 	public static final double INSPIRE_RADIUS = 20;            // D 1345; W
-	/** The flail can start it at most this often (D 2ABF; W). */
-	public static final double INSPIRE_COOLDOWN = 1.25;
+	/** The flail can start it at most this often: BZ 2026-11-03 (1.25 -> 1 s), after the data build (D 2ABF: 1.25); W rev 408812 "1 second". */
+	public static final double INSPIRE_COOLDOWN = 1;
 
 	// ---- Cooldowns the HUD shows (each ability's step fills in the rest) ----
 	// ---- Whip Shot (Shift: 1259) ----
@@ -46,11 +47,18 @@ public final class BrigitteStats {
 	public static final double WHIP_DAMAGE = 70;               // D 0B38; W
 	/** 0.2 s, then a straight shot at 80 m/s to 20 m, 0.5 m round, one target, no gravity (D #593, 2B27, 133D, 2B26). */
 	public static final double WHIP_WINDUP = 0.2, WHIP_SPEED = 80, WHIP_RANGE = 20, WHIP_RADIUS = 0.5;
-	/** The push: her level aim at the launch x 25 m/s, and 2 m/s up (D 133E; #638, H: along her aim, not away from her). */
-	public static final double WHIP_KNOCKBACK = 25, WHIP_LIFT = 2;
-	/** How long its push is held (ours: one 25 m/s push moved a husk 1.9 m against Minecraft's ground friction; held
-	 * 0.25 s it carries them about Overwatch's 8 m: brigitte.md). */
-	public static final double WHIP_PUSH_TIME = 0.25;
+	/**
+	 * The push: her level aim at the launch x 25 m/s and 3 m/s up. D: 1259 #638's pair, m_E33EFEE1 = v9275 = 133E's 25 and m_583C208B = 3 x scale, read as horizontal and vertical as
+	 * Accretion's 6 / 3 is (reading_game_data.md), W "H:25, V:3" (25.18 m/s). The same node's m_1376B4DF is 25 across + 2 up (25.08 along her aim in its other branch), so the data holds both a 2 and a 3 and
+	 * doesn't say which moves them; 25.08 is exactly the length of (25, 2), so that vector is consistent with 2. **Why 3 here: nobody has measured Overwatch.** W says "~8 meter", and our mover on Overwatch's air numbers lands a hero at 8.04 m with 3 up, 5.88 m with 2
+	 * (runs/polish4/whip_lift3_experiment.txt). M. Along her level aim: #638's first branch; the second (v417, not read) isn't built. Its scale v14131 is taken as 1 (not read).
+	 */
+	public static final double WHIP_KNOCKBACK = 25, WHIP_LIFT = 3;
+	/**
+	 * How long a mob's push is held. **Ours:** the data has one push, and a mob on Minecraft's ground friction stops at 4.66 m. 0.15 s gets it to W's distance: 7.99 m on a husk (same file; 0.1 s 7.5 m, 0.2 s 8.41 m).
+	 * A player has no hold: one push, their client moves them (8.04 m in hero mode; 4.66 m in Minecraft mode, Minecraft's friction: left so, ours).
+	 */
+	public static final double WHIP_PUSH_TIME = 0.15;
 	/** The flail's way back: 0.3 s from a hit, a wall or the end of its reach (D 002B's returns, ours the shorter 0.175 s
 	 * under 5 m left out). */
 	public static final double WHIP_RETURN = 0.3;
@@ -97,8 +105,8 @@ public final class BrigitteStats {
 	 */
 	public static final double BASH_TIME = 0.256, BASH_SPEED = 25.85, BASH_EXIT_SPEED = 15;
 	public static final double BASH_DAMAGE = 70;               // D 0B20; W
-	/** Its knockback (D 0B21 6 m/s). */
-	public static final double BASH_KNOCKBACK = 6;
+	/** Its knockback, the pair (D 0EE3 #503, and #886 on the shockwave: m_E33EFEE1 v9275 = 0B21's 6, m_583C208B 3, as the whip's and Accretion's), W kbspeed 6 m/s. Its scale v14130 is taken as 1 (not read). */
+	public static final double BASH_KNOCKBACK = 6, BASH_LIFT = 3;
 	/** Who it hits: one enemy within this reach ahead of her, in this cone (D #501: radius 2.48, ~35 degrees, L). */
 	public static final double BASH_REACH = 2.5, BASH_CONE = 35;
 
@@ -107,7 +115,7 @@ public final class BrigitteStats {
 	public static final double RALLY_CAST = 0.7, RALLY_TIME = 10;
 	/** Her armor +100 and her speed +15% while it lasts (D #204 / #148, M the speed: not on the panel; W). */
 	public static final double RALLY_ARMOR = 100, RALLY_SPEED = 0.15;
-	/** Every 0.5 s, her and her allies within 8 m in sight get 15 overhealth, up to 100, each lasting 30 s (D #158, 1342,
+	/** Every 0.5 s, her allies within 8 m in sight, not herself (#125), get 15 overhealth, up to 100, each lasting 30 s (D #158, 1342,
 	 * 1341; W). */
 	public static final double RALLY_PULSE = 0.5, RALLY_RADIUS = 8, RALLY_OVERHEALTH = 15, RALLY_OVERHEALTH_MAX = 100,
 		RALLY_OVERHEALTH_TIME = 30;

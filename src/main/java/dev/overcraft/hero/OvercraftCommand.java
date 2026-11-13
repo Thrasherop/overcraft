@@ -62,6 +62,36 @@ public final class OvercraftCommand {
 				.executes(c -> ult(c, EntityArgument.getPlayers(c, "players"), 100))
 				.then(Commands.argument("percent", IntegerArgumentType.integer(0, 100))
 					.executes(c -> ult(c, EntityArgument.getPlayers(c, "players"), IntegerArgumentType.getInteger(c, "percent"))))));
+		// /overcraft potg disk|highlights|watch [n]|now: Play of the Game, dev builds only (runClient sets overcraft.dev): the
+		// recorders' disk, the caller's saved highlights, watching one alone (the highlight viewer's code path, until its menu
+		// is built), and the POTG now (the dragon's choice, everyone, the world held), for testing
+		if (Boolean.getBoolean("overcraft.dev")) {
+			dispatcher.register(Commands.literal("overcraft").then(Commands.literal("potg")
+				.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+				.then(Commands.literal("disk").executes(c -> potg(c, dev.overcraft.potg.PotgRecorder.report(c.getSource().getServer()))))
+				.then(Commands.literal("highlights").executes(c -> potg(c, dev.overcraft.potg.Highlights.of(c.getSource().getServer(),
+					c.getSource().getPlayerOrException().getUUID()).toString())))
+				.then(Commands.literal("watch").executes(c -> watch(c, 0))
+					.then(Commands.argument("n", IntegerArgumentType.integer(0, dev.overcraft.potg.Highlights.KEPT - 1))
+						.executes(c -> watch(c, IntegerArgumentType.getInteger(c, "n")))))
+				.then(Commands.literal("now").executes(c -> {
+					var choice = dev.overcraft.potg.PlayScore.choose(c.getSource().getServer(), 0);
+					return potg(c, choice == null ? "No highlights yet" : dev.overcraft.potg.PotgReplay.startPotg(c.getSource().getServer(),
+						dev.overcraft.potg.PotgReplay.show(choice.highlight(), choice.owner())));
+				}))));
+		}
+	}
+
+	private static int watch(CommandContext<CommandSourceStack> c, int n) throws CommandSyntaxException {
+		ServerPlayer player = c.getSource().getPlayerOrException();
+		var list = dev.overcraft.potg.Highlights.of(c.getSource().getServer(), player.getUUID());
+		return potg(c, n >= list.size() ? "No highlight " + n + " (" + list.size() + " kept)"
+			: dev.overcraft.potg.PotgReplay.watchHighlight(player, player.getUUID(), list.get(n)));
+	}
+
+	private static int potg(CommandContext<CommandSourceStack> c, String result) {
+		c.getSource().sendSuccess(() -> Component.literal(result), false);
+		return 1;
 	}
 
 	private static int team(CommandContext<CommandSourceStack> c, String name) throws CommandSyntaxException {
@@ -125,7 +155,7 @@ public final class OvercraftCommand {
 				continue;
 			}
 			s.ultCharge = 0;
-			Combat.addUltCharge(player, Combat.ultCost(s.hero) * percent / 100.0);
+			Combat.addUltCharge(player, Combat.ultCost(s) * percent / 100.0);
 			done++;
 		}
 		int count = done;

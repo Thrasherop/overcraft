@@ -1,0 +1,63 @@
+MARK T1c pistols, aimed from the eyes at the chest: a 100-health (1250 OW) zombie, armor 0, 5 m; hold the left button 1.2 s (expected 20 shots x 11.5 = 230 OW = 18.4 MC, crits possible on stray bullets up)
+cmd /kill @e[type=!player]
+cmd /summon zombie -2.5 -60 15.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /tp @s -2.5 -60 10.5
+cmd /execute as @s at @s anchored eyes facing -2.5 -59.0 15.5 run tp @s ~ ~ ~ ~ ~
+sleep 1
+hp @e[tag=t1,limit=1]
+key secondary_fire down
+sleep 1.2
+key secondary_fire up
+sleep 0.3
+hp @e[tag=t1,limit=1]
+state
+sleep 0.4
+state
+sleep 0.5
+state
+MARK T1d falloff: the same zombie at 15 m (expected x0.65: 7.475 a shot, 149.5 OW = 11.96 MC) and at 25 m (x0.3: 69 OW = 5.52 MC)
+cmd /tp @e[tag=t1] -2.5 -60 25.5
+cmd /data merge entity @e[tag=t1,limit=1] {Health:100f}
+cmd /execute as @s at @s anchored eyes facing -2.5 -59.0 25.5 run tp @s ~ ~ ~ ~ ~
+sleep 1.5
+key secondary_fire down
+sleep 1.2
+key secondary_fire up
+sleep 0.3
+hp @e[tag=t1,limit=1]
+cmd /tp @e[tag=t1] -2.5 -60 35.5
+cmd /data merge entity @e[tag=t1,limit=1] {Health:100f}
+cmd /execute as @s at @s anchored eyes facing -2.5 -59.0 35.5 run tp @s ~ ~ ~ ~ ~
+sleep 1.5
+key secondary_fire down
+sleep 1.2
+key secondary_fire up
+sleep 0.3
+hp @e[tag=t1,limit=1]
+MARK T1e tap fire: 3 taps 0.1 s apart (expected: the 0.2 s lock after letting go: the second tap inside it fires nothing)
+cmd /tp @e[tag=t1] -2.5 -60 15.5
+cmd /data merge entity @e[tag=t1,limit=1] {Health:100f}
+cmd /execute as @s at @s anchored eyes facing -2.5 -59.0 15.5 run tp @s ~ ~ ~ ~ ~
+sleep 1.5
+state
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 0.1
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 0.3
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 0.2
+state
+MARK T1f R mid-magazine
+key reload tap
+sleep 0.4
+state
+sleep 0.4
+state
+sleep 0.4
+state

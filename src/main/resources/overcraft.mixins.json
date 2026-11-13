@@ -5,6 +5,7 @@
 	"mixins": [
 		"LivingEntityMixin",
 		"PlayerMixin",
+		"AvatarMixin",
 		"PlayerAdvancementsMixin",
 		"ProjectileUtilMixin",
 		"EntityMixin",
@@ -12,7 +13,27 @@
 		"FoodDataMixin",
 		"ZombieVillagerInvoker",
 		"ServerGamePacketListenerAccessor",
-		"ServerExplosionMixin"
+		"ServerMoveMixin",
+		"ServerExplosionMixin",
+		"AbstractArrowAccessor",
+		"LargeFireballAccessor",
+		"ProjectileInvoker",
+		"MeleeHitMixin",
+		"PlayerMeleeMixin",
+		"MobMixin",
+		"ConversionTypeMixin",
+		"BucketableMixin",
+		"ResurrectedLootMixin",
+		"ChunkMapAccessor",
+		"TrackedEntityAccessor",
+		"PotgSendMixin",
+		"PotgFreezeMixin",
+		"PotgDragonMixin",
+		"PotgPickupMixin",
+		"PotgDropMixin",
+		"HealOrHarmMixin",
+		"PotgCrystalMixin",
+		"PotgEyeMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

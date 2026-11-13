@@ -7,6 +7,10 @@ Overcraft: Overwatch heroes in Minecraft 26.3 (Fabric). Rules carried over from 
 - **Overwatch must never be running** while the mod runs, while its assets are being read, or while anything here
   looks at the Overwatch install. Check first (`Get-Process Overwatch, Battle.net -ErrorAction SilentlyContinue`);
   if it's running, stop and say so. Don't close it yourself: the owner may be playing.
+- **The watcher (owner, 2026-11-05):** `tools/ow_watch.ps1` closes every dev client and DataTool within a second of
+  Overwatch or Battle.net starting (the owner recorded clips while a client ran; a check at launch can't see that). It
+  never touches Overwatch or Battle.net. Every `runClient` starts it; its log is `E:\claude\mods\.oc_ow_watch.log`. If
+  your client vanishes, read that log, release your lock and wait: don't relaunch while Overwatch is up. Never weaken it.
 - Never attach to, debug, read the memory of, inject into or modify the Overwatch client, Battle.net or their files.
   Reading the install is read-only and offline (Overwatch closed).
 - Research goes as far as it can without dealing with the tamper protection or reverse-engineering the encryption

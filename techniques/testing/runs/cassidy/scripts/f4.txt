@@ -1,0 +1,35 @@
+cmd /kill @e[type=!player]
+MARK F11 (#5) Deadeye on the Ender Dragon (NoAI, 200 MC) 20 m ahead, fired ~3 s in (charge 600 OW = 48 MC). Old (code-read): through the body, 48/4+1 = 13. Fixed: through its head, 48
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /summon ender_dragon 0.5 -57 20.5 {NoAI:1b,Tags:["d1"]}
+cmd /execute as @s at @s anchored eyes facing 0.5 -56 20.5 run tp @s ~ ~ ~ ~ ~
+cmd /overcraft ult @s 100
+sleep 1
+hp @e[tag=d1,limit=1]
+key ultimate down
+sleep 0.13
+key ultimate up
+sleep 3.25
+screenshot FX_f11_dragon.png
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 1.2
+hp @e[tag=d1,limit=1]
+MARK F12 (#4 crouch) Deadeye, crouch held: not crouching. Then out of Deadeye, crouch held: crouching (the control)
+cmd /kill @e[type=!player]
+cmd /overcraft ult @s 100
+sleep 0.5
+key ultimate down
+sleep 0.13
+key ultimate up
+sleep 0.6
+key crouch down
+sleep 0.4
+state
+key crouch up
+sleep 7.5
+key crouch down
+sleep 0.4
+state
+key crouch up

@@ -103,6 +103,93 @@ public final class SojournFx {
 	}
 
 	/** A particle on a mask, blended for an enemy's warm red (additive red over a bright sky turned pink-white). */
+	/** Her own art, made ahead as she's picked (EffectArt.prepare, #126): each mask and palette her effects below ask for. */
+	public static final List<EffectArt.Art> ART = List.of(
+		new EffectArt.Art("brigitte_smoke#32", Palette.SOJ_CHARGED_SMOKE, true),
+		new EffectArt.Art("brigitte_smoke#32", Palette.SOJ_JUMP_SMOKE, true),
+		new EffectArt.Art("brigitte_smoke#32", Palette.SOJ_SLIDE_SMOKE, true),
+		new EffectArt.Art("cat_band", Palette.SOJ_FIELD_DOME, false),
+		new EffectArt.Art("cat_glow_dot", Palette.SOJ_DISRUPTOR_GLOW, false),
+		new EffectArt.Art("cat_glow_dot", Palette.SOJ_DISRUPTOR_LAUNCH, false),
+		new EffectArt.Art("cat_puff", Palette.SOJ_FIELD_MOTE, false),
+		new EffectArt.Art("cat_streak", Palette.SOJ_CHARGED_HIT_SPARK, false),
+		new EffectArt.Art("cat_streak", Palette.SOJ_HIT_SPARK, false),
+		new EffectArt.Art("cat_streak", Palette.SOJ_MUZZLE_SPARK, false),
+		new EffectArt.Art("cat_streak", Palette.SOJ_RELOAD, false),
+		new EffectArt.Art("cat_streak", Palette.SOJ_SLIDE_SPARK, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_CHARGED_MUZZLE, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_CHARGED_TRACER, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_FIELD_CORE, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_GUN_CORE, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_GUN_GLOW, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_HIT, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_JUMP_GLOW, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_MUZZLE, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_OC_CORE, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_OC_GLOW, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_RELOAD, false),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_ROUND, false),
+		new EffectArt.Art("lw_thorn_flame#2", Palette.SOJ_SLIDE_DUST, true),
+		new EffectArt.Art("mercy_glow", Palette.SOJ_FIELD_DOME, false),
+		new EffectArt.Art("mercy_glow", Palette.SOJ_OC_BODY, false),
+		new EffectArt.Art("mercy_glow", Palette.SOJ_SLIDE_JET, false),
+		new EffectArt.Art("mercy_noise_b", Palette.SOJ_DECEL, false),
+		new EffectArt.Art("sojourn_beam", Palette.SOJ_CHARGED_BEAM, false),
+		new EffectArt.Art("sojourn_burst#3", Palette.SOJ_HIT, false),
+		new EffectArt.Art("sojourn_burst#3", Palette.SOJ_SLIDE_STREAK, false),
+		new EffectArt.Art("sojourn_dot", Palette.SOJ_DISRUPTOR_MOTE, false),
+		new EffectArt.Art("sojourn_dot", Palette.SOJ_FIELD_FLASH, false),
+		new EffectArt.Art("sojourn_dot", Palette.SOJ_FIELD_MOTE, false),
+		new EffectArt.Art("sojourn_field_decal", Palette.SOJ_FIELD_DECAL, false),
+		new EffectArt.Art("sojourn_flash#14", Palette.SOJ_CHARGED_MUZZLE, false),
+		new EffectArt.Art("sojourn_line", Palette.SOJ_DISRUPTOR_CORE, false),
+		new EffectArt.Art("sojourn_line", Palette.SOJ_FIELD_SWIRL, false),
+		new EffectArt.Art("sojourn_round", Palette.SOJ_ROUND, false),
+		new EffectArt.Art("sojourn_spark_tail", Palette.SOJ_JUMP_SPARK, false),
+		new EffectArt.Art("spark#4", Palette.SOJ_CHARGED_SPARK_N, false)
+	);
+
+	/** And an enemy Sojourn's, for a client seeing one (the same, blended, in the enemy's colours). */
+	public static final List<EffectArt.Art> ART_ENEMY = List.of(
+		new EffectArt.Art("brigitte_smoke#32", Palette.SOJ_CHARGED_SMOKE_ENEMY, true),
+		new EffectArt.Art("cat_band", Palette.SOJ_FIELD_DOME_ENEMY, true),
+		new EffectArt.Art("cat_glow_dot", Palette.SOJ_DISRUPTOR_GLOW_ENEMY, true),
+		new EffectArt.Art("cat_glow_dot", Palette.SOJ_DISRUPTOR_LAUNCH_ENEMY, true),
+		new EffectArt.Art("cat_puff", Palette.SOJ_FIELD_MOTE_ENEMY, true),
+		new EffectArt.Art("cat_streak", Palette.SOJ_CHARGED_HIT_SPARK_ENEMY, true),
+		new EffectArt.Art("cat_streak", Palette.SOJ_GUN_GLOW_ENEMY, true),
+		new EffectArt.Art("cat_streak", Palette.SOJ_HIT_SPARK_ENEMY, true),
+		new EffectArt.Art("cat_streak", Palette.SOJ_MUZZLE_SPARK_ENEMY, true),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_CHARGED_MUZZLE_ENEMY, true),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_CHARGED_TRACER_ENEMY, true),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_FIELD_CORE_ENEMY, true),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_GUN_CORE_ENEMY, true),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_GUN_GLOW_ENEMY, true),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_HIT_ENEMY, true),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_MUZZLE_ENEMY, true),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_OC_CORE_ENEMY, true),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_OC_GLOW_ENEMY, true),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_ROUND_ENEMY, true),
+		new EffectArt.Art("lucio_glow", Palette.SOJ_SLIDE_JET_ENEMY, true),
+		new EffectArt.Art("mercy_glow", Palette.SOJ_FIELD_DOME_ENEMY, true),
+		new EffectArt.Art("mercy_glow", Palette.SOJ_OC_GLOW_ENEMY, true),
+		new EffectArt.Art("mercy_glow", Palette.SOJ_SLIDE_JET_ENEMY, true),
+		new EffectArt.Art("mercy_noise_b", Palette.SOJ_DECEL_ENEMY, true),
+		new EffectArt.Art("sojourn_beam", Palette.SOJ_CHARGED_BEAM_ENEMY, true),
+		new EffectArt.Art("sojourn_burst#3", Palette.SOJ_HIT_ENEMY, true),
+		new EffectArt.Art("sojourn_burst#3", Palette.SOJ_SLIDE_JET_ENEMY, true),
+		new EffectArt.Art("sojourn_dot", Palette.SOJ_DISRUPTOR_MOTE_ENEMY, true),
+		new EffectArt.Art("sojourn_dot", Palette.SOJ_FIELD_FLASH_ENEMY, true),
+		new EffectArt.Art("sojourn_dot", Palette.SOJ_FIELD_MOTE_ENEMY, true),
+		new EffectArt.Art("sojourn_field_decal", Palette.SOJ_FIELD_DOME_ENEMY, true),
+		new EffectArt.Art("sojourn_flash#14", Palette.SOJ_CHARGED_MUZZLE_ENEMY, true),
+		new EffectArt.Art("sojourn_line", Palette.SOJ_DISRUPTOR_CORE_ENEMY, true),
+		new EffectArt.Art("sojourn_line", Palette.SOJ_FIELD_SWIRL_ENEMY, true),
+		new EffectArt.Art("sojourn_round", Palette.SOJ_ROUND_ENEMY, true),
+		new EffectArt.Art("sojourn_spark_tail", Palette.SOJ_SLIDE_JET_ENEMY, true),
+		new EffectArt.Art("spark#4", Palette.SOJ_CHARGED_TRACER_ENEMY, true)
+	);
+
 	private static @Nullable Particle make(String mask, boolean enemy, Palette ours, Palette theirs) {
 		return enemy ? Fx.soft(mask, theirs) : Fx.particle(mask, ours);
 	}
@@ -375,6 +462,7 @@ public final class SojournFx {
 	 * at 4.4-9 m/s, white to steel blue, one a metre where the data's are 1669 a second, at 0.6 of its size: rings, played). Fainter at low energy (ours).
 	 */
 	private static void tracer(@Nullable Entity shooter, Vec3 sentFrom, Vec3 to, float energy, boolean enemy) {
+		dev.overcraft.hero.PressTrace.seen("fx");
 		Vec3 from = shooter != null ? muzzle(shooter) : sentFrom;
 		Vec3 piece = to.subtract(from);
 		float len = (float) piece.length();
@@ -660,7 +748,7 @@ public final class SojournFx {
 	 * Its field opened (the server's sojourn_disruptor_field: its ticks, Deceleration Field, whose): drawn for its life by
 	 * fields(). At once: the flash 4A58 of 4.33 m (0.35 s, green to ice) and five puffs 18B18 of 0.58 m.
 	 */
-	private static void field(Vec3 at, int owner, int ticks, boolean slows, boolean enemy) {
+	private static void field(Vec3 at, int owner, int ticks, boolean slows, boolean enemy, float ran, boolean arriving) {
 		Minecraft mc = Minecraft.getInstance();
 		Vec3 ground = null;
 		if (mc.level != null) {
@@ -668,13 +756,13 @@ public final class SojournFx {
 				ClipContext.Fluid.ANY, net.minecraft.world.phys.shapes.CollisionContext.empty()));
 			ground = hit.getType() == HitResult.Type.MISS ? null : hit.getLocation();
 		}
-		Field f = new Field(++keys, at, ground, owner, Fx.now(), Math.max(0.1f, ticks / 20f), slows, enemy);
+		Field f = new Field(++keys, at, ground, owner, Fx.now() - ran, ran + Math.max(0.1f, ticks / 20f), slows, enemy);
 		FIELDS.add(f);
-		Particle flash = make("sojourn_dot", enemy, Palette.SOJ_FIELD_FLASH, Palette.SOJ_FIELD_FLASH_ENEMY);
+		Particle flash = arriving ? make("sojourn_dot", enemy, Palette.SOJ_FIELD_FLASH, Palette.SOJ_FIELD_FLASH_ENEMY) : null;
 		if (flash != null) {
 			Fx.add(flash.at(at).life(0.35f).size(range(4.33f, 4.37f), 3).alpha(0.6f).fade(0.01f, 0.6f).nearFade(3));
 		}
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; arriving && i < 5; i++) {
 			Particle puff = make("cat_puff", enemy, Palette.SOJ_FIELD_MOTE, Palette.SOJ_FIELD_MOTE_ENEMY);
 			if (puff != null) {
 				Fx.add(puff.at(at.add(randomUnit().scale(0.3))).life(range(0.24f, 0.29f)).size(0.58f, 0.3f).fade(0.01f, 0.6f).nearFade(0.5f));
@@ -783,7 +871,12 @@ public final class SojournFx {
 			case "sojourn_round_hit" -> roundHit(at, dir, enemy);
 			case "sojourn_charged_hit" -> chargedHit(at, dir, enemy);
 			case "sojourn_disruptor_field" -> field(at, e.entity(), e.variant() & (Disruptor.FX_SLOWS - 1),
-				(e.variant() & Disruptor.FX_SLOWS) != 0, enemy);
+				(e.variant() & Disruptor.FX_SLOWS) != 0, enemy, 0, true);
+			// for one who has just come to see it (Effects.showHeld, #96): the field, its time run in dx, no flash, one a place
+			case "sojourn_disruptor_field_state" -> {
+				FIELDS.removeIf(f -> f.centre.distanceToSqr(at) < 0.01);
+				field(at, e.entity(), e.variant() & (Disruptor.FX_SLOWS - 1), (e.variant() & Disruptor.FX_SLOWS) != 0, enemy, e.dx(), false);
+			}
 			default -> {
 				return false;
 			}

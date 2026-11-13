@@ -28,8 +28,12 @@ import net.minecraft.world.phys.Vec3;
  * allies; hits what isn't a creature (an end crystal, a boat) as an arrow does, like the kunai (#34).
  */
 public class SonicEntity extends OwProjectile {
-	/** How far below the eyes a hit still counts as the head (blocks): the kunai's. */
-	private static final double HEAD_DEPTH = 0.25;
+	@Override
+	public double barrierDamage() {
+		// what an enemy barrier or Kinetic Grasp takes when it stops it (the critique of 2026-11-02: 0 before)
+		return dev.overcraft.lucio.LucioStats.AMP_DAMAGE;
+	}
+
 
 	public SonicEntity(EntityType<? extends SonicEntity> type, Level level) {
 		super(type, level);
@@ -48,13 +52,6 @@ public class SonicEntity extends OwProjectile {
 	protected int lifetime() {
 		// ours: 60 m of flight, past which a Minecraft fight rarely reaches
 		return Ow.ticks(60 / LucioStats.AMP_SPEED);
-	}
-
-	private boolean headshot;
-
-	/** This round's hit was a headshot (set before its damage: the kill feed reads it). */
-	public boolean headshot() {
-		return headshot;
 	}
 
 	@Override
@@ -82,25 +79,23 @@ public class SonicEntity extends OwProjectile {
 			discard();
 			return;
 		}
-		boolean crit = part != null ? part == part.parentMob.head : at.y >= target.getEyeY() - HEAD_DEPTH;
-		headshot = crit;
+		boolean crit = part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, at, getDeltaMovement(), hitRadius());
 		HeroState state = crit && getOwner() instanceof Player shooter ? HeroManager.state(shooter) : null;
 		if (state != null) {
 			state.critAt = level.getGameTime();
 		}
 		double damage = LucioStats.AMP_DAMAGE * (crit ? LucioStats.AMP_CRIT : 1);
-		float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, getOwner()), damage)
-			: Combat.damage(target, damageSources().thrown(this, getOwner()), damage);
-		// a small push along the round's flight (ours: the knockback exists, no source gives it)
+		float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, getOwner()), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.LUCIO))
+			: Combat.damage(target, damageSources().thrown(this, getOwner()), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.LUCIO));
+		// a small push along the round's flight (the knockback exists: BZ 2024-07-12, tools/reference/lucio.md; its size is ours)
 		Vec3 push = getDeltaMovement().normalize().scale(Ow.speed(LucioStats.AMP_KNOCKBACK));
 		if (part == null && target.isAlive()) {
-			target.push(push.x, 0, push.z);
-			target.syncVelocity = true;
+			Combat.push(target, new Vec3(push.x, 0, push.z), getOwner(), dev.overcraft.hero.Blow.WEAPON.by(dev.overcraft.hero.Hero.LUCIO));
 		}
 		Effects.play(level, "sonic_hit_entity", at, getOwner());
 		if (getOwner() instanceof Player owner) {
-			Combat.credit(owner, dealt);
-			Combat.addFireForDamage(owner, dealt, Ow.toOw(target.getMaxHealth()));
+			Combat.credit(owner, dealt, target);
+			Combat.addFireForDamage(owner, dealt, target);
 			if (owner instanceof ServerPlayer shooter && dealt > 0) {
 				Effects.hitMarker(shooter, target, crit);
 			}

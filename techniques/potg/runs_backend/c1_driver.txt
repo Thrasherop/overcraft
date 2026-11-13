@@ -1,0 +1,108 @@
+=== phase c1 16:51:30
+cmd publish true survival 25700 {'ok': True}
+=== phase c1 16:51:36
+screenshot pub.png {'file': 'E:\\claude\\mods\\overcraft_potgb\\run\\screenshots\\pub.png'}
+=== phase c1 16:51:42
+cmd publish 25700 {'ok': True}
+respawn {'ok': True}
+state {'screen': 'DeathScreen', 'fps': 30, 'fx': 0, 'inWorld': True, 'x': 24.16162465065572, 'y': -60.0, 'z': 12.638625404030757, 'yaw': 0.0, 'pitch': 0.0, 'health': 0.0, 'maxHealth': 20.0, 'onGround': True, 'crouching': False, 'sprinting': False, 'box': 'STANDING 0.60x1.80 eye 1.62', 'serverBox': 'STANDING 0.60x1.80 eye 1.62', 'slot': 0, 'heroMode': False, 'hero': 'kiriko', 'ult': 1166.5, 'ultCost': 2725, 'shield': 0.0, 'mode': 0, 'aimSeen': '', 'perkLevel': 1, 'perkProgress': 0.094105266, 'primaryAmmo': 15, 'primaryReload': -1.0, 'meter': 0.0, 'secondaryAmmo': 10, 'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'vx': 0.0, 'vy': -0.0784000015258789, 'vz': 0.0, 'anim': 'death', 'clothLowest': -0.19906911, 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'food': 20, 'saturation': 5.0, 'onFire': False, 'fingertip': '(0.281 -0.042 0.534)', 'anim1p': None, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko'}
+=== phase c1 16:51:51
+cmd publish true survival 25700 8 {'ok': True}
+=== phase c1 16:52:13
+cmd publish true 25700 {'ok': True}
+=== phase c1 16:52:30
+respawn {'ok': True}
+state {'screen': 'LevelLoadingScreen', 'fps': 30, 'fx': 0, 'inWorld': True, 'x': -5.5, 'y': -60.0, 'z': -9.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 20.0, 'maxHealth': 20.0, 'onGround': False, 'crouching': False, 'sprinting': False, 'box': 'STANDING 0.60x1.80 eye 1.62', 'serverBox': 'STANDING 0.60x1.80 eye 1.62', 'slot': 0, 'heroMode': True, 'hero': 'kiriko', 'ult': 1274.25, 'ultCost': 2725, 'shield': 0.0, 'mode': 0, 'aimSeen': '', 'perkLevel': 1, 'perkProgress': 0.10544737, 'primaryAmmo': 15, 'primaryReload': -1.0, 'meter': 0.0, 'secondaryAmmo': 10, 'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'vx': 0.0, 'vy': 0.0, 'vz': 0.0, 'anim': 'death', 'clothLowest': -0.19906911, 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'food': 20, 'saturation': 5.0, 'onFire': False, 'fingertip': '(0.28 -0.04 0.533)', 'anim1p': None, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko'}
+=== phase c1 16:52:38
+cmd /kill @e[type=minecraft:slime] {'ok': True}
+=== phase c1 16:53:41
+screenshot n1.png {'file': 'E:\\claude\\mods\\overcraft_potgb\\run\\screenshots\\n1.png'}
+ents {'ents': '1 -5.56 -60.00 -9.52 v 0.00 0.00 0.00 t1412 | 577 44.77 -60.00 41.70 v 0.01 -0.08 0.05 t1410 | 558 -65.85 -60.00 -32.77 v 0.00 0.00 0.00 t1410 | 559 -81.12 -60.00 -32.12 v 0.00 0.00 0.00 t1410 | 606 -45.86 -60.00 -118.75 v 0.00 0.00 0.00 t1410 | 574 56.74 -60.00 35.22 v 0.00 0.00 0.00 t1410 | 564 -58.89 -60.00 -5.83 v 0.00 0.00 0.00 t1410 | 576 48.76 -60.00 34.01 v 0.00 0.00 0.00 t1410 | 601 -52.72 -60.00 -102.77 v 0.00 0.00 0.00 t1410 | 617 -34.73 -60.00 -134.48 v 0.00 0.00 0.00 t1410 | 557 -67.32 -60.00 -7.82 v 0.00 -0.05 0.00 t1410 | 607 -50.15 -60.00 -118.15 v 0.00 0.00 0.00 t1410 | 575 55.96 -60.00 29.38 v 0.00 0.00 0.00 t1410 | 643 43.51 -60.00 45.34 v 0.00 -0.08 0.00 t1259 | 644 -9.29 -60.00 -34.46 v 0.00 -0.12 0.00 t1259 | 645 -18.25 -60.00 -31.96 v 0.00 0.00 0.00 t1259 | 646 26.11 -60.00 3.36 v 0.00 -0.04 0.00 t1259 | 647 16.80 -60.00 16.12 v 0.00 -0.08 0.00 t1259 | 648 25.76 -60.00 -9.05 v 0.00 -0.12 -0.00 t1259 | 649 -74.06 -60.00 -26.77 v 0.00 0.00 0.00 t1259 | 650 -68.12 -60.00 -60.32 v 0.00 -0.04 0.00 t1259 | 651 -56.50 -60.00 -65.62 v 0.00 -0.08 0.00 t1259 | 652 -57.26 -60.00 -67.38 v -0.00 -0.12 -0.00 t1259 | 653 -48.44 -60.00 47.10 v 0.00 0.00 0.00 t1259 | 654 72.64 -60.00 -47.08 v 0.00 -0.04 0.00 t1259 | 655 75.73 -60.00 -49.83 v 0.00 -0.08 0.00 t1259 | 656 69.41 -60.00 48.16 v 0.00 -0.12 0.00 t1259 | 657 2.50 -60.00 74.83 v 0.00 0.00 0.00 t1259 | 658 -3.20 -60.00 70.67 v 0.00 -0.04 0.00 t1259 | 661 -20.04 -60.00 -24.48 v 0.00 -0.07 0.00 t1239 | 662 -18.07 -60.00 -28.11 v 0.00 -0.07 0.00 t1239 | 663 -47.47 -60.00 -24.80 v 0.00 -0.07 0.00 t1239 | 664 -40.97 -59.20 -34.41 v 0.00 -0.08 -0.05 t1239 | 665 -39.50 -60.00 -36.35 v 0.00 -0.08 0.00 t1239 | 666 -48.16 -60.00 -16.32 v 0.00 -0.04 0.00 t1239 | 667 -22.93 -60.00 -40.48 v 0.00 -0.06 0.00 t1239 | 668 -20.03 -60.00 -39.40 v 0.00 -0.08 0.00 t1239 | 669 18.81 -60.00 7.31 v 0.00 -0.06 0.00 t1239 | 671 18.88 -60.00 8.21 v 0.00 -0.04 0.00 t1239 | 672 25.15 -59.88 4.60 v -0.00 -0.08 -0.01 t1239 | 675 12.36 -60.00 8.45 v 0.00 -0.08 0.00 t1239 | 676 17.59 -60.00 7.78 v 0.00 -0.06 0.00 t1239 | 677 22.38 -60.00 11.03 v 0.00 -0.04 0.00 t1239 | 679 28.25 -60.00 17.01 v 0.00 -0.07 0.00 t1239 | 684 35.10 -60.00 9.82 v 0.00 -0.08 0.00 t1239 | 685 4.31 -60.00 35.59 v 0.00 -0.07 0.00 t1239 | 690 -58.41 -60.00 -54.92 v 0.00 -0.07 0.00 t1239 | 691 -52.97 -60.00 -44.98 v 0.00 -0.06 0.00 t1239 | 692 -43.56 -59.58 -45.29 v -0.03 0.08 -0.03 t1239 | 693 -48.42 -59.25 -43.75 v -0.04 0.00 0.02 t1239 | 696 -60.20 -60.00 -65.33 v 0.00 -0.07 0.00 t1239 | 697 -62.89 -60.00 -63.82 v 0.00 -0.07 0.00 t1239 | 699 -58.09 -60.00 -60.88 v 0.00 -0.04 0.00 t1239 | 701 -66.77 -58.83 -71.54 v -0.02 -0.15 0.03 t1239 | 702 36.32 -60.00 -75.13 v 0.00 -0.07 0.00 t1239 | 704 -65.69 -60.00 -41.47 v 0.00 -0.06 0.00 t1239 | 705 -63.68 -60.00 -33.62 v 0.00 -0.06 0.00 t1239 | 706 -61.06 -59.00 -42.84 v -0.03 -0.08 0.03 t1239 | 707 -61.48 -59.58 -40.86 v -0.04 0.16 0.03 t1239 | 708 -80.95 -58.75 -21.05 v 0.01 -0.23 -0.04 t1239 | 709 -75.12 -60.00 -19.89 v 0.00 -0.06 0.00 t1239 | 710 -81.39 -60.00 -3.53 v 0.00 -0.08 0.00 t1239 | 711 -66.19 -60.00 -9.16 v 0.00 -0.05 0.00 t1239 | 712 -72.22 -59.79 -4.70 v -0.08 0.25 -0.01 t1239 | 713 -69.73 -58.75 -6.25 v 0.06 -0.30 0.01 t1239 | 717 -21.56 -58.75 -73.41 v -0.05 -0.30 0.04 t1239 | 719 63.06 -60.00 52.61 v 0.00 -0.05 0.00 t1239 | 721 44.73 -60.00 32.89 v 0.00 -0.06 0.00 t1239 | 722 44.86 -59.00 40.60 v -0.06 -0.08 -0.01 t1239 | 725 68.82 -60.00 37.78 v 0.00 -0.08 0.00 t1239 | 726 70.61 -60.00 36.63 v 0.00 -0.06 0.00 t1239 | 728 65.79 -58.82 37.54 v -0.03 -0.37 -0.02 t1239 | 730 -75.10 -59.79 -59.52 v -0.02 0.25 0.08 t1239 | 733 -41.00 -60.00 -45.50 v 0.00 -0.06 0.00 t1239 | 734 -38.57 -60.00 -59.09 v 0.00 -0.07 0.00 t1239 | 735 -71.05 -60.00 -76.48 v 0.00 -0.06 0.00 t1239 | 736 -67.56 -60.00 -57.73 v 0.00 -0.08 0.00 t1239 | 738 -72.24 -60.00 -66.66 v 0.00 -0.08 0.00 t1239 | 740 58.34 -60.00 50.76 v 0.00 -0.04 0.00 t1239 | 742 -52.32 -60.00 65.06 v 0.00 -0.05 0.00 t1239 | 744 57.61 -60.00 22.67 v 0.00 -0.08 0.00 t1239 | 748 0.50 -60.00 87.06 v 0.00 -0.05 0.00 t1239 | 749 -2.40 -60.00 83.35 v 0.00 -0.05 0.00 t1239 | 762 71.11 -60.00 -55.54 v 0.00 -0.08 0.00 t1239 | 763 71.20 -60.00 -48.13 v 0.00 -0.05 0.00 t1239 | 766 31.12 -60.00 88.01 v 0.00 -0.06 0.00 t1239 | 770 31.16 -60.00 97.17 v 0.00 -0.05 0.00 t1239 | 772 17.83 -60.00 94.21 v 0.00 -0.06 0.00 t1239 | 776 -9.80 -60.00 101.20 v 0.00 -0.08 0.00 t1239 | 778 53.34 -60.00 98.38 v 0.00 -0.07 0.00 t1239 | 780 59.66 -60.00 98.50 v 0.00 -0.07 0.00 t1239 | 786 101.82 -60.00 -31.35 v 0.00 -0.07 0.00 t1239 | 787 -97.67 -60.00 74.95 v 0.00 -0.05 0.00 t1239 | 789 -57.18 -60.00 -15.76 v 0.00 0.00 0.00 t1216 | 790 -46.27 -60.00 -6.79 v 0.00 0.00 0.00 t1213 | 791 -63.23 -60.00 -15.50 v 0.00 0.00 0.00 t1211 | 792 -56.25 -60.00 -19.20 v 0.00 0.00 0.00 t1208 | 793 -58.18 -60.00 -9.82 v 0.00 0.00 0.00 t1205 | 794 -55.16 -60.00 -20.16 v 0.00 0.00 0.00 t1203 | '}
+=== phase c1 16:53:56
+cmd /kill @e[type=minecraft:zombie] {'ok': True}
+cmd /effect give @a minecraft:regeneration 99999 2 true {'ok': True}
+cmd /tp Viewer Kiriko {'ok': True}
+=== phase c1 16:54:38
+cmd /overcraft potg now {'ok': True}
+=== phase c1 17:00:30
+cmd publish true 25700 {'ok': True}
+=== phase c1 17:01:08
+cmd /gamerule minecraft:spawn_monsters false {'ok': True}
+cmd /kill @e[type=minecraft:slime] {'ok': True}
+cmd /effect give @a minecraft:regeneration 99999 2 true {'ok': True}
+=== phase c1 17:01:43
+cmd /overcraft potg now {'ok': True}
+=== phase c1 17:03:09
+cmd /overcraft potg disk {'ok': True}
+=== phase c1 17:04:27
+cmd /data get entity @e[type=minecraft:ender_dragon,limit=1] Health {'ok': True}
+screenshot d1.png {'file': 'E:\\claude\\mods\\overcraft_potgb\\run\\screenshots\\d1.png'}
+=== phase c1 17:05:29
+cmd /data get entity @e[type=minecraft:ender_dragon,limit=1] Health {'ok': True}
+screenshot d2.png {'file': 'E:\\claude\\mods\\overcraft_potgb\\run\\screenshots\\d2.png'}
+=== phase c1 17:05:39
+cmd /execute in minecraft:the_end run tp Kiriko 0 70 12 {'ok': True}
+=== phase c1 17:05:53
+cmd /data get entity @e[type=minecraft:ender_dragon,limit=1] Health {'ok': True}
+=== phase c1 17:06:46
+state {'screen': '', 'fps': 118, 'fx': 0, 'inWorld': True, 'x': 0.5, 'y': 64.0, 'z': 12.5, 'yaw': 115.73773, 'pitch': -28.489128, 'health': 20.0, 'maxHealth': 20.0, 'onGround': True, 'crouching': False, 'sprinting': False, 'box': 'STANDING 0.60x1.80 eye 1.62', 'serverBox': 'STANDING 0.60x1.80 eye 1.62', 'slot': 0, 'heroMode': True, 'hero': 'kiriko', 'ult': 2725.0, 'ultCost': 2725, 'shield': 0.0, 'mode': 0, 'aimSeen': '', 'perkLevel': 2, 'perkProgress': 0.113026425, 'primaryAmmo': 4, 'primaryReload': -1.0, 'meter': 0.0, 'secondaryAmmo': 10, 'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'vx': 0.0, 'vy': 0.0, 'vz': 0.0, 'anim': 'idle', 'clothLowest': 0.045272797, 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'food': 20, 'saturation': 5.0, 'onFire': False, 'fingertip': '(-0.556 0.233 0.045)', 'anim1p': None, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko'}
+=== phase c1 17:09:48
+close {'ok': True}
+=== phase c1 17:09:49
+openworld potgb2 {'ok': True}
+=== phase c1 17:10:19
+state {'screen': 'HeroSelectScreen', 'fps': 107, 'fx': 0, 'inWorld': True, 'x': 0.5, 'y': 64.0, 'z': 12.5, 'yaw': 115.73773, 'pitch': -28.489128, 'health': 20.0, 'maxHealth': 20.0, 'onGround': True, 'crouching': False, 'sprinting': False, 'box': 'STANDING 0.60x1.80 eye 1.62', 'serverBox': 'STANDING 0.60x1.80 eye 1.62', 'slot': 0, 'heroMode': True, 'hero': 'kiriko', 'ult': 2725.0, 'ultCost': 2725, 'shield': 0.0, 'mode': 0, 'aimSeen': '', 'perkLevel': 2, 'perkProgress': 0.1394747, 'primaryAmmo': 15, 'primaryReload': -1.0, 'meter': 0.0, 'secondaryAmmo': 10, 'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'vx': 0.0, 'vy': 0.0, 'vz': 0.0, 'anim': 'idle', 'clothLowest': 0.04044965, 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'food': 20, 'saturation': 5.0, 'onFire': False, 'fingertip': '(-0.593 0.172 0.193)', 'anim1p': None, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko'}
+=== phase c1 17:10:19
+cmd publish true 25700 {'ok': True}
+cmd /overcraft potg highlights {'ok': True}
+=== phase c1 17:10:28
+hero kiriko {'ok': True}
+close {'ok': True}
+heromode on {'ok': True}
+=== phase c1 17:10:30
+state {'screen': '', 'fps': 117, 'fx': 0, 'inWorld': True, 'x': 0.5, 'y': 64.0, 'z': 12.5, 'yaw': 115.73773, 'pitch': -28.489128, 'health': 20.0, 'maxHealth': 20.0, 'onGround': True, 'crouching': False, 'sprinting': False, 'box': 'STANDING 0.60x1.80 eye 1.62', 'serverBox': 'STANDING 0.60x1.80 eye 1.62', 'slot': 0, 'heroMode': True, 'hero': 'kiriko', 'ult': 2725.0, 'ultCost': 2725, 'shield': 0.0, 'mode': 0, 'aimSeen': '', 'perkLevel': 2, 'perkProgress': 0.14328504, 'primaryAmmo': 15, 'primaryReload': -1.0, 'meter': 0.0, 'secondaryAmmo': 10, 'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'vx': 0.0, 'vy': 0.0, 'vz': 0.0, 'anim': 'idle', 'clothLowest': 0.047288626, 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'food': 20, 'saturation': 5.0, 'onFire': False, 'fingertip': '(-0.557 0.232 0.046)', 'anim1p': None, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko'}
+=== phase c1 17:10:30
+cmd /overcraft potg watch 0 {'ok': True}
+screenshot solo_0s.png {'file': 'E:\\claude\\mods\\overcraft_potgb\\run\\screenshots\\solo_0s.png'}
+=== phase c1 17:10:34
+screenshot solo_3s.png {'file': 'E:\\claude\\mods\\overcraft_potgb\\run\\screenshots\\solo_3s.png'}
+state {'screen': 'Holder', 'fps': 22, 'fx': 4, 'inWorld': True, 'x': 3.5, 'y': -60.0, 'z': 8.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 20.0, 'maxHealth': 20.0, 'onGround': False, 'crouching': False, 'sprinting': False, 'box': 'STANDING 0.60x1.80 eye 1.62', 'serverBox': 'STANDING 0.60x1.80 eye 1.62', 'slot': 0, 'heroMode': False, 'hero': 'kiriko', 'ult': 337.08002, 'ultCost': 2725, 'shield': 0.0, 'mode': 0, 'aimSeen': '', 'perkLevel': 1, 'perkProgress': 0.085200004, 'primaryAmmo': 14, 'primaryReload': -1.0, 'meter': 0.0, 'secondaryAmmo': 10, 'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'vx': 0.0, 'vy': 0.0, 'vz': 0.0, 'anim': 'fall', 'clothLowest': 0.30139518, 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'food': 20, 'saturation': 5.0, 'onFire': False, 'fingertip': '(-0.557 0.229 0.045)', 'anim1p': None, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko'}
+=== phase c1 17:10:37
+screenshot solo_6s.png {'file': 'E:\\claude\\mods\\overcraft_potgb\\run\\screenshots\\solo_6s.png'}
+state {'screen': 'Holder', 'fps': 30, 'fx': 6, 'inWorld': True, 'x': 3.5, 'y': -60.0, 'z': 8.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 20.0, 'maxHealth': 20.0, 'onGround': False, 'crouching': False, 'sprinting': False, 'box': 'STANDING 0.60x1.80 eye 1.62', 'serverBox': 'STANDING 0.60x1.80 eye 1.62', 'slot': 0, 'heroMode': False, 'hero': 'kiriko', 'ult': 1397.5801, 'ultCost': 2725, 'shield': 0.0, 'mode': 0, 'aimSeen': '', 'perkLevel': 1, 'perkProgress': 0.34998947, 'primaryAmmo': 8, 'primaryReload': -1.0, 'meter': 0.0, 'secondaryAmmo': 10, 'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'vx': 0.0, 'vy': 0.0, 'vz': 0.0, 'anim': 'fall', 'clothLowest': 0.30007708, 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'food': 20, 'saturation': 5.0, 'onFire': False, 'fingertip': '(-0.557 0.229 0.045)', 'anim1p': None, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko'}
+=== phase c1 17:10:40
+screenshot solo_9s.png {'file': 'E:\\claude\\mods\\overcraft_potgb\\run\\screenshots\\solo_9s.png'}
+state {'screen': 'Holder', 'fps': 30, 'fx': 12, 'inWorld': True, 'x': 3.5, 'y': -60.0, 'z': 8.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 20.0, 'maxHealth': 20.0, 'onGround': False, 'crouching': False, 'sprinting': False, 'box': 'STANDING 0.60x1.80 eye 1.62', 'serverBox': 'STANDING 0.60x1.80 eye 1.62', 'slot': 0, 'heroMode': False, 'hero': 'kiriko', 'ult': 1913.0801, 'ultCost': 2725, 'shield': 0.0, 'mode': 0, 'aimSeen': '', 'perkLevel': 1, 'perkProgress': 0.614779, 'primaryAmmo': 1, 'primaryReload': -1.0, 'meter': 0.0, 'secondaryAmmo': 10, 'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'vx': 0.0, 'vy': 0.0, 'vz': 0.0, 'anim': 'fall', 'clothLowest': 0.30202278, 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'food': 20, 'saturation': 5.0, 'onFire': False, 'fingertip': '(-0.557 0.229 0.045)', 'anim1p': None, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko'}
+=== phase c1 17:10:43
+screenshot solo_12s.png {'file': 'E:\\claude\\mods\\overcraft_potgb\\run\\screenshots\\solo_12s.png'}
+state {'screen': 'Holder', 'fps': 30, 'fx': 16, 'inWorld': True, 'x': 3.5, 'y': -60.0, 'z': 8.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 20.0, 'maxHealth': 20.0, 'onGround': False, 'crouching': False, 'sprinting': False, 'box': 'STANDING 0.60x1.80 eye 1.62', 'serverBox': 'STANDING 0.60x1.80 eye 1.62', 'slot': 0, 'heroMode': False, 'hero': 'kiriko', 'ult': 2296.9102, 'ultCost': 2725, 'shield': 0.0, 'mode': 0, 'aimSeen': '', 'perkLevel': 1, 'perkProgress': 0.8101632, 'primaryAmmo': 13, 'primaryReload': -1.0, 'meter': 0.0, 'secondaryAmmo': 10, 'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'vx': 0.0, 'vy': 0.0, 'vz': 0.0, 'anim': 'fall', 'clothLowest': 0.30407703, 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'food': 20, 'saturation': 5.0, 'onFire': True, 'fingertip': '(-0.557 0.229 0.045)', 'anim1p': None, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko'}
+=== phase c1 17:10:46
+screenshot solo_18s.png {'file': 'E:\\claude\\mods\\overcraft_potgb\\run\\screenshots\\solo_18s.png'}
+state {'screen': '', 'fps': 29, 'fx': 0, 'inWorld': True, 'x': 0.5, 'y': 64.0, 'z': 12.5, 'yaw': 115.73773, 'pitch': -28.489128, 'health': 20.0, 'maxHealth': 20.0, 'onGround': True, 'crouching': False, 'sprinting': False, 'box': 'STANDING 0.60x1.80 eye 1.62', 'serverBox': 'STANDING 0.60x1.80 eye 1.62', 'slot': 0, 'heroMode': True, 'hero': 'kiriko', 'ult': 2725.0, 'ultCost': 2725, 'shield': 0.0, 'mode': 0, 'aimSeen': '', 'perkLevel': 2, 'perkProgress': 0.14402643, 'primaryAmmo': 15, 'primaryReload': -1.0, 'meter': 0.0, 'secondaryAmmo': 10, 'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'vx': 0.0, 'vy': 0.0, 'vz': 0.0, 'anim': 'idle', 'clothLowest': 0.048942655, 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'food': 20, 'saturation': 5.0, 'onFire': False, 'fingertip': '(-0.555 0.232 0.045)', 'anim1p': None, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko'}
+=== phase c1 17:11:17
+cmd /execute in minecraft:overworld run tp Kiriko 3.5 -60 8.5 {'ok': True}
+cmd /execute in minecraft:overworld run tp Viewer 6.5 -60 8.5 {'ok': True}
+=== phase c1 17:12:05
+cmd /kill @e[type=minecraft:zombie] {'ok': True}
+cmd /execute in minecraft:the_end run tp Kiriko 0 64 30 {'ok': True}
+cmd /execute in minecraft:the_end run tp Viewer 6 64 30 {'ok': True}
+=== phase c1 17:12:13
+cmd /execute in minecraft:the_end run summon minecraft:ender_dragon 0 80 0 {'ok': True}
+=== phase c1 17:12:17
+state {'screen': '', 'fps': 30, 'fx': 0, 'inWorld': True, 'x': 0.5, 'y': 62.0, 'z': 30.5, 'yaw': -154.67148, 'pitch': -1.9719827, 'health': 20.0, 'maxHealth': 20.0, 'onGround': True, 'crouching': False, 'sprinting': False, 'box': 'STANDING 0.60x1.80 eye 1.62', 'serverBox': 'STANDING 0.60x1.80 eye 1.62', 'slot': 0, 'heroMode': True, 'hero': 'kiriko', 'ult': 2725.0, 'ultCost': 2725, 'shield': 0.0, 'mode': 0, 'aimSeen': '', 'perkLevel': 3, 'perkProgress': 1.0, 'primaryAmmo': 3, 'primaryReload': -1.0, 'meter': 0.0, 'secondaryAmmo': 10, 'ability1Cooldown': 0.0, 'ability2Cooldown': 0.0, 'ability3Cooldown': 0.0, 'vx': 0.0, 'vy': 0.0, 'vz': 0.0, 'anim': 'idle', 'clothLowest': 0.048585385, 'emoteClip': None, 'emoteClipAt': 0.0, 'emoteCamera': False, 'emoteFirstPersonFrames': 0, 'food': 20, 'saturation': 5.0, 'onFire': False, 'fingertip': '(-0.026 -0.006 -0.604)', 'anim1p': None, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko'}
+=== phase c1 17:12:18
+cmd /kill @e[type=minecraft:ender_dragon] {'ok': True}
+=== phase c1 17:13:08
+cmd /execute in minecraft:the_end run summon minecraft:ender_dragon 0 80 0 {'ok': True}
+=== phase c1 17:13:12
+cmd /damage @e[type=minecraft:ender_dragon,limit=1] 1000 minecraft:generic {'ok': True}
+=== phase c1 17:13:58
+cmd /damage @e[type=minecraft:ender_dragon,limit=1] 1000 minecraft:explosion {'ok': True}
+=== phase c1 17:47:35
+cmd /execute in minecraft:the_end run tp Kiriko 0 70 14 {'ok': True}
+cmd /execute in minecraft:the_end run tp Viewer 6 64 30 {'ok': True}
+=== phase c1 17:47:41
+cmd /execute in minecraft:the_end run summon minecraft:ender_dragon 0 72 0 {'ok': True}
+=== phase c1 17:47:44
+cmd /data merge entity @e[type=minecraft:ender_dragon,limit=1] {Health:12f} {'ok': True}
+screenshot k0.png {'file': 'E:\\claude\\mods\\overcraft_potgb\\run\\screenshots\\k0.png'}

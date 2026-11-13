@@ -3,3 +3,5 @@
 # callout graph 0686 #80 runs 0341, whose StateAnim #31 plays alias 0x1EE (this clip: the wave as a pose over the upper
 # body) with #30's additive 0x2DE beside it (not used: the two are the same wave; how the engine layers them isn't read).
 0-32_0000000192C0 = hello   # set 3828 0x1EE, 1.5 s (H)
+# her hover's aim sheet (jetpack_cat map, "Hover idle": 1899F, df 0x1C / 0x14; techniques/animation/aim_sheets.md)
+4-6_00000001899F = add_aim

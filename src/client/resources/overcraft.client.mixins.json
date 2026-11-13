@@ -4,12 +4,16 @@
 	"compatibilityLevel": "JAVA_25",
 	"client": [
 		"KeyboardInputMixin",
+		"PotgReplayHoldMixin",
+		"PotgReplayKeysMixin",
 		"MinecraftMixin",
 		"MinecraftPacksMixin",
 		"AvatarRendererMixin",
 		"LivingEntityRendererMixin",
 		"FirstPersonHandsMixin",
 		"HudMixin",
+		"GuiPotgMixin",
+		"PotgBossBarMixin",
 		"LevelExtractorMixin",
 		"KeyMappingMixin",
 		"MinecraftInvoker",
@@ -26,12 +30,14 @@
 		"MinecraftModeArmMixin",
 		"ViewBobMixin",
 		"HeroFovMixin",
+		"ScopeFovMixin",
 		"CameraMixin",
 		"MouseHandlerInvoker",
 		"OptionsCameraMixin",
 		"EntityShadowMixin",
 		"HudFontTextureMixin",
-		"HeroChatFormatMixin"
+		"HeroChatFormatMixin",
+		"InventoryDollMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

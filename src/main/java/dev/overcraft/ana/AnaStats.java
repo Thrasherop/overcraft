@@ -41,7 +41,7 @@ public final class AnaStats {
 	public static final double SCOPED_SLOW = 0.65;
 	/** Aim sensitivity while zoomed, the option's default. */
 	public static final double SCOPED_SENSITIVITY = 0.3;       // D v8174; W
-	/** The zoomed field of view, degrees (D v172 = 30: L, unit unread; ours to check against the game by eye). */
+	/** The zoomed field of view, vertical degrees (D v172 = 30; the unit from community measures: techniques/heroes/ana.md, #90). */
 	public static final double SCOPED_FOV = 30;
 
 	// ---- Sleep Dart (ability 1) ----
@@ -64,8 +64,9 @@ public final class AnaStats {
 	public static final double GRENADE_COOLDOWN = 12;          // BZ 2026-04-14 (14 -> 12); D 1246
 	/** The throw: a 0.7 s state, the grenade leaving about 2 ticks in (D 0B97 #41 / #160: M), the cooldown from its end. */
 	public static final double GRENADE_CAST = 0.7, GRENADE_THROW_AT = 0.1;
-	public static final double GRENADE_DAMAGE = 90;            // BZ 2026-07-14 (75 -> 90); D 0F25
-	public static final double GRENADE_HEAL = 90;              // BZ 2026-07-14 (75 -> 90); D 0F25
+	/** BZ 2026-11-03 (90 -> 60: "separating its damage and healing values"), after the data build (D 0F25: 90); W rev 408845. */
+	public static final double GRENADE_DAMAGE = 60;
+	public static final double GRENADE_HEAL = 90;              // BZ 2026-07-14 (75 -> 90), left at 90 by BZ 2026-11-03; D 0F25
 	public static final double GRENADE_RADIUS = 4;             // W; D 119B
 	/** Allies: +50% healing received; enemies: none at all, both for 3 s. */
 	public static final double GRENADE_BOOST = 0.5;            // W; D 1DE6

@@ -159,6 +159,27 @@ WEAPON_SLOTS = {
     # away (action 1) in Triumph, Heroic, Handstand Push-ups, Wobble and the shared Mic Drop / 178AD; clips played on it
     # (action 4) in Confidence (8F4B), Standing By (7DD9, 7DDB, 7DDA) and Weapons Check (9546): sojourn_weapon.txt
     "sojourn": {"4E30": ("stow", "railgun", "sojourn_weapon.txt")},
+    # Sigma's hand spheres 31A7 (model 106B4, the classic skin's D7DD) hang in slot 54CE on 000A (research/sigma/work/
+    # ents_sigma_out.txt: hero entity 2AB1's child 31A7 "var 54CE"). EMOTE_CONTROLS=1: put away (action 1) in Dans, Magic
+    # Pumpkins, Applause, Inconsequential, Laugh, Maestro, Stepping Stones, Constellation's 2.0-5.9 s and the shared Listen Up /
+    # Mic Drop / Salty layer; clips played on it (action 4) in Heroic (7459), Observations (72F1), Relaxation (7365, 7367,
+    # 7366) and Constellation (CBE3): sigma_weapon.txt (techniques/emotes/sigma_emotes.md)
+    "sigma": {"54CE": ("stow", "spheres", "sigma_weapon.txt")},
+    # Pharah's Rocket Launcher 003B (model F131) hangs in slot 1B9F on 000A (research/pharah/work/ents_pharah_out.txt: hero entity
+    # 0032's child 3B.003 "hp A.03C var 1B9F"; tools/reference/pharah-map.md): pharah_weapon.txt
+    "pharah": {"1B9F": ("stow", "launcher", "pharah_weapon.txt")},
+    # Tracer's two Pulse Pistols, entity 0017 (model DA61) twice: slot 1B9B on 000A and slot 1B9C on 000B
+    # (research/tracer/work/ents_tracer_out.txt: hero entity children "17.003 hp A.03C var 1B9B" / "hp B.03C var 1B9C";
+    # work_kit/kit_tracer_weapon.md): tracer_weapon.txt. The 000B one's windows go under "stowLeft" (EmoteData's second-weapon keys)
+    "tracer": {"1B9B": ("stow", "pistol", "tracer_weapon.txt"), "1B9C": ("stowLeft", "pistolLeft", "tracer_weapon.txt")},
+    # Cassidy's Peacekeeper, entity 02A6 (model 0915, the classic skin's EECF) in slot 1901 on 000A (research/cassidy/work/
+    # ents_cassidy_out.txt: hero entity 02A3's child "2A6.003 hp A.03C var 1901.01C"): cassidy_weapon.txt
+    "cassidy": {"1901": ("stow", "revolver", "cassidy_weapon.txt")},
+    # Junkrat's Frag Launcher, entity 0452 (model 1283, the classic skin's 1022D) in slot 193F on 000A (research/junkrat/work/
+    # ents_junkrat_out.txt: hero entity 0380's child "452.003 hp A.03C var 193F.01C"): junkrat_weapon.txt
+    # and his Concussion Mine in the left hand, entity 04E8 (model 1445, the skin's 10095) in slot 1DB2 on 000B (child "4E8.003 hp B.03C
+    # var 1DB2.01C"; put away in 14 controls, never played): junkrat_mine.txt, under "stowLeft" (EmoteData's second-weapon keys)
+    "junkrat": {"193F": ("stow", "launcher", "junkrat_weapon.txt"), "1DB2": ("stowLeft", "mine", "junkrat_mine.txt")},
 }
 # a hero whose weapon geosets follow the stow windows where a clip has no GeoSetFlags: the mask bits that do (Juno's
 # Mediblaster, mask bit 1; her pod has no slot the emotes put away, so it stays where the data says nothing)
@@ -172,11 +193,17 @@ BODY_WEAPON_STOW = {"juno": [1]}
 EMOTE_SOUNDS = Path("E:/Overwatch Archive/research/emote-sounds/sounds.json")
 # sounds that duplicate another at the same moment: Dance Party's music plays on two buses at once (49D9 and 4A52) and
 # its intro hit twice (49DA and B1B9, the second adding only a duck state); one of each plays (sounds.json notes: M)
-DUPLICATES = {"lucio": {"4A52", "B1B9"}}
+DUPLICATES = {"lucio": {"4A52", "B1B9"},
+              # Maestro's music twice, the same file on two mixers at once (60D4 and 610B): the louder kept
+              "sigma": {"60D4"}}
 
 # heroes whose weapon is an entity of its own, put away by the emotes' stow windows (EntityControls on its slot: WEAPON_SLOTS): their pieces
 # take their geosets one for one from the model's submeshes
-STOWS = {"lucio": True, "mercy": True, "ana": True, "sombra": True, "brigitte": True, "sojourn": True}
+STOWS = {"lucio": True, "mercy": True, "ana": True, "sombra": True, "brigitte": True, "sojourn": True, "sigma": True}
+# heroes with no weapon pieces in their body .glb: their geosets are body variants (Pharah: geoset 1 her bare head and visor-up
+# look, geoset 2 her helmet, the submeshes 7-13 all 1.5-1.8 m up), so no mask or stow may hide them; her launcher is its own
+# entity (WEAPON_SLOTS), put away with the stow windows
+NO_PIECES = {"pharah", "tracer", "cassidy", "junkrat"}  # Tracer: her pistols are entities, no submesh of her body .glb sits stowed at the origin; Cassidy's Peacekeeper and Junkrat's launcher too
 
 # props that are children of the hero entity itself, by slot (STUChildEntityDefinition of the hero entity: H), shown by an
 # EntityControl that plays a clip on them (action 4) over its window: slot -> (model, hardpoint). Ana's (her hero entity
@@ -202,7 +229,9 @@ BODY_WEAPON_GEOSETS = {"juno": {4: 1, 2: 2}}
 CHILD_PROPS = {"ana": {"1F90": ("372A", "00C9"), "1F8F": ("373A", "000B"), "1F66": ("3730", "00A5")}}
 
 # DataTool's folder for a hero whose name isn't our id capitalised
-HERO_FOLDERS = {"lucio": "Lúcio", "jetpack_cat": "Jetpack Cat"}
+HERO_FOLDERS = {"lucio": "Lúcio", "jetpack_cat": "Jetpack Cat", "dva": "D.Va"}
+# weapon clips the data plays that the weapon's clip map lacks: all listed before the run stops (nothing is written)
+MISSING_WEAPON_CLIPS = []
 
 
 def plain(name):
@@ -278,7 +307,14 @@ def main():
         """An entity definition's model, and whether it flies off as a projectile."""
         data = json.dumps(o.instances(guid(eid, 0x003)))
         model = re.search(r'"m_model": "0*([0-9A-F]+)\.00C"', data)
-        return (model.group(1) if model else None), "STUProjectileVisualComponent" in data
+        # a ragdoll (STURagdollConfig) falls by physics once spawned too: Make it Rain's bills 5E1F (162CA), spawned for 0.067 s
+        # off her hands (techniques/emotes/dva_emotes.md)
+        # Pharah (2026-11-11): only a blink of a window releases a ragdoll (the bills' 0.067 s); one held on its hardpoint for its
+        # window stays there (her Rocket Guitar's launcher 1588, a ragdoll with no projectile, on Weapon_L for the whole 7.83 s
+        # loop): "ragdoll" here, sorted by the window where the spawn is read (M)
+        if "STUProjectileVisualComponent" in data:
+            return (model.group(1) if model else None), True
+        return (model.group(1) if model else None), "ragdoll" if "STURagdollConfig" in data else False
 
     def raw_controls(fx):
         """The effect's EntityControls in file order (as TankLib lists them), read raw: (identifier, action)."""
@@ -384,7 +420,7 @@ def main():
                 collect(v)
 
     # the unlock list names heroes as shown ("Jetpack Cat"): compared as our ids
-    collect(next((v for k, v in unlocks.items() if slug(plain(k)) == hero), {}))
+    collect(next((v for k, v in unlocks.items() if slug(plain(k)).replace("_", "") == hero.replace("_", "")), {}))
     for u in emote_unlocks:
         root = o.instances(o.u64(guid(u["GUID"].split(".")[0], 0x0A5)))[0]
         bts = root.get("m_emoteBlendTreeSet")
@@ -482,7 +518,7 @@ def main():
                     if bit in BODY_WEAPON_GEOSETS[hero] and verts <= count <= verts * 1.02 + 2:
                         piece_geosets[name] = BODY_WEAPON_GEOSETS[hero][bit]
             print("first-LOD submeshes (geoset, vertices):", lod1)
-        for name, (count, size, centre) in (() if hero in BODY_WEAPON_GEOSETS else glb_meshes(hero_glb).items()):
+        for name, (count, size, centre) in (() if hero in BODY_WEAPON_GEOSETS or hero in NO_PIECES else glb_meshes(hero_glb).items()):
             if size <= PROP_SIZE and centre <= STOWED_RADIUS:
                 under = [(v, bit) for bit, v in per.items() if v <= count]
                 if under:
@@ -497,6 +533,7 @@ def main():
     used = set()
     bone_ids = {}
     found = []
+    emote_dirs = {}
     for emote in sorted(d for d in emotes_dir.glob("*/*") if (d / "Animations").is_dir()):
         name = slug(emote.name)
         clips = {}
@@ -541,6 +578,8 @@ def main():
                     info["spawns"].append(spawn)
                 elif kind == "teEffectComponentEntity":
                     model, projectile = entity(gid(fields.get("Entity")))
+                    if projectile == "ragdoll":
+                        projectile = dur <= 0.1
                     spawn = {"model": model, "entity": gid(fields.get("Entity")), "hardpoint": hp, "start": start,
                              "duration": dur, "clip": None, "falls": projectile}
                     info["spawns"].append(spawn)
@@ -561,7 +600,10 @@ def main():
                         # the weapon stays out and plays its own clip over the window
                         own = clip_names(slot[2]).get(clip.lstrip("0").upper())
                         if own is None:
-                            sys.exit(f"{slot[1]} plays clip {clip}: not in tools/clipmaps/{slot[2]} (export it into the model first)")
+                            # listed all at once (Pharah: so one re-export takes every clip), then the run stops
+                            MISSING_WEAPON_CLIPS.append(f"{slot[1]} plays clip {clip} ({name} {start}-{round(start + dur, 4)} s): not in "
+                                                        f"tools/clipmaps/{slot[2]} (export it into the model first)")
+                            continue
                         info["weaponClips"].append({"clip": own, "weapon": slot[1], "start": start, "end": round(start + dur, 4)})
                     elif ident in CHILD_PROPS.get(hero, {}) and clip is not None and action == PLAY:
                         # a prop that is a child of the hero entity itself, shown and playing its clip over the window
@@ -617,6 +659,7 @@ def main():
                 c["geosets"] = geosets[name][c["id"]]
         out["emotes"][name] = {"clips": clips}
         found.append((name, clips))
+        emote_dirs[name] = emote
     # her skeleton: every bone her full-body clips animate
     most = max(c["bones"] for _, clips in found for c in clips.values())
     hers = set().union(*(bone_ids[c["id"]] for _, clips in found for c in clips.values() if c["bones"] >= 0.9 * most))
@@ -628,9 +671,23 @@ def main():
         for clip in clips.values():
             for spawn in clip["spawns"]:
                 if spawn.get("entity") and spawn["clip"] is None:
+                    # the prop model's own clips first: DataTool exports them under the emote's Models/<model>/Animations
+                    # (the entity's 020 names them). Game On's three sprites 38EF / 38F0 / 38F4 each have their own 1.8 s
+                    # clip (3E69 / 3E6E / 3E72); by length alone all three took 3E6E (techniques/emotes/dva_emotes.md)
+                    own_dir = emote_dirs[name] / "Models" / f"{int(spawn['model'], 16):012X}.00C" / "Animations"
+                    own = {q.stem.lstrip("0").upper() for q in own_dir.rglob("*.owanimclip")} if own_dir.is_dir() else set()
+                    for length, begins in ((spawn["duration"], spawn["start"]), (clip["duration"], 0.0)):
+                        mine = [c["id"] for c in clips.values() if c["id"] in own and abs(c["duration"] - length) < 0.02]
+                        if mine:
+                            spawn["clip"], spawn["clipStart"], spawn["clipBy"] = mine[0], begins, "its own folder"
+                            break
+                    if spawn["clip"] is not None:
+                        continue
                     # a prop clip as long as the window (starts with it), else as long as her clip (runs with it)
                     for length, begins in ((spawn["duration"], spawn["start"]), (clip["duration"], 0.0)):
-                        match = [i for i, d in others.items() if abs(d - length) < 0.02]
+                        # never the clip whose effect spawns it: Magic Pumpkins' pumpkins (3B50) are spawned by the
+                        # carrier's own clip AE48 (on 1024E's bones 0986-0989), as long as itself, which isn't theirs
+                        match = [i for i, d in others.items() if abs(d - length) < 0.02 and i != clip["id"]]
                         # only clips whose bones the prop's skeleton holds (Dance Party's amplifier on the booth: 5677
                         # fits its 17 bones, the booth's own 5678 of the same length doesn't)
                         fitting = [i for i in match if bone_ids[i]
@@ -684,6 +741,8 @@ def main():
                         e[ours] = h[theirs]
                 if h.get("audience") in ("own", "others"):
                     e["audience"] = h["audience"]
+    if MISSING_WEAPON_CLIPS:
+        sys.exit("\n".join(MISSING_WEAPON_CLIPS))
     target = ROOT / "src" / "main" / "resources" / "assets" / "overcraft" / "emotes" / f"{hero}.json"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(out, indent=1), encoding="utf8")

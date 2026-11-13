@@ -24,7 +24,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
@@ -332,14 +331,16 @@ public final class Ana implements HeroKit {
 	/**
 	 * The burst: everyone within 4 m of it (no falloff: D 119B) and in sight of it (its sight profile 0019, L: ours by a
 	 * ray to the centre or the eyes). Allies, Ana too, are healed 90 and their healing raised 50% for 3 s (its own heal
-	 * isn't raised); enemies take 90 and can't be healed for 3 s.
+	 * isn't raised); enemies take 60 (BZ 2026-11-03) and can't be healed for 3 s.
 	 */
 	public static void grenadeBurst(ServerLevel level, ServerPlayer owner, Vec3 at, Entity grenade) {
-		grenadeBurst(level, owner, at, grenade, GRENADE_HEAL, GRENADE_DAMAGE);
+		grenadeBurst(level, owner, at, grenade, GRENADE_HEAL, GRENADE_DAMAGE, dev.overcraft.hero.Blow.ability("biotic_grenade"));
 	}
 
-	/** A burst of {@code heal} / {@code damage}: the throw's (90), or Biotic Bounce's second (60) with the same 4 m and 3 s. */
-	public static void grenadeBurst(ServerLevel level, ServerPlayer owner, Vec3 at, Entity grenade, double heal, double damage) {
+	/** A burst of {@code heal} / {@code damage}: the throw's (90 / 60), or Biotic Bounce's second (60 / 60) with the same 4 m and 3 s. */
+	public static void grenadeBurst(ServerLevel level, ServerPlayer owner, Vec3 at, Entity grenade, double heal, double damage,
+									dev.overcraft.hero.Blow what) {
+		dev.overcraft.hero.Blow blow = what.by(dev.overcraft.hero.Hero.ANA);
 		DamageSource source = owner.damageSources().thrown(grenade, owner);
 		// the burst (384F): hers in her head, everyone else's at it
 		HeroSounds.toOwner(owner, OcSounds.ANA_GRENADE_BURST);
@@ -347,7 +348,9 @@ public final class Ana implements HeroKit {
 		Effects.play(level, "ana_grenade_burst", at, Vec3.ZERO, null, heal < GRENADE_HEAL ? 1 : 0, owner);
 		boolean healedAny = false, hurtAny = false;
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(GRENADE_RADIUS + 2))) {
-			if (!e.isAlive() || e.getBoundingBox().distanceToSqr(at) > GRENADE_RADIUS * GRENADE_RADIUS || !inSight(level, at, e)) {
+			if (!e.isAlive() || e.getBoundingBox().distanceToSqr(at) > GRENADE_RADIUS * GRENADE_RADIUS || !inSight(level, at, e)
+				|| dev.overcraft.brigitte.Barrier.shields(e, owner, at)) {
+				// (an enemy barrier between the burst and them stops all of it: the wiki's Barrier page, "barriers block the explosion")
 				continue;
 			}
 			if (Allies.isSelfOrAlly(owner, e)) {
@@ -364,17 +367,20 @@ public final class Ana implements HeroKit {
 				} else {
 					onTarget(owner, e, OcSounds.ANA_GRENADE_BOOST, OcSounds.ANA_GRENADE_BOOST_3P, 45);
 				}
-			} else if (Allies.canHurt(owner, e)) {
-				float dealt = Combat.damage(e, source, damage);
-				Combat.credit(owner, dealt);
-				Combat.addFireForDamage(owner, dealt, Ow.toOw(e.getMaxHealth()));
+			} else if (Allies.areaHits(owner, e)) {
+				float dealt = Combat.damage(e, source, damage, blow);
+				Combat.credit(owner, dealt, e);
+				Combat.addFireForDamage(owner, dealt, e);
 				if (dealt > 0) {
 					Effects.hitMarker(owner, e, false);
 					hurtAny = true;
 				}
 				Combat.antiHeal(e, GRENADE_EFFECT_TIME);
-				Effects.play(level, "ana_anti_healed", at, Vec3.ZERO, e, Ow.ticks(GRENADE_EFFECT_TIME), owner);
-				onTarget(owner, e, OcSounds.ANA_GRENADE_ANTIHEAL, OcSounds.ANA_GRENADE_ANTIHEAL_3P, 45);
+				if (Combat.antiHealed(e)) {
+					// (not on the phased: Combat.antiHeal)
+					Effects.play(level, "ana_anti_healed", at, Vec3.ZERO, e, Ow.ticks(GRENADE_EFFECT_TIME), owner);
+					onTarget(owner, e, OcSounds.ANA_GRENADE_ANTIHEAL, OcSounds.ANA_GRENADE_ANTIHEAL_3P, 45);
+				}
 			}
 		}
 		// her lines: 0.1 s after a heal (0B99 #232), 0.2 s after damage (0C72 #231)
@@ -525,21 +531,20 @@ public final class Ana implements HeroKit {
 	// ---- the rifle's doses: 75 over 0.5 s, heal or damage (0B95 #193 / #205) ----
 
 	private record Dose(ServerPlayer owner, LivingEntity target, boolean heal, @org.jspecify.annotations.Nullable Entity dart,
-						double perTick, int ticks) {
+						double perTick, int ticks, boolean crit) {
 	}
 
 	private static final List<Dose> DOSES = new ArrayList<>();
 
 	/**
 	 * A dart or a scoped shot (no dart) reached a hurt ally (heal) or an enemy at {@code at}: its 75 lands over 0.5 s.
-	 * Headhunter: an enemy hit in the head takes x2 (0B95 #269; allies are never crit). The head is the top of the box, as
-	 * for Kiriko's kunai (ours: 0.25 m under the eyes and up).
+	 * Headhunter: an enemy hit in the head takes x2 (0B95 #269; allies are never crit; the head: Headshot).
 	 */
 	public static void dose(ServerPlayer owner, LivingEntity target, boolean heal, @org.jspecify.annotations.Nullable Entity dart, Vec3 at) {
-		boolean crit = !heal && HeroManager.hasPerk(owner, dev.overcraft.hero.Perk.ANA_HEADHUNTER) && at.y >= target.getEyeY() - HEAD_DEPTH;
+		boolean crit = !heal && HeroManager.hasPerk(owner, dev.overcraft.hero.Perk.ANA_HEADHUNTER) && dev.overcraft.hero.Headshot.crossed(target, at, dart != null ? dart.getDeltaMovement() : at.subtract(owner.getEyePosition()), dart != null ? DART_RADIUS_ENEMY : SCOPED_RADIUS_ENEMY);
 		int ticks = Math.max(1, Ow.ticks(RIFLE_OVER));
 		double amount = heal ? RIFLE_HEAL : RIFLE_DAMAGE * (crit ? HEADHUNTER : 1);
-		DOSES.add(new Dose(owner, target, heal, dart, amount / ticks, ticks));
+		DOSES.add(new Dose(owner, target, heal, dart, amount / ticks, ticks, crit));
 		HeroSounds.toOwner(owner, OcSounds.ANA_HIT);
 		// where it struck, on the side facing her: at their centre the burst was hidden inside their body (found playing)
 		Effects.play((ServerLevel) target.level(), heal ? "ana_heal_hit" : "ana_harm_hit", at, Vec3.ZERO, null, 0, owner);
@@ -566,7 +571,6 @@ public final class Ana implements HeroKit {
 		}
 	}
 
-	private static final double HEAD_DEPTH = 0.25;
 
 	/**
 	 * What one of her shots or abilities does to {@code target} sounds twice: {@code own} in its head (a player: the healed
@@ -612,12 +616,12 @@ public final class Ana implements HeroKit {
 					Combat.addFireForHealing(d.owner, healed);
 				}
 			} else {
-				float dealt = Combat.damage(d.target, source(d), d.perTick);
-				Combat.credit(d.owner, dealt);
-				Combat.addFireForDamage(d.owner, dealt, Ow.toOw(d.target.getMaxHealth()));
+				float dealt = Combat.damage(d.target, source(d), d.perTick, dev.overcraft.hero.Blow.weapon(d.crit).by(dev.overcraft.hero.Hero.ANA));
+				Combat.credit(d.owner, dealt, d.target);
+				Combat.addFireForDamage(d.owner, dealt, d.target);
 			}
 			if (d.ticks > 1) {
-				next.add(new Dose(d.owner, d.target, d.heal, d.dart, d.perTick, d.ticks - 1));
+				next.add(new Dose(d.owner, d.target, d.heal, d.dart, d.perTick, d.ticks - 1, d.crit));
 			}
 		}
 		DOSES.clear();
@@ -626,7 +630,7 @@ public final class Ana implements HeroKit {
 
 	/**
 	 * The dart's own damage, or a scoped shot's: a shot from her with no projectile of its own. Her own blow (her
-	 * playerAttack) would make a kill a melee kill (Voice.onDeath reads the direct entity: Superbloom's was, 0.3.22).
+	 * playerAttack) would make a kill a melee kill (Voice.onKill falls back to the direct entity: Superbloom's was, 0.3.22).
 	 */
 	private static DamageSource source(Dose d) {
 		return d.dart != null ? d.owner.damageSources().thrown(d.dart, d.owner) : shotSource(d.owner);
@@ -634,8 +638,7 @@ public final class Ana implements HeroKit {
 
 	/** Damage from her with no projectile of its own (a scoped shot, Local Anesthetic's ticks). */
 	public static DamageSource shotSource(ServerPlayer owner) {
-		return new DamageSource(owner.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
-			.getOrThrow(DamageTypes.ARROW), null, owner);
+		return dev.overcraft.hero.Combat.hitscan(owner);
 	}
 
 	@Override
@@ -645,5 +648,22 @@ public final class Ana implements HeroKit {
 			s.primaryAmmo, reload, 0, -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0),
 			s.rushed, s.canChangeHero, s.onFire, Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk),
 			Perk.index(s.majorPerk), 0, flags(s), 0, (float) s.scope);
+	}
+
+	/** Her widgets (#85): preview, who Q would boost (013C, 0B9E #377), startNano's own pick, with it ready. None for herself. */
+	@Override
+	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
+		LivingEntity target = s.ultCharge >= ULT_COST && !casting(s)
+			? dev.overcraft.hero.Targeting.allyInView(player, NANO_RANGE, NANO_CONE, true, e -> !Nano.boosted(e)) : null;
+		return new HeroSyncPayload.Widgets(-1, -1, target == null ? -1 : target.getId(), false, 0, 0, 0, 0, "", "");
+	}
+
+	/** Out of play (#100: HeroKit.leavePlay): her casts and her scope (and its slow). */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		s.castTicks = -1;
+		s.sleepCast = -1;
+		s.nanoCast = -1;
+		clear(player, s);
 	}
 }

@@ -1,0 +1,23 @@
+=== phase repro2 18:58:35
+cmd /tick unfreeze {'ok': True}
+cmd /execute in minecraft:the_end run summon minecraft:ender_dragon 0 90 0 {'ok': True}
+=== phase repro2 18:58:39
+cmd /kill @e[type=minecraft:ender_dragon] {'ok': True}
+=== phase repro2 18:58:39
+cmd /overcraft potg watch 0 {'ok': True}
+=== phase repro2 18:58:53
+screenshot repro2_solo_at_tick199.png {'file': 'E:\\claude\\mods\\overcraft_potgb\\run\\screenshots\\repro2_solo_at_tick199.png'}
+=== phase repro2 18:59:19
+cmd /execute in minecraft:the_end run summon minecraft:ender_dragon 0 90 0 {'ok': True}
+=== phase repro2 18:59:22
+cmd /damage @e[type=minecraft:ender_dragon,limit=1] 1000 minecraft:explosion {'ok': True}
+=== phase repro2 18:59:22
+cmd /overcraft potg watch 0 {'ok': True}
+=== phase repro2 18:59:36
+screenshot repro2_solo_at_tick199.png {'file': 'E:\\claude\\mods\\overcraft_potgb\\run\\screenshots\\repro2_solo_at_tick199.png'}
+=== phase repro2 19:05:15
+cmd /damage @e[type=minecraft:ender_dragon,limit=1] 1000 minecraft:explosion {'ok': True}
+=== phase repro2 19:05:16
+cmd /overcraft potg watch 1 {'ok': True}
+=== phase repro2 19:05:27
+screenshot repro2_solo_at_tick199.png {'file': 'E:\\claude\\mods\\overcraft_potgb\\run\\screenshots\\repro2_solo_at_tick199.png'}

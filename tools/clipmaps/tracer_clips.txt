@@ -1,0 +1,5 @@
+# Tracer, her third-person extra clips (owm_survey.py --clips-only), merged into hero_models/tracer.glb by bone name (HeroModels).
+# Her emotes come with --emotes (emote_<name>_<n>, in path order: techniques/emotes/emote_reproduction.md), on her skin's model
+# D748 (research\tracer\extract\Heroes\Tracer\Skin\Overwatch\Overwatch\Models\00000000D748.00C). Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <D748.owmdl> <out> --glb --clips-only --only=none
+#     --keep=tools/clipmaps/tracer_clips.txt --emotes=<research\tracer\extract\Unlocks\Heroes\Tracer\Emote>

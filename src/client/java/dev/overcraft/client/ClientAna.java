@@ -40,7 +40,47 @@ public final class ClientAna {
 		return s == null || !mc.options.getCameraType().isFirstPerson() || !ClientHero.heroView() ? 0 : s.scope();
 	}
 
-	/** The field of view's multiplier: from the player's own setting toward 30° as the scope comes up. */
+	/** The last scope seen, for scopeMoving. */
+	private static float lastScope;
+
+	/**
+	 * The local player's scope is up or moving in their own first person (or just went down): the zoom then follows it
+	 * tick by tick, not eased (ScopeFovMixin).
+	 */
+	public static boolean scopeMoving() {
+		float scope = viewScope();
+		boolean moving = scope > 0 || lastScope > 0;
+		lastScope = scope;
+		return moving;
+	}
+
+	/** How far the local player is scoped in their own first person (0-1): the scope overlay's and view model's (#90). */
+	public static float ownScope() {
+		return viewScope();
+	}
+
+	private static float eased;
+	private static long easedAt;
+
+	/** ownScope, moved at the scope's own speed between the sync's ticks (0.2 a tick left the overlay's fade two steps). */
+	public static float ownScopeEased() {
+		long now = net.minecraft.util.Util.getMillis();
+		float dt = Math.clamp((now - easedAt) / 1000f, 0, 0.1f);
+		easedAt = now;
+		float target = viewScope();
+		float step = dt * (target >= eased ? (float) (1 / AnaStats.SCOPE_IN) : (float) (1 / AnaStats.SCOPE_OUT));
+		eased = target <= 0 && step > eased ? 0 : eased + Math.clamp(target - eased, -step, step);
+		return eased;
+	}
+
+	/**
+	 * The field of view's multiplier: from the player's own setting toward 30° as the scope comes up. Vertical degrees, as
+	 * Minecraft's: the data's v172 = 30 (0B94 #83 -> the camera's #84) is vertical too. Overwatch keeps the vertical view
+	 * and widens the horizontal with the screen (Hor+), so its engine's angles are vertical: its 103 setting is horizontal
+	 * at 16:9 (70.5 vertical), and the community's measured scoped view for Ana and Widowmaker is 51 degrees horizontal at
+	 * 16:9, which is exactly 30 vertical (2 atan(tan 15 x 16/9) = 50.9) (#90: checked against the "17 vertical if 30 were
+	 * horizontal" reading, which would zoom twice as far as the game).
+	 */
 	public static float fovModifier() {
 		float scope = viewScope();
 		if (scope <= 0) {

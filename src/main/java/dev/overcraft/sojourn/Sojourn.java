@@ -24,6 +24,8 @@ import static dev.overcraft.sojourn.SojournStats.*;
 public final class Sojourn implements HeroKit {
 	/** The synced mode's bit: she's sliding (her client moves her: ClientSojourn). */
 	public static final int MODE_SLIDE = 1;
+	/** The synced mode's bit: she's hacked: Q does nothing (HeroManager.onInput), so her client shouldn't lock for its cast. */
+	public static final int MODE_SILENCED = 2;
 	/** HeroManager.SOJOURN_GUN's flag over her energy points: she's in Overclock (any of its three phases). */
 	public static final int SYNC_OVERCLOCK = 1 << 10;
 
@@ -37,6 +39,9 @@ public final class Sojourn implements HeroKit {
 		s.sojournSpread = 0;
 		s.sojournRightWas = false;
 		s.sojournCharged = 0;
+		s.sojournChargedShown = false;
+		s.sojournChargedLock = 0;
+		s.sojournAim = null;
 		s.sojournDisruptor = -1;
 		s.sojournDisruptorWrite = -1;
 		s.sojournUlt = -1;
@@ -53,6 +58,7 @@ public final class Sojourn implements HeroKit {
 
 	@Override
 	public void tick(ServerPlayer player, HeroState s, boolean controls) {
+		s.sojournSilenced = dev.overcraft.sombra.Hack.silenced(player);
 		double rate = Combat.cooldownRate(player);
 		slideRecharge(player, s, rate);
 		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - rate);
@@ -132,7 +138,7 @@ public final class Sojourn implements HeroKit {
 	private static final long AIR_KILL = 60;
 
 	/**
-	 * She killed an enemy (Voice.onDeath): in Overclock the kill counts and its count picks the line, 0B93 / 113C / 113D (3 and
+	 * She killed an enemy (Voice.onKill): in Overclock the kill counts and its count picks the line, 0B93 / 113C / 113D (3 and
 	 * 4) / 113E (2159 #1278 -> #1283); outside it a Charged Shot kill says 0B8F "Vaporized", 0E7A in the air after her slide
 	 * jump (v41319).
 	 */
@@ -156,6 +162,9 @@ public final class Sojourn implements HeroKit {
 
 	@Override
 	public void press(ServerPlayer player, HeroState s, int pressed) {
+		if ((pressed & HeroInputPayload.PRESS_CHARGED_KEPT) != 0) {
+			Railgun.pressedKept(player, s);
+		}
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0) {
 			slide(player, s);
 		}
@@ -169,6 +178,7 @@ public final class Sojourn implements HeroKit {
 			Voice.say(player, "disruptor", 1);
 		}
 		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0 && s.sojournUlt < 0 && s.ultCharge >= ULT_COST) {
+			dev.overcraft.hero.PressTrace.mark("srv_ult");
 			s.ultCharge = Combat.afterUlt(dev.overcraft.hero.Hero.SOJOURN, s.ultCharge);
 			s.sojournUlt = 0;
 			// no ult charge through all three phases (W Ultimate ability: none while it's active)
@@ -382,9 +392,23 @@ public final class Sojourn implements HeroKit {
 			dualSync ? s.sojournSlideCharges : -1, -1,
 			(float) (s.ability1Cooldown / 20.0), disruptor, s.rushed, s.canChangeHero, s.onFire,
 			Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk), Perk.index(s.majorPerk), 0,
-			s.sojournSlide >= 0 ? MODE_SLIDE : 0,
+			(s.sojournSlide >= 0 ? MODE_SLIDE : 0) | (s.sojournSilenced ? MODE_SILENCED : 0),
 			s.sojournUlt >= 0 ? (float) ((ultTicks() - s.sojournUlt) / 20.0)
 				: s.sojournSlide >= 0 ? (float) ((Ow.ticks(dualSync ? SLIDE_TIME_DUAL : SLIDE_TIME) - s.sojournSlide) / 20.0) : 0,
 			(float) (s.sojournEnergy / ENERGY_MAX));
+	}
+
+	/** Out of play (#100: HeroKit.leavePlay): a slide (its cooldown starts) and Overclock end; for good, her gun's look too. */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		if (s.sojournSlide >= 0) {
+			endSlide(player, s, false);
+		}
+		// Overclock ends, its charge spent: its glow and loop went on through G and on her corpse (the synced gun: critique_systems M4)
+		s.sojournUlt = -1;
+		player.setAttached(HeroManager.SOJOURN_GUN, (int) Math.round(s.sojournEnergy));
+		if (why.forGood()) {
+			clear(player, s);
+		}
 	}
 }

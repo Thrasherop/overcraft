@@ -4,7 +4,194 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-13: 0.3.41 on next (not on main yet)
+
+- **Junkrat (#73)**, the whole kit with his game data's numbers (build 154088; his last live change, 2026-09-08, is
+  already in the data):
+  - Frag Launcher: 45 direct + 80 splash, 5 frags, bounces, no damage to himself;
+  - Concussion Mine (Shift, 2 charges): 120 → 55, launches him and enemies, set off with the right button;
+  - Steel Trap (E): 100 damage and a 2.5 s root; RIP-Tire (Q): drive it 10 s, 600 → 50 blast, climbs walls and jumps;
+  - Total Mayhem (bombs when he dies), Specialist (his sub-role passive), four perks, quick melee, HUD.
+  - Models, voice and emotes come from the player's own install, as for every hero. His third-person launcher doesn't
+    show yet.
+- Fixed in his critic's round: a RIP-Tire cast in the air hung his body there for 10 s (it falls now, and the fall
+  counts); Steel Trap didn't hold baby mobs or Jump Boost; a frag burst during any long fall cancelled its damage (Pharah's
+  rockets had the same hole, fixed too); a dimension change during the tire stopped his ult charging; his mine and trap
+  stayed marked out after a respawn in another dimension.
+- Played by his builder, a critic, the fixer and the coordinator's real-input pass
+  (`techniques/testing/runs/junkrat/real_keys_24d22a1.md`).
+
+## 2026-11-13: 0.3.40
+
+- **Cassidy (#72)**, the whole kit with his game data's numbers (build 154088; his last live change, 2026-08-11, is older):
+  - Peacekeeper: 70 a shot (x2 on the head), 6 rounds; Fan the Hammer (right button);
+  - Combat Roll (Shift): 6 m, reloads, 50 % less damage during it; Flashbang (E): 75 and a 1.2 s hinder (his live kit
+    since 2024-06-20, not Magnetic Grenade);
+  - Deadeye (Q): locks every enemy in sight, 150 a second then 300, a skull when the shot would kill (armor counted);
+  - Sharpshooter (his sub-role passive), four perks, quick melee, HUD.
+  - Models, voice and emotes come from the player's own install, as for every hero.
+- Fixed in his critic's round: Combat Roll's client and server could disagree (a free roll, or a spent one that didn't
+  move him); Deadeye fired at nothing and spent the ult; its skull ignored armor; he could jump and melee in Deadeye;
+  his shots on the dragon's head did a quarter; Flashbang burst late.
+- Played by his builder, a critic, the fixer and the coordinator's real-input pass
+  (`techniques/testing/runs/cassidy/real_keys_633b3c4.md`).
+- Not yet: his real visual effects, Deadeye's first-person clips (left out: they filled the view), a second player, a
+  Workshop recording of his movement.
+
+## 2026-11-12: 0.3.39 on next (not on main yet)
+
+- **Every hero (#130), matched to the owner's Workshop recordings:** letting go of the keys stops a hero a little sooner
+  (as Overwatch's), and the jump rises with Overwatch's gravity (same 0.98 m top and 0.67 s in the air).
+- **D.Va:** Boosters throw what they hit away from her (towards it), not along her look; ejecting adds its push to the
+  speed she had.
+- **Pharah:** the hover climbs at 4.66 m/s and eases into it, starting 0.2 s after a press from the ground; her jets give
+  no lift without Space held; Barrage in the air holds her up and drifts her slowly (Space up, Crouch down); Jet Dash
+  keeps some of her speed; Concussive Blast's cooldown starts after its cast.
+- **Play of the Game:** a blaze rod or ender pearl scores only as the blaze's or enderman's drop, on its first pickup
+  (owner, 2026-11-12); calm endermen's kills count (owner's call).
+- Played with real input: `techniques/testing/runs/batch_1112/real_keys.md`. Still open: Pharah's fuel refill and whether
+  Concussive cancels a reload (need a recording); D.Va's 2-health drop after eject (not reproduced).
+
+## 2026-11-12: 0.3.38 on next (not on main yet)
+
+- **Tracer (#71)**, the whole kit with her game data's numbers and the owner's Workshop recording:
+  - Pulse Pistols: 40 rounds in a second, 5.75 a bullet, falloff 10 to 20 m, a 1 s reload;
+  - Blink (Shift): 3 charges of 7.5 m, back one every 3 s; follows the ground up stairs and slopes, slides along walls;
+  - Recall (E): back to where she was 3 s ago with that health and full ammo, 12 s cooldown;
+  - Pulse Bomb (Q): sticks, 350 at the centre; Flanker (+50 from a potion of Healing, our stand-in for a health pack);
+    four perks, quick melee, HUD.
+  - Models, voice and emotes come from the player's own install, as for every hero.
+- Fixed in her critic's round: Blink stopped moving her after a few single Blinks but still spent the charge; Recall
+  after a dimension change sent her to the old dimension's coordinates; Blink stopped 1.5 m up any stairs; no wall
+  slide; a lingering Healing cloud counted as endless health packs; a bomb outlived G.
+- Played by her builder, a critic, the fixer, and the coordinator's real-input pass
+  (`techniques/testing/runs/tracer/real_keys_060766e.md`).
+- Not yet: her real visual effects (stand-in particles), Blink's first-person animation, emote sounds, a second player;
+  the bomb's fall (30 m/s², a medium-confidence data reading) needs an Overwatch side-by-side.
+
+## 2026-11-12: 0.3.37 on next (not on main yet)
+
+- **Play of the Game scoring, the owner's values:** progress toward beating the game now scores, from one table
+  (`PotgValues`): blaze +750 over its health, enderman +500, wither skeleton about 1.4 zombies, elder guardian +1000,
+  the Wither +2000; a blaze rod 250, an ender pearl 150; each End crystal 400; each eye placed in a portal frame 100,
+  the one that opens the portal 200; the first trip to the Nether 500 and to the End 1000 (once per player, kept
+  across restarts). Only heroes in hero mode score; nothing after G.
+- Played by its builder (every value) and the coordinator with real input (`techniques/potg/runs_scoring/real_keys_47b6490.md`).
+- **Every hero:** Pharah's rockets, D.Va's missiles and Self-Destruct, and Sigma's spheres and rock no longer hurt players
+  more on Hard (or differently on Easy): Minecraft scaled every explosion by the difficulty. Played: Pharah's own rocket
+  on Hard took 30 before, 20 now.
+- Open for the owner: a calm enderman killed in one hit now scores (it counted as a bystander); your own dropped items
+  score again when picked back up.
+
+## 2026-11-11: 0.3.36 on next (not on main yet)
+
+- **Pharah (#70)**, the whole kit with the game data's numbers (build 154088; her last live change, 2026-08-11, is older):
+  - Rocket Launcher: 6 rockets, 40 direct + 80 splash, 25 % to herself, rocket jumps;
+  - Jump Jet (Shift), Jet Dash (right button), Concussive Blast (E), Hover Jets (hold Space, 100 fuel, overfuel), Barrage (Q);
+  - Recon (her sub-role passive), four perks, quick melee, HUD with a fuel band.
+  - Models, voice, emotes and her Play of the Game intro come from the player's own install, as for every hero.
+- Falls don't hurt while her jets, hover or her own blasts land her; G drops that, and the rest of the fall is Minecraft's.
+- Fixed in her critic's round: the hover kept running asleep or stunned; Space on a ladder, a boat, a horse or in lava
+  drained her fuel.
+- **Every hero:** joining a world in mid-air in hero mode no longer hurts on the landing.
+- Played by her builder, a critic, the fixer, and the coordinator's real-input pass (`techniques/testing/runs/pharah/real_keys_11884de.md`).
+- Not yet:
+  - stand-in particles for her effects, silent emotes;
+  - a second player (Recon, knockback, sounds as others hear them);
+  - Barrage started in the air: she falls unless Space is held (the patch notes and the wiki disagree; needs an Overwatch side-by-side).
+- Still as before: every cooldown resets when a player rejoins (all heroes).
+
+## 2026-11-11: 0.3.35 on next (not on main yet)
+
+- **Play of the Game (#44)** after the dragon's death, recreated from the owner's real clip:
+  - the team lineup;
+  - the hero's highlight intro: Kiriko's from the game data; other heroes their select-screen pose for now;
+  - the left-stacked title, then the cut to white;
+  - the replay from the scorer's eyes, with the top band and a player card (portrait, name, most-played heroes in this world);
+  - the cut to black, and an end screen of the players' cards against the mobs that did most to players (the dragon always).
+- The best play of the whole run is shown to everyone, from any dimension. The world is paused, and there is no skipping.
+- Replays run on a vendored copy of Arcade's replay engine (ServerReplay's, MIT, Kotlin): **the mod now needs fabric-language-kotlin**.
+- Disk is bounded: each player keeps their current 5-minute segment plus their kept plays.
+- **Highlights**: each player's top 5 plays, kept with the world.
+  - The K key (or hero mode's Esc menu) lists them once the world's dragon has died.
+  - Picking one plays it for that player alone, opening with the hero's intro.
+- Scoring values are ours and placeholders (`PotgValues`); the owner tunes them.
+- Played by two-client LAN passes, a critic's round, and the coordinator's real-input pass (`techniques/potg/runs_look/real_keys_0f659e4.md`).
+- Not yet:
+  - the hero's first-person hands, weapon and HUD inside the replay (her kunai don't show);
+  - intros for heroes other than Kiriko;
+  - a dedicated server.
+- A flat disc seen once in an overworld replay is unexplained.
+
+## 2026-11-11: 0.3.34 on next (not on main yet)
+
+- **D.Va (#69)**, the second tank and the first hero with two bodies: the MEKA (Fusion Cannons, Defense Matrix, Boosters,
+  Micro Missiles, Self-Destruct) and the pilot (Light Gun, Call Mech), the wreck and the eject, the Initiator sub-role, her
+  four perks, her voice, her sound effects and her 15 emotes from the game data, the canopy as glass. Numbers from the
+  data, Blizzard's notes and the wiki, each cited in `DvaStats`; Self-Destruct's minimum follows the wiki's 100 over the
+  data's 50. Played by harness keys throughout, a two-client pass, a critic's round, and the coordinator's real-input pass
+  (`techniques/testing/runs/dva/real_keys_09a6f4c.md`), which found Micro Missiles aiming past the target (fixed).
+- Not yet: her 111 visual effects, her firing and Defense Matrix clips, footsteps of her own, the holograms' pink, an
+  Overwatch side by side. Unexplained, not reproduced: 658/675 on the HUD after G back once; the pilot losing 25 once after
+  an eject. Every hero hit plays a pain line: #129.
+
+## 2026-11-10: 0.3.33 on next (not on main yet)
+
+polish-3, polish-4, the railgun (#126) and the Overwatch watcher merged into `next` as 0.3.33 (0.3.32 was the playtest
+zip of 2026-11-05). The network packets changed shape: a 0.3.33 client needs a 0.3.33 server. Played by real keys before
+the merge: [real_keys_0b027dd](techniques/testing/runs/integrate_2026-11/real_keys_0b027dd.md), and what wasn't.
+- Pressing G mid-fall makes you Steve when you land: Minecraft's fall damage, whatever ability was landing you (owner,
+  2026-11-10). A fall begun in Minecraft mode stays Minecraft's if G comes on before the ground.
+
+### On fix/railgun-crisp (built on fix/polish-4)
+- Sojourn's Charged Shot fires on the press and outranks everything but its recovery, Overclock's cast and a stun or sleep (#126). A press in a reload, in an empty magazine's reload or in a melee's recovery was lost; now it fires and cuts the reload (the magazine keeps what it had; R or an empty magazine reloads again). A held left button no longer delays it 0.16 s, a misreading of her data. Her sounds, tracer and clip start on the press, not about 67 ms later (168 ms over a held left button, 30 fps); the damage is still the server's, up to about 50 ms on. It goes along your crosshair from where your camera was as you pressed, also at a slide's speed: the server works out that point on your own path (a client can't name another); a moving target is where the server has it. One press, one shot: holding the button does nothing more (a question for the owner: her data may say it refires). Played by harness keys and, later, real mouse events; not by a person's hands.
+- The first shot of Sojourn's that a client draws no longer hitches, hers or an ally's or enemy's seen by another hero: 362 + 568 ms of frames became 41-68 ms as her, 209 ms became under 45 as a Kiriko watching. Her effect textures are made ahead by a worker as she's picked or first seen (ready about 2 s on: a shot sooner still hitches, for what isn't ready). Her first rounds, reload and Overclock gain the same. Other heroes' first uses have the same hitch, not touched (Kiriko's first ofuda about 250-300 ms) (#126).
+- The Charged Shot no longer snaps a melee or Disruptor's clip away; it takes the mouse's movement of that frame (a flick's click 3 of 6 -> 12 of 12); a press in its last 0.15 s fires, measured as the data has it, and its recovery is 0.65 s from a press, not 0.60; at a ping (a dev delay's 100 ms, not real latency) no ghost reload, no ghost or doubled shot in the cases found. One Sojourn's shot no longer silences another's reload (#126).
+- A keyboard key's repeat no longer refires it. Mashing near the end of its recovery keeps the instant look. A hacked Sojourn's Q no longer delays her shot's look (#126).
+- Mashing the Charged Shot no longer loses presses: a shot every 0.65 s at 10-20 clicks a second, real mouse events (it was 1 to 6 in 5 s). Holding Q shows no shot that its cast would drop (#126).
+
+## 2026-11-05
+
+### On fix/polish-4 (not released, version not bumped; built on fix/polish-3)
+- Protection Suzu and Life Grip now wake the slept, end stuns and Hack, and clear what the data and wiki list; knock-downs stay, and the phase keeps those states off (#119). The list is in `Combat.cleanse`.
+- Rally: the bashed target is no longer hit again by its shockwave: 70 damage, not 140 (#120).
+- Hits pass through the phased: Catnapper's landing and tether, Soundwave, EMP, Hyper Strike, the dart, the bash, the whip, the shockwave. A stun on a knock-down stays a knock-down. No hold is let go while another holds.
+- The shockwave no longer goes through walls and barriers (#122). `/kill` and the void kill the phased. Filed, not fixed: #123, #124.
+- Kiriko's Suzu line now plays only 0.5 s after an actual cleanse, as the game's data has it, not on every throw (#121). A Suzu at a healthy ally says nothing; poison and fire, which the data doesn't know about, don't count.
+- Whip Shot pushes about 8 m on flat ground, as the wiki has it: the game data's 25 m/s and 3 up, one push (8.04 m on a hero; a mob 7.99 m; in Minecraft mode 4.66 m). Shield Bash and Rally's wave use the data's 6 and 3, a much smaller push than before (2.5 m on a hero, was 7.9 m).
+- Lucio off a wall ride, and Brigitte off a Shield Bash, land unhurt (#35). Shots you fire at someone phased no longer vanish on your screen. EMP and hack catch a deployable whose owner is phased. Rally's wave reaches someone whose feet are in sight. Whiplash slams into walls, not stairs, slabs or a wall it's brushing, and now slams a Minecraft-mode target too.
+- Rally: Brigitte herself takes no overhealth, as Blizzard's April 2023 patch has it (#125). G in the air ends an ability's soft landing; so does staying in water or climbing a ladder, but not what it started on, brushes past or slides down.
+- A hero slept or stunned in the air lands as they would awake. A Shield Bash lands her unhurt however it ended, off a ledge too. Whiplash ends with her (G, death, leaving). Guardian Angel, Life Grip, Shield Bash and Power Slide work from water and ladders (#127). Lifeweaver's Space there swims or climbs, and spends nothing, and on a mount it's the mount's. A hero picked mid-fall lands as Steve would, as with G. Riding, lava and cobwebs end a landing. A fall begun in Minecraft mode stays Minecraft's if G comes before the ground.
+- Record: techniques/testing/polish4.md.
+
+### On fix/polish-3 (not released, version not bumped)
+- Blizzard's Nov 3 patch (#116): Brigitte's Inspire (1 s, 15), Ana's grenade damage 60, Jetpack Cat's health 200, fuel and boost, Sombra's Hotfix 10 s and Weaken 40%.
+- Protection Suzu and Life Grip clear Biotic Grenade's anti-heal (#117). Other players see Lucio's wall ride (#115). Hyper Strike's float reaches a struck player; every other push already did (#109). Sigma's Hyper Strike count and Soundwave Rider's charge at the crosshair (#85).
+- **HeroInputPayload's shape changed** (a ride's side and yaw): a client and server on builds either side of this don't work together: update both.
+- Record: techniques/testing/polish3.md.
+
+### Build 0.3.31 (on fix/polish-2, not released): needs its asset pack rebuilt
+- Healing reduction (#103), a player arriving learns what's going on (#96), Juno's lock cancels and Life Grip's prompt (#112), Brigitte's first-person chain (#113), Lúcio's dreads, lean and camera roll (#105), Lúcio's and Mercy's glows (#114).
+- The pack: `effects`, `glows`, then `zip` (techniques/building/building.md). An older pack shows in red in the pause menu.
+
+### Jetpack Cat's Lifeline: a real rope (#89; not in a build yet)
+- Whoever she tows now hangs under her and trails behind her as she flies, swings past her when she stops, swings wide in a turn, comes up off the ground on a stretch of rope, and rides over a wall.
+  They used to copy her speed, keeping whatever offset they had, and stood still at whatever angle they stopped.
+- A towed player keeps their keys: their own client pulls them. Not yet played with a real second player.
+- Her view backs off to 6.75 m with someone on the rope, as her data has it (3.5 m seeking), so you can see them.
+- Mobs lean along the rope; heroes with a towed pose play it.
+- The rope flies out from her arm and back. It breaks if it's pulled through terrain from any direction. Jump to Detach keeps what you had across.
+
 ## 2026-11-02
+
+### Brigitte's Barrier Shield fixed (#88; not in a build yet)
+- With the shield up she no longer turns round and round: her shield-up stand is held still, as every turn-in-place
+  stand now is (found by what the clip does, not by name: Sombra's stealthed stand and Mercy's blaster stand too).
+- Raising the shield moves the view behind her, as Overwatch does (her data: 2 m back, 4 m in Rally, a 0.3 s blend, first
+  person for the start of a Shield Bash), with the crosshair on what she aims at.
+- The barrier now stops a blast whole: a creeper or TNT that breaks it no longer hurts or throws her, a creeper right
+  against it is blocked, and a blast is charged to it once. Her armor no longer shrinks hits on the barrier.
+- Dying with the shield up no longer brings her back holding it; a player who comes into range sees it already up.
 
 ### Build 0.3.30 (Sojourn, the tenth hero)
 **The asset pack must be rebuilt** (`ASSETS_NEEDED` 0.3.30): Sojourn's models (`tools/clipmaps/sojourn*.txt`: her body, first-person

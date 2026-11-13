@@ -1,0 +1,40 @@
+=== phase night 13:46:23
+before arm {'screen': '', 'fps': 118, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 88.0, 'primaryAmmo': 15, 'secondaryAmmo': 10, 'anim': 'idle'} {'zombie': 0, 'skeleton': 0, 'ender_dragon': 0, 'end_crystal': 0}
+[13:46:28] [Render thread/INFO] (Minecraft) [System] [CHAT] POTG tap armed
+after arm {'screen': '', 'fps': 119, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 96.0, 'primaryAmmo': 15, 'secondaryAmmo': 10, 'anim': 'idle'}
+summoned {'zombie': None, 'skeleton': None, 'ender_dragon': 0, 'end_crystal': 0}
+  t 5 {'screen': '', 'fps': 117, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 1546.08, 'primaryAmmo': 4, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 10 {'screen': '', 'fps': 118, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2133.5, 'primaryAmmo': 13, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 15 {'screen': '', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 2, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 21 {'screen': '', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 7, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 26 {'screen': '', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 0.0, 'primaryAmmo': 10, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 32 {'screen': '', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 0.0, 'primaryAmmo': 10, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 37 {'screen': '', 'fps': 119, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': False, 'ult': 69.75, 'primaryAmmo': 2, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 42 {'screen': '', 'fps': 119, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 95.0, 'primaryAmmo': 12, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 47 {'screen': '', 'fps': 119, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 668.33, 'primaryAmmo': 2, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 52 {'screen': '', 'fps': 118, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 943.83, 'primaryAmmo': 7, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 57 {'screen': '', 'fps': 118, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 1341.0, 'primaryAmmo': 13, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+after fight {'screen': '', 'fps': 119, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 1677.75, 'primaryAmmo': 7, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'} {'zombie': None, 'skeleton': None, 'ender_dragon': 0, 'end_crystal': 0}
+dump night1 [13:47:32] [Render thread/INFO] (Minecraft) [System] [CHAT] Kiriko: 0.127 ms/tick mean, 12378 B/s, ring 352 KB.
+[POTG] Kiriko: 64.0 s armed, 1177 ticks recorded in hero play (102 out of it), server tick avg 4.45 ms
+[POTG] tap ms/tick: mean 0.127 p50 0.089 p99 0.680 max 8.022 (keyframe each 5 s: mean 1.22 max 7.29 ms)
+[POTG] bytes/s: stream 11698 + own track 680 = 12378; keyframes 13, avg 13194 B, max in ring 15420 B; ring now 360907 B in 6 segments
+[POTG] Kiriko: 64.0 s armed, 1177 ticks recorded in hero play (102 out of it), server tick avg 4.45 ms
+[POTG] tap ms/tick: mean 0.127 p50 0.089 p99 0.680 max 8.022 (keyframe each 5 s: mean 1.22 max 7.29 ms)
+[POTG] bytes/s: stream 11698 + own track 680 = 12378; keyframes 13, avg 13194 B, max in ring 15420 B; ring now 360907 B in 6 segments
+[POTG] client decode of Kiriko: 23.5 ms; records: packets 16152 (294796 B), own track 477 (16218 B), own packets 0 (0 B); framing errors 0
+after dump {'screen': '', 'fps': 118, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 1935.5, 'primaryAmmo': 7, 'secondaryAmmo': 10, 'anim': 'idle'} {'zombie': None, 'skeleton': None, 'ender_dragon': 0, 'end_crystal': 0}
+  t 5 {'screen': '', 'fps': 119, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2223.25, 'primaryAmmo': 12, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 10 {'screen': '', 'fps': 118, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 2, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 15 {'screen': '', 'fps': 119, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 7, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 20 {'screen': '', 'fps': 119, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 13, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+after skeletons {'screen': '', 'fps': 118, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 3, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'} {'zombie': None, 'skeleton': None, 'ender_dragon': 0, 'end_crystal': 0}
+dump night2 [13:48:01] [Render thread/INFO] (Minecraft) [System] [CHAT] Kiriko: 0.113 ms/tick mean, 11040 B/s, ring 319 KB.
+[POTG] Kiriko: 93.1 s armed, 1761 ticks recorded in hero play (102 out of it), server tick avg 4.63 ms
+[POTG] tap ms/tick: mean 0.113 p50 0.078 p99 0.666 max 8.022 (keyframe each 5 s: mean 1.06 max 7.29 ms)
+[POTG] bytes/s: stream 10360 + own track 680 = 11040; keyframes 19, avg 13171 B, max in ring 14096 B; ring now 327063 B in 6 segments
+[POTG] Kiriko: 93.1 s armed, 1761 ticks recorded in hero play (102 out of it), server tick avg 4.63 ms
+[POTG] tap ms/tick: mean 0.113 p50 0.078 p99 0.666 max 8.022 (keyframe each 5 s: mean 1.06 max 7.29 ms)
+[POTG] bytes/s: stream 10360 + own track 680 = 11040; keyframes 19, avg 13171 B, max in ring 14096 B; ring now 327063 B in 6 segments
+[POTG] client decode of Kiriko: 8.7 ms; records: packets 14295 (265524 B), own track 504 (17136 B), own packets 0 (0 B); framing errors 0
+after dump2 {'screen': '', 'fps': 119, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 3, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'} {'zombie': None, 'skeleton': None, 'ender_dragon': 0, 'end_crystal': 0}

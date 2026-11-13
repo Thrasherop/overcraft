@@ -303,7 +303,74 @@ What playing found:
 - **Not fixed:** a glide started in water does nothing but its pose; the ray's ground circle lies on the bottom under a
   liquid; the pause menu still reads 0.3.27 (the version bump belongs to the merge).
 - **Not ours:** "Failed to save chunk" toasts in `relnight` (Windows' "Insufficient system resources" on E: while
-  checking for an oversized-chunk file; no `.mcc` written); a kunai's knockback pushing her 3.4 m (Minecraft's, any hero).
+  checking for an oversized-chunk file; no `.mcc` written); a kunai's knockback pushing her 3.4 m (Minecraft's, any hero; gone since #93: hero hits take no Minecraft knockback, [minecraft_26](../minecraft/minecraft_26.md#hero-hits-dont-push-93-2026-11-03)).
 
 Not tried: a second player as Juno; boats, ladders, minecarts; the Hyper Ring on an enemy; her emotes and voice lines
 (steps 8 and 8b); a real person's night (the scripted fighter is no player); crafting at a crafting table.
+
+## #86: Pulsar Torpedoes in first person, the Glide Boost icon (2026-11-04)
+The owner's playtest: "Pulsar Torpedoes busted in first person; Glide Boost icon doesn't show". Reproduced on `next` (dev client,
+flat world, 1920x1080; `hp_tl_*`, `hp_tf_*`, `hp2_*`, `hp3_*`, `hp4_*` in the worktree's `run/screenshots`, not committed):
+- **The lock's view ran out after 0.43 s.** `torpedo_lock_start` played alone, then the gun came back up with the lock still open,
+  and the fire's clip jumped the pods back in. The data's alias 0x165 has start (13/30 s) then its default (39/30 s) by df 0x1A0:
+  `ActionTrack` now plays `torpedo_lock_start`, then `torpedo_lock` looping until the fire or a cancel (which fades from
+  where it is). Played: pods up and gun down for the whole window (read at 0.25, 0.55, 1.05, 2.05 s), a cancel with nothing locked
+  brings the gun back, the 2 s cooldown runs.
+- **Her third person had the same hole, and the clip keys tell how they join.** `add_torpedo_lock_start` keys bone 3CFB at (+0.28,
+  +0.55) in every frame; `add_torpedo_lock` and `_hold` only bob 1-4 cm about zero; `add_torpedo_fire` starts at (+0.30, +0.52). They
+  meet only with the start's offset kept under the hold, so that's how it's added (M: the data's own layering of df 0xAE7 isn't
+  read further). Played front and back: the pods hover over her shoulders, their glow grows on them to the 1 m burst; without
+  it they folded down at 0.43 s and the glow sat on her back.
+- **Torpedoes left from behind her eyes:** the server's launch point is the pods' rest place. Each client now starts the drawn
+  torpedo at the pods of the Juno it left (`JunoFx.podLaunch`): posed in third person, `HeroModelRenderer.viewPod` as drawn in her
+  own view. Played at night with `fxslow 0.08`: it leaves the left pod and flies to the zombie. The pods' lock glow now shows in her
+  own view too, a quarter the size (half a metre from her eyes).
+- **The timers (0237.116), which the data has and we didn't draw:** Glide Boost's on the centre layer with its icon (47B7 #641:
+  v215 / v567, op109(v215), icon key 024D), the lock window's in the reticle (4695 #1225 / #1283). Art isn't in the data: a
+  shrinking bar and the seconds, under the crosshair (`HeroHud.junoTimers`). Played: 2.9 s at 1.05 s into a lock; 3.3 s left in a glide
+  with the star icon.
+- **The Glide Boost icon: not reproduced as "missing".** With the current pack the LShift box shows it in every state read
+  (ready `hp_juno_hud`, gliding `hp_juno_glide`, cooldown `hp_juno_glidecd`, the select row `hp_sel2`); the PNG is 8-bit RGBA like
+  the others; `overcraft/local-assets/overcraft-assets.zip` (2026-10-29) and `overcraft_ana`'s (2026-11-02) both hold it, and
+  `build_asset_pack.py zip` copies the whole pack. Candidates left: the owner's installed zip, or the icon the owner missed being the
+  one the data shows **while gliding**, which we hadn't drawn and now do. Ask the owner which, with this build.
+
+A night fight on the final build (`hp7_f*`): live zombies and a skeleton, a villager at 6: lock, fire from the raised pods (seen from
+behind at `fxslow 0.08`): villager 14.88, zombie 13.31 (85, less armor); the Mediblaster held; Glide Boost with its bar as a zombie hit her.
+
+What a critic should check:
+- **The pods' size and place in her own view against the game.** The clip puts them in the top corners; `ARM_SCALE` 1.4 (matched on
+  Kiriko) pushes them out and enlarges them, cut by the screen's edge. No Overwatch frame of this moment was at hand. If they sit
+  further in, she needs a smaller scale for that clip, not a new clip.
+- The lock's cone (still the data's 103, "anyone on her screen", L): the torpedoes took slimes at the screen's far left. Not changed.
+- The bar is ours in shape; the "[LShift] cancel" prompt (00DB, string 1B3C0, text not found) is still not drawn, and the lock marks
+  are world rings, not the 0727 HUD marks (#85).
+- Not tried: the lock with a second player, in water, or cut by Orbital Ray (its clip replaces the view's); boats, ladders.
+
+## After the critique ([critique_hero_polish](../testing/critique_hero_polish.md), 2026-11-04)
+Played on `next` merged in (fix/systems' `leavePlay`), through the harness socket (its keys are Minecraft's key mappings), dev pack:
+- **H1, the lock's pose stuck. Reproduced first on the commit before the fix:** lock, `/kill`, respawn: no gun, pods up, and a volley fired from nothing
+  (`hp8_old_after_death*`); lock, G, G the same (`hp8_old_g`). `Torpedoes.clear` now sends `torpedo_cancel` if a lock was open; a hack ends a lock.
+  Played after, both views: death, G, sleep, stun, hack (`hp9_*`; the last three by the dev-only `cut` command: no second client), a hero switch and
+  leave and rejoin while locked (`m_jun_sw`, `m_jun_lv`): gun back each time, `anim1p` null, pods down.
+- **H2, the icon:** on the owner's own package (the 0.3.31 `overcraft-assets.zip` from `current_overcraft.zip`, through `LocalAssetPack`'s zip path) the
+  LShift icon shows ready, gliding and on cooldown (`hp8_zip_*`). **Not played: the 0.3.31 jar itself** in a real install; the code was the dev client's. So not
+  reproduced, still not explained. `4cba105`'s `Fixes #86` overstates; later commits say `Refs #86`, and the icon half waits for the owner: which icon, which
+  state, which build. The zip's date also weakens the "owner's old zip" candidate (the critique's reading).
+- **M3:** a cancel fades the pods home over 0.15 s (`hp9_3p_cancel*`); a fire inside the start no longer adds both offsets.
+- **M4, the glow on her chest: the posed point's limit.** `point()` gave up after 1 tick without a frame; a screenshot stalls 4-5, and it dropped to the rest place. It
+  came back at a 5-tick limit (`hp11_t3`), so it's 20 now. Not seen again in the later shots, but the stall that caused it also made it hard to see: a critic should
+  look at it live at low fps.
+- **M5:** her own launch flares are a quarter size, and her own torpedoes fade in out to 3 m (the slow-launched ball hung in the top corner, `hp11_6b`). After:
+  four targets at real speed, `hp14_j1`, `hp14_j2`, nothing over her aim. **Six targets were played only before the fade** (`hp11_6a`-`c`).
+- A glide during a lock (both bars) and F5 mid-lock (`hp11_gl`, `hp11_f1`, `hp11_f2`) work. Improved Transparency on: pods and lock fine (`hp14_j*`).
+
+Still not tried: Orbital Ray cutting a lock, two Junos side by side (`podLaunch` takes the first within 1.5 m), water, boats, ladders, a real second player.
+
+## Weapon parts, glows and aim (2026-11-04, #91, #95)
+General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.
+
+## The torpedo lock's cancel (#112, 2026-11-05)
+Graph 4695, default options (Toggle v53180 on, Swap v55397 off): the buttons go live 0.4 s in or with the first lock (#893 v15541 -> #921, #922 -> #923); **left fires, only with something locked** (#1055 -> #1053 -> #1056: end, with the launches), **right cancels** (#1057 -> #1054: the end flag and "done", no launch), the prompts say so (#1051: 177F0 FIRE, 04CC CANCEL). Four seconds up, what's locked goes (#1110). A cancel costs the 2 s of no targets (#1315 -> #931; 10 s comes with a launch: M). This replaces "either button fires" and the older "left cancels with nothing locked".
+Played (dev harness, a NoAI husk 8 m ahead, 20 health): baseline right with a lock: 13.31 health, 6.8 s left on the cooldown (`b_112_first_right_locked_*`, "FIRE FIRE"). Now: right with a lock 20.0, no torpedoes, 0 by 2.6 s; left with a lock 13.31, 6.8 s; right with nothing: 2 s; left with nothing: the lock goes on to its 4 s; right at 0.15 s: ignored. Prompt "FIRE / CANCEL" in `a_112_first_right_locked_lock`. The swap and hold options aren't built. A critic should check a real player's rhythm: pressing right again by habit now throws locks away, as in Overwatch.
+The ring on what was locked stayed 5 s after a cancel (`a_112_first_right_locked_after`, reproduced: `r_b2_cancel`, fxnear 1): `juno_locks_gone` clears it: fxnear 0 ([g2](../testing/runs/polish2/g2_replay_ring.txt)), the same in `Torpedoes.clear`. The FIRE / CANCEL prompt shows in the dead first 0.4 s: #1051 has no condition of its own read, and I didn't find whether it's under the same gate: harmless. Raw numbers: [g3](../testing/runs/polish2/g3_numbers_chain_mercy.txt).

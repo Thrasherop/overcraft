@@ -1,0 +1,5 @@
+# Pharah, her third-person extra clips (owm_survey.py --clips-only), merged into hero_models/pharah.glb by bone name (HeroModels).
+# Her 15 emotes come with --emotes (emote_<name>_<n>, in path order: techniques/emotes/emote_reproduction.md), on her skin's model
+# F2A5 (research\pharah\extract\Heroes\Pharah\Skin\Overwatch\Overwatch\Models\00000000F2A5.00C). Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <F2A5.owmdl> <out> --glb --clips-only --only=none
+#     --keep=tools/clipmaps/pharah_clips.txt --emotes=<research\pharah\extract\Unlocks\Heroes\Pharah\Emote>

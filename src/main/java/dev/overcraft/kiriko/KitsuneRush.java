@@ -102,6 +102,21 @@ public final class KitsuneRush {
 		ACTIVE.removeIf(rush -> !rush.tick());
 	}
 
+	/** Her Rush ends now (she left play: Kiriko.leavePlay), and she is out of its buffs at once. */
+	public static void end(ServerPlayer owner) {
+		ACTIVE.removeIf(rush -> {
+			if (rush.owner.getUUID().equals(owner.getUUID())) {
+				if (!rush.foxEntity.isRemoved()) {
+					Effects.play(rush.level, "rush_end", rush.fox, owner);
+					rush.foxEntity.discard();
+				}
+				return true;
+			}
+			return false;
+		});
+		Combat.endRush(owner);
+	}
+
 	public static void clear() {
 		ACTIVE.forEach(rush -> rush.foxEntity.discard());
 		ACTIVE.clear();

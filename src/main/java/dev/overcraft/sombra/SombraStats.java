@@ -5,7 +5,7 @@ package dev.overcraft.sombra;
  * 154088 of 2026-10-06, with its detail in E:\Overwatch Archive\research\sombra\work_kit\). Sources: the game data (D, with
  * its value id or graph node), Blizzard patch notes (BZ), the Overwatch wiki (W). The data is used where they disagree, as
  * the build's own code, except where a patch after the data build changed a number (BZ 2026-10-13: the pistol's damage,
- * Cyberspace's opening damage and cooldown), and the line says so; where none gives a value, it's ours and says so.
+ * Cyberspace's opening damage and cooldown; BZ 2026-11-03: Hotfix's time, Weaken), and the line says so; where none gives a value, it's ours and says so.
  */
 public final class SombraStats {
 	private SombraStats() {
@@ -41,7 +41,9 @@ public final class SombraStats {
 	/** A 0.5 s channel, then 0.3 s of recovery (D 60FB; BZ 0.5 s; W 0.5 + 0.3). */
 	public static final double HOTFIX_CAST = 0.5, HOTFIX_RECOVERY = 0.3;
 	/** On an ally: this much at once, then this much a second, until this much in all or this long. */
-	public static final double HOTFIX_HEAL_NOW = 65, HOTFIX_HEAL_RATE = 25, HOTFIX_HEAL_TOTAL = 175, HOTFIX_HEAL_TIME = 12;   // D 60FB; W
+	public static final double HOTFIX_HEAL_NOW = 65, HOTFIX_HEAL_RATE = 25, HOTFIX_HEAL_TOTAL = 175;   // D 60FB; W
+	/** BZ 2026-11-03 (12 -> 10 s), after the data build (D 60FB: 12); W rev 409088. */
+	public static final double HOTFIX_HEAL_TIME = 10;
 	/** Hacking (a health pack, an enemy deployable): no charge spent, then its own lockout. */
 	public static final double HOTFIX_HACK_LOCKOUT = 6;        // D 614C; W
 
@@ -65,8 +67,8 @@ public final class SombraStats {
 	public static final double ZONE_DAMAGE_NOW = 20, ZONE_DAMAGE_RATE = 25;   // D 25/s; W
 	/** Allies: on opening, then a second. */
 	public static final double ZONE_HEAL_NOW = 40, ZONE_HEAL_RATE = 30;       // D 6102; W
-	/** Weakened enemies deal and heal this much less (D 6102, M on which channels; BZ 2026-10-06; W). */
-	public static final double WEAKEN = 0.5;
+	/** Weakened enemies deal and heal this much less: BZ 2026-11-03 (50% -> 40%), after the data build (D 6102: 50%, M on which channels); W rev 409088. */
+	public static final double WEAKEN = 0.4;
 	/** How long it lasts after leaving the zone: enemies (D 0.25 s; W 0.5 s: the data used), allies. */
 	public static final double ZONE_LINGER_ENEMY = 0.25, ZONE_LINGER_ALLY = 0.75;
 
@@ -84,6 +86,8 @@ public final class SombraStats {
 	public static final double TRANSLOCATOR_COOLDOWN = 7.5;
 
 	// ---- Stealth (after every teleport: D 420C; no longer an ability of its own) ----
+	/** Alias 0486's play time in the fade (420C #868's 0.525), and 1AD9's sparkles (at 0.77 s of it, sombra-effects). */
+	public static final double STEALTH_IN_CLIP = 0.525, STEALTH_SPARKLES = 0.77;
 	public static final double STEALTH_FADE_IN = 0.75, STEALTH_TIME = 6.5, STEALTH_FADE_OUT = 0.3;   // D 420C; BZ
 	/** Faster while stealthed (D, M; W +60%; the recording 2026-11-01: 8.80 m/s throughout, 5.5 x 1.6). */
 	public static final double STEALTH_SPEED = 0.6;

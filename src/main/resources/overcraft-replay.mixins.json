@@ -1,0 +1,28 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.overcraft.vendor.arcade.replay.mixins",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "common.ServerLevelMixin",
+    "flashback.ClientboundLevelChunkPacketDataAccessor",
+    "flashback.ClientboundMoveEntityPacketAccessor",
+    "network.IdDispatchCodecAccessor",
+    "player.ServerCommonPacketListenerImplMixin",
+    "player.ServerConfigurationPacketListenerImplMixin",
+    "player.TrackedEntityMixin",
+    "rejoin.ChunkMapAccessor",
+    "rejoin.ServerConfigurationPacketListenerImplAccessor",
+    "rejoin.ServerConfigurationPacketListenerImplMixin",
+    "rejoin.ServerPlayerMixin",
+    "utils.ChunkMapAccessor",
+    "utils.ServerCommonPacketListenerAccessor",
+    "utils.TrackedEntityAccessor",
+    "viewer.ClientboundPlayerInfoUpdatePacketAccessor",
+    "viewer.EntityInvoker",
+    "viewer.ServerGamePacketListenerImplMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

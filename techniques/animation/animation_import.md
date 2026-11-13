@@ -52,6 +52,9 @@ doesn't keep them**: its bones point Y down the bone, which showed every hand ha
 and a fix by eye was built on that. Read frames from the raw reference pose or the glb, never from Blender's bones.
 
 ## Finding the right clip
+- **One clip can sit at two leaves: name it for the stand** (2026-11-13, [junkrat](../heroes/junkrat.md)). Junkrat's 1P set and his launcher's
+  play the same clip for the stand (df18 default) and the crouch (cat66), and the clip map named it `crouch`: with no `idle` his 1P arms
+  and launcher stayed out of view. Grep the set's `compact_<set>.txt` for the clip id: every leaf it plays at shows there.
 - **Contact sheets.** Render clips as frame strips and look at many at once (`tools/owm_survey.py --survey --shots=N`,
   `--side` for leg cycles; scratchpad `sheets.py` stacks strips). The owner spotted the wall climb on one; send the
   owner sheets when stuck, since a human recognizes poses instantly.
@@ -75,6 +78,15 @@ and a fix by eye was built on that. Read frames from the raw reference pose or t
 - **When a clip "looks wrong" to the owner, re-identify it from the game's own graph**: alias chains, which sounds
   sit on it, its length against the stat. Render strips. A whole action can be mislabelled: the "reload" was an
   ofuda throw, and the real reload was filed as "equip".
+- **Stand clips are turn-in-place sheets: hold them at frame 0, found by what they do (#88, 2026-11-02).** Overwatch
+  picks a stand clip's frame by the turn's progress, so on the clock its root turns 120 degrees a second and the hero
+  spins. A name list held Kiriko's and Ana's; Brigitte's shield-up stand (`idle_shield`) wasn't on it, and with the
+  shield held she turned round and round in third person (the owner: "brig starts looking around"). Sombra's stealthed
+  stand and Mercy's blaster stand had the same fault, unseen. `HeroAnimator.turnsInPlace` now measures each clip once:
+  its root (the bone above the pelvis) facing more than 45 degrees away at the end than at the start. DevServer
+  `turnclips <hero>` lists what it finds (2026-11-02: every hero's idle and crouch stands, Brigitte's and Sombra's
+  variants, Mercy's blaster, Lifeweaver's thorn and charging stands, Juno's and Sojourn's crouch). A new hero needs no
+  name added; check the list against its clip map instead.
 - **Glitches that come "at random"** may be a layer under everything: the leg kick was the idle breathing clip's
   broken keys. Read a clip's keys (glb animation channels in Python) for single-frame jumps, and scan the data for
   every case, not just the one fixed ([hand_play](../testing/hand_play.md)).
@@ -88,3 +100,11 @@ and a fix by eye was built on that. Read frames from the raw reference pose or t
   body) with 0x2DE (the same wave, additive) beside it, which the clip maps had as "Others (L meaning)". The callout graph
   0686 runs graph 0341, which plays them (research\hello_gesture\hello_gesture.md). STU references are stored mangled, so
   searching raw bytes for a GUID misses them: use the research's structured scanner (`stuscan.py`).
+
+- **A body the data hides may already be in the other model** (D.Va, 2026-11-02): her pilot rides inside the MEKA hidden
+  (026A #794, the seated category 0283), and the mech model FBB0 has the pilot's gloved hands on its controls of its own.
+  Drawing the pilot model seated at the attach point (no hardpoint, no offset: 026A #99) hung her legs out under the mech.
+  Draw the bigger model alone first and look before adding the rider ([heroes/dva](../heroes/dva.md)).
+- **A clip can carry an entity's whole entrance.** Call Mech's landing (311F, 0xE5) drops the mech from the sky by its
+  root motion, and the pilot's (3120) runs and jumps her into it: the entity sits on its spot and the clips do the rest,
+  no hand-made fall. Play the data's clip on the spawned entity before inventing a motion.

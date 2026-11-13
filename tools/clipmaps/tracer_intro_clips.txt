@@ -1,0 +1,17 @@
+# Tracer's Play of the Game highlight intro: the clips only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/tracer.glb by bone name (HeroModels, from hero_models/tracer_intro_clips.glb), as Pharah's (pharah_intro_clips.txt).
+# From DataTool's extract-unlocks "Tracer|highlightintro=*" (build 154088, archived: research\tracer\extract\Unlocks\Heroes\Tracer\
+# HighlightIntro). The default Overwatch plays: "Heroic" (unlock 01FB.0A5, name 170D.07C), one of the two highlight intros in her
+# progression's default list (0001.058 STUProgressionUnlocks m_7846C401, beside the default emote Heroic 0908); the other is
+# "Random from Favorites" (01FC.0A5), a picker, not a clip (H, scripts\hero_unlocks_tracer.py, intro_names_tracer.py).
+# Heroic holds four clips (Animations\0\32): C084 2.267 s (animation effect 481A), C088 2.9 s, C089 2.9 s, C08A 3.867 s. Unlike
+# Pharah's (read as picks), her intro set 42EE's alias B33 is a SEQUENCE with these same lengths: seq[0] 2.267 -> seq[1] 2.9 ->
+# seq[2] 3.867 -> seq[3] 3.0 -> seq[4] a 2.9 or a random pick of 2.9 / 3.867 / 3.0 (H tree; the set's own clip ids 19F9C-1A3FE are not
+# extracted under D748). So C084 is the opening (H by length and its effect), C088 or C089 the 2.9 s step after it (which is which: M),
+# C08A the 3.867 s step. Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <D748.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/tracer_intro_clips.txt --clips-from=<...>\Heroes\Tracer\HighlightIntro\Overwatch\Heroic
+emote_00000000C084 = potg_intro
+emote_00000000C088 = potg_intro_2
+emote_00000000C089 = potg_intro_2b
+emote_00000000C08A = potg_intro_3

@@ -1,0 +1,74 @@
+cmd /gamerule spawn_monsters false
+cmd /difficulty easy
+cmd /time set noon
+cmd /kill @e[type=!player]
+MARK F1 (#1, client yes / server no) lag 150: one shot (ammo 5), E, then Shift 0.17 s later. Old (critic C6): he moved ~6 m, the server's ability1Cooldown stayed 0, ammo stayed 5. Fixed: he doesn't move, nothing spent
+cmd /tp @s 0.5 -60 0.5 0 0
+sleep 1
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 1
+presstrace lag 150
+sleep 0.6
+state
+key ability_2 down
+sleep 0.03
+key ability_2 up
+sleep 0.14
+key ability_1 down
+sleep 0.13
+key ability_1 up
+sleep 0.8
+state
+sleep 0.6
+state
+presstrace lag 0
+sleep 12
+MARK F2 (#1, client no / server yes) lag 150: roll, then Shift taps every ~0.17 s around the cooldown's end. Old (critic C7): a tap the client refused started a server roll (mode 2) with no move from it. Fixed: every server roll comes with its own move (z jumps ~6 with each mode-2)
+cmd /tp @s 0.5 -60 0.5 0 0
+presstrace lag 150
+sleep 0.6
+key ability_1 down
+sleep 0.13
+key ability_1 up
+sleep 4.75
+state
+key ability_1 down
+sleep 0.07
+key ability_1 up
+state
+key ability_1 down
+sleep 0.07
+key ability_1 up
+state
+key ability_1 down
+sleep 0.07
+key ability_1 up
+state
+key ability_1 down
+sleep 0.07
+key ability_1 up
+state
+key ability_1 down
+sleep 0.07
+key ability_1 up
+state
+key ability_1 down
+sleep 0.07
+key ability_1 up
+state
+sleep 0.6
+state
+presstrace lag 0
+sleep 5.5
+MARK F3 (#6 hinder cuts a roll) roll forward, hinder 0.1 s in. Old: the full ~6 m roll. Fixed: it stops ~1.5 m on, cooldown 5 s from then
+cmd /tp @s 0.5 -60 0.5 0 0
+sleep 0.5
+key ability_1 down
+sleep 0.1
+cut hinder
+key ability_1 up
+sleep 1
+state
+sleep 2

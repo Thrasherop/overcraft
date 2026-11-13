@@ -1,0 +1,55 @@
+hero kiriko -> {"ok": true}
+--- ray, real: bot Juno's ult
+bot add J1 juno - 400.5 -60 400.5 0 -> {"ok": true, "hero": "JUNO"}
+{'ok': True, 'hero': 'JUNO'}
+bot press J1 ultimate -> {"ok": true}
+{'ok': True}
+ 1st arrival rays {'rays': 1}
+ fx ({'effect/juno_streak_v/juno_ray_rain_n': 32, 'effect/cat_speed_line_2/juno_ray_ally_rise': 5, 'effect/juno_ray_circle/juno_ray_decal_n': 4, 'effect/cat_speed_line_1/juno_ray_ally_rise': 3, 'effect/juno_jet_glow/juno_boot_jet_n': 2, 'effect/juno_ray_disc/juno_ray_ground_n': 1, 'effect/glow/juno_ray_ground_n': 1}, 50)
+ 2nd arrival rays {'rays': 1}
+ fx ({'effect/juno_streak_v/juno_ray_rain_n': 48, 'effect/juno_ray_circle/juno_ray_decal_n': 4, 'effect/cat_speed_line_1/juno_ray_column_edge_n': 3, 'effect/cat_speed_line_1/juno_ray_column_n': 3, 'effect/juno_jet_glow/juno_boot_jet_n': 2, 'effect/juno_ray_disc/juno_ray_ground_n': 1, 'effect/glow/juno_ray_ground_n': 1}, 62)
+ torpedo lock pose: bot Juno right button
+ seen {'animator': True, 'emote': 'null', 'emoteTime': 95.55, 'sinceAim': 1000.0, 'sinceShield': 1000.0}
+--- rush, real: bot Kiriko's ult
+bot add K1 kiriko - 400.5 -60 400.5 0 -> {"ok": true, "hero": "KIRIKO"}
+{'ok': True, 'hero': 'KIRIKO'}
+bot press K1 ultimate -> {"ok": true}
+{'ok': True}
+ 1st fx ({'effect/talisman/teal_soft': 66, 'effect/dome_noise/white': 6, 'effect/speed_line/teal_soft': 6, 'effect/ring_line/teal_soft': 5}, 83)
+ 2nd fx ({'effect/talisman/teal_soft': 66, 'effect/dome_noise/white': 6, 'effect/speed_line/teal_soft': 6, 'effect/ring_line/teal_soft': 5}, 83)
+--- each entry by the kit's call (bot fx: Effects.play as the kit makes it, on a bot): 8 s, arrive, away, arrive
+bot add H kiriko - 400.5 -60 400.5 180 -> {"ok": true, "hero": "KIRIKO"}
+{'ok': True, 'hero': 'KIRIKO'}
+ ana_asleep           1st   2 2nd   5 ['effect/ana_z/ana_sleep_z']
+ ana_boosted          1st   8 2nd   8 ['effect/mercy_plus/ana_boost_plus', 'effect/ana_z/ana_sleep_z']
+ ana_anti_healed      1st  10 2nd   7 ['effect/mercy_plus/ana_boost_plus', 'effect/mercy_plus/ana_antiheal']
+ ana_nano             1st  23 2nd  14 ['effect/ana_streak_v/ana_nano_beam_n', 'effect/mercy_plus/ana_antiheal', 'effect/ana_flame_0/ana_nano_flame_n']
+ ana_numbed           1st  25 2nd  12 ['effect/ana_streak_v/ana_nano_beam_n', 'effect/mercy_wisp/ana_la_wisp_n', 'effect/ana_flame_2/ana_nano_flame_n']
+ brigitte_stun        1st  12 2nd   2 ['effect/mercy_wisp/ana_la_wisp_n', 'effect/brigitte_stun_star/natural', 'effect/brigitte_stun_halo/natural']
+ juno_ring_boost      1st  32 2nd  29 ['effect/cat_speed_line_0/juno_ring_boost_n', 'effect/cat_speed_line_2/juno_ring_boost_n', 'effect/cat_speed_line_1/juno_ring_boost_n']
+ juno_ray_ally        1st  36 2nd   9 ['effect/cat_speed_line_2/juno_ring_boost_n', 'effect/cat_speed_line_1/juno_ring_boost_n', 'effect/cat_speed_line_0/juno_ring_boost_n']
+ sombra_hotfixed      1st  22 2nd  11 ['effect/sombra_skull_heal/sombra_heal_gold', 'effect/cat_speed_line_0/juno_ray_ally_rise', 'effect/sombra_streak_v/sombra_heal_gold']
+ sombra_hacked        1st  15 2nd   5 ['effect/sombra_skull/sombra_skull', 'effect/sombra_skull_heal/sombra_heal_gold', 'effect/sombra_code_wall/sombra_purple']
+ sombra_revealed      1st  14 2nd   0 ['effect/sombra_skull/sombra_skull', 'effect/sombra_code_wall/sombra_purple', 'effect/sombra_skull_outline/sombra_skull']
+ sombra_weakened      1st   6 2nd   3 ['effect/sombra_chevron_glow/sombra_weakened_chevron', 'effect/ana_ring/sombra_weakened_n', 'effect/sombra_skull_outline/sombra_skull']
+ sound_barrier_ally   1st   6 2nd   0 ['effect/sombra_chevron_glow/sombra_weakened_chevron', 'effect/lucio_soft/lucio_green', 'effect/sombra_arrow/sombra_weakened_n']
+--- world entries: cyberspace, the disruptor field
+ sombra_cyberspace        1st  14 2nd  17 ['effect/sombra_plus/sombra_cyber_plus_n', 'effect/sombra_rain_tall/sombra_cyber_gold_n', 'effect/mercy_glow/sombra_cyber_sphere', 'effect/sombra_circuit_disc/sombra_cyber_decal_n']
+ sojourn_disruptor_field  1st  51 2nd  40 ['effect/sojourn_dot/soj_field_mote', 'effect/lucio_glow/soj_field_core', 'effect/sombra_rain_tall/sombra_cyber_gold_n', 'effect/sojourn_line/soj_field_swirl']
+--- purr's wall, real: bot Cat's ability (an ally's view)
+bot add C1 jetpack_cat - 400.5 -60 400.5 180 -> {"ok": true, "hero": "JETPACK_CAT"}
+{'ok': True, 'hero': 'JETPACK_CAT'}
+ability1 {'ok': True}
+ability2 {'ok': True}
+ fx ({'effect/sojourn_dot/soj_field_mote': 9, 'effect/cat_blob_2/cat_spark_pale': 5, 'effect/cat_blob_2/cat_spark_gold': 4, 'effect/cat_blob_1/cat_spark_pale': 4, 'effect/cat_blob_0/cat_spark_gold': 4, 'effect/cat_blob_3/cat_spark_pale': 3, 'effect/cat_soft/cat_flame': 2}, 50)
+--- emote, Nano by the kit, again
+bot add Emo kiriko - 400.5 -60 400.5 180 -> {"ok": true, "hero": "KIRIKO"}
+{'ok': True, 'hero': 'KIRIKO'}
+ seen {'animator': True, 'emote': 'headbanging', 'emoteTime': 4.350006, 'sinceAim': 1000.0, 'sinceShield': 1000.0}
+ after it moved {'animator': True, 'emote': 'null', 'emoteTime': 7.150009, 'sinceAim': 1000.0, 'sinceShield': 1000.0}
+ returns within 0.15 m: a looping emote goes on, from its time {'animator': True, 'emote': 'headbanging', 'emoteTime': 2.399994, 'sinceAim': 1000.0, 'sinceShield': 1000.0}
+ again {'animator': True, 'emote': 'headbanging', 'emoteTime': 4.699997, 'sinceAim': 1000.0, 'sinceShield': 1000.0}
+--- B2: the ring on a cancelled lock
+hero juno -> {"ok": true}
+ locked ({'effect/juno_ring_thin/enemy_soft': 1}, 1)
+ after cancel ({}, 0)

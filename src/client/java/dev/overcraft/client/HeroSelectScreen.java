@@ -243,7 +243,10 @@ public class HeroSelectScreen extends OwScreen {
 			try {
 				// looking ahead into the distance, as Overwatch's hero select (not following the mouse: #29). Minecraft's
 				// preview turns toward a point: the box's own centre is straight ahead
-				InventoryScreen.extractEntityInInventoryFollowsMouse(g, cx - size, top, cx + size, bottom, size, drop(preview),
+				// Minecraft centres the entity on half its box: a bigger hero box (Sigma's 2.5 m: HeroBody) would move every
+				// previewed hero, so the drop is kept against Minecraft's 1.8 m (found playing: Kiriko previewed low)
+				float boxShift = (minecraft.player.getBbHeight() - 1.8f) / 2;
+				InventoryScreen.extractEntityInInventoryFollowsMouse(g, cx - size, top, cx + size, bottom, size, drop(preview) - boxShift,
 					cx, (top + bottom) / 2f, minecraft.player);
 			} finally {
 				HeroModelRenderer.preview(null);
@@ -466,12 +469,22 @@ public class HeroSelectScreen extends OwScreen {
 		// Mercy's wings spread 1.7 m and rise over her head; Lifeweaver stands 2.03 m with his back petals over his head
 		// (ours, by eye as hers)
 		// Ana's showcase stands with her hood up and cape out: Lifeweaver's size kept her whole (ours, by eye)
-		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN ? 0.72f : 1;
+		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN || hero == Hero.PHARAH || hero == Hero.TRACER || hero == Hero.CASSIDY || hero == Hero.JUNKRAT ? 0.72f
+			// Sigma floats with his head 2.1 m up and his hands out at his sides (ours, by eye)
+			: hero == Hero.SIGMA ? SIGMA_FRAME[0] : hero == Hero.DVA ? DVA_FRAME[0] : 1;
 	}
+
+	/**
+	 * Sigma's framing and drop: he floats with his head 2.12 m up (his idle's Head bone), so framed as the others (head near
+	 * the top, cut at mid-thigh) he is drawn larger and lower (ours, by eye; DevServer "selectframe" sets them).
+	 */
+	public static final float[] SIGMA_FRAME = {0.62f, 0.85f};
+	/** D.Va's: her MEKA, 2.43 m tall and 2.62 m wide with its cannons (ours, by eye; "selectframe dva <framing> <drop>"). */
+	public static final float[] DVA_FRAME = {0.42f, 0.55f};
 
 	/** How far a hero's model sits below the middle of its frame: her showcase lifts her out of her seat (ours, by eye). */
 	private static float drop(Hero hero) {
-		return hero == Hero.JETPACK_CAT ? 0.45f : MODEL_DROP;
+		return hero == Hero.JETPACK_CAT ? 0.45f : hero == Hero.SIGMA ? SIGMA_FRAME[1] : hero == Hero.DVA ? DVA_FRAME[1] : MODEL_DROP;
 	}
 
 	/** One ability of the kit: the key and the ability (its name, description and icon go by this id). */
@@ -533,6 +546,25 @@ public class HeroSelectScreen extends OwScreen {
 			// Whip Shot, Repair Pack, Rally, Inspire (her passive)
 			// her data's loadouts in order: Mediblaster (the left button), Pulsar Torpedoes (the right), Glide Boost, Martian
 			// Overboots (jump), Hyper Ring, Orbital Ray
+			// his data's loadouts in order: Hyperspheres (the left button), Experimental Barrier (the right), Kinetic Grasp,
+			// Accretion, Gravitic Flux; no passive of his own (Stalwart is the sub-role's)
+			case SIGMA -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "hyperspheres"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "experimental_barrier"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "kinetic_grasp"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "accretion"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "gravitic_flux"));
+			// her data's loadouts in order, the mech's then the pilot's: Fusion Cannons (the left button), Defense Matrix (the
+			// right), Boosters, Micro Missiles, Self-Destruct; Light Gun (the left), Call Mech; no passive of her own (Initiator
+			// is the sub-role's; Eject! is the mech's death)
+			case DVA -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "fusion_cannons"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "defense_matrix"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "boosters"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "micro_missiles"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "self_destruct"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "light_gun"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "call_mech"));
 			case JUNO -> List.of(
 				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "mediblaster"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "pulsar_torpedoes"),
@@ -548,6 +580,39 @@ public class HeroSelectScreen extends OwScreen {
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "power_slide"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "disruptor_shot"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "overclock"));
+			// her data's loadouts: the Rocket Launcher (the left button), Jet Dash (the right), Jump Jet, Concussive Blast, Barrage,
+			// Hover Jets (Jump held); no other passive (Recon is the sub-role's)
+			case PHARAH -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "rocket_launcher"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "jet_dash"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "jump_jet"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "concussive_blast"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "barrage"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.JUMP)), "hover_jets"));
+			// her data's loadouts: the Pulse Pistols (the left button), Blink (Shift or the right), Recall, Pulse Bomb; no other
+			// passive (Flanker is the sub-role's)
+			case TRACER -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "pulse_pistols"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "blink"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "blink"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "recall"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "pulse_bomb"));
+			// his data's loadouts: Peacekeeper (the left button), Fan the Hammer (the right), Combat Roll, Flashbang, Deadeye; no other
+			// passive (Sharpshooter is the sub-role's)
+			case CASSIDY -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "peacekeeper"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "fan_the_hammer"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "combat_roll"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "flashbang"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "deadeye"));
+			// his data's loadouts: the Frag Launcher (the left button), Concussion Mine (Shift; the right button sets it off), Steel Trap,
+			// RIP-Tire; Total Mayhem his passive (Specialist is the sub-role's)
+			case JUNKRAT -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "frag_launcher"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "concussion_mine"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "steel_trap"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "rip_tire"),
+				new Line(Component.translatable("overcraft.key.passive").getString(), "total_mayhem"));
 			case BRIGITTE -> List.of(
 				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "rocket_flail"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "barrier_shield"),

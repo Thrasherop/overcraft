@@ -1,0 +1,56 @@
+MARK T2a Blink standing, no keys, Shift: expected 7.5 m along her facing (+z), level, charges 3 -> 2
+cmd /kill @e[type=!player]
+cmd /fill 15 -60 -5 30 -50 40 air
+cmd /tp @s 20.5 -60 0.5 0 0
+sleep 1.5
+state
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 0.3
+state
+heard
+MARK T2b W held + the right button: forward 7.5 (on top of the walk)
+key forward down
+sleep 0.3
+key primary_fire down
+sleep 0.1
+key primary_fire up
+sleep 0.1
+key forward up
+sleep 0.3
+state
+MARK T2c then A held + Shift with the last charge: 7.5 to her left (+x); then a 4th press with none: the empty sound, no move
+key left down
+sleep 0.2
+key ability_1 down
+sleep 0.1
+key ability_1 up
+key left up
+sleep 0.3
+state
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 0.3
+state
+heard
+MARK T2d the charges coming back: one at a time, 3 s each from the first Blink (expected at about +3, +6, +9 s after T2a)
+state
+sleep 1
+state
+sleep 1
+state
+sleep 1
+state
+sleep 1
+state
+sleep 1
+state
+sleep 1
+state
+sleep 1
+state
+sleep 1
+state
+heard

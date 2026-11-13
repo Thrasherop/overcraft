@@ -1,0 +1,526 @@
+22:04:30.638 newworld fix1_new -> {"ok": true}
+22:04:39.943 hero pharah -> {"ok": true}
+22:04:40.945 close -> {"ok": true}
+22:04:41.049 cmd /gamerule spawn_mobs false -> {"ok": true}
+22:04:41.055 cmd /gamerule spawn_monsters false -> {"ok": true}
+22:04:41.064 cmd /difficulty peaceful -> {"ok": true}
+22:04:41.072 cmd /time set day -> {"ok": true}
+22:04:41.096 cmd /gamemode survival -> {"ok": true}
+22:04:41.110 cmd /kill @e[type=!player] -> {"ok": true}
+22:04:41.112 state -> {"x": -4.5, "y": -60.0, "z": 2.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:04:46.955 close -> {"ok": true}
+22:04:46.955 
+22:04:46.955 === [new] T11 asleep mid-hover: Space held from the ground, 'cut sleep 3' after 0.8 s, Space kept held
+22:04:46.964 cmd /effect clear @s -> {"ok": true}
+22:04:46.975 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+22:04:46.980 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+22:04:50.484 before -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:04:50.492 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+22:04:51.301 at sleep -> {"x": 2.5, "y": -57.43699999999997, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.65, "screen": ""}
+22:04:51.310 cut sleep 3 -> {"ok": true}
+22:04:51.320 state -> {"x": 2.5, "y": -57.43699999999997, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.625, "screen": ""}
+22:04:51.577 state -> {"x": 2.5, "y": -57.32244386558999, "z": -5.5, "vy": -0.10940655340224385, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.625, "screen": ""}
+22:04:51.831 state -> {"x": 2.5, "y": -58.40939965410392, "z": -5.5, "vy": -0.32406296126688494, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.625, "screen": ""}
+22:04:52.086 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.625, "screen": ""}
+22:04:52.338 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.6475, "screen": ""}
+22:04:52.590 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.76, "screen": ""}
+22:04:52.844 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.8725, "screen": ""}
+22:04:53.095 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.985, "screen": ""}
+22:04:53.349 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:04:53.599 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:04:53.852 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:04:54.107 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:04:54.367 state -> {"x": 2.5, "y": -59.734875, "z": -5.5, "vy": 0.24424999999999997, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:04:54.620 state -> {"x": 2.5, "y": -58.887, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.875, "screen": ""}
+22:04:54.880 screenshot fix1_new_T11_sleep.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_new_T11_sleep.png"}
+22:04:54.888 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+22:04:57.895 after landing -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:04:57.895 
+22:04:57.895 === [new] T11b stunned mid-hover: the same with 'cut stun 2'
+22:04:57.904 cmd /effect clear @s -> {"ok": true}
+22:04:57.914 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+22:04:57.922 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+22:05:01.426 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+22:05:02.233 at stun -> {"x": 2.5, "y": -57.43699999999997, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.65, "screen": ""}
+22:05:02.242 cut stun 2 -> {"ok": true}
+22:05:02.251 state -> {"x": 2.5, "y": -57.43699999999997, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.65, "screen": ""}
+22:05:02.501 state -> {"x": 2.5, "y": -57.23487029444442, "z": -5.5, "vy": -0.06574058888888887, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.65, "screen": ""}
+22:05:02.754 state -> {"x": 2.5, "y": -58.10643932291239, "z": -5.5, "vy": -0.28185770111618913, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.65, "screen": ""}
+22:05:03.014 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.65, "screen": ""}
+22:05:03.268 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.6725, "screen": ""}
+22:05:03.520 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.785, "screen": ""}
+22:05:03.780 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.8975, "screen": ""}
+22:05:04.032 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:04.286 state -> {"x": 2.5, "y": -59.511500000000005, "z": -5.5, "vy": 0.20249999999999996, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:04.539 state -> {"x": 2.5, "y": -58.742, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.875, "screen": ""}
+22:05:04.798 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+22:05:07.803 after landing -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:07.803 
+22:05:07.803 === [new] T11c wake with Space still held: the hover comes back (sleep 1.5 s)
+22:05:07.811 cmd /effect clear @s -> {"ok": true}
+22:05:07.819 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+22:05:07.828 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+22:05:11.331 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+22:05:12.140 cut sleep 1.5 -> {"ok": true}
+22:05:12.149 state -> {"x": 2.5, "y": -57.43699999999997, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.65, "screen": ""}
+22:05:12.408 state -> {"x": 2.5, "y": -57.23487029444442, "z": -5.5, "vy": -0.06574058888888887, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.65, "screen": ""}
+22:05:12.661 state -> {"x": 2.5, "y": -58.10643932291239, "z": -5.5, "vy": -0.28185770111618913, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.65, "screen": ""}
+22:05:12.915 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.65, "screen": ""}
+22:05:13.166 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.6725, "screen": ""}
+22:05:13.419 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.785, "screen": ""}
+22:05:13.670 state -> {"x": 2.5, "y": -59.734875, "z": -5.5, "vy": 0.24424999999999997, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.875, "screen": ""}
+22:05:13.922 state -> {"x": 2.5, "y": -58.887, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.75, "screen": ""}
+22:05:14.175 state -> {"x": 2.5, "y": -58.161999999999985, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.625, "screen": ""}
+22:05:14.429 state -> {"x": 2.5, "y": -57.291999999999966, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.5, "screen": ""}
+22:05:14.680 state -> {"x": 2.5, "y": -56.56699999999995, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.375, "screen": ""}
+22:05:14.934 state -> {"x": 2.5, "y": -55.841999999999935, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.25, "screen": ""}
+22:05:15.187 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+22:05:18.189 after landing -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.91, "screen": ""}
+22:05:18.189 
+22:05:18.189 === [new] T14 control: plain hover from the ground still works (Space held 1.5 s)
+22:05:18.198 cmd /effect clear @s -> {"ok": true}
+22:05:18.206 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+22:05:18.215 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+22:05:21.717 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+22:05:21.726 state -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:21.978 state -> {"x": 2.5, "y": -58.887, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.9, "screen": ""}
+22:05:22.231 state -> {"x": 2.5, "y": -58.161999999999985, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.775, "screen": ""}
+22:05:22.482 state -> {"x": 2.5, "y": -57.43699999999997, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.65, "screen": ""}
+22:05:22.736 state -> {"x": 2.5, "y": -56.711999999999954, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.525, "screen": ""}
+22:05:22.988 state -> {"x": 2.5, "y": -55.98699999999994, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.4, "screen": ""}
+22:05:23.242 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+22:05:26.251 after landing -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:26.251 
+22:05:26.251 === [new] T9 ladder: a 12-high ladder, W+Space held 2 s
+22:05:26.259 cmd /fill 0 -60 -47 5 -48 -47 stone -> {"ok": true}
+22:05:26.268 cmd /fill 2 -60 -46 2 -48 -46 ladder[facing=south] -> {"ok": true}
+22:05:26.277 cmd /effect clear @s -> {"ok": true}
+22:05:26.284 cmd /tp @s 2.5 -60 -45.3 0 0 -> {"ok": true}
+22:05:26.294 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+22:05:29.795 cmd /tp @s 2.5 -60 -45.3 180 0 -> {"ok": true}
+22:05:30.300 before -> {"x": 2.5, "y": -60.0, "z": -45.3, "vy": -0.0784000015258789, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:30.308 press key.keyboard.w down -> {"key": "key.keyboard.w"}
+22:05:30.316 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+22:05:30.325 state -> {"x": 2.5, "y": -60.0, "z": -45.3, "vy": -0.0784000015258789, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:30.578 state -> {"x": 2.5, "y": -58.992000001668934, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:30.831 state -> {"x": 2.5, "y": -58.40399999022485, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:31.083 state -> {"x": 2.5, "y": -57.81599997878076, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:31.336 state -> {"x": 2.5, "y": -57.22799996733667, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:31.589 state -> {"x": 2.5, "y": -56.639999955892584, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:31.844 state -> {"x": 2.5, "y": -56.0519999444485, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:32.096 state -> {"x": 2.5, "y": -55.46399993300441, "z": -45.51249998807907, "vy": 0.11760000228881837, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:32.357 screenshot fix1_new_T9_ladder.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_new_T9_ladder.png"}
+22:05:32.365 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+22:05:32.401 press key.keyboard.w up -> {"key": "key.keyboard.w"}
+22:05:32.410 after -> {"x": 2.5, "y": -54.758399919271504, "z": -45.51249998807907, "vy": 0.03684800296020513, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:32.410 
+22:05:32.410 === [new] T10 boat on land: Space held 1.5 s
+22:05:32.418 cmd /kill @e[type=!player] -> {"ok": true}
+22:05:32.427 cmd /effect clear @s -> {"ok": true}
+22:05:32.436 cmd /tp @s 2.5 -60 -25.5 0 0 -> {"ok": true}
+22:05:32.444 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+22:05:35.961 cmd /summon oak_boat 2.5 -60 -23.5 {Tags:["b"]} -> {"ok": true}
+22:05:36.468 cmd /ride @s mount @e[tag=b,limit=1] -> {"ok": true}
+22:05:37.477 seated -> {"x": 2.5, "y": -60.4125, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:37.484 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+22:05:37.494 state -> {"x": 2.5, "y": -60.4125, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:37.747 state -> {"x": 2.5, "y": -60.4125, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:38.004 state -> {"x": 2.5, "y": -60.4125, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:38.264 state -> {"x": 2.5, "y": -60.4125, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:38.515 state -> {"x": 2.5, "y": -60.4125, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:38.768 state -> {"x": 2.5, "y": -60.4125, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:39.020 screenshot fix1_new_T10_boat.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_new_T10_boat.png"}
+22:05:39.029 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+22:05:39.063 let go -> {"x": 2.5, "y": -60.4125, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:39.072 cmd /ride @s dismount -> {"ok": true}
+22:05:39.081 cmd /kill @e[type=!player] -> {"ok": true}
+22:05:39.081 
+22:05:39.081 === [new] T10b horse (tame, saddled): Space held 1.5 s
+22:05:39.091 cmd /effect clear @s -> {"ok": true}
+22:05:39.099 cmd /tp @s 2.5 -60 -25.5 0 0 -> {"ok": true}
+22:05:39.107 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+22:05:42.614 cmd /summon horse 2.5 -60 -23.5 {Tags:["h"],Tame:1b,equipment:{saddle:{id:"minecraft:saddle",count:1}}} -> {"ok": true}
+22:05:43.118 cmd /ride @s mount @e[tag=h,limit=1] -> {"ok": true}
+22:05:44.120 seated -> {"x": 2.5, "y": -59.15624997615814, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:44.129 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+22:05:44.137 state -> {"x": 2.5, "y": -59.15624997615814, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:44.389 state -> {"x": 2.5, "y": -59.15624997615814, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:44.649 state -> {"x": 2.5, "y": -59.15624997615814, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:44.900 state -> {"x": 2.5, "y": -59.15624997615814, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:45.153 state -> {"x": 2.5, "y": -59.15624997615814, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:45.406 state -> {"x": 2.5, "y": -59.15624997615814, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:45.659 screenshot fix1_new_T10_horse.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_new_T10_horse.png"}
+22:05:45.667 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+22:05:45.706 let go -> {"x": 2.5, "y": -59.15624997615814, "z": -23.5, "vy": -0.04375, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:45.714 cmd /ride @s dismount -> {"ok": true}
+22:05:45.723 cmd /kill @e[type=!player] -> {"ok": true}
+22:05:45.723 
+22:05:45.723 === [new] T13 lava: in a 2-deep pool (fire resistance), Space held 1.5 s
+22:05:45.732 cmd /fill -1 -62 -70 6 -61 -64 lava -> {"ok": true}
+22:05:45.740 cmd /effect clear @s -> {"ok": true}
+22:05:45.749 cmd /tp @s 2.5 -60 -60.5 0 0 -> {"ok": true}
+22:05:45.761 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+22:05:49.271 cmd /effect give @s fire_resistance 60 0 true -> {"ok": true}
+22:05:49.279 cmd /tp @s 2.5 -62 -67.5 0 0 -> {"ok": true}
+22:05:50.287 in lava -> {"x": 2.5, "y": -62.0, "z": -67.5, "vy": -0.02, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:50.295 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+22:05:50.304 state -> {"x": 2.5, "y": -62.0, "z": -67.5, "vy": -0.02, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:50.556 state -> {"x": 2.5, "y": -61.835000005587936, "z": -67.5, "vy": -4.470348362317633e-10, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:50.809 state -> {"x": 2.5, "y": -61.635000010058285, "z": -67.5, "vy": -4.470348362317633e-10, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:51.060 state -> {"x": 2.5, "y": -61.43500001452863, "z": -67.5, "vy": -4.470348362317633e-10, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:51.315 state -> {"x": 2.5, "y": -61.23500001899898, "z": -67.5, "vy": -4.470348362317633e-10, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:51.568 state -> {"x": 2.5, "y": -61.03500002346933, "z": -67.5, "vy": -4.470348362317633e-10, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:51.822 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+22:05:51.830 let go -> {"x": 2.5, "y": -60.83500002793968, "z": -67.5, "vy": -0.02, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:05:51.839 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+22:05:51.848 cmd /fill -1 -62 -70 6 -61 -64 dirt -> {"ok": true}
+22:06:00.024 close -> {"ok": true}
+22:06:00.024 
+22:06:00.024 === [new] T12 Save and Leave while hovering ~11 m up (Jump Jet + hover), rejoin: the fall on rejoin
+22:06:00.032 cmd /effect clear @s -> {"ok": true}
+22:06:00.041 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+22:06:00.048 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+22:06:03.555 before -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:06:03.563 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+22:06:03.865 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+22:06:05.274 at leave -> {"x": 2.5, "y": -59.53876016837711, "z": -5.5, "vy": -0.5154900008711574, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.86558825, "screen": ""}
+22:06:05.289 press key.keyboard.escape -> {"key": "key.keyboard.escape"}
+22:06:05.597 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+22:06:05.605 screenshot fix1_new_pause.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_new_pause.png"}
+22:06:11.830 screenclick 80 205 -> {"screen": "TitleScreen"}
+22:06:11.835 screen -> {"screen": "net.minecraft.client.gui.screens.TitleScreen"}
+22:06:11.835 openworld fix1_new -> {"ok": true}
+22:06:13.891 state -> y=-60.00 vy=0.000 hp=18.0 g=True hero=pharah heroMode=True screen=HeroSelectScreen
+22:06:14.389 state -> y=-60.00 vy=0.000 hp=18.0 g=True hero=pharah heroMode=True screen=HeroSelectScreen
+22:06:14.820 state -> y=-60.00 vy=0.000 hp=18.0 g=True hero=pharah heroMode=True screen=HeroSelectScreen
+22:06:15.264 state -> y=-60.00 vy=0.000 hp=18.0 g=True hero=pharah heroMode=True screen=HeroSelectScreen
+22:06:15.709 state -> y=-60.00 vy=0.000 hp=18.0 g=True hero=pharah heroMode=True screen=HeroSelectScreen
+22:06:16.165 state -> y=-60.00 vy=0.000 hp=18.0 g=True hero=pharah heroMode=True screen=HeroSelectScreen
+22:06:16.592 state -> y=-60.00 vy=0.000 hp=18.0 g=True hero=pharah heroMode=True screen=HeroSelectScreen
+22:06:17.029 state -> y=-60.00 vy=0.000 hp=18.0 g=True hero=pharah heroMode=True screen=HeroSelectScreen
+22:06:17.449 state -> y=-60.00 vy=0.000 hp=18.0 g=True hero=pharah heroMode=True screen=HeroSelectScreen
+22:06:17.878 state -> y=-60.00 vy=0.000 hp=18.0 g=True hero=pharah heroMode=True screen=HeroSelectScreen
+
+=== [new] T13b check: out of lava (fire resistance cleared, still burning), then Jump Jet + hover from the ground
+22:07:02.895 cmd /fill -1 -62 -70 6 -61 -64 lava -> {"ok": true}
+22:07:02.908 cmd /effect give @s fire_resistance 60 0 true -> {"ok": true}
+22:07:02.930 cmd /tp @s 2.5 -62 -67.5 0 0 -> {"ok": true}
+22:07:02.946 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+22:07:02.963 cmd /fill -1 -62 -70 6 -61 -64 dirt -> {"ok": true}
+22:07:02.981 cmd /effect clear @s -> {"ok": true}
+22:07:02.996 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+22:07:03.013 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+22:07:03.066 state -> y=-53.66 vy=0.145 hp=17.0 g=False meter=1.4705882 mode=1
+22:07:03.083 state -> y=-51.77 vy=0.145 hp=18.0 g=False meter=0.99058825 mode=0
+22:07:03.105 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+22:07:03.122 state -> y=-60.00 vy=0.000 hp=18.0 g=True meter=1.0 mode=0
+
+(the first T12 try above left from y -59.54, falling: the hover hadn't held her; retried with rows polled, below)
+22:07:11.601 close -> {"ok": true}
+22:07:11.601 
+22:07:11.601 === [new] T12 Save and Leave while hovering ~11 m up (Jump Jet + hover), rejoin: the fall on rejoin
+22:07:11.610 cmd /effect clear @s -> {"ok": true}
+22:07:11.618 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+22:07:11.626 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+22:07:15.131 before -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:07:15.139 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+22:07:15.445 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+22:07:15.455 state -> {"x": 2.5, "y": -56.80349999999999, "z": -5.5, "vy": 0.6975000000000001, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.1764706, "screen": ""}
+22:07:15.659 state -> {"x": 2.5, "y": -54.34749999999999, "z": -5.5, "vy": 0.5305000000000003, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.2941177, "screen": ""}
+22:07:15.867 state -> {"x": 2.5, "y": -52.216874999999995, "z": -5.5, "vy": 0.32175000000000026, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.4411764, "screen": ""}
+22:07:16.070 state -> {"x": 2.5, "y": -51.263875, "z": -5.5, "vy": 0.15475000000000022, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.3905883, "screen": ""}
+22:07:16.274 state -> {"x": 2.5, "y": -50.67899999999999, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.2305882, "screen": ""}
+22:07:16.475 state -> {"x": 2.5, "y": -50.098999999999975, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0705882, "screen": ""}
+22:07:16.678 state -> {"x": 2.5, "y": -49.51899999999996, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.94058824, "screen": ""}
+22:07:16.881 at leave -> {"x": 2.5, "y": -48.93899999999995, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.8405882, "screen": ""}
+22:07:16.890 press key.keyboard.escape -> {"key": "key.keyboard.escape"}
+22:07:17.192 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+22:07:17.201 screenshot fix1_new_pause.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_new_pause.png"}
+22:08:59.812 screenclick 80 205 -> {"error": "java.util.concurrent.TimeoutException"}
+22:09:16.744 screen -> {"error": "java.util.concurrent.TimeoutException"}
+22:09:18.645 openworld fix1_new -> {"error": "java.util.concurrent.TimeoutException"}
+
+(The Save and Leave after the retry hung the client at 'Saving worlds' (22:07:25, server thread spinning in MinecraftServer.stopServer -> waitUntilNextTick, jstack); killed at 22:10, relaunched, fresh world fix1_new2 for T12.)
+22:11:14.862 newworld fix1_new2 -> {"ok": true}
+22:11:23.885 hero pharah -> {"ok": true}
+22:11:24.887 close -> {"ok": true}
+22:11:24.986 cmd /gamerule spawn_mobs false -> {"ok": true}
+22:11:24.992 cmd /gamerule spawn_monsters false -> {"ok": true}
+22:11:25.001 cmd /difficulty peaceful -> {"ok": true}
+22:11:25.010 cmd /time set day -> {"ok": true}
+22:11:25.018 cmd /gamemode survival -> {"ok": true}
+22:11:25.033 cmd /kill @e[type=!player] -> {"ok": true}
+22:11:25.069 state -> {"x": -5.5, "y": -60.0, "z": -6.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:11:35.533 close -> {"ok": true}
+22:11:35.533 
+22:11:35.533 === [new2] T12 Save and Leave while hovering ~11 m up (Jump Jet + hover), rejoin: the fall on rejoin
+22:11:35.541 cmd /effect clear @s -> {"ok": true}
+22:11:35.553 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+22:11:35.559 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+22:11:39.065 before -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:11:39.073 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+22:11:39.378 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+22:11:39.386 state -> {"x": 2.5, "y": -56.80349999999999, "z": -5.5, "vy": 0.6975000000000001, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.1764706, "screen": ""}
+22:11:39.589 state -> {"x": 2.5, "y": -54.34749999999999, "z": -5.5, "vy": 0.5305000000000003, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.2941177, "screen": ""}
+22:11:39.791 state -> {"x": 2.5, "y": -52.55949999999999, "z": -5.5, "vy": 0.36350000000000027, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.4117647, "screen": ""}
+22:11:39.993 state -> {"x": 2.5, "y": -51.4395, "z": -5.5, "vy": 0.19650000000000023, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4305882, "screen": ""}
+22:11:40.196 state -> {"x": 2.5, "y": -50.82399999999999, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.2705883, "screen": ""}
+22:11:40.398 state -> {"x": 2.5, "y": -50.24399999999998, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.1105882, "screen": ""}
+22:11:40.601 state -> {"x": 2.5, "y": -49.663999999999966, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.9655882, "screen": ""}
+22:11:40.802 at leave -> {"x": 2.5, "y": -49.08399999999995, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.86558825, "screen": ""}
+22:11:40.818 press key.keyboard.escape -> {"key": "key.keyboard.escape"}
+22:11:41.127 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+22:11:41.136 screenshot fix1_new2_pause.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_new2_pause.png"}
+22:11:43.539 screenclick 80 205 -> {"screen": "TitleScreen"}
+22:11:44.560 screen -> {"screen": "net.minecraft.client.gui.screens.TitleScreen"}
+22:11:44.640 openworld fix1_new2 -> {"ok": true}
+22:11:46.093 state -> {"y": -48.93899999999995, "vy": 0.0, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "LevelLoadingScreen"}
+22:11:46.363 state -> {"y": -48.93899999999995, "vy": 0.0, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "LevelLoadingScreen"}
+22:11:46.614 state -> {"y": -49.48457588017547, "vy": -0.21763807213452244, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:46.869 state -> {"y": -51.101499998402616, "vy": -0.42714969732657004, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:47.120 state -> {"y": -53.72881210168297, "vy": -0.6206992744879138, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:47.374 state -> {"y": -57.27177727564155, "vy": -0.7927385351299628, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:47.625 state -> {"y": -60.0, "vy": 0.0, "health": 10.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:47.877 state -> {"y": -60.0, "vy": 0.0, "health": 11.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:48.133 state -> {"y": -60.0, "vy": 0.0, "health": 11.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:48.392 state -> {"y": -60.0, "vy": 0.0, "health": 11.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:48.646 state -> {"y": -60.0, "vy": 0.0, "health": 11.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:48.900 state -> {"y": -60.0, "vy": 0.0, "health": 12.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:49.152 state -> {"y": -60.0, "vy": 0.0, "health": 12.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:49.403 state -> {"y": -60.0, "vy": 0.0, "health": 12.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:49.660 state -> {"y": -60.0, "vy": 0.0, "health": 12.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:49.913 state -> {"y": -60.0, "vy": 0.0, "health": 13.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:50.163 state -> {"y": -60.0, "vy": 0.0, "health": 13.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:50.416 state -> {"y": -60.0, "vy": 0.0, "health": 13.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:50.669 state -> {"y": -60.0, "vy": 0.0, "health": 13.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:50.921 state -> {"y": -60.0, "vy": 0.0, "health": 14.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:51.174 state -> {"y": -60.0, "vy": 0.0, "health": 14.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:51.427 state -> {"y": -60.0, "vy": 0.0, "health": 14.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:11:51.680 screenshot fix1_new_T12_rejoin.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_new_T12_rejoin.png"}
+
+(fix revised: JOIN_FALLS kept from the join for every hero in hero mode, ended by the ground only after 10 ticks; client relaunched, world fix1_new2 reopened)
+22:14:03.049 close -> {"ok": true}
+22:14:03.049 
+22:14:03.049 === [new3] T12 Save and Leave while hovering ~11 m up (Jump Jet + hover), rejoin: the fall on rejoin
+22:14:03.074 cmd /effect clear @s -> {"ok": true}
+22:14:03.079 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+22:14:03.084 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+22:14:06.589 before -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:14:06.598 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+22:14:06.907 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+22:14:06.916 state -> {"x": 2.5, "y": -57.521874999999994, "z": -5.5, "vy": 0.7392500000000001, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.1470588, "screen": ""}
+22:14:07.124 state -> {"x": 2.5, "y": -54.34749999999999, "z": -5.5, "vy": 0.5305000000000003, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.2941177, "screen": ""}
+22:14:07.327 state -> {"x": 2.5, "y": -52.55949999999999, "z": -5.5, "vy": 0.36350000000000027, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.4117647, "screen": ""}
+22:14:07.530 state -> {"x": 2.5, "y": -51.4395, "z": -5.5, "vy": 0.19650000000000023, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4705882, "screen": ""}
+22:14:07.734 state -> {"x": 2.5, "y": -50.82399999999999, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.3105882, "screen": ""}
+22:14:07.934 state -> {"x": 2.5, "y": -50.24399999999998, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.1505883, "screen": ""}
+22:14:08.142 state -> {"x": 2.5, "y": -49.663999999999966, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.99058825, "screen": ""}
+22:14:08.347 at leave -> {"x": 2.5, "y": -49.08399999999995, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.8905882, "screen": ""}
+22:14:08.362 press key.keyboard.escape -> {"key": "key.keyboard.escape"}
+22:14:08.668 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+22:14:08.680 screenshot fix1_new3_pause.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_new3_pause.png"}
+22:14:09.128 screenclick 80 205 -> {"screen": "TitleScreen"}
+22:14:10.150 screen -> {"screen": "net.minecraft.client.gui.screens.TitleScreen"}
+22:14:10.206 openworld fix1_new2 -> {"ok": true}
+22:14:11.582 state -> {"y": -49.08399999999995, "vy": 0.0, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "LevelLoadingScreen"}
+22:14:11.842 state -> {"y": -49.43351683171687, "vy": -0.1744800247826812, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:12.100 state -> {"y": -50.83977446604109, "vy": -0.3863013673964776, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:12.356 state -> {"y": -53.27167687263341, "vy": -0.5835711836112188, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:12.607 state -> {"y": -56.64029483970385, "vy": -0.7602263367454342, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:12.878 state -> {"y": -60.0, "vy": 0.0, "health": 11.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:13.134 state -> {"y": -60.0, "vy": 0.0, "health": 11.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:13.393 state -> {"y": -60.0, "vy": 0.0, "health": 12.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:13.644 state -> {"y": -60.0, "vy": 0.0, "health": 12.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:13.899 state -> {"y": -60.0, "vy": 0.0, "health": 12.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:14.149 state -> {"y": -60.0, "vy": 0.0, "health": 12.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:14.401 state -> {"y": -60.0, "vy": 0.0, "health": 13.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:14.654 state -> {"y": -60.0, "vy": 0.0, "health": 13.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:14.908 state -> {"y": -60.0, "vy": 0.0, "health": 13.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:15.160 state -> {"y": -60.0, "vy": 0.0, "health": 13.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:15.412 state -> {"y": -60.0, "vy": 0.0, "health": 14.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:15.667 state -> {"y": -60.0, "vy": 0.0, "health": 14.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:15.921 state -> {"y": -60.0, "vy": 0.0, "health": 14.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:16.175 state -> {"y": -60.0, "vy": 0.0, "health": 14.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:16.427 state -> {"y": -60.0, "vy": 0.0, "health": 15.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:16.680 state -> {"y": -60.0, "vy": 0.0, "health": 15.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:16.931 state -> {"y": -60.0, "vy": 0.0, "health": 15.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:17.184 state -> {"y": -60.0, "vy": 0.0, "health": 15.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:14:17.435 screenshot fix1_new_T12_rejoin.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_new_T12_rejoin.png"}
+
+(join flag 29 ticks, then ended by the server's onGround at y -59.06 before the landing's check: health 18 -> 11 again. Revised: ended by the fall distance zeroed, after 10 ticks. Client relaunched, fix1_new2 reopened.)
+22:15:50.551 close -> {"ok": true}
+22:15:50.551 
+22:15:50.551 === [new4] T12 Save and Leave while hovering ~11 m up (Jump Jet + hover), rejoin: the fall on rejoin
+22:15:50.579 cmd /effect clear @s -> {"ok": true}
+22:15:50.586 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+22:15:50.591 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+22:15:54.102 before -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:15:54.109 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+22:15:54.411 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+22:15:54.421 state -> {"x": 2.5, "y": -56.80349999999999, "z": -5.5, "vy": 0.6975000000000001, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.1764706, "screen": ""}
+22:15:54.623 state -> {"x": 2.5, "y": -54.34749999999999, "z": -5.5, "vy": 0.5305000000000003, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.2941177, "screen": ""}
+22:15:54.831 state -> {"x": 2.5, "y": -52.55949999999999, "z": -5.5, "vy": 0.36350000000000027, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.4117647, "screen": ""}
+22:15:55.033 state -> {"x": 2.5, "y": -51.4395, "z": -5.5, "vy": 0.19650000000000023, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.4305882, "screen": ""}
+22:15:55.236 state -> {"x": 2.5, "y": -50.67899999999999, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.2705883, "screen": ""}
+22:15:55.438 state -> {"x": 2.5, "y": -50.098999999999975, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.1105882, "screen": ""}
+22:15:55.639 state -> {"x": 2.5, "y": -49.51899999999996, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.9655882, "screen": ""}
+22:15:55.849 at leave -> {"x": 2.5, "y": -48.93899999999995, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.86558825, "screen": ""}
+22:15:55.865 press key.keyboard.escape -> {"key": "key.keyboard.escape"}
+22:15:56.171 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+22:15:56.183 screenshot fix1_new4_pause.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_new4_pause.png"}
+22:15:56.666 screenclick 80 205 -> {"screen": "TitleScreen"}
+22:15:57.687 screen -> {"screen": "net.minecraft.client.gui.screens.TitleScreen"}
+22:15:57.744 openworld fix1_new2 -> {"ok": true}
+22:15:59.152 state -> {"y": -48.93899999999995, "vy": 0.0, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "LevelLoadingScreen"}
+22:15:59.405 state -> {"y": -48.93899999999995, "vy": 0.0, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "LevelLoadingScreen"}
+22:15:59.666 state -> {"y": -49.28851683171687, "vy": -0.1744800247826812, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:15:59.918 state -> {"y": -50.69477446604109, "vy": -0.3863013673964776, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:00.177 state -> {"y": -53.72881210168297, "vy": -0.6206992744879138, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:00.430 state -> {"y": -57.27177727564155, "vy": -0.7927385351299628, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:00.705 state -> {"y": -60.0, "vy": 0.0, "health": 10.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:00.957 state -> {"y": -60.0, "vy": 0.0, "health": 11.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:01.210 state -> {"y": -60.0, "vy": 0.0, "health": 11.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:01.462 state -> {"y": -60.0, "vy": 0.0, "health": 11.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:01.719 state -> {"y": -60.0, "vy": 0.0, "health": 11.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:01.978 state -> {"y": -60.0, "vy": 0.0, "health": 12.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:02.230 state -> {"y": -60.0, "vy": 0.0, "health": 12.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:02.484 state -> {"y": -60.0, "vy": 0.0, "health": 12.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:02.736 state -> {"y": -60.0, "vy": 0.0, "health": 12.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:02.989 state -> {"y": -60.0, "vy": 0.0, "health": 13.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:03.249 state -> {"y": -60.0, "vy": 0.0, "health": 13.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:03.500 state -> {"y": -60.0, "vy": 0.0, "health": 13.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:03.754 state -> {"y": -60.0, "vy": 0.0, "health": 13.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:04.005 state -> {"y": -60.0, "vy": 0.0, "health": 14.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:04.256 state -> {"y": -60.0, "vy": 0.0, "health": 14.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:04.510 state -> {"y": -60.0, "vy": 0.0, "health": 14.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:16:04.763 screenshot fix1_new_T12_rejoin.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_new_T12_rejoin.png"}
+
+(join flag ended after 10 ticks at y -48.94 while the client was still loading: 18 -> 10. Revised: added only when the join's saved onGround is false, ended by the distance once the fall has begun. Client relaunched.)
+22:17:42.846 close -> {"ok": true}
+22:17:42.846 
+22:17:42.846 === [new5] T12 Save and Leave while hovering ~11 m up (Jump Jet + hover), rejoin: the fall on rejoin
+22:17:42.871 cmd /effect clear @s -> {"ok": true}
+22:17:42.879 cmd /tp @s 2.5 -60 -5.5 0 0 -> {"ok": true}
+22:17:42.884 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+22:17:46.388 before -> {"x": 2.5, "y": -60.0, "z": -5.5, "vy": 0.0, "health": 18.0, "onGround": true, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0, "screen": ""}
+22:17:46.396 press key.keyboard.left.shift -> {"key": "key.keyboard.left.shift"}
+22:17:46.699 press key.keyboard.space down -> {"key": "key.keyboard.space"}
+22:17:46.708 state -> {"x": 2.5, "y": -56.80349999999999, "z": -5.5, "vy": 0.6975000000000001, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.1764706, "screen": ""}
+22:17:46.918 state -> {"x": 2.5, "y": -54.34749999999999, "z": -5.5, "vy": 0.5305000000000003, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.2941177, "screen": ""}
+22:17:47.127 state -> {"x": 2.5, "y": -52.216874999999995, "z": -5.5, "vy": 0.32175000000000026, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 1, "meter": 1.4117647, "screen": ""}
+22:17:47.329 state -> {"x": 2.5, "y": -51.263875, "z": -5.5, "vy": 0.15475000000000022, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.3905883, "screen": ""}
+22:17:47.533 state -> {"x": 2.5, "y": -50.67899999999999, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.2305882, "screen": ""}
+22:17:47.737 state -> {"x": 2.5, "y": -50.098999999999975, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 1.0705882, "screen": ""}
+22:17:47.938 state -> {"x": 2.5, "y": -49.51899999999996, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.94058824, "screen": ""}
+22:17:48.143 at leave -> {"x": 2.5, "y": -48.93899999999995, "z": -5.5, "vy": 0.145, "health": 18.0, "onGround": false, "heroMode": true, "hero": "pharah", "mode": 0, "meter": 0.8405882, "screen": ""}
+22:17:48.157 press key.keyboard.escape -> {"key": "key.keyboard.escape"}
+22:17:48.464 press key.keyboard.space up -> {"key": "key.keyboard.space"}
+22:17:48.478 screenshot fix1_new5_pause.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_new5_pause.png"}
+22:17:48.933 screenclick 80 205 -> {"screen": "TitleScreen"}
+22:17:49.953 screen -> {"screen": "net.minecraft.client.gui.screens.TitleScreen"}
+22:17:50.009 openworld fix1_new2 -> {"ok": true}
+22:17:51.401 state -> {"y": -48.93899999999995, "vy": 0.0, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "LevelLoadingScreen"}
+22:17:51.659 state -> {"y": -48.93899999999995, "vy": 0.0, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "LevelLoadingScreen"}
+22:17:51.919 state -> {"y": -49.28851683171687, "vy": -0.1744800247826812, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:52.173 state -> {"y": -51.101499998402616, "vy": -0.42714969732657004, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:52.430 state -> {"y": -53.72881210168297, "vy": -0.6206992744879138, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:52.683 state -> {"y": -57.27177727564155, "vy": -0.7927385351299628, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:52.940 state -> {"y": -60.0, "vy": 0.0, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:53.199 state -> {"y": -60.0, "vy": 0.0, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:53.451 state -> {"y": -60.0, "vy": 0.0, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:53.705 state -> {"y": -60.0, "vy": 0.0, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:53.959 state -> {"y": -60.0, "vy": 0.0, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:54.211 state -> {"y": -60.0, "vy": 0.0, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:54.463 state -> {"y": -60.0, "vy": 0.0, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:54.719 state -> {"y": -60.0, "vy": 0.0, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:54.972 state -> {"y": -60.0, "vy": 0.0, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:55.224 state -> {"y": -60.0, "vy": 0.0, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:55.477 state -> {"y": -60.0, "vy": 0.0, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:55.730 state -> {"y": -60.0, "vy": 0.0, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:55.982 state -> {"y": -60.0, "vy": 0.0, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:56.236 state -> {"y": -60.0, "vy": 0.0, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:56.494 state -> {"y": -60.0, "vy": 0.0, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:56.746 state -> {"y": -60.0, "vy": 0.0, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:57.000 state -> {"y": -60.0, "vy": 0.0, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": true, "screen": "HeroSelectScreen"}
+22:17:57.253 screenshot fix1_new_T12_rejoin.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_new_T12_rejoin.png"}
+22:18:04.634 screenshot fix1_new_T12_rejoin.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_new_T12_rejoin.png"}
+22:18:04.640 close -> {"ok": true}
+
+=== [new5] T12b after the rejoin landing, a plain hero-mode fall still counts (the flag is gone): tp 15 m up, no ability
+22:18:09.299 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+22:18:09.340 state -> y=-60.00 hp=18.0 g=True heroMode=True
+22:18:09.340 cmd /tp @s 2.5 -45 -5.5 -> {"ok": true}
+22:18:09.341 state -> y=-60.00 hp=8.0 g=True heroMode=True
+
+=== [new5] T12c control: Minecraft mode (G), tp 20 m up, Esc at once, Save and Leave, rejoin: a plain Minecraft fall, still hurts
+22:18:21.855 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+22:18:21.861 press key.keyboard.g -> {"key": "key.keyboard.g"}
+22:18:21.900 state -> y=-60.00 hp=18.0 g=True heroMode=False screen=
+22:18:21.900 cmd /tp @s 2.5 -40 -5.5 -> {"ok": true}
+22:18:21.901 press key.keyboard.escape -> {"key": "key.keyboard.escape"}
+22:18:21.901 state -> y=-40.00 hp=18.0 g=False heroMode=False screen=PauseScreen
+22:18:22.014 screenclick 80 205 -> {"screen": "PauseScreen"}
+22:19:22.269 screen -> {"screen": "net.minecraft.client.gui.screens.PauseScreen"}
+22:19:22.296 openworld fix1_new2 -> {"ok": true}
+22:19:22.299 state -> {"y": -40.0, "vy": -0.0784000015258789, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:22.552 state -> {"y": -41.14510670065164, "vy": -0.44749789698341763, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:22.804 state -> {"y": -44.06334505384701, "vy": -0.7811331932098841, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:23.059 state -> {"y": -48.584354139212536, "vy": -1.082713105363373, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:23.310 state -> {"y": -54.554141162875, "vy": -1.35531748638417, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:23.563 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 1.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:23.815 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 1.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:24.067 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 2.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:24.321 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 3.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:24.574 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 4.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:24.828 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 4.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:25.080 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 5.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:25.334 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 6.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:25.587 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 7.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:25.840 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 7.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:26.094 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 8.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:26.347 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 9.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:26.600 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 10.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:26.859 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 10.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:27.111 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 12.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:27.365 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 12.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:27.618 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 13.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:27.872 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 13.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:28.127 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 15.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:28.379 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 15.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:28.632 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 16.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:28.884 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 16.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:29.135 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 18.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": ""}
+22:19:29.389 screenshot fix1_new_T12c_mcmode.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_new_T12c_mcmode.png"}
+(T12c try 1 invalid: Minecraft mode shows the vanilla pause screen, the click at 80 205 missed Save and Quit; she never left, and fell when the pause closed. Redone below.)
+22:19:57.751 cmd /effect give @s instant_health 1 10 true -> {"ok": true}
+22:19:57.761 cmd /tp @s 2.5 -40 -5.5 -> {"ok": true}
+22:19:57.761 press key.keyboard.escape -> {"key": "key.keyboard.escape"}
+22:19:57.761 state -> {"screen": "PauseScreen", "fps": 118, "fx": 0, "inWorld": true, "x": 2.5, "y": -40.0, "z": -5.5, "yaw": 0.0, "pitch": 0.0, "health": 18.0, "maxHealth": 18.0, "onGround": true, "crouching": fa
+22:19:57.762 screenshot fix1_mc_pause.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_mc_pause.png"}
+22:20:09.302 screenclick 212 173 -> {"screen": "TitleScreen"}
+22:20:10.322 screen -> {"screen": "net.minecraft.client.gui.screens.TitleScreen"}
+22:20:10.379 openworld fix1_new2 -> {"ok": true}
+22:20:11.806 state -> {"y": -40.0, "vy": 0.0, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": false, "screen": "LevelLoadingScreen"}
+22:20:12.074 state -> {"y": -40.0, "vy": 0.0, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": false, "screen": "LevelLoadingScreen"}
+22:20:12.326 state -> {"y": -40.46415937495544, "vy": -0.30431682745754424, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:12.579 state -> {"y": -42.694561548248785, "vy": -0.6517088341626173, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:12.830 state -> {"y": -46.59382114530467, "vy": -0.9657237242233685, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:13.084 state -> {"y": -52.001595821392776, "vy": -1.2495683414761176, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:13.338 state -> {"y": -58.77294878239936, "vy": -1.506141419038689, "health": 18.0, "onGround": false, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:13.590 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 2.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:13.842 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 3.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:14.095 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 3.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:14.348 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 4.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:14.603 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 5.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:14.854 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 6.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:15.108 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 6.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:15.359 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 7.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:15.612 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 8.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:15.864 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 9.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:16.116 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 9.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:16.368 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 10.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:16.619 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 11.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:16.873 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 12.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:17.124 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 12.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:17.377 state -> {"y": -60.0, "vy": -0.0784000015258789, "health": 13.0, "onGround": true, "hero": "pharah", "heroMode": false, "screen": "HeroSelectScreen"}
+22:20:17.630 screenshot fix1_new_T12c_mcmode.png -> {"file": "E:\\claude\\mods\\overcraft_pharah\\run\\screenshots\\fix1_new_T12c_mcmode.png"}

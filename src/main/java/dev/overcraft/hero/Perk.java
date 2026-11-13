@@ -50,11 +50,41 @@ public enum Perk {
 	JUNO_LOCKED_ON(Hero.JUNO, Tier.MINOR, "locked_on"),
 	JUNO_FASTER_BLASTER(Hero.JUNO, Tier.MAJOR, "faster_blaster"),
 	JUNO_LIFT_OFF(Hero.JUNO, Tier.MAJOR, "lift_off"),
+	// Sigma's, the live list's order (D 004B.177 = [2578, 26B7, 25AF, 2577].134)
+	SIGMA_KINETIC_CYCLE(Hero.SIGMA, Tier.MINOR, "kinetic_cycle"),
+	SIGMA_HYPER_REGENERATION(Hero.SIGMA, Tier.MINOR, "hyper_regeneration"),
+	SIGMA_HYPER_STRIKE(Hero.SIGMA, Tier.MAJOR, "hyper_strike"),
+	SIGMA_LEVITATION(Hero.SIGMA, Tier.MAJOR, "levitation"),
+	// D.Va's, the live list's order (D 0042.177 = [253B, 25E6, 253E, 273E].134): their effects come in step 10 (dva-plan.md)
+	DVA_BUNNY_POWER(Hero.DVA, Tier.MINOR, "bunny_power"),
+	DVA_EXTENDED_BOOSTERS(Hero.DVA, Tier.MINOR, "extended_boosters"),
+	DVA_SHIELD_SYSTEM(Hero.DVA, Tier.MAJOR, "shield_system"),
+	DVA_PRECISION_FUSION(Hero.DVA, Tier.MAJOR, "precision_fusion"),
 	// Sojourn's, the live list's order (BZ 2025-02-18 / 2025-08-26; W): their effects come in step 7 (sojourn-plan.md)
 	SOJOURN_OVERCHARGED(Hero.SOJOURN, Tier.MINOR, "overcharged"),
 	SOJOURN_DECELERATION_FIELD(Hero.SOJOURN, Tier.MINOR, "deceleration_field"),
 	SOJOURN_DUAL_THRUSTERS(Hero.SOJOURN, Tier.MAJOR, "dual_thrusters"),
-	SOJOURN_FRICTION_GENERATORS(Hero.SOJOURN, Tier.MAJOR, "friction_generators");
+	SOJOURN_FRICTION_GENERATORS(Hero.SOJOURN, Tier.MAJOR, "friction_generators"),
+	// Pharah's, the live list's order (D 0057.177: 28E7, 2507; 2509, 28C6; pharah-map.md)
+	PHARAH_CONCUSSIVE_FORCE(Hero.PHARAH, Tier.MINOR, "concussive_force"),
+	PHARAH_HELIX_SHIELDS(Hero.PHARAH, Tier.MINOR, "helix_shields"),
+	PHARAH_FUEL_STORES(Hero.PHARAH, Tier.MAJOR, "fuel_stores"),
+	PHARAH_ROCKET_SALVO(Hero.PHARAH, Tier.MAJOR, "rocket_salvo"),
+	// Tracer's, the live list's order (D 005E.177: 2AC7, 26B6; 259B, 259D; tracer-map.md)
+	TRACER_TEMPORAL_REGEN(Hero.TRACER, Tier.MINOR, "temporal_regen"),
+	TRACER_KINETIC_RELOAD(Hero.TRACER, Tier.MINOR, "kinetic_reload"),
+	TRACER_BLINK_PACKS(Hero.TRACER, Tier.MAJOR, "blink_packs"),
+	TRACER_QUANTUM_ENTANGLEMENT(Hero.TRACER, Tier.MAJOR, "quantum_entanglement"),
+	// Cassidy's, the live list's order (D 006C.177: 2527, 2ADA; 286A, 2723; cassidy-map.md)
+	CASSIDY_BANG_BANG(Hero.CASSIDY, Tier.MINOR, "bang_bang"),
+	CASSIDY_GIDDY_UP(Hero.CASSIDY, Tier.MINOR, "giddy_up"),
+	CASSIDY_ROLLIN_ROUND_UP(Hero.CASSIDY, Tier.MAJOR, "rollin_round_up"),
+	CASSIDY_SILVER_BULLET(Hero.CASSIDY, Tier.MAJOR, "silver_bullet"),
+	// Junkrat's, the live list's order (D 0055.177: 252C, 26F3; 25C0, 272B; junkrat-map.md)
+	JUNKRAT_NITRO_BOOST(Hero.JUNKRAT, Tier.MINOR, "nitro_boost"),
+	JUNKRAT_BOMB_VOYAGE(Hero.JUNKRAT, Tier.MINOR, "bomb_voyage"),
+	JUNKRAT_FRAG_CANNON(Hero.JUNKRAT, Tier.MAJOR, "frag_cannon"),
+	JUNKRAT_MINE_RECYCLING(Hero.JUNKRAT, Tier.MAJOR, "mine_recycling");
 
 	public enum Tier { MINOR, MAJOR }
 

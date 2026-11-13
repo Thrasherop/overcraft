@@ -25,6 +25,12 @@ import net.minecraft.world.phys.EntityHitResult;
  * The one it hits takes 5 and sleeps 5 s (Sleep).
  */
 public class SleepDartEntity extends OwProjectile {
+	@Override
+	public double barrierDamage() {
+		// what an enemy barrier or Kinetic Grasp takes when it stops it (the critique of 2026-11-02: 0 before)
+		return dev.overcraft.ana.AnaStats.SLEEP_DAMAGE;
+	}
+
 	public SleepDartEntity(EntityType<? extends SleepDartEntity> type, Level level) {
 		super(type, level);
 	}
@@ -64,8 +70,13 @@ public class SleepDartEntity extends OwProjectile {
 		LivingEntity target = part != null ? part.parentMob : hit.getEntity() instanceof LivingEntity living ? living : null;
 		if (target != null && Allies.canHurt(owner, target)) {
 			// its 5 first, then the sleep: the dart's own hit doesn't wake it
-			float dealt = Combat.damage(target, damageSources().thrown(this, owner), AnaStats.SLEEP_DAMAGE);
-			Combat.credit(owner, dealt);
+			float dealt = Combat.damage(target, damageSources().thrown(this, owner), AnaStats.SLEEP_DAMAGE, dev.overcraft.hero.Blow.ability("sleep_dart").by(dev.overcraft.hero.Hero.ANA));
+			if (isRemoved()) {
+				// a barrier between it and the target took it, there and then (LivingEntityMixin: a shot it stops is gone), and the
+				// sleep stops with it (#104). Hers is met in flight (Barrier.tickProjectiles), a point-blank one here
+				return;
+			}
+			Combat.credit(owner, dealt, target);
 			if (dealt > 0) {
 				Effects.hitMarker(owner, target, false);
 			}

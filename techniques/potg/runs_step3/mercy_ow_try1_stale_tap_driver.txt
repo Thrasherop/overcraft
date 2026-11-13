@@ -1,0 +1,11 @@
+=== phase potg_mercy_ow 15:22:14
+bot {'ok': True, 'hero': 'ANA'}
+before {'screen': '', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 53.0, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'} {'alive': True, 'health': 20.0, 'barrierUp': False, 'barrierHealth': 0.0, 'sigmaBarrier': -1, 'asleep': False, 'x': 3.0, 'z': 2.0}
+healing {'screen': '', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 160.25, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'} {'alive': True, 'health': 8.160004, 'barrierUp': False, 'barrierHealth': 0.0, 'sigmaBarrier': -1, 'asleep': False, 'x': 3.0, 'z': 2.0}
+dead {'screen': 'DeathScreen', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 0.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': False, 'ult': 160.5, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'knockdown'}
+respawned {'screen': '', 'fps': 30, 'x': -4.5, 'y': -60.0, 'z': -1.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 175.75, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'}
+after {'screen': '', 'fps': 30, 'x': -4.5, 'y': -60.0, 'z': -1.5, 'health': 18.0, 'maxHealth': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 379.5, 'primaryAmmo': 25, 'secondaryAmmo': 1, 'anim': 'idle'}
+  log [15:22:23] [Server thread/WARN] (Overcraft) [POTG] encode failed for damage_event: io.netty.handler.codec.EncoderException: Failed to encode packet 'clientbound/minecraft:damage_event'
+  log [15:22:38] [Server thread/WARN] (Overcraft) [POTG] encode failed for respawn: io.netty.handler.codec.EncoderException: Failed to encode packet 'clientbound/minecraft:respawn'
+  log [15:22:43] [Server thread/INFO] (Overcraft) [POTG] the dragon died, killer (none) (allows a POTG); scoring closed
+  log [15:22:53] [Server thread/INFO] (Overcraft) [POTG] at the dragon's tick 199: no play; plays:; scoring ms/tick: mean 0.0121 max 1.983 over 890 ticks

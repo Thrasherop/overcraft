@@ -21,7 +21,9 @@ public abstract class KeyboardInputMixin extends ClientInput {
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void overcraft$heroKeys(CallbackInfo ci) {
 		var player = net.minecraft.client.Minecraft.getInstance().player;
-		if (player != null && Boolean.TRUE.equals(player.getAttached(dev.overcraft.hero.HeroManager.ASLEEP))) {
+		if (player != null && (Boolean.TRUE.equals(player.getAttached(dev.overcraft.hero.HeroManager.ASLEEP))
+			|| dev.overcraft.dva.Dva.held(player))) {
+			// (D.Va calling her mech, and its wreck: no moving, no jumping either: D 026A #105, 0276 #79)
 			// asleep (Ana's Sleep Dart: dev.overcraft.hero.Sleep): no moving, no jumping, hero or not
 			this.keyPresses = Input.EMPTY;
 			this.moveVector = Vec2.ZERO;
@@ -34,9 +36,18 @@ public abstract class KeyboardInputMixin extends ClientInput {
 		boolean back = HeroControls.get(Action.MOVE_BACK).isDown();
 		boolean left = HeroControls.get(Action.MOVE_LEFT).isDown();
 		boolean right = HeroControls.get(Action.MOVE_RIGHT).isDown();
-		this.keyPresses = new Input(forward, back, left, right, HeroControls.get(Action.JUMP).isDown(),
-			HeroControls.get(Action.CROUCH).isDown(), false);
+		// D.Va's mech can't crouch (no crouch in any mech graph: D 0276 #246); her crouch key does nothing in it
+		boolean crouch = HeroControls.get(Action.CROUCH).isDown() && !dev.overcraft.dva.Dva.mechBody(player);
+		// Cassidy in Deadeye: no jump, no crouch (W rev 409375: "cannot jump, crouch or use other abilities while channeling")
+		boolean deadeye = dev.overcraft.client.ClientCassidy.inDeadeye();
+		this.keyPresses = new Input(forward, back, left, right, HeroControls.get(Action.JUMP).isDown() && !deadeye, crouch && !deadeye, false);
 		this.moveVector = new Vec2(impulse(left, right), impulse(forward, back)).normalized();
+		if (dev.overcraft.client.ClientJunkrat.inputsOff(player)) {
+			// on his RIP-Tire: his body doesn't walk (D 0232 #476), but the keys still go to the server, which drives the tire from
+			// them (ServerPlayer.getLastClientInput); his jump is held by OwMovement.noJump, his crouch dropped
+			this.moveVector = Vec2.ZERO;
+			this.keyPresses = new Input(forward, back, left, right, this.keyPresses.jump(), false, false);
+		}
 	}
 
 	private static float impulse(boolean positive, boolean negative) {

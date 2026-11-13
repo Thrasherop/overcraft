@@ -1,0 +1,22 @@
+=== phase r_air 14:33:05
+air before {'screen': '', 'fps': 119, 'x': -1.79, 'y': -60.0, 'z': -0.58, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 195.25, 'primaryAmmo': 10, 'secondaryAmmo': 10, 'anim': 'idle'} server [-1.7937434432817219d, -60.0d, -0.5790146849677221d] {'zombie': 4, 'skeleton': 1, 'ender_dragon': 0, 'end_crystal': 0} game time is 1572 tick(s)
+    0.0s {'x': -1.79, 'y': -54.78, 'z': -0.58, 'health': 20.0, 'heroMode': True, 'fps': 72, 'screen': ''}
+    1.0s {'x': -1.79, 'y': -55.07, 'z': -0.58, 'health': 20.0, 'heroMode': True, 'fps': 30, 'screen': ''}
+    1.9s {'x': -1.79, 'y': -55.07, 'z': -0.58, 'health': 20.0, 'heroMode': True, 'fps': 30, 'screen': ''}
+    2.8s {'x': -1.79, 'y': -55.07, 'z': -0.58, 'health': 20.0, 'heroMode': True, 'fps': 30, 'screen': ''}
+    3.7s {'x': -1.79, 'y': -55.07, 'z': -0.58, 'health': 20.0, 'heroMode': True, 'fps': 30, 'screen': ''}
+    4.6s {'x': -1.79, 'y': -55.07, 'z': -0.58, 'health': 20.0, 'heroMode': True, 'fps': 29, 'screen': ''}
+    5.5s {'x': -1.79, 'y': -55.07, 'z': -0.58, 'health': 20.0, 'heroMode': True, 'fps': 30, 'screen': ''}
+    6.4s {'x': -1.79, 'y': -55.07, 'z': -0.58, 'health': 20.0, 'heroMode': True, 'fps': 30, 'screen': ''}
+    7.3s {'x': -1.79, 'y': -55.07, 'z': -0.58, 'health': 20.0, 'heroMode': True, 'fps': 30, 'screen': ''}
+    8.3s {'x': -1.79, 'y': -55.07, 'z': -0.58, 'health': 20.0, 'heroMode': True, 'fps': 30, 'screen': ''}
+    9.2s {'x': -1.79, 'y': -55.07, 'z': -0.58, 'health': 20.0, 'heroMode': True, 'fps': 30, 'screen': ''}
+   10.1s {'x': -1.79, 'y': -55.07, 'z': -0.58, 'health': 20.0, 'heroMode': True, 'fps': 30, 'screen': ''}
+   11.1s {'x': -1.79, 'y': -55.07, 'z': -0.58, 'health': 20.0, 'heroMode': True, 'fps': 30, 'screen': ''}
+   12.0s {'x': -1.79, 'y': -55.07, 'z': -0.58, 'health': 20.0, 'heroMode': True, 'fps': 30, 'screen': ''}
+  log [14:33:06] [Server thread/INFO] (Overcraft) [POTG] replay for Kiriko from tick 2067, world frozen (was false)
+  log [14:33:06] [Render thread/INFO] (Overcraft) [POTG] replay: 4751 records (295 in the keyframe), run-in 162 ticks in 27.0 ms, 119 ghosts, hero ghost RemotePlayer minecraft:air
+  log [14:33:18] [Render thread/INFO] (Overcraft) [POTG] live world after the replay: 116 before, 95 unchanged, 21 settled (under 0.5 m, nothing else), 0 new
+  log [14:33:18] [Render thread/INFO] (Overcraft) [POTG] replay ended (window played): 241 steps, step ms mean 0.284 max 2.188; frames 359, frame ms mean 33.3 max 36.6; most ghosts 120; packets applied 4416; errors none
+  log [14:33:18] [Server thread/INFO] (Overcraft) [POTG] replay ended (client done) after 243 server ticks, world thawed
+air after {'screen': '', 'fps': 30, 'x': -1.79, 'y': -60.0, 'z': -0.58, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 211.75, 'primaryAmmo': 10, 'secondaryAmmo': 10, 'anim': 'land'} server [-1.7937434432817219d, -60.0d, -0.5790146849677221d] {'zombie': 4, 'skeleton': 1, 'ender_dragon': 0, 'end_crystal': 0} game time is 1641 tick(s)

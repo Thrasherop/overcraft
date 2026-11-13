@@ -55,6 +55,9 @@ public final class Kiriko implements HeroKit {
 
 	@Override
 	public void tick(ServerPlayer player, HeroState s, boolean controls) {
+		if (s.softLanding) {
+			HeroManager.softLanding(player, s, false, player.level().getGameTime() < s.softLandingGrace);
+		}
 		double attack = Combat.attackRate(player);
 		double cooldown = Combat.cooldownRate(player);
 		s.ability1Cooldown = Math.max(0, s.ability1Cooldown - cooldown);
@@ -140,7 +143,7 @@ public final class Kiriko implements HeroKit {
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0 && s.ability2Cooldown <= 0) {
 			throwSuzu(player);
 			s.interruptReload(SUZU_THROW_ANIMATION);
-			Voice.say(player, "suzu", 1);
+			// no line on the throw: her throw's voice 30D8 #85 (FC1) has no lines; her Suzu line is the cleanse's (SuzuEntity.burst, #121)
 			s.ability2Cooldown = Ow.ticks(SUZU_COOLDOWN);
 		}
 		if ((pressed & HeroInputPayload.PRESS_ULTIMATE) != 0 && s.ultActive == 0 && s.ultCharge >= ULT_COST) {
@@ -270,6 +273,9 @@ public final class Kiriko implements HeroKit {
 		Effects.play(level, "swift_step_depart", from, player);
 		player.teleportTo(arrive.x, arrive.y, arrive.z);
 		player.resetFallDistance();
+		// an ally in the air leaves her there: the step lands her (#35)
+		s.softLanding = true;
+		s.softLandingGrace = level.getGameTime() + 4;
 		Combat.phase(player, SWIFT_STEP_PHASED);
 		s.ability1Cooldown = Ow.ticks(SWIFT_STEP_COOLDOWN);
 		if (s.has(Perk.KIRIKO_READY_STEP)) {
@@ -336,5 +342,17 @@ public final class Kiriko implements HeroKit {
 			s.primaryAmmo, primaryReload, s.secondaryAmmo, secondaryReload,
 			step, (float) (s.ability2Cooldown / 20.0), s.rushed, s.canChangeHero, s.onFire,
 			Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk), Perk.index(s.majorPerk), 0, 0, 0, 0);
+	}
+
+	/** Out of play (#100: HeroKit.leavePlay): a Swift Step under way doesn't land her by her ally (it did, after G: found playing). */
+	@Override
+	public void leavePlay(ServerPlayer player, HeroState s, dev.overcraft.hero.HeroKit.OutOfPlay why) {
+		s.castTicks = -1;
+		s.castTarget = null;
+		// Kitsune Rush runs on through a death, as it does in Overwatch (ours: the wiki doesn't say); G, a switch or a leave ends
+		// it, and her +30% with it (it renewed itself each tick in Minecraft mode: critique_systems M2)
+		if (why != dev.overcraft.hero.HeroKit.OutOfPlay.DEATH) {
+			KitsuneRush.end(player);
+		}
 	}
 }

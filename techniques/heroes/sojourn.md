@@ -418,3 +418,232 @@ Orbital Ray 4 -> 19.98).
 
 Not tried: Improved Transparency through the Video Settings screen (F3+X toggles the same option); the Nether; a raid; her
 emotes seen by the second player; the Disruptor against a barrier; dying mid-Overclock.
+
+## Weapon parts, glows and aim (2026-11-04, #91, #95)
+General: [weapon_parts](../animation/weapon_parts.md), [aim_sheets](../animation/aim_sheets.md), [glows](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91). What a critic should check is there.
+
+## False headshots (#110, 2026-11-04)
+Up: [Techniques](../README.md). One rule for all ten checks now: `dev.overcraft.hero.Headshot`, with `HeadshotTest`.
+- **The issue's steps didn't reproduce it.** Two NoAI zombies 12.5 m apart, the first's chest on the line: no false crit. Scanned on the old build: pitches through 8 ray heights at the second zombie with 5 m and 12.5 m to the first: every crit agreed with the 1.49 m band (`rl_t110c`). `kf_soj6`'s own setup isn't recorded;
+  a likely cause there is the harness's "`look` and an ability in the same tick act on the old aim" (not shown).
+- **What did reproduce:** a steep shot. From a 10 m pillar, 2.5 m out, 77 degrees down: **every** aim from the legs up was a headshot, the Charged Shot x1.5 and the kunai x2, because the hit point is where the ray enters the box inflated by its radius, through the top face (the critique's reading).
+- **The fix:** does the shot's line pass through the head? The head: from 0.25 m under the eyes to the box's top + 0.11 m, and 5/12 of the width each side of the middle (a zombie's head is 0.5 m in a 0.6 m box; ours for every mob). A level shot past the side of the head at head height is now a body hit.
+
+| 10 m up, 2.5 m out, aimed at height | Old Charged Shot (energy 50) | New |
+|---|---|---|
+| legs, 0.3 | 105 (crit) | 60 at energy 40 (body) |
+| waist 0.9, chest 1.3, head 1.6, top 1.9 | 105 (crit) | crit: from there the line goes through the head |
+| kunai: legs / waist / head | 120 / 120 / 120 | 60 / 120 / 120 |
+
+- **What a critic should check:** whether the waist from 77 degrees should be a head: geometry says yes, a player may not. Only Charged Shot and kunai were played; the other eight sites share the one call by code. Mobs that aren't built like a zombie (a spider's head is at its front; a ravager's): the middle of the box is ours and wrong for them. Not reproduced is not the same as explained: if the owner sees a false crit on a level line, this isn't its cause.
+
+### Round 2: each mob's own head (critique_rules 11, 2026-11-05)
+`Headshot`: upright, broad (a golem), a row (the Wither), or front-headed (animals, spiders, a ravager, a ghast's face): placed by the mob's eye height and the way its head faces, since Minecraft's server has no head position. Thickness counts sideways and over the top, up to 0.11 m (a kunai's 0.195 m contact made a cow's flank a crit). **All ours.** Kunai, played (60 body, 120 crit), keys by `KeyMapping.set`:
+
+| Aim | Old | New |
+|---|---|---|
+| Spider's head, from the front | 60 | 120 |
+| Its head, from its side | 120 | 120 |
+| Its abdomen: behind, side, top | 120, 120, 120 | 60, 60, 60 |
+| Golem's head / shoulder / chest (it had to be turned) | not run | 120 / 60 / 60 |
+| Ghast: middle / top / low, from the front | 60 / 120 / 60 | 120 / 120 / 60 |
+| Cow's head from the front | 120 | 120 |
+| Ravager's head from the front / its flank | 60 / 60 | 120 / 60 |
+| Zombie, skeleton, creeper: head / chest | 120 / 60 | 120 / 60 |
+| Wither: mid head / body / side head | 120 / 60 / miss | 120 / 60 / miss (the kunai passed: its box is 0.9 m wide; the side heads are outside it) |
+
+- **The waist from 77 degrees still crits** (the line really goes through the head): for the owner to say. **No level-case false crit has shown up.**
+- **What a critic should check:** a moving target; a muzzle offset (a thrown kunai's way isn't the eye's); a ghast's face from the side is a crit near its front edge; a hit from behind a front-headed mob with its head turned (`getYHeadRot`).
+
+## The Charged Shot on the press (#126, 2026-11-06)
+Up: [Techniques](../README.md) · the harness: [harness](../testing/harness.md) · raw files and scripts: [runs/railgun](../testing/runs/railgun/). The owner: "firing railgun is the highest priority. it cancels reloading, primary fire, all sorts of stuff, with 0 (or at least basically 0) cast time. There is a recovery time, but it fires immediately despite what is currently happening." "Railgun" here is her right button.
+
+**What the sources say**
+- **Cast time, H:** W's infobox (Sojourn, page last edited 2026-10-31): "0 second startup + 0.64 seconds recovery". D: nothing between SECONDARY #421 and the volley #450 but energy > 0 (#451), and no wait node.
+- **Priority, H for the nodes, M for the stack's meaning:** in 1A23, #75's always-on plug leads to #615 (v2447 = 0, its recovery) -> #326 -> #421: beside the reload (#75's true plug, #233) and the rounds (its false plug, #415 -> #617 -> #1445 -> #527), not under them. #425 pushes v33 at priority 0x79, over the reload's #233 and the rounds' #571 at 0x2. (That 0x79 outranks 0x2 is read from #233 having an under plug at all: the 024 assets' order isn't read.)
+- **Reload, H nodes, M meaning:** #233's under plug is #234 v51 = 0, and its top plug's wait #287 and anim #249 stop with it: the reload is over, not paused. #285 fills the magazine only after #287's 0.96 s. So a cut reload keeps the ammo it had (the owner's rule for a cut reload too: `HeroState.interruptReload`), and only an empty magazine reloads by itself after the recovery (#75's second clause needs v2447 = 0).
+- **Recovery, M:** #438 v2447 = 0.65, chased at (1 + attack mods) a second (#636), W 0.64. SECONDARY's buffer 0.15 s (H). The rounds wait on it too (#617).
+- **0.16 s, corrected:** v173 (#513, after a volley) gates #75's reload, #415's rounds and Disruptor's start. Not #421. The old "0.16 s before a Charged Shot" (M in kit_sojourn.md) was wrong, and it was what a held left button felt like. Those three readers aren't all in the code: see "found, not fixed" below.
+- **Held, M:** #421 and #527 use the same plug m_80AF45FB, the one that resumes a held left button's rounds when #527 begins again. A right button still down as the recovery ends would fire again, if a button already down counts when #421 begins (not in the data: see round two below). **The game now keeps one press, one shot: a question for the owner.**
+- **Not found:** nothing in Blizzard's patch notes or elsewhere on W about priority or cancelling (searched through the API). Overclock's 0.75 s cast keeps its block: W's text and D #364; how the data blocks it is not read (L), and #421's m_53C4B6A6 = v842 isn't understood. Melee: nothing in her graphs stops #421 during 0043's melee, which pushes v33 at 0x79 as well: an engine-side lock can't be ruled out, so "it cuts a melee's recovery" is L, ours by the owner's "all sorts of stuff".
+
+**The fix**
+- Server (`Railgun`): `chargedReady` is its own lock (`sojournChargedLock`) and Overclock's cast. Reload, rounds, melee recovery, slide, Disruptor's cast don't hold it. `chargedShot` cuts a reload (`interruptReload`).
+- Client (`ClientSojourn.clicked`, from `KeyMapping.click`, the moment `MouseHandler.onButton` sees the button): with energy and no lock it sends the press at once with her aim, and plays her two sounds, the tracer and the clip. `Railgun.pressedShown` fires on the packet; her copies aren't sent back, others' are. A press it can't call goes at the next tick as before, and the server decides. (Round two below changed some of this.)
+- `HeroAnimator.trigger`: "charged_shot" ends the reload's clips, layers and sound on every client.
+- **Not called on the client:** asleep (the synced attachment), a screen, the perk menu, the comms key held. Hack doesn't stop it (a weapon; `HeroManager.onInput` silences abilities only).
+
+**Measured** (`presstrace`, one clock; `key primary_fire down` is KeyMapping.set + click, what `MouseHandler.onButton` calls). 5 presses a row (6 for the first four old rows), median / worst ms from the press. "Look" = the tracer made; "frame" = the next frame's world pass reached, not light on a screen; the harness runs at a frame's start, so a real click adds up to a frame's wait on either build. Old: 430712b (polish-4 + the trace), raw `rg_old_*.txt`. New: 4b45d79, raw `rg_new_*.txt`, later commits as noted, `rg_final*.txt`. All at 30 fps except where marked (the window lost focus: 10 fps, which inflates those old numbers). `rg_old_b.txt`'s rows from "in the air" on are void (she had died falling): `rg_old_c.txt` reran them.
+
+| Case | Old: fired, press to sound | Old: to server shot | New: fired, press to sound | New: to look / frame | New: to server shot |
+|---|---|---|---|---|---|
+| Idle | 6/6, 67 / 117 | 61 / 65 | 5/5, 0.1 / 4 | 0.5 / 4 (the session's first press: frame 289, old 674) | 8 / 47 |
+| Mid-reload, 0.3 s in | **0/6, the press lost** | - | 5/5, 0.2 / 0.3 | 0.5 / 3.6 | 14 / 38 |
+| Reload past 0.96 s | 6/6, 67 / 100 | 53 / 67 | 5/5, 0.2 / 0.2 | 0.3 / 2.9 | 27 / 40 |
+| Reload at its end (asked 1.14 s) | 6/6, 67 / 101 | 48 / 69 | 5/5, 0.1 / 0.1 | 0.3 / 3.1 | 9 / 48 |
+| Holding left, firing | 5/5, **168** / 168 | **163** / 165 | 5/5, 0.1 / 0.2 | 0.3 / 3.1 | 44 / 51 |
+| Between left shots | 5/5, 67 / 68 | 47 / 60 | 5/5, 0.1 / 0.1 | 0.3 / 2.7 | 30 / 43 |
+| Recovery, 0.25 s on | 0/5 | - | 0/5: as the data | - | - |
+| Recovery, asked 0.55 s on (with overhead, likely past it) | 5/5, 67 / 100 | 45 / 69 | 5/5, 0.1 / 0.1 | 0.2 / 2.6 | 17 / 44 |
+| Recovery, 0.72 s on | 5/5, 67 / 67 | 51 / 64 | 5/5, 0.1 / 0.1 | 0.2 / 1.4 | 37 / 45 |
+| Just after G back | 5/5, 67 / 67 | 44 / 64 | 5/5, 0.1 / 0.1 | 0.2 / 2.7 | 29 / 42 |
+| Jump, rising | 5/5, 34 / 67 | 33 / 67 | 5/5, 0.1 / 0.1 | 0.2 / 2.5 | 18 / 30 |
+| Landing | 5/5, 67 / 67 | 50 / 62 | 5/5, 0.1 / 0.1 | 0.3 / 2.4 | 17 / 32 |
+| Sliding | 5/5, 34 / 100 | 31 / 69 | 5/5, 0.1 / 0.1 | 0.2 / 2.6 | 14 / 37 |
+| In the air | 5/5, 67 / 67 | 40 / 65 | 5/5, 0.1 / 0.1 | 0.3 / 2.6 | 41 / 48 |
+| Disruptor's cast | 4/4, 67 / 67 | 55 / 62 | 4/4, 0.1 / 0.1 | 0.2 / 1.9 | 16 / 28 |
+| Melee's recovery | **0/5, lost** | - | 5/5, 0.1 / 0.2 | 0.3 / 1.2 | 33 / 44 |
+| Crouched | 5/5, 67 / 100 (10 fps) | 34 / 61 | 5/5, 0.1 / 0.3 | 0.2 / 2.5 | 25 / 48 |
+| Low energy, 3 | 5/5, 100 / 100 (10 fps) | 19 / 23 | 5/5, 0.1 / 0.1 | 0.3 / 2.6 | 19 / 47 |
+| Full energy | 5/5, 100 / 100 (10 fps) | 51 / 54 | 5/5, 0.1 / 0.1 | 0.3 / 2.5 | 26 / 50 |
+| No energy | 0/5 | - | 0/5, the click heard (`kiriko.ability.denied`) | - | - |
+| Empty, auto-reloading | **0/5, lost** | - | 5/5, 0.1 / 0.1 | 0.3 / 2.2 | 21 / 49 |
+| In an emote | **void:** my `emote 9295` played nothing, so not measured | - | 5/5 with Triumph playing (`emoteClip`, its camera on; both gone after) on b0a9f51, 0.2 / 0.2 | 0.4 / 3.0 | 36 / 46 |
+| Overclock's cast, 0.3 s in | 0/3 | - | 0/3: the hard stop kept | - | - |
+| In Overclock | 3/3, 100 / 100 (10 fps) | 20 / 52 | 3/3, 0.1 / 0.2 (16d1ca9) | 0.3 / 1.8 | 21 / 23 |
+
+The server shot is still up to about 50 ms after the press: the packet waits for the server (why isn't read: a queue until its next tick, likely). The hit's crack (`snd:charged.hit`) comes back about 33 ms after that, at a frame. **So what she sees and hears of the shot itself is at once; the hit's own sound and marker aren't.**
+
+**Other checks, new build, each read from its raw**
+- **Cut reload:** at 0.3 s in, 20 rounds: after the shot 20, reload off (rel -1), meter 0; still 20 at +1.2 s; R again reloads to 45. (The sound's timing that stood here was a bad read: round two.) Past 0.96 s: 45 kept. Empty: reload off, starts again by about 0.77 s after the shot, 45 at about 1.7 s.
+- **Left held through a shot** (real rounds): last round 22 ms before the press, none till 627 ms after. Burst, shot, burst with energy earned by real rounds at the zombie: 1 shot, 15 rounds, the meter 0.8 before and 0.7 after.
+- **No double shots:** every row's count is one a press; 6 quick taps (0.02 s): 6 shots, 6 clips, meter 0 each. **No stuck state:** `anim` idle and the ammo right after each sequence; a slide and a shot in it: 1 shot.
+- **Damage (the server's):** 50 energy 8.27 (a head: 105, less a zombie's 2 armor), 100 energy 14.17 (180), as step 4's.
+- **Held, in this first round's build:** a shot every 0.65 s in Overclock; outside it 1 shot with nothing landing, and a second weak one with rounds landing (coordinator's real keys). Since round two: 1 shot a press in all of them.
+- **The buffer:** a press late in the recovery, not called by the client (`rg_new_x.txt`, its 0.402 line): the server fired it, the look 100 ms on at 10 fps. The edge: round two.
+- **Flick:** `look -90` and the press one frame later, zombies ahead and to the side, 30 fps: with a rotation packet first, 4 of 8 went along the old aim (`rg_final.txt`); with the aim in the press, 8 of 8 on the new target (`rg_final2.txt`). **Old build not measured.**
+- **Hard stops:** asleep (a bot Ana's dart): no shot, no ghost, energy kept. Dead, Minecraft mode, the comms key held 0.2 s and 0.5 s (found: at 0.2 s it fired until b0a9f51): nothing. Hacked (a bot Sombra's EMP): it fires, as a weapon; **the request listed hack as a stop, the code and BZ say abilities only: for the owner to say.**
+- **Other heroes:** Kiriko's right button after the change: ofuda, no shot (`clicked` returns for anyone but Sojourn). Others not played.
+- **The look:** `run/screenshots/rg_new_f1` (not committed; the frame after a press in a reload: the gun kicked, the flash, 20 rounds). The reload's pose goes at once, with no blend back on the view: read in stills only. HUD: the energy reads 100 in that frame and 0 when the sync arrives, a tick and a frame at most; the reload bar the same.
+
+**Found, not fixed:** v173's 0.16 s isn't in the code for the rounds or the reload (a left click right after a burst, R right after firing), and Disruptor's start. R in the recovery is refused (`startReload`), where D's #80 sets v51 and the reload starts as it ends. Hit marker and crack wait for the server, as for every hero. A wrong client call shows a shot that wasn't: round two found three ways, and fixed them.
+
+**What wasn't tried:** a real mouse or a person: every press is the harness's KeyMapping.set + click, so **this isn't the merge gate's hand play, and feel isn't judged.** A second client seeing the shot (its packets are in the code, its reload cut too; one client on this machine). A dedicated server with real latency: a press the server then refuses shows a shot that wasn't (her energy gone in that moment, a stun on the way): not provoked. Attack-speed buffs on the client's lock (0.65 s flat: a press it thinks too early goes the old way; if slowed, it could show one early and the server buffers it). The perk menu open. 60+ fps. An Overwatch side by side.
+
+### Round two (a code critic and the coordinator's real keys, 2026-11-06)
+Their pass: [real_keys_664f830](../testing/runs/railgun/real_keys_664f830.md). Each item reproduced first on c8abe69 (`rg2_before*.txt`), replayed on 946b16b (`rg2_final*.txt`, `rg2_after*.txt` from 5b5b6a8 where said). **Harness keys except the flick (OS mouse events, `rk_mouse.ps1`). "100 ms" is `presstrace lag`, a dev delay on her hero payloads both ways, off by default: moves and positional sounds don't wait and the server is in this process, so it isn't real latency.** 30 fps unless said. Screenshots not committed (`run/screenshots/rg2_before_*`, `rg2_after_*`).
+
+| Item | Before (c8abe69) | After (946b16b unless said) |
+|---|---|---|
+| 1. First Charged Shot, fresh client, no screenshots | frames of **362 + 568 ms**; 252 of 290 thread samples in `EffectArt.load` (`rg2_before_first.txt`) | longest frame **43 ms** (normal 33) in this run, 41-68 over five clients (round three), no `art_miss` |
+| First rounds / reload / Overclock | 121 + 124 / 77 / 62 ms | 38-52 / 36 / 36 ms (corrected, round three) |
+| First Disruptor | 54, 44, 196 ms | 50, 46 |
+| First slide | 49 ms (no art in its samples) | 42: not this cause, not chased |
+| 2. Frames after the press: reload / melee / Disruptor's cast | `anim` idle in the first frame, all three (critic right; `sheet_before_melee`: the gun back in one frame) | reload: `idle+reload` 4 frames (the 0.15 s fade), then idle (5b5b6a8, 30 fps). Melee and cast play on to their ends, the shot's layer over them |
+| 3. Real flick: burst, click in that frame | 3 of 5, one void (coordinator's 4 of 10) | **12 of 12** |
+| Flick, then 15 ms, click / 30 ms, click | 6 of 6 / not rerun | 6 of 6 / 6 of 6 |
+| 4. R, then right inside the ping, 100 ms | at +0.5 s `idle+reload`, no reload on the server, sound running: 5 of 5 | `idle`, 5 of 5; channel stopped as `reload_cut` lands, 0 running at +0.65 s (control uncut: 1.38 s) |
+| Left to empty, right as it does, 100 ms | the same, 4 of 4 | `idle`, 0 running, 4 of 4; empty magazine's real reload follows the recovery |
+| 5a. Press in the last of the recovery, a click after it, 100 ms | **10 of 12** a shot shown and not fired | 0 of 12 |
+| 5b. Shown press in the server's last tick, button down, 100 ms | **1 of 30** her copies doubled | 0 of 48 (plus 16 at wider gaps): 0 |
+| 5c. Q, right inside a round trip, 100 ms | **3 of 3** a shot shown and not fired | 0 of 3: nothing shown |
+| 7. Press before the recovery's end: last lost / first fired, ms after the shot | 414 / 429; next shot at +603 | 442 / 460; next shot at +652 |
+| In Overclock | 387 / 456 | 398 / 467 |
+| 8. Two Sojourns reloading, one fires | both channels gone | the other's runs on to its end (control 1.28 s, it 1.28-1.38 s); bots, this client hearing |
+
+**What each was, and the fix**
+1. `EffectArt` coloured each mask on the thread that first asked: file read, then pixel by pixel. 32 frames of smoke and 14 of flash in that one shot. Now `EffectArt.prepare` at the first tick she's the hero (select screen or a rejoin): a low-priority worker, then textures at 1.5 ms a frame. **Her art is ready 2.1-2.2 s after the pick.** Pressed 0.8 s after it (`rg2_after_race.txt`): 118 + 241 ms, what wasn't ready yet. **The pick's own frames: 147 + 292 ms; the thread's samples there are mostly the HUD and the model's first draw (`HudDraw.image`, `HudShapes`, `isClosed`, `ClothSim`), `HeroTexture` 22 of 512 in all. So not ours by the samples, but the old build's pick wasn't measured.** Table `SojournFx.ART` is written out from the source: a new effect has to be added (`art_miss` in a trace shows it). An enemy Sojourn's colours, and an ally's seen from another hero, aren't made ahead. **Every other hero has the same lazy load** (not touched).
+2. Critic right, as read. The fix is theirs: a layer in `ActionTrack`. **The data's cut:** #233 leaving the stack ends #249; no blend field I can read on it, and add_reload_end is `onFinished` only: the 0.15 s fade is ours (the kit's `FADE`). The gun's own reload clip and `add_reload` still stop at once (`actionAt` removed) while the arms fade: read in stills only. Melee: the shot's tracer now leaves a gun her swing has out of view (`sheet_after_melee`): for a person.
+3. `Minecraft.run` polls events, then `runTick` does tasks, ticks and then `mouseHandler.handleAccumulatedMovement()` (decompiled): the click runs before the frame's movement. `clicked` calls it first; it's public, on the client's thread, and later events stay for the frame's own call. With a smooth camera the split changes its dt: not played. **Tick-path presses and held fire don't carry an aim and shouldn't need to:** they fire when the server gets to them, later than the press, with the latest move packet: at most a tick old. The press is a moment; those aren't.
+4. Critic right. The server sends her `reload_cut` when a shown shot cuts a reload: behind the reload in the same stream.
+5. Critic right on all three, with these fixes: **a press left to the server late in the recovery holds off shown shots for 0.5 s or until its shot arrives (ours: a ping above about 400 ms can still ghost; round three replaced this hold-off);** Q locks at her press if the ult reads ready; a shown press can't be taken over. **Still possible: a shown shot the server refuses because energy ran out as she pressed, a stun on the way, or attack-speed changes on the flat 0.65 s.**
+7. Count fixed (4 looks, 0.15 s). **Against the critic's reading:** the old edge wasn't 0.51-0.55 here: the old build fired at 456 and 509 in Overclock, because the press also takes up to two ticks to reach the check and its recovery ran out at 0.60 s. **Found by this:** a packet's shot counted its first tick at once: next shot +603 against D's 0.65. Now +652 from a press, with the rounds. The window is 0.15 s from when the server sees the press: from the finger it's 0.19-0.21 s.
+8. `reloadCut` stops the nearest other reload, heard through a sound listener; two Sojourns side by side can swap.
+
+**6, the held button: a question for the owner.** What firmed up: the plug m_80AF45FB is a while-down state, H: it's what makes rounds stop on release at #527 in this same graph, and Mercy's held right button (006D #608) uses it for a chase that runs while held. #421 begins again as v2447 reaches 0, H (#615). **What isn't in the data:** whether a button already down when #421 begins counts. Left-button rounds resuming after a reload says yes only if that's how the game plays, and no source here states it; m_53C4B6A6 = v842 on both buttons is unread. So it stays M.
+- **Kept (least surprising): one press, one shot.** Holding does nothing more, in or out of Overclock. No click at 0.65 s.
+- **The data's likely reading:** held, she fires again each time the recovery ends: every 0.65 s in Overclock (a real convenience); outside it, a weak shot from energy that landed while she held (rounds in flight: `srv_shot` then `charged.fire_low` at +605, and 1.25 s with no rounds), or the "not available" click 0.65 s after any shot held that long.
+- **Asked: in real Overwatch, with energy, hold the right button: does it fire again 0.65 s on?** A one-line change either way (`rightPressed` in `Railgun.tick`).
+- Corrected: earlier lines here said "1 shot" outside Overclock and "out of it, the click": that was only with nothing landing. Now: 1 shot in all of them (`HOLD`, `rg2_final.txt`). **`snd:railgun.reload` at 2287 in the coordinator's line:** one round at 2230 then the reload, with the left button held to 2510: an empty magazine, by the same shape as `HOLD both, 9 rounds` before the fix (`rg2_before.txt`), though that line's ammo isn't logged.
+
+**Harness rows the real pass hadn't:** melee's recovery, Overclock's cast and inside it, an emote (Triumph playing), empty magazine, full table in `rg2_final.txt` (sound 0.1 / look 0.3 / frame about 2.5 ms median, server shot 14-38 median, worst 50); sleep (a bot Ana's dart) and a stun (a bot Sigma's Accretion): nothing fired, energy kept; death: nothing; hack: fires. Comms key, Minecraft mode: nothing. **All harness keys.** Rally's stun didn't land in my try (`stunned (Rally) False`).
+
+**Corrections to the above:** the "cut gone by 0.3-0.5 s" was `bot playing`, which lists a stopped sound for 20 ticks from its start (`SoundEngine.soundDeleteTime`): `presstrace sounding` reads the channel. The "in an emote" row of `rg_new_*`'s `rg_extra` "more" still uses a clip id and plays nothing; the table's row uses `triumph`.
+
+**Not tried:** real ping, a remote server, a second client (others' copies of the shot and cut, by code and bots only). A person's hands, 60+ fps with focus for most rows, Kiriko and the other heroes this round (`clicked` returns for all but Sojourn; `ActionTrack`'s case is hers). The old build at the pick. The perk menu open. Smooth camera. A ping above the 0.5 s hold-off. Overcharged, Dual Thrusters with any of this. An Overwatch side by side.
+
+### Round three (a second code critic, 2026-11-06)
+Reproduced on dfabe4c (`rg3_before*.txt`), replayed on 2d98bb9 (`rg3_after*.txt`) and a62b1cd (`rg3_final*.txt`), all in [runs/railgun](../testing/runs/railgun/). A session limit cut me off between the two, before any "after" run had started: no run was interrupted, none is void by it. Harness keys, the flicks real OS mouse events, "100 ms" the dev delay, not real latency. Not a person.
+
+| Item | Before (dfabe4c) | After |
+|---|---|---|
+| 1. Fire, click at 0.40-0.44 s, click at 0.75-0.80 s: the last look | late 34-67 ms in 6 of 8 (the two at 0.40 fell outside its window) | 0 ms late, 8 of 8 (`MASH`) |
+| No energy at the middle click, energy back for the last | late 34-67 ms, 4 of 4 | 0 ms late, 4 of 4 |
+| 5a rerun, 100 ms | - | **0 of 12** ghosts on a62b1cd; see below for the 3 of 12 on the way |
+| 5b, 5c, 100 ms | - | 0 of 16 + 0 of 48; 0 of 3 |
+| 2. Right button on V, held with repeats, 3 s in Overclock | **3 shots** | 1 |
+| Same, 2 s with energy | 1 (energy gone) | 1 |
+| 3. Shown press in the buffer, G: flag stuck | 1 of 10 | 0 of 10 |
+| 4. Hacked, Q then right: look after the right click | 43-86 ms | 1 ms; the shot lands, 3 of 3 |
+| 6. Perfect flick at speed (`presstrace aimpress`, a dev command, not the mouse): run / slide / slide jump | hit 10 / 7 / 7 of 10; camera to server's eye up to 0.27 / 0.70 / 0.81 m | **10 / 10 / 10 of 10**; 0 m |
+| 8. A Kiriko's first sight: ally's shot / enemy's shot / ally's rounds | 209 / 153 / 93 + 60 ms | none over 45 ms / none / 58 ms; no `art_miss` |
+| 4 again: R + right, cut reload's channel at +0.5 s, 100 ms | - | 0 of 12 running, a62b1cd (2d98bb9: 1 of 9) |
+| Buffer: last lost / first fired | 442 / 460 (946b16b) | 446 / 455; Overclock 377 / 464 |
+
+**1, the hold-off and what it costs now.** It's set only by a press with energy in the recovery's last 0.20 s: the press goes at once rather than at the next tick, so that's the server's 0.15 s and the tick it may wait. Measured against it: last lost 446, first fired 455, on a recovery of 652, so 0.196-0.206 s. It ends a ping and 0.15 s after the recovery, or when the shot arrives. **Cost: a click in that time, after a press in that window, is the server's to judge: its look is a tick or so late.** It no longer outlasts the gun by more than ping + 0.15 s. Ping is vanilla's list figure, so a sudden spike can still ghost.
+- **The 3 of 12 ghosts on the way (`rg3_after_lag.txt`) were my test's energy** arriving at the server before it reached her client: her client saw 0 at the second press, so no hold-off, and the server kept it. Energy set in time: 0 of 12. **The same can happen in play:** energy reaching the server inside a ping of a press in the window: rounds landing at the end of her recovery. It's rare, and I chose it over holding off on a 0-energy click, as the critic asked. **A ghost is still possible there.**
+
+**2.** `clicked` takes a press only if the key isn't already down, for both keys. Cleared at the client tick once it's up (round three; round four found this lost presses and clears it as the key goes up).
+
+**4.** New synced bit `Sojourn.MODE_SILENCED`. The hacked Q row: fires as a weapon, look at once.
+
+**5.** Pruned each client tick. Not played separately.
+
+**6.** Fixed, since it was cheap: the press carries her eye from the frame she saw; the server uses it within 6 m and with nothing solid in between (ours). **"Where the crosshair was" is now true of the ray's origin and direction, against a still target. A moving mob is where the server has it, not where her client drew it: not compensated, as for every hero.** The top speed reached was 20.8 m/s, not 27.4 (Dual Thrusters not played). The dev lag doesn't hold moves back, so a ping's worth of drift between her and the server wasn't tested.
+
+**7, the 83 ms frame: not found again.** One frame in `rg2_final.txt`. Second shots on three later fresh clients: longest 37 ms (`rg3_before_first.txt`, `rg3_after_first.txt`, `rg3_after_zip.txt`). 40 shots in a row twice, at 116-118 fps, no sampler: 0 frames over 45 ms. **Unexplained, once.**
+
+**8.** Fixed by the same code: a client with another Sojourn in the world makes `SojournFx.ART` and `ART_ENEMY` ahead, checked once a second. **Other heroes, the same lazy load, not fixed (a follow-up):** Kiriko's first ofuda 305 ms, first kunai 109, Suzu 58 + 94, Kitsune Rush 52 + 93 + 49 (`rg3_before_by.txt`; 251, 80, 72 + 95, 66 + 113 + 47 in `rg3_after_by.txt`).
+
+**9, the zip.** `FilePackResources`: `getOrCreateZipFile` isn't synchronized, but the zip is already open by then (the resource load read it), and `ZipFile` itself is safe across threads. **The race left is a resource reload closing it under the worker:** an exception there is caught and the art loads when asked; a read after the close could reopen the zip until it's collected. Read, not provoked. **Played once from the 1.3 GB zip (read only, not copied or committed; `rg3_after_zip.txt`):** art ready 2.21 s after the pick, longest frame at the first shot 64 ms, none of `Effect art`, `Effect texture`, `zip file closed`, `IllegalState`, `ClosedChannel`, `ZipException` in the log. No other row was run on the zip.
+
+**10, Disruptor's cast through a shot: the data says it goes on, H nodes, M that nothing else stops it.** 1441's `#84 StateAbility` -> `#357 State` -> `#361 StateWait` -> `#353` volley, and `#354 StateAnim`: there's no under plug in graph 1441, the plug that ended the reload at #233/#234, and no node reads v33 after the start. So the owner's "cancels all sorts of stuff" holds for the reload and the rounds, not for this: the shot fires over the cast and the Disruptor still launches. Same reading for melee (0043 pushes v33 at 0x79 too). **For the owner to say if the real game feels otherwise.**
+
+**Corrections to round two.**
+- "Longest 43 ms" for the first shot: across five fresh clients the frame holding the press was 41-68 ms (`rg3_after_first.txt` 68, zip 64). Normal is 33. Better than 930, not nothing.
+- "None over 36 ms": first rounds were 38 there, 52 in `rg3_after_first.txt`; slide 46, Disruptor 47 and 43, Overclock 36.
+- **The flick files' `'fps': 10` is a reading before focus:** `rk_rig.py`'s row prints before `rk_mouse.ps1` raises the window. `rg3_flick.py` reads it around each flick: 118-119 fps. **Replayed at that rate on 2d98bb9: burst 9 of 9, 200 counts then 15 ms 6 of 6, then 30 ms 6 of 6.**
+- A burst's first flick in a run misses with `yaw 7.5`, the window not up yet and the mouse's counts partly dropped (fps 30 in that row): that's the first row of `rg3_after_flick.txt` and of round two's before: **void, so that before was 3 of 5**, not 3 of 6.
+- `rg3_after_table.txt`'s rows at 118 fps show looks 34-75 ms late: my script's energy set one frame before the press, beaten by it: tick path. Rows after it at 30 fps, and `rg3_final_table.txt` with a wait, are right, but `rg3_final_table.txt` ran at 30 fps: **the table at 118 fps with the wait wasn't rerun.** The flicks at 119 fps show the look in the press's frame.
+- Rally's stun still didn't land in my try (`rg3_after_x.txt`). Accretion's did, nothing fired, on 946b16b (`rg2_final.txt`); not replayed on the final tree, and that gate didn't change.
+
+**Not tried:** real ping, a remote server, a second client (bystanders are bots, on this client), a person's hands. Reload during art prep. Dual Thrusters' 27 m/s. Item 5's list size read directly. The cut sound's second stop at 118 fps. Heroes other than Sojourn and Kiriko. An Overwatch side by side.
+
+### Round four (a third code critic, 2026-11-06 to 11-10)
+Reproduced on e40c37c / dbe8819 (`rg4_before*.txt`); fixed on 85eb740, e3f437f, 3247936; replayed on e3f437f (`rg4_final*.txt`, `rg4_after_*.txt`) and 3247936 (`rg5*.txt`). Two session cuts fell between runs: none was interrupted, none is void. "100 ms" is the dev delay, not real latency. **Not a person.**
+
+| Item | Before | After |
+|---|---|---|
+| 1. Banked eye: 0 energy, a press with an eye at A, walk 50 m, energy, a plain edge (dev `presstrace send`, a modified client's packet) | shot from A, 2 of 4 | no place in the packet: shot from where she is, 4 of 4 (e3f437f) + 4 of 4 (3247936) |
+| 2. Peek: a press claiming an eye 5.9 m off, round a wall's end | zombie hit through the wall, 5 of 5 | 0 of 5, twice (e3f437f, 3247936) |
+| Partial of NaN, 1e9, -5 | - | her own position each time |
+| 4. Turning while a shown press waits (100 ms dev lag, which holds the press but not the moves) | shot off what she was shown, 4 of 22 | 0 of 20 (85eb740), 0 of 25 (e3f437f) |
+| 5. Real mouse mash in Overclock, 5 s: 15/s up 30 ms, 15/s up 45, 20/s up 25, 10/s up 40 | 6, **1**, 5, 5 shots; 45, 23, 34, 14 presses refused | 8, 8, 8, 8 shots, gaps 648-655 ms; 0 refused (e3f437f, 3247936) |
+| 6. Q held with repeats, the ult filling, right click inside a round trip (100 ms) | ghost 1 of 8 | 0 of 8, twice |
+| Perfect flick at speed (`presstrace aimpress`, a dev command, not the mouse): run / slide / slide jump | - | 10 / 10 / 10, server's point 0.000 m from the camera (e3f437f) |
+| Real mouse flick at speed (`rg_mouse.ps1 armed`: OS events, W and Shift by harness keys): client ray against server hit | 22 of 22 agree with the eye claimed (dbe8819) | 22 of 22 agree, 14 on a box (e3f437f) |
+
+**What changed:**
+- **1 and 2.** The press sends a partial tick, not a place. The server takes the point that far between where she was at the last two ticks: on her own path, at most a 2 m step (ours), else her position. It's set only inside `pressedShown`, only with energy, and used only by that shown press. A modified client can now turn as it likes (always could) and choose a point on its own last step; it can't put the ray anywhere else.
+- **Read:** Fabric runs a custom payload by throwing to the same `PacketProcessor` as her moves (`AbstractChanneledNetworkAddon.handle` -> `isOnReceiveThread` -> `scheduleIfPossible`), handled at the tick's start. So the press and her moves are one ordered stream, as the critic said. That's also why the server shot comes up to 50 ms after the press.
+- **3.** Barriers and Kinetic Grasp still judge from `getEyePosition()` toward the victim's centre: now under a tick of her motion off the shot's eye, the centre aim older than this. Not changed.
+- **4.** The eye and rotation she was shown are kept for that press.
+- **5. Lost presses.** A key's release clears the flag at once (`KeyMapping.set`). **Found replaying:** a press late in the recovery went out on the held bit, which a mash never let fall between ticks: no edge, 1 shot in 5 s, and each click stretched round three's hold-off. Such a press is now sent as `PRESS_CHARGED_KEPT` and fired at the recovery's end.
+- **6.** Q's repeats aren't filtered (they can start Overclock). With Q held no shot is shown: the server judges it.
+- **7.** Vanilla's list ping: the server's keepalive every 15 s, averaged 3 to 1, sent in the list every 600 ticks, the login's figure at first. The hold-off now measures the round trip off her own shots (`charged_ack`) and takes the larger. Read, not provoked at a real ping.
+
+**Small:** the `!isAlive` comment says this tick doesn't run for the dead. Her art queues once.
+
+**The pick (frames from `hero sojourn`, fresh clients):** the old build (c8abe69) had a longest frame of 269 / 216 / 228 ms. With the art started at the pick, 276-393 over ten clients. Started 1 s after the pick (3247936): 296, one client. **Not settled** whether the art adds to it.
+
+**Texture memory, read through EffectArt (mips counted):** her own art 59.5 MB; a bystander's (hers and the enemy's) 94.5 MB.
+
+**Not shown:** a real ping or a remote server; a person's hands. The delayed art against the pick over more than one client. The old build at the turning case without the dev lag.
+
+### Last narrow round (2026-11-10, 0d7c573; raw `rg6.txt`)
+Fixes only, after a final critic; played after, not reproduced before.
+- **Her last step from each move packet** (`ServerMoveMixin`), not a per-tick sample: two moves in one tick made it two steps long, and past 2 m it counted as a teleport. Slide-jump flick by `aimpress` at a 15 fps cap (10 measured): 5 of 5 hits, the server's point 0.000 m from the camera; at 115-119 fps the same.
+- **The round trip:** a sample over 1 s isn't taken, and it resets on join and disconnect. Row: a press, Esc (the Overwatch menu) for 2 s, then a real 15/s mash: measured 52 and 35 ms after, 5 shots at 648-657 ms gaps, twice. The menu didn't produce an outlier here, so the rejection itself wasn't exercised.
+- **A shown press that waited in the buffer** fires from where she pressed only within a step (2 m) of it. Dev send pressed at x 0.5, then `/tp` to 6.5 while it waited: the shot left from 6.5, twice.
+- **Accuracy numbers taken under `presstrace lag` don't measure the eye fix:** the dev lag delays her input, not her moves.
+- **Noted, not fixed:** a quick Q tap, released, then a click within a round trip as her ult fills can still ghost: the held-Q rule doesn't cover it.

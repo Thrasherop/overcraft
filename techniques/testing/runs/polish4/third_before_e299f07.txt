@@ -1,0 +1,79 @@
+TREE (git at launch; the client itself can't say): e299f07 dirty_src_files=0 launched=2026-11-05T13:32:34
+TIME 13:45:17
+/difficulty normal ['[13:45:17] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[13:45:17] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[13:45:18] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[13:45:18] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[13:45:18] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[13:45:19] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[13:45:19] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[13:45:20] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[13:45:20] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### Kiriko's Suzu line: a throw that hits nobody, at a healthy ally, at a slept ally; 3 rounds, 11 s apart for its own limit
+hero kiriko mode True screen  hp 20.0 / 20.0
+  round 0 nobody cd2 12.1 line heard at + 0.1 
+hero kiriko mode True screen  hp 20.0 / 20.0
+  round 0 healthy cd2 12.1 line heard at + 0.1 phased=False health=18.0 asleep=False
+hero kiriko mode True screen  hp 20.0 / 20.0
+  asleep asleep=True
+  round 0 slept cd2 12.1 line heard at + 0.1 phased=False health=18.0 asleep=False
+hero kiriko mode True screen  hp 20.0 / 20.0
+  round 0 poisoned cd2 12.1 line heard at + 0.1 phased=False health=18.0 asleep=False
+hero kiriko mode True screen  hp 20.0 / 20.0
+  round 0 hurt cd2 12.2 line heard at + 0.1 phased=False health=16.31 asleep=False
+hero kiriko mode True screen  hp 20.0 / 20.0
+  round 1 nobody cd2 12.1 line heard at + 0.1 
+hero kiriko mode True screen  hp 20.0 / 20.0
+  round 1 healthy cd2 12.1 line heard at + 0.1 phased=False health=18.0 asleep=False
+hero kiriko mode True screen  hp 20.0 / 20.0
+  asleep asleep=True
+  round 1 slept cd2 12.1 line heard at + 0.1 phased=False health=18.0 asleep=False
+hero kiriko mode True screen  hp 20.0 / 20.0
+  round 1 poisoned cd2 12.1 line heard at + 0.1 phased=False health=18.0 asleep=False
+hero kiriko mode True screen  hp 20.0 / 20.0
+  round 1 hurt cd2 12.2 line heard at + 0.1 phased=False health=16.48 asleep=False
+hero kiriko mode True screen  hp 20.0 / 20.0
+  round 2 nobody cd2 12.1 line heard at + 0.1 
+hero kiriko mode True screen  hp 20.0 / 20.0
+  round 2 healthy cd2 12.2 line heard at + 0.1 phased=False health=18.0 asleep=False
+hero kiriko mode True screen  hp 20.0 / 20.0
+  asleep asleep=True
+  round 2 slept cd2 12.1 line heard at + 0.1 phased=False health=18.0 asleep=False
+hero kiriko mode True screen  hp 20.0 / 20.0
+  round 2 poisoned cd2 12.1 line heard at + 0.1 phased=False health=18.0 asleep=False
+hero kiriko mode True screen  hp 20.0 / 20.0
+  round 2 hurt cd2 12.1 line heard at + 0.1 phased=False health=16.48 asleep=False
+### Whip Shot's push on flat ground: a bot Brigitte at a real client 5 m off, a real Brigitte at a husk
+hero kiriko mode True screen  hp 20.0 / 20.0
+  hold on: hero moved 5.88 m, z 0.50 -> 6.38, y top -59.884, health 20.0 -> 14.4
+TREE (git at launch; the client itself can't say): e299f07 dirty_src_files=0 launched=2026-11-05T13:32:34
+TIME 13:52:38
+/difficulty normal ['[13:52:38] [Render thread/INFO] (Minecraft) [System] [CHAT] The difficulty did not change; it is already set to Normal']
+/gamerule minecraft:spawn_monsters false ['[13:52:38] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule spawn_monsters is already set to false']
+/gamerule minecraft:natural_health_regeneration false ['[13:52:38] [Render thread/INFO] (Minecraft) [System] [CHAT] Game rule natural_health_regeneration is already set to false']
+/time set noon ['[13:52:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['[13:52:39] [Render thread/INFO] (Minecraft) [System] [CHAT] Set the weather to clear']
+/team add red ['[13:52:40] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team add blue ['[13:52:40] [Render thread/INFO] (Minecraft) [System] [CHAT] A team already exists by that name']
+/team join blue @s ['[13:52:40] [Render thread/INFO] (Minecraft) [System] [CHAT] Added Kiriko to team [blue]']
+/kill @e[type=minecraft:slime] ['[13:52:41] [Render thread/INFO] (Minecraft) [System] [CHAT] No entity was found']
+### Whip Shot's push on flat ground: a bot Brigitte at a real client 5 m off, a real Brigitte at a husk
+hero kiriko mode True screen  hp 20.0 / 20.0
+  hold on: hero moved 5.88 m, z 0.50 -> 6.38, y top -59.884, health 20.0 -> 14.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+  hold on: hero moved 5.88 m, z 0.50 -> 6.38, y top -59.884, health 20.0 -> 14.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+  hold on: hero moved 5.88 m, z 0.50 -> 6.38, y top -59.884, health 20.0 -> 14.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+  hold off: hero moved 4.25 m, z 0.50 -> 4.75, y top -59.88, health 20.0 -> 14.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+  hold off: hero moved 4.25 m, z 0.50 -> 4.75, y top -59.88, health 20.0 -> 14.4
+hero kiriko mode True screen  hp 20.0 / 20.0
+  hold off: hero moved 4.25 m, z 0.50 -> 4.75, y top -59.88, health 20.0 -> 14.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  hold husk: moved 7.75 m (z 0.50 -> 8.25), health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  hold husk: moved 7.75 m (z 0.50 -> 8.25), health 194.4
+hero brigitte mode True screen  hp 20.0 / 20.0
+  hold husk: moved 7.75 m (z 0.50 -> 8.25), health 194.4
+DONE

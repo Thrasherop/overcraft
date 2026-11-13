@@ -24,7 +24,7 @@ public final class HeroWeapon {
 	 * Hardpoint 000A from the models' own hardpoint tables (research/lucio/models.json): on Weapon_R in both, turned 180
 	 * degrees about X in the third-person model DB3F (rotation x -1) and not at all in the first-person DB40.
 	 */
-	private static final Map<Hero, Spec> SPECS = Map.of(Hero.LUCIO,
+	private static final Map<Hero, Spec> SPECS = with(with(Map.of(Hero.LUCIO,
 		new Spec(new Mount("Weapon_R", new Quaternionf(-1, 0, 0, 0)), new Mount("Weapon_R", new Quaternionf())),
 		// Mercy's staff and blaster, entities on 000A = Weapon_R with no offset or turn in both her models' tables
 		// (research/mercy/models.json)
@@ -38,9 +38,33 @@ public final class HeroWeapon {
 		// Brigitte's Rocket Flail handle, entity 2282 on her hardpoint 000A = Weapon_R, no offset in both views
 		// (research/brigitte/work/assets.md); hero_models/brigitte_weapon.glb
 		Hero.BRIGITTE, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())),
+		// Sigma's hand spheres, entity 31A7 (model 106B4) on his hardpoint 000A = bone_004A (Weapon_R) in third person and 00C9 =
+		// bone_0606 in first (the models' hardpoint tables: 106F7 / 106F6; sigma-map.md "Models"); no offset read (M)
+		Hero.SIGMA, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("bone_0606", new Quaternionf())),
+		// D.Va's Light Gun, entity 0982 (model 10246) on the pilot's hardpoint 000A = Weapon_R in both views (dva-map.md
+		// "Models"), no offset read (M); the mech's Fusion Cannons are part of its own model
+		Hero.DVA, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())),
 		// Sojourn's Railgun, entity 2D20 (model D7B4) on her hardpoint 00C9 = bone_0606, no offset, in both views (var 4E30:
 		// research/sojourn/work/assets.md); hero_models/sojourn_weapon.glb
-		Hero.SOJOURN, new Spec(new Mount("bone_0606", new Quaternionf()), new Mount("bone_0606", new Quaternionf())));
+		Hero.SOJOURN, new Spec(new Mount("bone_0606", new Quaternionf()), new Mount("bone_0606", new Quaternionf())),
+		// Pharah's Rocket Launcher, entity 003B (model F131) on her hardpoint 000A = Weapon_R in both views (pharah-map.md, var 1B9F);
+		// hero_models/pharah_weapon.glb
+		Hero.PHARAH, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())),
+		// Tracer's right Pulse Pistol, entity 0017 (model DA61) on her hardpoint 000A = Weapon_R (slot 1B9B), no offset, in both
+		// views (her models' hardpoint tables); the left one on 000B = Weapon_L is an extra (leftPistol); hero_models/tracer_weapon.glb
+		Hero.TRACER, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf()))),
+		// Cassidy's Peacekeeper, entity 02A6 (model EECF) on his hardpoint 000A = Weapon_R (slot 1901), no offset, in both views
+		// (his models' hardpoint tables); hero_models/cassidy_weapon.glb (Map.of holds ten: the rest added here)
+		Hero.CASSIDY, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf()))),
+		// Junkrat's Frag Launcher, entity 0452 (model 1022D) on his hardpoint 000A (var 193F), as Cassidy's: Weapon_R, no offset (M: his
+		// models' hardpoint tables not yet read for the turn); hero_models/junkrat_weapon.glb
+		Hero.JUNKRAT, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
+
+	private static Map<Hero, Spec> with(Map<Hero, Spec> first, Hero hero, Spec spec) {
+		Map<Hero, Spec> all = new java.util.EnumMap<>(first);
+		all.put(hero, spec);
+		return java.util.Collections.unmodifiableMap(all);
+	}
 
 	private HeroWeapon() {
 	}
@@ -49,13 +73,17 @@ public final class HeroWeapon {
 	public static EmoteProps.@Nullable Placed place(Hero hero, HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson,
 		float now) {
 		Spec spec = SPECS.get(hero);
+		if (hero == Hero.DVA && animator.dvaMech()) {
+			// in the mech she holds no gun (the cannons are the mech's)
+			return null;
+		}
 		// Mercy holds one of two (hero_models/mercy_staff.glb, mercy_blaster.glb): the one her state has out
 		HeroModels.Loaded weapon = hero == Hero.MERCY ? HeroModels.get(animator.blaster() ? "mercy_blaster" : "mercy_staff")
 			: HeroModels.weapon(hero);
 		// in an emote his hand is where the emote's pose has it (the props hang on the same pose: EmoteProps)
 		Skeleton.Pose heroPose = firstPerson ? animator.lastViewPose()
 			: animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
-		if (spec == null || weapon == null || heroPose == null) {
+		if (spec == null || weapon == null || heroPose == null || heroPose.t.length != heroModel.nodeNames.length) {
 			return null;
 		}
 		Mount mount = firstPerson ? spec.firstPerson() : spec.thirdPerson();
@@ -69,6 +97,15 @@ public final class HeroWeapon {
 		}
 		Matrix4f at = Skeleton.world(heroModel, heroPose, bone).rotate(mount.turn());
 		Skeleton.Pose own = pose(weapon.model(), animator, firstPerson, now);
+		if (!firstPerson && keyedInHisSpace(weapon.model(), animator)) {
+			// Sigma's spheres in Constellation (CBE3): the clip keys their root in his model's space, from his idle's hand
+			// (-0.63, 1.79, 0.54, his idle Weapon_R to the cm) up to the sky and back, while his own Weapon_R starts 1.4 m
+			// higher (3.16 m up at 0 s); on the hardpoint the spheres would jump 1.4 m off his hand on the first frame. So
+			// the clip's root is where they are, from his origin (techniques/emotes/sigma_emotes.md). Sojourn's Railgun
+			// clips equal her hardpoint to the cm, so either reading fits hers: she keeps the hardpoint
+			at = new Matrix4f().translation(new org.joml.Vector3f(animator.emoteRootShift).negate());
+			own = pose(weapon.model(), animator, false, now, true);
+		}
 		return new EmoteProps.Placed(weapon, at, Skeleton.skin(weapon.model(), own, -1, null));
 	}
 
@@ -94,6 +131,34 @@ public final class HeroWeapon {
 	}
 
 	/**
+	 * Tracer's left Pulse Pistol: the same entity 0017 (model DA61) on her hardpoint 000B = Weapon_L (slot 1B9C), no offset, in
+	 * both views; posed as the right one (the data's two pistols play the same clips, M); put away in an emote as its own slot's
+	 * windows say ("stowLeft": emote_data.py WEAPON_SLOTS).
+	 */
+	private static EmoteProps.@Nullable Placed leftPistol(HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson, float now) {
+		HeroModels.Loaded weapon = HeroModels.weapon(Hero.TRACER);
+		if (weapon == null) {
+			return null;
+		}
+		if (!firstPerson && animator.emoting()) {
+			EmoteData.Emotes data = EmoteData.of(Hero.TRACER.id);
+			String emote = animator.emote();
+			if (data == null || emote == null || data.stowed(emote, animator.emoteClip(), animator.emoteAt(), "stowLeft")) {
+				return null;
+			}
+		}
+		Skeleton.Pose heroPose = firstPerson ? animator.lastViewPose()
+			: animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
+		int bone = heroModel.node("Weapon_L");
+		if (heroPose == null || bone < 0 || heroPose.t.length != heroModel.nodeNames.length) {
+			return null;
+		}
+		Matrix4f at = Skeleton.world(heroModel, heroPose, bone);
+		Skeleton.Pose own = pose(weapon.model(), animator, firstPerson, now);
+		return new EmoteProps.Placed(weapon, at, Skeleton.skin(weapon.model(), own, -1, null));
+	}
+
+	/**
 	 * Every model the hero carries besides the weapon in hand: Ana's Sleep Dart pistol for a moment (sidearm); Brigitte's
 	 * flail head seated on the handle's socket (hardpoint 0254 = bone_0FCD, entity 2378 on it: brigitte_flail.txt) and, in
 	 * third person, her shield folded on her back (entity 1B25 on her hardpoint 01D8 = bone_0F74, no offset: assets.md).
@@ -104,6 +169,13 @@ public final class HeroWeapon {
 		EmoteProps.Placed pistol = sidearm(hero, animator, heroModel, firstPerson, now);
 		if (pistol != null) {
 			out.add(pistol);
+		}
+		parts(hero, animator, heroModel, firstPerson, now, out);
+		if (hero == Hero.TRACER) {
+			EmoteProps.Placed left = leftPistol(animator, heroModel, firstPerson, now);
+			if (left != null) {
+				out.add(left);
+			}
 		}
 		if (hero == Hero.BRIGITTE) {
 			// in an emote the flail and its head go with the stow windows (slot 3572); the folded shield (339E) no emote touches
@@ -127,12 +199,17 @@ public final class HeroWeapon {
 					} else if (flung != null) {
 						at = flung;
 					}
-					// Cheer plays the head's own clip (525F on slot 33C0)
-					out.add(new EmoteProps.Placed(head, at, Skeleton.skin(head.model(), emoteClipPose(head.model(), animator, "head"), -1, null)));
+					// its own clips with the handle's (brigitte_flail_head.txt: idle, swings, whips, Rally); Cheer plays its own (525F on slot 33C0)
+					Skeleton.Pose headPose = animator.emoting() ? emoteClipPose(head.model(), animator, "head")
+						: pose(head.model(), animator, firstPerson, now);
+					out.add(new EmoteProps.Placed(head, at, Skeleton.skin(head.model(), headPose, -1, null)));
 					// the chain (216C / 22CF: the handle's hp 0076 = bone_0596 to the head) while the head is off its socket
 					org.joml.Vector3f from = start < 0 ? seated.getTranslation(new org.joml.Vector3f())
 						: new Matrix4f(flail.at()).mul(Skeleton.world(handle, handlePose, start)).getTranslation(new org.joml.Vector3f());
-					org.joml.Vector3f to = at.getTranslation(new org.joml.Vector3f());
+					// (to the head's own hardpoint 0004, as the data's ribbon: brigitte-effects.md)
+					int tip = head.model().node("hardpoint_0004");
+					org.joml.Vector3f to = tip < 0 ? at.getTranslation(new org.joml.Vector3f())
+						: new Matrix4f(at).mul(Skeleton.world(head.model(), headPose, tip)).getTranslation(new org.joml.Vector3f());
 					if (to.distance(from) > CHAIN_SHOWN) {
 						animator.chainFrom = from;
 						animator.chainTo = to;
@@ -162,6 +239,49 @@ public final class HeroWeapon {
 			}
 		}
 		return out;
+	}
+
+
+	/**
+	 * The models the data attaches as equipment (weapon_parts.json, WeaponParts: Sombra's magazine, Ana's vial and dart, Juno's
+	 * cell, Sojourn's reload magazine): each on its parent's hardpoint, as its window and hidden rows say for this view. In an emote
+	 * only those on a weapon the emote keeps out (Juno's cell hangs on her body, whose gun an emote's geosets put away).
+	 */
+	private static void parts(Hero hero, HeroAnimator a, SkinnedModel heroModel, boolean firstPerson, float now, java.util.List<EmoteProps.Placed> out) {
+		java.util.List<WeaponParts.Part> parts = WeaponParts.of(hero.id);
+		if (parts.isEmpty()) {
+			return;
+		}
+		EmoteProps.Placed weapon = !a.emoting() || inEmote(hero, a) ? place(hero, a, heroModel, firstPerson, now) : null;
+		Skeleton.Pose heroPose = firstPerson ? a.lastViewPose() : a.lastPose();
+		// the gun's pose once, however many parts hang on it (critique_parts C2)
+		Skeleton.Pose gunPose = weapon == null ? null : pose(weapon.loaded().model(), a, firstPerson, now);
+		for (WeaponParts.Part part : parts) {
+			HeroModels.Loaded model = HeroModels.get(part.model());
+			if (model == null || !part.shown(a, firstPerson, now)) {
+				continue;
+			}
+			Matrix4f at;
+			if (part.onWeapon()) {
+				if (weapon == null) {
+					continue;
+				}
+				SkinnedModel gun = weapon.loaded().model();
+				int node = gun.node(part.bone());
+				if (node < 0) {
+					continue;
+				}
+				at = new Matrix4f(weapon.at()).mul(Skeleton.world(gun, gunPose, node));
+			} else {
+				int node = heroModel.node(part.bone());
+				if (a.emoting() || heroPose == null || node < 0) {
+					continue;
+				}
+				at = Skeleton.world(heroModel, heroPose, node);
+			}
+			at.translate(part.t()).rotate(part.q());
+			out.add(new EmoteProps.Placed(model, at, Skeleton.skin(model.model(), rest(model.model()), -1, null)));
+		}
 	}
 
 	/**
@@ -316,7 +436,6 @@ public final class HeroWeapon {
 		return new Matrix4f(placed.at()).mul(Skeleton.world(weapon, own, node)).getTranslation(new org.joml.Vector3f());
 	}
 
-	/** Its own pose: held, its reload and Sound Barrier clips while his play, and its additive layers on top. */
 	/**
 	 * Whether the weapon shows in the hero's emote now: in the hand unless the emote's data puts it away
 	 * (EmoteData.stowed: Lúcio's emotes stow it over windows, Heroic keeps it out); hidden when there's no data.
@@ -328,26 +447,60 @@ public final class HeroWeapon {
 			&& !data.stowed(emote, animator.emoteClip(), animator.emoteAt(), hero == Hero.MERCY && animator.blaster());
 	}
 
-	/** Her swings and whips as the server names them (Combat.animate), whose flail clips play on the handle. */
-	private static final String[] FLAIL_ACTIONS = {"swing", "swing_2", "whip", "whip_return", "whip_return_blocked", "whip_return_miss"};
-
+	/** Its own pose: held, the clips of what the hero is doing (WeaponClips, by name), and its additive layers on top. */
 	private static Skeleton.Pose pose(SkinnedModel model, HeroAnimator a, boolean firstPerson, float now) {
-		Skeleton.Pose pose = new Skeleton.Pose(model.nodeNames.length).rest(model);
-		SkinnedModel.Clip idle = model.clips.get("idle");
+		return pose(model, a, firstPerson, now, false);
+	}
+
+	/** The emote clip the data plays on this weapon now (by the weapon's name in the hero's data), or null. */
+	private static EmoteData.@Nullable WeaponClip emoteClip(SkinnedModel model, HeroAnimator a) {
+		if (!a.emoting() || a.emote() == null) {
+			return null;
+		}
 		boolean staff = model.clips.containsKey("holstered");
-		EmoteData.WeaponClip played = null;
 		boolean flail = model.clips.containsKey("whip_return_blocked");
 		// Sojourn's Railgun (its 3P fire layer is its own): Confidence, Standing By and Weapons Check play its clips on slot 4E30
 		boolean railgun = model.clips.containsKey("add_fire_3p");
-		if ((staff || flail || railgun) && a.emoting() && a.emote() != null) {
-			// in an emote whose data plays the staff's own clip (Caduceus, Parasol, Flurry: research\mercy\emote_weapons.md),
-			// Brigitte's flail's (Cheer's 5265 on slot 3572) or the Railgun's (techniques/emotes/sojourn_emotes.md). The
-			// Railgun's emote clips key its root at her bone_0606 in her space (a bake, equal to the mm): the root is kept on
-			// the hardpoint below (bakedRoot), so only its moving parts play
-			EmoteData.Emotes data = EmoteData.of(staff ? "mercy" : railgun ? "sojourn" : "brigitte");
-			played = data == null ? null : data.weaponClip(a.emote(), a.emoteClip(), a.emoteAt(),
-				staff ? "staff" : railgun ? "railgun" : "flail");
+		// Sigma's hand spheres (their Flux aim clip is their own): Heroic, Observations, Relaxation and Constellation play
+		// their clips on slot 54CE (techniques/emotes/sigma_emotes.md)
+		boolean spheres = model.clips.containsKey("flux_aim_sm0");
+		// Pharah's Rocket Launcher (its Barrage and Jump Jet clips are its own): Justice Reloaded plays its 8B1A on slot 1B9F
+		// (tools/clipmaps/pharah_weapon.txt)
+		boolean launcher = model.clips.containsKey("barrage") && model.clips.containsKey("jump_jet");
+		if (!staff && !flail && !railgun && !spheres && !launcher) {
+			return null;
 		}
+		EmoteData.Emotes data = EmoteData.of(staff ? "mercy" : railgun ? "sojourn" : spheres ? "sigma" : launcher ? "pharah" : "brigitte");
+		return data == null ? null : data.weaponClip(a.emote(), a.emoteClip(), a.emoteAt(),
+			staff ? "staff" : railgun ? "railgun" : spheres ? "spheres" : launcher ? "launcher" : "flail");
+	}
+
+	/** Sigma's spheres playing an emote clip that keys their root half a metre or more off rest: in his space (place). */
+	private static boolean keyedInHisSpace(SkinnedModel model, HeroAnimator a) {
+		if (!model.clips.containsKey("flux_aim_sm0")) {
+			return false;
+		}
+		EmoteData.WeaponClip played = emoteClip(model, a);
+		SkinnedModel.Clip clip = played == null ? null : model.clips.get(played.clip());
+		int root = model.node("bone_0001");
+		if (clip == null || root < 0) {
+			return false;
+		}
+		Skeleton.Pose rest = new Skeleton.Pose(model.nodeNames.length).rest(model);
+		Skeleton.Pose at = new Skeleton.Pose(model.nodeNames.length).rest(model);
+		Skeleton.sample(clip, 0, at);
+		return at.t[root].distance(rest.t[root]) >= 0.5f;
+	}
+
+	private static Skeleton.Pose pose(SkinnedModel model, HeroAnimator a, boolean firstPerson, float now, boolean keepRoot) {
+		Skeleton.Pose pose = new Skeleton.Pose(model.nodeNames.length).rest(model);
+		SkinnedModel.Clip idle = model.clips.get("idle");
+		boolean staff = model.clips.containsKey("holstered");
+		// in an emote whose data plays the staff's own clip (Caduceus, Parasol, Flurry: research\mercy\emote_weapons.md),
+		// Brigitte's flail's (Cheer's 5265 on slot 3572), the Railgun's (techniques/emotes/sojourn_emotes.md) or Sigma's
+		// spheres'. The Railgun's emote clips key its root at her bone_0606 in her space (a bake, equal to the mm): the root
+		// is kept on the hardpoint below (bakedRoot), so only its moving parts play
+		EmoteData.WeaponClip played = emoteClip(model, a);
 		SkinnedModel.Clip staffClip = played == null ? null : model.clips.get(played.clip());
 		if (staffClip != null) {
 			Skeleton.sample(staffClip, Math.min(Math.max(a.emoteAt() - played.start(), 0), staffClip.duration()), pose);
@@ -357,63 +510,11 @@ public final class HeroWeapon {
 		} else if (idle != null) {
 			Skeleton.sample(idle, 0, pose);
 		}
-		if (flail && staffClip == null) {
-			// her flail's own clip of the newest swing or whip (brigitte_flail.txt): in first person they fling the head's
-			// socket out on its chain (swing_1p 4 m at 0.2 s); the third-person ones keep it seated (her body's bone_0606 carries
-			// the flung head there: flungHead)
-			String newest = null;
-			float best = Float.MAX_VALUE;
-			for (String action : FLAIL_ACTIONS) {
-				float since = a.since(action, now);
-				SkinnedModel.Clip c = model.clips.get(firstPerson ? action + "_1p" : action);
-				if (c != null && since >= 0 && since < c.duration() && since < best) {
-					best = since;
-					newest = action;
-				}
-			}
-			if (newest != null) {
-				Skeleton.sample(model.clips.get(firstPerson ? newest + "_1p" : newest), best, pose);
-			}
-		}
-		// two reloads, 248D at 30 fps and 26E8 at 60 (aliases 80AA8045 / 80AA8050): which view each is for isn't read
-		// (ours: the 60 fps one in first person, where it's seen up close)
-		SkinnedModel.Clip reload = model.clips.get(firstPerson && model.clips.containsKey("reload_1p") ? "reload_1p" : "reload");
-		float t = a.since("reload", now);
-		if (reload != null && t >= 0 && t < reload.duration()) {
-			Skeleton.sample(reload, t, pose);
-		}
-		SkinnedModel.Clip cast = model.clips.get("ult_cast");
-		SkinnedModel.Clip end = model.clips.get("ult_end");
-		t = a.since("sound_barrier", now);
-		if (cast != null && t >= 0 && t < cast.duration()) {
-			Skeleton.sample(cast, t, pose);
-		} else if (cast != null && end != null && t >= 0 && t < cast.duration() + end.duration()) {
-			Skeleton.sample(end, t - cast.duration(), pose);
-		}
-		add(model, pose, "add_fire", a.since("fire", now));
-		if (model.clips.containsKey("add_fire_3p")) {
-			// Sojourn's Railgun: its own fire and Charged Shot clips per view (sojourn_weapon.txt: sm[0] 1P, sm[1] 3P), the 1P's
-			// first shot of a burst its own
-			String fire = !firstPerson ? "add_fire_3p" : a.fireFirst() && model.clips.containsKey("add_fire_first_1p")
-				? "add_fire_first_1p" : "add_fire_1p";
-			add(model, pose, fire, a.since("fire", now));
-			add(model, pose, firstPerson ? "add_charged_shot_1p" : "add_charged_shot_3p", a.since("charged_shot", now));
-		}
-		add(model, pose, "add_soundwave", a.since("soundwave", now));
-		// Mercy's: the blaster's reload and shot (CF0, CDB), the staff's Flash Heal (126E7)
-		SkinnedModel.Clip own = model.clips.get("reload");
-		t = a.since("reload_blaster", now);
-		if (own != null && t >= 0 && t < own.duration()) {
-			Skeleton.sample(own, t, pose);
-		}
-		add(model, pose, "add_fire", a.since("fire_blaster", now));
-		add(model, pose, "add_flash_heal", a.since("flash_heal", now));
-		SkinnedModel.Clip beam = model.clips.get("add_beam");
-		if (beam != null && a.mercyBeam() != 0) {
-			Skeleton.addAdditive(beam, now % Math.max(beam.duration(), 1.0E-3f), pose, 1);
+		if (staffClip == null) {
+			WeaponClips.play(model, a, firstPerson, now, pose);
 		}
 		int root = model.node("bone_0001");
-		if (staff || root >= 0 && bakedRoot(model, root)) {
+		if (!keepRoot && (staff || root >= 0 && bakedRoot(model, root))) {
 			// the staff's clips key its root (bone_0001) at a bake from her first-person rig (84A's equals her 1P Weapon_R
 			// to the mm): not applied, the root stays on her Weapon_R (research\mercy\weapon_attach.md, the contacts).
 			// Ana's rifle the same: its idle 3C59 keys the root 1.44 m up, as if from her feet, while her own clips already
@@ -452,10 +553,4 @@ public final class HeroWeapon {
 
 	private static final java.util.Map<SkinnedModel, Boolean> BAKED = new java.util.WeakHashMap<>();
 
-	private static void add(SkinnedModel model, Skeleton.Pose pose, String name, float t) {
-		SkinnedModel.Clip clip = model.clips.get(name);
-		if (clip != null && t >= 0 && t <= clip.duration()) {
-			Skeleton.addAdditive(clip, t, pose, 1);
-		}
-	}
 }

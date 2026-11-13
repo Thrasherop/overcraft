@@ -1,0 +1,210 @@
+# Pharah's voice: <sound id> = <file under E:/Overwatch Archive/extracted/154088/> (build 154088). Same format as dva.txt;
+# build_asset_pack.py sounds copies / mixes them into the local pack. Read 2026-11-11 offline (Overwatch and Battle.net
+# checked closed before every archive read and TankLib run). Scripts: E:/Overwatch Archive/research/pharah/scripts/sounds/
+# (voiceset_pharah.py, pharah_voice.py, pharah_voice_gen.py, which writes this file; D.Va's voice pipeline retargeted); data:
+# research/pharah/sounds/voice_lines.json. Her sound effects are in pharah_sfx.txt.
+
+# ===== Voice (HeroVoice/Pharah): the voice set 0004.05F's lines by moment (294 stimuli, 970 lines; from pharah_voice.py:
+# each line's 0B2, stimulus, weight and decoded criteria; files from DataTool's extract-hero-voice --subtitles-with-sounds,
+# in research/pharah/extract). w = the line's weight. Lines with criteria are left out, as D.Va's are (hero interactions,
+# skins, maps, Overwatch Classic, scripted moments: counted per moment), except 'NOT ScriptedEvent 191E', treated as
+# always true (kiriko-voice.md). Stimulus numbers (the .078): priority, radius m, volume dB, interrupt, cooldown s
+# (m_A73F2EBE-m_DD27AC95 read as min-max, M); Voice.java's table takes priority, cooldown and interrupt.
+# Not mapped: 11D4 / 11D5 / 11D6 (three / four / a streak of direct hits: 0023 #571 / #575 / #564 on a direct-hit counter
+# v42868; the mod keeps no such counter yet), 0EC6 (environmental kill, shared 33B4), 12FF (Concussive kill remarks: no graph
+# raises it), 07FA ('Maintaining': no graph raises it), 1893 / 1894 (perk lines), the match / objective / PvE lines.
+# Elimination 0008: 14 files; prio 70, 30 m, +2 dB, interrupt 0, cooldown 15-15 s; left out: 18 a hero interaction, 13 a scripted condition, 6 Overwatch Classic only, 1 a map (OnMap)
+pharah.voice.elimination = ../../research/pharah/extract/HeroVoice/Pharah/Elimination/00000000A46A.0B2-I always get my prey.ogg | w=0.05
+pharah.voice.elimination = ../../research/pharah/extract/HeroVoice/Pharah/Elimination/00000002A8F1.0B2-That's how it's done.ogg | w=0.05
+pharah.voice.elimination = ../../research/pharah/extract/HeroVoice/Pharah/Elimination/000000036B29.0B2-You made a tactical error.ogg | w=0.02
+pharah.voice.elimination = ../../research/pharah/extract/HeroVoice/Pharah/Elimination/000000036B28.0B2-Kill confirmed.ogg | w=0.02
+pharah.voice.elimination = ../../research/pharah/extract/HeroVoice/Pharah/Elimination/00000005F389.0B2-Taken down.ogg | w=1
+pharah.voice.elimination = ../../research/pharah/extract/HeroVoice/Pharah/Elimination/00000005F381.0B2-Well-deserved.ogg | w=1
+pharah.voice.elimination = ../../research/pharah/extract/HeroVoice/Pharah/Elimination/00000005F38C.0B2-Picked off.ogg | w=1
+pharah.voice.elimination = ../../research/pharah/extract/HeroVoice/Pharah/Elimination/00000005F374.0B2-Justice served.ogg | w=1
+pharah.voice.elimination = ../../research/pharah/extract/HeroVoice/Pharah/Elimination/00000005F399.0B2-Splash.ogg | w=1
+pharah.voice.elimination = ../../research/pharah/extract/HeroVoice/Pharah/Elimination/00000005F375.0B2-Terminated.ogg | w=1
+pharah.voice.elimination = ../../research/pharah/extract/HeroVoice/Pharah/Elimination/00000005F37F.0B2-(laugh) Got one.ogg | w=1
+pharah.voice.elimination = ../../research/pharah/extract/HeroVoice/Pharah/Elimination/000000062D8D.0B2-Over and out.ogg | w=0.5
+pharah.voice.elimination = ../../research/pharah/extract/HeroVoice/Pharah/Elimination/000000062D73.0B2-Blown away.ogg | w=0.2
+pharah.voice.elimination = ../../research/pharah/extract/HeroVoice/Pharah/Elimination/000000065771.0B2-Notched another.ogg | w=1
+# Multikill 00C9: 3 files; prio 70, 35 m, +2 dB, interrupt 0, cooldown 15-20 s; left out: 3 Overwatch Classic only, 1 a scripted condition
+pharah.voice.multikill = ../../research/pharah/extract/HeroVoice/Pharah/Multikill/00000005F396.0B2-Multiple targets eliminated.ogg | w=1
+pharah.voice.multikill = ../../research/pharah/extract/HeroVoice/Pharah/Multikill/00000005F378.0B2-We strike again and again.ogg | w=1
+pharah.voice.multikill = ../../research/pharah/extract/HeroVoice/Pharah/Multikill/00000005F39F.0B2-Everyone has a plan until a rocket hits them in the face.ogg | w=0.5
+# MeleeEnemyKilledRemark 0032 (an enemy killed in melee range): 3 files; prio 65, 30 m, +2 dB, interrupt 0, cooldown 10-14 s; left out: 6 a scripted condition, 2 Overwatch Classic only
+pharah.voice.melee_kill = ../../research/pharah/extract/HeroVoice/Pharah/MeleeEnemyKilledRemark/00000005F38E.0B2-That had to hurt.ogg | w=1
+pharah.voice.melee_kill = ../../research/pharah/extract/HeroVoice/Pharah/MeleeEnemyKilledRemark/00000005F38F.0B2-Clocked.ogg | w=1
+pharah.voice.melee_kill = ../../research/pharah/extract/HeroVoice/Pharah/MeleeEnemyKilledRemark/00000005F37C.0B2-Hard contact.ogg | w=1
+# On Fire 0583: 4 files; prio 60, 35 m, +2 dB, interrupt 0, cooldown 2-5 s; left out: 3 Overwatch Classic only
+pharah.voice.on_fire = ../../research/pharah/extract/HeroVoice/Pharah/OnFire/000000062D79.0B2-My rockets are fueled!.ogg | w=1
+pharah.voice.on_fire = ../../research/pharah/extract/HeroVoice/Pharah/OnFire/000000062D87.0B2-I'm on top of the world!.ogg | w=1
+pharah.voice.on_fire = ../../research/pharah/extract/HeroVoice/Pharah/OnFire/000000062D7A.0B2-I'm taking off!.ogg | w=1
+pharah.voice.on_fire = ../../research/pharah/extract/HeroVoice/Pharah/OnFire/000000064037.0B2-Heat check_ confirmed.ogg | w=1
+# Respawn 002C: 16 files; prio 40, 35 m, +0 dB, interrupt 0, cooldown 15-15 s; left out: 6 a scripted condition, 5 Overwatch Classic only
+pharah.voice.respawn = ../../research/pharah/extract/HeroVoice/Pharah/Respawn/00000001FC94.0B2-Raptora systems online.ogg | w=0.01
+pharah.voice.respawn = ../../research/pharah/extract/HeroVoice/Pharah/Respawn/00000005F38B.0B2-All systems nominal.ogg | w=1
+pharah.voice.respawn = ../../research/pharah/extract/HeroVoice/Pharah/Respawn/00000005F380.0B2-Returning to battle.ogg | w=1
+pharah.voice.respawn = ../../research/pharah/extract/HeroVoice/Pharah/Respawn/00000005F397.0B2-Making another approach.ogg | w=1
+pharah.voice.respawn = ../../research/pharah/extract/HeroVoice/Pharah/Respawn/00000005F373.0B2-The skies await.ogg | w=1
+pharah.voice.respawn = ../../research/pharah/extract/HeroVoice/Pharah/Respawn/00000005F39A.0B2-Always more to learn.ogg | w=1
+pharah.voice.respawn = ../../research/pharah/extract/HeroVoice/Pharah/Respawn/00000005F36F.0B2-I don't stay down.ogg | w=1
+pharah.voice.respawn = ../../research/pharah/extract/HeroVoice/Pharah/Respawn/000000062D82.0B2-Shake it off.ogg | w=1
+pharah.voice.respawn = ../../research/pharah/extract/HeroVoice/Pharah/Respawn/000000062D85.0B2-Okay, my head's in the game.ogg | w=1
+pharah.voice.respawn = ../../research/pharah/extract/HeroVoice/Pharah/Respawn/00000006404A.0B2-Coming off the bench.ogg | w=0.1
+pharah.voice.respawn = ../../research/pharah/extract/HeroVoice/Pharah/Respawn/00000006404E.0B2-It's crunch time. Luckily I can do a thousand crunches.ogg | w=0.01
+pharah.voice.respawn = ../../research/pharah/extract/HeroVoice/Pharah/Respawn/00000006404F.0B2-Time to kick some tail.ogg | w=0.2
+pharah.voice.respawn = ../../research/pharah/extract/HeroVoice/Pharah/Respawn/00000006404B.0B2-We can do better than this, come on! We're shredded!.ogg | w=0.03
+pharah.voice.respawn = ../../research/pharah/extract/HeroVoice/Pharah/Respawn/00000006404C.0B2-Let's show 'em some air power.ogg | w=1
+pharah.voice.respawn = ../../research/pharah/extract/HeroVoice/Pharah/Respawn/00000006404D.0B2-Ooh, I'm going to shove them in a locker.ogg | w=0.2
+pharah.voice.respawn = ../../research/pharah/extract/HeroVoice/Pharah/Respawn/000000064050.0B2-You've hang-glided over a volcano, Fareeha. This is nothing.ogg | w=0.01
+# Melee shout 0023 (the shared melee VoiceStimulus): 9 files; prio 35, 35 m, +0 dB, interrupt 0, cooldown 0.5-0.5 s
+pharah.voice.melee = ../../research/pharah/extract/HeroVoice/Pharah/Melee/00000000A426.0B2-(shouts).ogg | w=0.7
+pharah.voice.melee = ../../research/pharah/extract/HeroVoice/Pharah/Melee/00000000A425.0B2-(shouts).ogg | w=0.7
+pharah.voice.melee = ../../research/pharah/extract/HeroVoice/Pharah/Melee/00000000A424.0B2-(shouts).ogg | w=0.7
+pharah.voice.melee = ../../research/pharah/extract/HeroVoice/Pharah/Melee/00000000A423.0B2-(shouts).ogg | w=0.7
+pharah.voice.melee = ../../research/pharah/extract/HeroVoice/Pharah/Melee/00000000A41A.0B2-(shouts).ogg | w=0.7
+pharah.voice.melee = ../../research/pharah/extract/HeroVoice/Pharah/Melee/00000000A419.0B2-(shouts).ogg | w=0.7
+pharah.voice.melee = ../../research/pharah/extract/HeroVoice/Pharah/Melee/000000064312.0B2-(shouts).ogg | w=1
+pharah.voice.melee = ../../research/pharah/extract/HeroVoice/Pharah/Melee/000000064313.0B2-(shouts).ogg | w=1
+pharah.voice.melee = ../../research/pharah/extract/HeroVoice/Pharah/Melee/000000064311.0B2-(shouts).ogg | w=1
+# Hero select 002B: 1 files; prio 100, 35 m, +0 dB, interrupt 0, cooldown 1-1 s; left out: 1 Overwatch Classic only
+pharah.voice.select = ../../research/pharah/extract/HeroVoice/Pharah/HeroSelect/00000005F3C1.0B2-Strike from above.ogg | w=1
+# Death 0001: 6 files; prio 90, 60 m, +2 dB, interrupt 0, cooldown 2-5 s
+pharah.voice.death = ../../research/pharah/extract/HeroVoice/Pharah/Death/00000000A43F.0B2-(dying sounds).ogg | w=1
+pharah.voice.death = ../../research/pharah/extract/HeroVoice/Pharah/Death/00000000A43E.0B2-(dying sounds).ogg | w=1
+pharah.voice.death = ../../research/pharah/extract/HeroVoice/Pharah/Death/00000000A43D.0B2-(dying sounds).ogg | w=1
+pharah.voice.death = ../../research/pharah/extract/HeroVoice/Pharah/Death/00000000A43C.0B2-(dying sounds).ogg | w=1
+pharah.voice.death = ../../research/pharah/extract/HeroVoice/Pharah/Death/00000000A43B.0B2-(dying sounds).ogg | w=1
+pharah.voice.death = ../../research/pharah/extract/HeroVoice/Pharah/Death/00000000A422.0B2-(dying sounds).ogg | w=1
+# Pain 0003 / 0004: 19 files; prio 40, 35 m, -3 dB, interrupt 0, cooldown 1-2.5 s
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A449.0B2-(grunts).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A448.0B2-(grunts).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A447.0B2-(grunts).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A440.0B2-(grunts).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A446.0B2-(grunts).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A421.0B2-(grunts).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A420.0B2-(grunts).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A418.0B2-(grunts).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A43A.0B2-(grunts).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A445.0B2-(painful grunt).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A444.0B2-(painful grunt).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A443.0B2-(painful grunt).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A442.0B2-(painful grunt).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A441.0B2-(painful grunt).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A41F.0B2-(painful grunt).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A41E.0B2-(painful grunt).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A41D.0B2-(painful grunt).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A41C.0B2-(painful grunt).ogg | w=1
+pharah.voice.pain = ../../research/pharah/extract/HeroVoice/Pharah/Pain/00000000A41B.0B2-(painful grunt).ogg | w=1
+# Resurrected 005A (what she says when a Mercy brings her back): 2 files; prio 75, 35 m, +0 dB, interrupt 0, cooldown 10-10 s
+pharah.voice.resurrected = ../../research/pharah/extract/HeroVoice/Pharah/Resurrected/00000000A483.0B2-I'm not done yet!.ogg | w=1
+pharah.voice.resurrected = ../../research/pharah/extract/HeroVoice/Pharah/Resurrected/00000000A484.0B2-I'm back!.ogg | w=1
+# Ultimate/Ready 02E7 (the wheel line): 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s; left out: 1 a scripted condition
+pharah.voice.ult_ready = ../../research/pharah/extract/HeroVoice/Pharah/Ultimate/Ready/00000000B150.0B2-My ultimate is ready.ogg | w=1
+# Ultimate/Charging 0574: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+pharah.voice.call_ult_charging = ../../research/pharah/extract/HeroVoice/Pharah/Ultimate/Charging/00000001FCBC.0B2-My ultimate is charging.ogg | w=1
+# Ultimate/AlmostReady 05A7: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+pharah.voice.call_ult_almost = ../../research/pharah/extract/HeroVoice/Pharah/Ultimate/AlmostReady/00000001FCA4.0B2-My ultimate is almost ready.ogg | w=1
+# Hello 01CF: 4 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+pharah.voice.call_hello = ../../research/pharah/extract/HeroVoice/Pharah/Hello/00000000B16D.0B2-Hello.ogg | w=1
+pharah.voice.call_hello = ../../research/pharah/extract/HeroVoice/Pharah/Hello/00000001FC9A.0B2-Greetings.ogg | w=1
+pharah.voice.call_hello = ../../research/pharah/extract/HeroVoice/Pharah/Hello/00000001FC9C.0B2-Hello.ogg | w=1
+pharah.voice.call_hello = ../../research/pharah/extract/HeroVoice/Pharah/Hello/000000064057.0B2-What's good_.ogg | w=0.01
+# Thanks 01D0: 5 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+pharah.voice.call_thanks = ../../research/pharah/extract/HeroVoice/Pharah/Thanks/00000000B17E.0B2-Thank you.ogg | w=1
+pharah.voice.call_thanks = ../../research/pharah/extract/HeroVoice/Pharah/Thanks/00000001FCA3.0B2-You have my thanks.ogg | w=1
+pharah.voice.call_thanks = ../../research/pharah/extract/HeroVoice/Pharah/Thanks/00000006405C.0B2-Thanks.ogg | w=1
+pharah.voice.call_thanks = ../../research/pharah/extract/HeroVoice/Pharah/Thanks/00000006405D.0B2-Appreciate it.ogg | w=1
+pharah.voice.call_thanks = ../../research/pharah/extract/HeroVoice/Pharah/Thanks/00000006405E.0B2-Thanks!.ogg | w=1
+# Sorry 05E1: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+pharah.voice.call_sorry = ../../research/pharah/extract/HeroVoice/Pharah/Sorry/00000002A8F2.0B2-Sorry.ogg | w=1
+pharah.voice.call_sorry = ../../research/pharah/extract/HeroVoice/Pharah/Sorry/00000002A8F3.0B2-My mistake.ogg | w=1
+# No 01D2: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+pharah.voice.call_no = ../../research/pharah/extract/HeroVoice/Pharah/No/00000000B17F.0B2-Negative.ogg | w=1
+pharah.voice.call_no = ../../research/pharah/extract/HeroVoice/Pharah/No/00000000B153.0B2-No.ogg | w=1
+# GroupUp 02C6: 4 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+pharah.voice.call_group_up = ../../research/pharah/extract/HeroVoice/Pharah/GroupUp/00000000B18E.0B2-Form up.ogg | w=1
+pharah.voice.call_group_up = ../../research/pharah/extract/HeroVoice/Pharah/GroupUp/00000000B18B.0B2-Group up.ogg | w=1
+pharah.voice.call_group_up = ../../research/pharah/extract/HeroVoice/Pharah/GroupUp/00000001FC98.0B2-Group up with me.ogg | w=1
+pharah.voice.call_group_up = ../../research/pharah/extract/HeroVoice/Pharah/GroupUp/00000001FC99.0B2-Group up here.ogg | w=1
+# AssistanceRequired 0427: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+pharah.voice.call_need_help = ../../research/pharah/extract/HeroVoice/Pharah/AssistanceRequired/00000001FC9E.0B2-I need help.ogg | w=1
+pharah.voice.call_need_help = ../../research/pharah/extract/HeroVoice/Pharah/AssistanceRequired/00000001FC9F.0B2-Require assistance at my location.ogg | w=1
+# Healing 0045: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+pharah.voice.call_need_healing = ../../research/pharah/extract/HeroVoice/Pharah/Healing/00000000A494.0B2-I require healing.ogg | w=1
+pharah.voice.call_need_healing = ../../research/pharah/extract/HeroVoice/Pharah/Healing/00000001FCA0.0B2-I need healing.ogg | w=1
+# ping 11D9: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+pharah.voice.ping = ../../research/pharah/extract/HeroVoice/Pharah/Unknown/11D9.078/00000006403B.0B2-Over there.ogg | w=1
+# ping warning 11DA: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+pharah.voice.ping_warning = ../../research/pharah/extract/HeroVoice/Pharah/Unknown/11DA.078/00000006403C.0B2-Issuing an alert.ogg | w=1
+pharah.voice.ping_warning = ../../research/pharah/extract/HeroVoice/Pharah/Unknown/11DA.078/00000006403D.0B2-Heads up.ogg | w=1
+pharah.voice.ping_warning = ../../research/pharah/extract/HeroVoice/Pharah/Unknown/11DA.078/00000006403E.0B2-Eyes here.ogg | w=1
+# ping enemy 1117: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+pharah.voice.ping_enemy = ../../research/pharah/extract/HeroVoice/Pharah/Unknown/1117.078/000000062D63.0B2-Enemy over here!.ogg | w=1
+pharah.voice.ping_enemy = ../../research/pharah/extract/HeroVoice/Pharah/Unknown/1117.078/000000062D62.0B2-I see an enemy!.ogg | w=1
+pharah.voice.ping_enemy = ../../research/pharah/extract/HeroVoice/Pharah/Unknown/1117.078/000000062DA1.0B2-Enemy here!.ogg | w=1
+# DamageBoosted 00CC (what she says when a Mercy boosts her): 3 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 30-30 s
+pharah.voice.damage_boosted = ../../research/pharah/extract/HeroVoice/Pharah/DamageBoosted/00000000A467.0B2-Thanks for the assist.ogg | w=1
+pharah.voice.damage_boosted = ../../research/pharah/extract/HeroVoice/Pharah/DamageBoosted/00000000A468.0B2-I will not waste this opportunity!.ogg | w=1
+pharah.voice.damage_boosted = ../../research/pharah/extract/HeroVoice/Pharah/DamageBoosted/00000000A469.0B2-I am empowered.ogg | w=1
+# NanoBoosted 05E2 (what she says when an Ana nanos her): 3 files; prio 95, 80 m, +3 dB, interrupt 1, cooldown 2-2 s; left out: 1 Overwatch Classic only
+pharah.voice.nano_boosted = ../../research/pharah/extract/HeroVoice/Pharah/NanoBoosted/00000002A8DB.0B2-I'm unstoppable!.ogg | w=1
+pharah.voice.nano_boosted = ../../research/pharah/extract/HeroVoice/Pharah/NanoBoosted/000000062D84.0B2-You'd better stay out of range.ogg | w=1
+pharah.voice.nano_boosted = ../../research/pharah/extract/HeroVoice/Pharah/NanoBoosted/000000062D7D.0B2-Come taste my power!.ogg | w=1
+# Jump Jet 07F9 ('Taking to the air!'; 0027 #111 STU_40E05F6B on herself, H): 6 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 20-30 s
+pharah.voice.jump_jet = ../../research/pharah/extract/HeroVoice/Pharah/Unknown/7F9.078/000000036B3D.0B2-Establishing aerial position.ogg | w=1
+pharah.voice.jump_jet = ../../research/pharah/extract/HeroVoice/Pharah/Unknown/7F9.078/000000036B24.0B2-Taking to the air.ogg | w=1
+pharah.voice.jump_jet = ../../research/pharah/extract/HeroVoice/Pharah/Unknown/7F9.078/000000036B52.0B2-Increasing altitude.ogg | w=1
+pharah.voice.jump_jet = ../../research/pharah/extract/HeroVoice/Pharah/Unknown/7F9.078/000000062DA2.0B2-Aerial positioning underway.ogg | w=1
+pharah.voice.jump_jet = ../../research/pharah/extract/HeroVoice/Pharah/Unknown/7F9.078/000000062D99.0B2-Taking off.ogg | w=1
+pharah.voice.jump_jet = ../../research/pharah/extract/HeroVoice/Pharah/Unknown/7F9.078/000000062D68.0B2-Up and away.ogg | w=1
+# Concussive Blast 008E ('Get back!'; 007B #215 STU_40E05F6B on herself, H): 4 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 2-5 s; left out: 8 a scripted condition
+pharah.voice.concussive = ../../research/pharah/extract/HeroVoice/Pharah/Unknown/8E.078/00000005F9B5.0B2-Repulsion.ogg | w=1
+pharah.voice.concussive = ../../research/pharah/extract/HeroVoice/Pharah/Unknown/8E.078/00000005F9B6.0B2-Dispersing.ogg | w=1
+pharah.voice.concussive = ../../research/pharah/extract/HeroVoice/Pharah/Unknown/8E.078/00000005F9B8.0B2-Concussive out.ogg | w=1
+pharah.voice.concussive = ../../research/pharah/extract/HeroVoice/Pharah/Unknown/8E.078/00000005F9B4.0B2-Scatter!.ogg | w=1
+# Jet Dash: no stimulus (4B92 names none, no line in her set 0004.05F says one: H by search): no event
+# Barrage, her own copy 1857 ('Justice rains from above!'; 002B #367 STU_37D754C8 key F1AC, the own key, H): 1 files; prio 95, 80 m, +8 dB, interrupt 0, cooldown 1-1 s; left out: 3 a skin / celebration
+pharah.voice.ultimate = ../../research/pharah/extract/HeroVoice/Pharah/Ultimate/000000069852.0B2-Justice rains from above.ogg | w=1
+# Barrage line, allies 048F ('Rocket barrage incoming!'; 002B #367 key F1AB, the friendly key, H): 1 files; prio 95, 60 m, +6 dB, interrupt 0, cooldown 1-1 s; left out: 1 a skin / celebration
+pharah.ult.friendly = ../../research/pharah/extract/HeroVoice/Pharah/Ultimate/00000001FC93.0B2-Rocket barrage incoming!.ogg | w=1
+# Barrage line, enemies 008B ('Justice rains from above!'; 002B #367 key F1AA, the enemy key, H): 1 files; prio 95, 80 m, +8 dB, interrupt 0, cooldown 1-1 s; left out: 3 a skin / celebration
+pharah.ult.enemy = ../../research/pharah/extract/HeroVoice/Pharah/Ultimate/00000000A3EB.0B2-Justice rains from above.ogg | w=1
+# GOOD JOB (the wheel key's tap): her set has no such category (as Sigma's); ours: her Teammate/KillSeen 001B lines
+#  (a teammate's kill seen) with no criteria.
+pharah.voice.call_good_job = ../../research/pharah/extract/HeroVoice/Pharah/Teammate/KillSeen/00000005F39B.0B2-Save some for me!.ogg | w=1
+pharah.voice.call_good_job = ../../research/pharah/extract/HeroVoice/Pharah/Teammate/KillSeen/00000005F395.0B2-I saw that. Very good.ogg | w=1
+pharah.voice.call_good_job = ../../research/pharah/extract/HeroVoice/Pharah/Teammate/KillSeen/00000005F37E.0B2-Clean.ogg | w=1
+# Voice subtitles: one per event (its lines vary); ours describe the moment, quoting a line where the pool says one thing.
+$pharah.voice.elimination = Pharah remarks on a takedown
+$pharah.voice.multikill = Pharah: Area pacified
+$pharah.voice.melee_kill = Pharah: Stay down
+$pharah.voice.on_fire = Pharah: I am on fire!
+$pharah.voice.respawn = Pharah is back
+$pharah.voice.melee = Pharah shouts
+$pharah.voice.select = Pharah: Strike from above
+$pharah.voice.death = Pharah dies
+$pharah.voice.pain = Pharah grunts
+$pharah.voice.resurrected = Pharah: I'm back!
+$pharah.voice.ult_ready = Pharah: Barrage ready
+$pharah.voice.call_ult_charging = Pharah: My ultimate is charging
+$pharah.voice.call_ult_almost = Pharah: My ultimate is almost ready
+$pharah.voice.call_hello = Pharah: Hello
+$pharah.voice.call_thanks = Pharah: Thank you
+$pharah.voice.call_sorry = Pharah: Sorry
+$pharah.voice.call_no = Pharah: Negative
+$pharah.voice.call_group_up = Pharah: Group up
+$pharah.voice.call_need_help = Pharah: I need help
+$pharah.voice.call_need_healing = Pharah: I require healing
+$pharah.voice.ping = Pharah: Over there
+$pharah.voice.ping_warning = Pharah: Heads up
+$pharah.voice.ping_enemy = Pharah: Enemy here!
+$pharah.voice.damage_boosted = Pharah: I am empowered
+$pharah.voice.nano_boosted = Pharah: Systems at max!
+$pharah.voice.jump_jet = Pharah: Taking to the air
+$pharah.voice.concussive = Pharah: Get back!
+$pharah.voice.ultimate = Pharah: Justice rains from above!
+$pharah.voice.call_good_job = Pharah compliments a teammate
+$pharah.ult.friendly = Pharah: Rocket barrage incoming!
+$pharah.ult.enemy = Pharah: Justice rains from above!

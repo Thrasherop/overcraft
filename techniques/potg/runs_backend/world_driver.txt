@@ -1,0 +1,14 @@
+=== phase world 16:44:39
+select HeroSelectScreen
+{'ok': True}
+/publish true survival 25700 {'ok': True}
+/gamerule minecraft:send_command_feedback true {'ok': True}
+/difficulty normal {'ok': True}
+{'screen': '', 'inWorld': True, 'x': 2.5, 'y': -60.0, 'z': -6.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 18.0, 'primaryAmmo': 15, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko', 'food': 20}
+=== phase world 16:59:40
+select HeroSelectScreen
+{'ok': True}
+/publish true survival 25700 {'ok': True}
+/gamerule minecraft:send_command_feedback true {'ok': True}
+/difficulty normal {'ok': True}
+{'screen': '', 'inWorld': True, 'x': 3.5, 'y': -60.0, 'z': 8.5, 'yaw': 0.0, 'pitch': 0.0, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 8.25, 'primaryAmmo': 15, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko', 'food': 20}

@@ -132,17 +132,15 @@ final class Mediblaster {
 		// an enemy: contact set 07DC type 0 (M: characters) -> B38E hers, 9058 at the hit for the rest (500 m)
 		JunoSounds.own(player, "mediblaster.hit_enemy");
 		JunoSounds.at(level, "mediblaster.hit_enemy_3p", bestAt, 500, player);
-		boolean crit = bestAt.y >= best.getEyeY() - HEAD_DEPTH;
-		float dealt = Combat.damage(best, source(player), ROUND_DAMAGE * falloff * (crit ? ROUND_CRIT : 1));
-		Combat.credit(player, dealt);
-		Combat.addFireForDamage(player, dealt, Ow.toOw(best.getMaxHealth()));
+		boolean crit = dev.overcraft.hero.Headshot.crossed(best, bestAt, bestAt.subtract(eye), ROUND_RADIUS_ENEMY);
+		float dealt = Combat.damage(best, source(player), ROUND_DAMAGE * falloff * (crit ? ROUND_CRIT : 1), dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.JUNO));
+		Combat.credit(player, dealt, best);
+		Combat.addFireForDamage(player, dealt, best);
 		if (dealt > 0) {
 			Effects.hitMarker(player, best, crit);
 		}
 	}
 
-	/** The head: the top of the box, as for the other heroes' shots (ours: 0.25 m under the eyes and up). */
-	private static final double HEAD_DEPTH = 0.25;
 
 	/** Damage from her with no projectile of its own (hitscan), so a kill isn't a melee kill. */
 	private static DamageSource source(ServerPlayer owner) {

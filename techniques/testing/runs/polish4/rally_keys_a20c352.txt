@@ -1,0 +1,19 @@
+=== Rally by her own keys on real zombies, fix rally off and on, tree a20c352. Keys through DevServer, not a mouse.
+{'rally': False}
+hero brigitte mode True screen  hp 20.0 / 20.0
+fix rally off a b c [8.799999, 14.4, 20.0] stunned right after zombie@6101
+{'rally': True}
+hero brigitte mode True screen  hp 20.0 / 20.0
+fix rally on a b c [14.4, 14.4, 20.0] stunned right after zombie@6201
+{'rally': False}
+hero brigitte mode True screen  hp 20.0 / 20.0
+fix rally off a b c [8.799999, 14.4, 20.0] stunned right after zombie@6301
+{'rally': True}
+hero brigitte mode True screen  hp 20.0 / 20.0
+fix rally on a b c [14.4, 14.4, 20.0] stunned right after zombie@6401
+{'rally': False}
+hero brigitte mode True screen  hp 20.0 / 20.0
+fix rally off a b c [8.799999, 14.4, 20.0] stunned right after zombie@6501
+{'rally': True}
+hero brigitte mode True screen  hp 20.0 / 20.0
+fix rally on a b c [14.4, 14.4, 20.0] stunned right after zombie@6601

@@ -500,6 +500,114 @@ public final class OcSounds {
 		"charged_kill_air", "overclock_kill", "overclock_kill_2", "overclock_kill_3", "overclock_kill_5", "overclock_end",
 		"ultimate");
 
+	/**
+	 * Sigma's (tools/soundmaps/sigma.txt, read for wiring in tools/reference/sigma-sounds.md): his sounds by name ("sigma." +
+	 * name, played through dev.overcraft.sigma.SigmaSounds on the server and dev.overcraft.client.SigmaSounds for the loops) and
+	 * his lines by moment (Voice.say: "sigma.voice.<moment>"; his wheel lines, "resurrected", "damage_boosted" and
+	 * "nano_boosted" are every hero's, registered in init()). His set has no reload line (H: no ammunition). The ult line is
+	 * ult.friendly / ult.enemy (0BA4 / 0BA3); voice.ultimate (185B, his own copy, the enemy line's text) stays unplayed.
+	 */
+	public static final java.util.List<String> SIGMA_SOUNDS = java.util.List.of(
+		"accretion.flight.loop", "accretion.flyby", "accretion.gather", "accretion.gather_3p", "accretion.hit_block",
+		"accretion.hit_enemy", "accretion.hit_enemy_3p", "accretion.impact", "accretion.start", "accretion.throw",
+		"accretion.throw_3p", "accretion.throw_crack", "ambient.loop", "ambient.loop_3p", "barrier.break", "barrier.break_3p",
+		"barrier.deploy", "barrier.deploy_3p", "barrier.hold_3p", "barrier.hum.loop", "barrier.hum.loop_3p", "barrier.low",
+		"barrier.move.loop", "barrier.move.loop_3p", "barrier.recall", "barrier.return", "barrier.return_3p", "barrier.send",
+		"barrier.send_3p", "barrier.stop", "barrier.stop_3p", "flux.aim.loop", "flux.cast", "flux.cast_3p", "flux.end",
+		"flux.end_3p", "flux.flight.loop", "flux.flight.loop_3p", "flux.layer", "flux.lift", "flux.lift_foley",
+		"flux.lift_foley_3p", "flux.lifted", "flux.slam", "flux.slam_3p", "flux.slam_hit", "flux.slam_hit_3p", "flux.slam_land",
+		"flux.start", "flux.start_3p", "grasp.absorb", "grasp.absorb_3p", "grasp.absorb_shooter", "grasp.layer", "grasp.loop",
+		"grasp.loop_3p", "grasp.overhealth", "grasp.overhealth_3p", "grasp.start", "grasp.start_3p", "melee", "melee_3p",
+		"move_3p", "perk.hyper_strike.hit", "perk.hyper_strike.hit_3p", "perk.hyper_strike.ready", "perk.kinetic_cycle",
+		"perk.levitation.loop", "perk.levitation_3p", "sphere.burst", "sphere.burst2", "sphere.burst2_3p", "sphere.burst_3p",
+		"sphere.fire", "sphere.fire_3p", "sphere.flight.loop", "sphere.hit", "sphere.hit_block", "sphere.hit_block2",
+		"sphere.hit_block2_3p", "sphere.hit_block_3p", "sphere.hit_enemy", "sphere.hit_enemy_3p", "sphere.impact_3p",
+		"sphere.reform", "sphere.reform_3p", "sphere.volley", "sphere.volley_3p", "ult.enemy", "ult.friendly");
+	public static final java.util.List<String> SIGMA_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "hyperspheres", "grasp", "grasp_absorb", "accretion", "accretion_kill", "barrier",
+		"barrier_recall", "barrier_broken", "barrier_damaged", "barrier_low", "flux_kill", "ultimate");
+
+	/**
+	 * D.Va's voice moments (tools/soundmaps/dva.txt, the voice section; her set 0057.05F; the wheel lines, "resurrected",
+	 * "damage_boosted" and "nano_boosted" are every hero's, registered in init()). The ult line is ult.friendly / ult.enemy
+	 * (04D1 / 03DC); voice.ultimate (183C, her own copy, the enemy line's text) stays unplayed, as Sigma's.
+	 */
+	/**
+	 * Pharah's sounds by name ("pharah." + name, played through dev.overcraft.pharah.PharahSounds; the map tools/soundmaps/pharah_sfx.txt
+	 * says which data event each is) and her voice moments (Voice.say: "pharah.voice.<moment>", tools/soundmaps/pharah.txt). A name
+	 * the pack lacks is silent.
+	 */
+	public static final java.util.List<String> PHARAH_SOUNDS = java.util.List.of("ult.friendly", "ult.enemy",
+		"rocket.fire", "rocket.fire_3p", "rocket.burst", "rocket.hit_enemy", "rocket.hit_enemy_3p", "rocket.hit_block", "reload", "reload_3p",
+		"jump_jet", "jump_jet_3p", "jet_dash", "jet_dash_3p", "hover.start", "hover.start_3p", "hover.loop", "hover.loop_3p", "hover.end", "hover.end_3p",
+		"hover.empty", "concussive.cast", "concussive.cast_3p", "concussive.burst", "barrage.cast", "barrage.cast_3p", "barrage.fire",
+		"barrage.fire_3p", "barrage.burst", "barrage.end", "barrage.end_3p", "perk.salvo", "perk.salvo_3p", "perk.helix", "melee", "melee_3p");
+	public static final java.util.List<String> PHARAH_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "jump_jet", "jet_dash", "concussive", "ultimate");
+	/**
+	 * Tracer's sounds by name ("tracer." + name, played through dev.overcraft.tracer.TracerSounds; tools/soundmaps/tracer_sfx.txt
+	 * says which data event each is) and her voice moments (Voice.say: "tracer.voice.<moment>", tools/soundmaps/tracer.txt).
+	 */
+	public static final java.util.List<String> TRACER_SOUNDS = java.util.List.of("ult.friendly", "ult.enemy",
+		"pistol.fire", "pistol.fire_3p", "pistol.fire_first", "pistol.fire_first_3p", "pistol.fire_end", "pistol.fire_end_3p",
+		"pistol.bullet_3p", "pistol.empty", "pistol.hit_enemy", "pistol.hit_enemy_3p", "pistol.hit_block", "reload", "reload_3p", "melee",
+		"blink_1", "blink_1_3p", "blink_2", "blink_2_3p", "blink_3", "blink_3_3p", "blink_empty", "blink_recharge_1",
+		"blink_recharge_2", "blink_recharge_3", "recall.start", "recall.rewind", "recall.rewind_3p", "recall.end", "recall.end_3p",
+		"pulse_bomb.throw", "pulse_bomb.throw_3p", "pulse_bomb.stick", "pulse_bomb.stick_3p", "pulse_bomb.stick_block",
+		"pulse_bomb.fuse", "pulse_bomb.explode", "perk.kinetic_reload", "perk.quantum", "perk.temporal_regen");
+	public static final java.util.List<String> TRACER_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "blink", "recall", "pulse_bomb_stick", "pulse_bomb_kill", "ultimate");
+	/**
+	 * Cassidy's sounds by name ("cassidy." + name, played through dev.overcraft.cassidy.CassidySounds; tools/soundmaps/cassidy_sfx.txt
+	 * says which data event each is) and his voice moments (Voice.say: "cassidy.voice.<moment>", tools/soundmaps/cassidy.txt). His set
+	 * has no reload line (H). The ult line is ult.friendly / ult.enemy, his own "ultimate".
+	 */
+	public static final java.util.List<String> CASSIDY_SOUNDS = java.util.List.of("ult.friendly", "ult.enemy",
+		"peacekeeper.fire", "peacekeeper.fire_3p", "fan.fire", "fan.fire_3p", "peacekeeper.bullet_3p", "peacekeeper.hit_enemy",
+		"peacekeeper.hit_enemy_3p", "peacekeeper.hit_block", "reload", "reload_3p", "roll", "roll_3p", "flashbang.throw",
+		"flashbang.throw_3p", "flashbang.fuse", "flashbang.explode", "flashbang.explode_3p", "deadeye.start", "deadeye.loop",
+		"deadeye.start_3p", "deadeye.loop_3p", "deadeye.fire", "deadeye.fire_3p", "deadeye.end", "melee");
+	public static final java.util.List<String> CASSIDY_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "roll", "flashbang", "deadeye_fire", "deadeye_kill", "ultimate");
+	/**
+	 * Junkrat's sounds by name ("junkrat." + name, played through dev.overcraft.junkrat.JunkratSounds; tools/soundmaps/junkrat_sfx.txt
+	 * says which data event each is) and his voice moments (Voice.say: "junkrat.voice.<moment>", tools/soundmaps/junkrat.txt). The ult
+	 * line is ult.friendly / ult.enemy, his own "ultimate".
+	 */
+	public static final java.util.List<String> JUNKRAT_SOUNDS = java.util.List.of("ult.friendly", "ult.enemy",
+		"frag.fire", "frag.fire_3p", "frag.flight", "frag.flight_3p", "frag.bounce", "frag.explode", "frag.explode_3p", "frag.hit_enemy",
+		"frag.hit_enemy_3p", "frag.explode_world", "frag.fizz", "frag.cannon", "reload", "reload_3p", "mine.throw", "mine.throw_3p",
+		"mine.bounce", "mine.stick", "mine.armed", "mine.armed_3p", "mine.detonate", "mine.detonate_3p", "mine.explode", "mine.explode_3p",
+		"mine.jump", "trap.throw", "trap.throw_3p", "trap.land", "trap.arm", "trap.trigger", "trap.caught", "trap.caught_3p", "trap.release",
+		"tire.cast", "tire.cast_3p", "tire.loop", "tire.loop_3p", "tire.jump", "tire.land", "tire.explode", "tire.explode_3p",
+		"tire.destroyed", "tire.end", "tire.end_3p", "mayhem.drop", "mayhem.bomb", "nitro.boost", "melee", "melee_3p");
+	public static final java.util.List<String> JUNKRAT_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "mine_throw", "mine_jump", "mine_kill", "trap", "tire_kill", "ultimate");
+	public static final java.util.List<String> DVA_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "boosters", "matrix", "matrix_absorb", "call_mech", "call_mech_kill", "eject", "mech_back",
+		"pilot_kill", "ultimate");
+	/**
+	 * D.Va's other sounds: the ult lines (tools/soundmaps/dva.txt) and her weapons', abilities' and perks' (dva_sfx.txt, read for
+	 * wiring there: each event's trigger in the data). The loops are her clients' (client.DvaSounds).
+	 */
+	public static final java.util.List<String> DVA_SOUNDS = java.util.List.of("ult.friendly", "ult.enemy",
+		"fusion.fire_first", "fusion.fire", "fusion.fire_end", "fusion.fire_first_3p", "fusion.fire_3p", "fusion.fire_end_3p",
+		"fusion.hit_enemy", "fusion.hit_enemy_3p", "fusion.hit_block", "matrix.on", "matrix.loop", "matrix.off", "matrix.on_3p",
+		"matrix.loop_3p", "matrix.off_3p", "matrix.chirp", "matrix.chirp_3p", "matrix.absorb", "matrix.absorb_3p",
+		"boosters.start", "boosters.loop", "boosters.end", "boosters.start_3p", "boosters.loop_3p", "boosters.chirp",
+		"boosters.hit", "missiles.cast", "missiles.cast_3p", "missiles.volley", "missiles.volley_end", "missiles.volley_3p",
+		"missiles.volley_end_3p", "missiles.burst", "missiles.hit_enemy", "missiles.hit_enemy_3p", "missiles.hit_block",
+		"self_destruct.arm", "self_destruct.blast", "call_mech.drop", "call_mech.drop_3p", "wreck", "wreck_3p", "wreck.chirp",
+		"wreck.chirp_3p", "eject", "gun.fire", "gun.hit", "gun.hit_3p", "gun.hit_block", "gun.reload", "gun.reload_3p",
+		"perk.precision.start", "perk.precision.start_3p", "perk.precision.loop", "perk.precision.end", "perk.precision.end_3p",
+		"perk.shield_system", "perk.bunny_power");
+
 	/** Which of a charge-scaled sound's three bins a charge (0-1) takes (21C6 #954). */
 	public static SoundEvent byCharge(SoundEvent[] bins, double charge) {
 		return bins[charge <= 0.3 ? 0 : charge <= 0.9 ? 1 : 2];
@@ -519,6 +627,18 @@ public final class OcSounds {
 		JUNO_VOICE.forEach(moment -> register("juno.voice." + moment));
 		SOJOURN_SOUNDS.forEach(name -> register("sojourn." + name));
 		SOJOURN_VOICE.forEach(moment -> register("sojourn.voice." + moment));
+		SIGMA_SOUNDS.forEach(name -> register("sigma." + name));
+		SIGMA_VOICE.forEach(moment -> register("sigma.voice." + moment));
+		DVA_SOUNDS.forEach(name -> register("dva." + name));
+		DVA_VOICE.forEach(moment -> register("dva.voice." + moment));
+		PHARAH_SOUNDS.forEach(name -> register("pharah." + name));
+		PHARAH_VOICE.forEach(moment -> register("pharah.voice." + moment));
+		TRACER_SOUNDS.forEach(name -> register("tracer." + name));
+		TRACER_VOICE.forEach(moment -> register("tracer.voice." + moment));
+		CASSIDY_SOUNDS.forEach(name -> register("cassidy." + name));
+		CASSIDY_VOICE.forEach(moment -> register("cassidy.voice." + moment));
+		JUNKRAT_SOUNDS.forEach(name -> register("junkrat." + name));
+		JUNKRAT_VOICE.forEach(moment -> register("junkrat.voice." + moment));
 	}
 
 	private OcSounds() {
@@ -527,6 +647,9 @@ public final class OcSounds {
 	/** Overwatch's end of a won match: the announcer's "Victory!" and its music (#18). From the local pack only. */
 	public static final SoundEvent ANNOUNCER_VICTORY = register("announcer.victory");
 	public static final SoundEvent MUSIC_VICTORY = register("music.victory");
+	/** Play of the Game: the announcer's "Play of the game." (voice set 001D, file A8C4) and its music, cue 5B1F (D: music-round9). */
+	public static final SoundEvent ANNOUNCER_POTG = register("announcer.potg");
+	public static final SoundEvent MUSIC_POTG = register("music.potg");
 
 	private static SoundEvent register(String name) {
 		return Registry.register(BuiltInRegistries.SOUND_EVENT, Overcraft.id(name), SoundEvent.createVariableRangeEvent(Overcraft.id(name)));

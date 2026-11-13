@@ -22,9 +22,9 @@ import java.util.function.Predicate;
  * themselves (the client simulates its own player), so this runs on the client for the local player.
  *
  * Numbers (public sources: the Overwatch wiki's Movement speed page, a Workshop measurement where noted):
- * 5.5 m/s in any direction but straight back (90%) and diagonally back (93.3%), crouch 3 m/s; jump 5.72 m/s up
- * (0.98 m apex); gravity about 16.7 m/s² rising (fits the jump and climb heights) and 17.5 m/s² falling, easing off
- * toward a 30 m/s fall speed. Falls hurt only from the hero's own safe height (Hero.safeFall, #35).
+ * 5.5 m/s in any direction but straight back (90%) and diagonally back (93.3%), crouch 3 m/s; a jump to 0.98 m (5.86 m/s
+ * in our 20 Hz steps: JUMP_SPEED); gravity 17.5 m/s² rising and falling (WS 2026-11-11, #130), easing off toward a 30 m/s
+ * fall speed. Falls hurt only from the hero's own safe height (Hero.safeFall, #35).
  *
  * How speed is gained and lost is Overwatch's own mover (#31): every hero's CharacterMover in the game data (build
  * 154088, read offline: tools/reference/movement.md) holds a ground friction and stop speed, a ground and an air
@@ -39,17 +39,32 @@ public final class OwMovement {
 	public static final double CROUCH_SPEED = 3.0;
 	/** Ground acceleration per second, times the input speed: 5.5 m/s in 0.05 s (game data mover; Workshop: "almost instant"). */
 	public static final double GROUND_ACCELERATE = 35;
-	/** Ground friction per second, on at least {@link #STOP_SPEED}: a 5.5 m/s run stops in about 0.08 s (game data mover). */
+	/**
+	 * Ground friction per second (game data mover m_E0A0FE25), on at least {@link #STOP_SPEED}: 15 x 5.5 = 82.5 m/s² the whole
+	 * stop. WS 2026-11-11 (dva_workshop / pharah_workshop_2026-11-11.md, #130): D.Va, Pharah and the AI Hanzo all stop 5.50 ->
+	 * 4.18 -> 2.86 -> 1.54 -> 0.22 -> 0, a flat 1.32 a 0.016 s tick, in 0.067 s over 0.14 m, so the floor is the run speed,
+	 * 5.5 (the data's m_E91D1664 reads 4.5: with it the stop took 0.083 s and 0.16 m, slowing to 67.5 m/s² under 4.5). Our 60 Hz
+	 * steps give 4.125, 2.75, 1.375, 0: 0.067 s, 0.1375 m. Starts are the same either way (WS 0 -> 3.08 -> 4.84 -> 5.50).
+	 */
 	public static final double FRICTION = 15;
-	public static final double STOP_SPEED = 4.5;
+	public static final double STOP_SPEED = 5.5;
 	/** Air acceleration per second, times the input speed: about 19 m/s² at a run (game data mover; units inferred). */
 	public static final double AIR_ACCELERATE = 3.5;
 	/** Air speed above the run speed (5.5 m/s, buffs included) decays by this much per second (game data mover). */
 	public static final double AIR_DECAY = 2.0;
 	/** Steps per tick: Overwatch simulates at 62.5 Hz (Derek Mulder, Blizzard); 3 a tick is 60 Hz. */
 	public static final int SUBSTEPS = 3;
-	public static final double JUMP_SPEED = 5.72;
-	public static final double GRAVITY_UP = 16.7;
+	/**
+	 * The jump and rising gravity (#130). WS 2026-11-11 (D.Va mech and pilot, Pharah, the AI Hanzo): gravity 0.28 m/s a 0.016 s
+	 * tick, 17.5 m/s² rising as well as falling; the jump shows 5.72 on its first tick (a 6.0 impulse after a tick of gravity),
+	 * tops out 0.98 m up and lands 0.67 s later on flat ground. Our ticks move by the average of the speeds before and after
+	 * (verticalStep), which is exact for a constant gravity, so the top is v²/2g: at 17.5 a 5.72 start would top at 0.935 m, and
+	 * 5.86 gives the recording's 0.98 m and its 0.67 s (2 x 5.86 / 17.5). (Before: 5.72 with 16.7, the same top, 0.685 s up,
+	 * and every other rise, the jets, rocket jumps, a leap, carried 5 % too high.) Compare tops, not first-tick speeds
+	 * (techniques/game-data/workshop_recordings.md "Mind the tick convention").
+	 */
+	public static final double JUMP_SPEED = 5.86;
+	public static final double GRAVITY_UP = 17.5;
 	public static final double GRAVITY_DOWN = 17.5;
 	public static final double TERMINAL_SPEED = 30;
 	/** Buffs add up to at most +75% (wiki). */
@@ -68,7 +83,7 @@ public final class OwMovement {
 	 */
 	public record Mover(double groundAccelerate, double friction, double stopSpeed, double airAccelerate, double airDecay,
 		double maxAir) {
-		/** Every hero's but the skaters' (game data: m_DAA0618B 35, m_E0A0FE25 15, m_E91D1664 4.5, m_E631BA84 3.5, m_4E03E892 2, m_031FE7EE 5.5). */
+		/** Every hero's but the skaters' (game data: m_DAA0618B 35, m_E0A0FE25 15, m_E631BA84 3.5, m_4E03E892 2, m_031FE7EE 5.5; the stop floor 5.5 from WS 2026-11-11, not m_E91D1664's 4.5). */
 		public static final Mover DEFAULT = new Mover(GROUND_ACCELERATE, FRICTION, STOP_SPEED, AIR_ACCELERATE, AIR_DECAY, RUN_SPEED);
 		/**
 		 * Lúcio's, on skates (the same fields: acceleration 15, friction 2, air decay 0.5, max air 11): full speed in about
@@ -102,10 +117,19 @@ public final class OwMovement {
 
 	/** Set by the client: this entity moves the Overwatch way (the local player, a hero, slot 1). */
 	public static Predicate<LivingEntity> active = entity -> false;
+	/** An ability is moving this local player now (Guardian Angel, Life Grip, Rejuvenating Dash, Shield Bash, Power Slide): Minecraft's water and ladder don't get a say (#127). */
+	public static Predicate<LivingEntity> abilityMoving = entity -> false;
 	/** Set by the client: this entity has Kiriko's wall climb. */
 	public static Predicate<LivingEntity> wallClimb = entity -> false;
 
 	private static final Map<LivingEntity, Climb> CLIMBS = new WeakHashMap<>();
+
+	/** Set by the client: Sigma's Levitation (perk) lifts this entity this tick. */
+	public static Predicate<LivingEntity> levitating = entity -> false;
+	/** Set by the client: an ability holds this entity's jump (Sigma's Accretion gather). */
+	public static Predicate<LivingEntity> noJump = entity -> false;
+	/** Set by the client: Sigma flying in his Gravitic Flux (1 rising in its first 0.6 s, 2 after; 0 not flying). */
+	public static java.util.function.ToIntFunction<LivingEntity> sigmaFlight = entity -> 0;
 
 	/** Set by the client: this entity flies (Jetpack Cat's jetpack). */
 	public static Predicate<LivingEntity> flight = entity -> false;
@@ -117,16 +141,26 @@ public final class OwMovement {
 	public static Predicate<LivingEntity> valkyrie = entity -> false;
 	/** Mercy's Guardian Angel: where it takes her and how fast (null when she isn't flying to someone). */
 	public static java.util.function.Function<LivingEntity, @org.jspecify.annotations.Nullable Glide> glide = entity -> null;
+	/** Set by the client: D.Va flies in her Boosters (the sync's Dva.MODE_BOOSTING). */
+	public static Predicate<LivingEntity> dvaBoosters = entity -> false;
+	/** Set by the client: Pharah's Hover Jets this tick (dev.overcraft.pharah.Pharah.HOVER_*: 0 none). */
+	public static java.util.function.ToIntFunction<LivingEntity> pharahHover = entity -> 0;
+	/** Set by the client: Pharah flies her Barrage (cast in the air: PharahStats.BARRAGE_UP). */
+	public static Predicate<LivingEntity> pharahBarrage = entity -> false;
 	/** Lifeweaver's Rejuvenating Dash: its move this tick (blocks a tick: level, no gravity), or null when not dashing. */
 	public static java.util.function.Function<LivingEntity, @org.jspecify.annotations.Nullable Vec3> dash = entity -> null;
 	/** Mercy just after a Guardian Angel launch: her air damping is off (1 s; 0.5 s in Valkyrie, with her speed raised). */
 	public static Predicate<LivingEntity> undamped = entity -> false;
+	/** Set by the client: an ability holds this entity still where it is (Tracer's Recall: the server moves her). */
+	public static Predicate<LivingEntity> held = entity -> false;
 	/** Mercy's Angelic Descent: held, her fall is capped. */
 	public static Predicate<LivingEntity> descent = entity -> false;
 
 	/** Guardian Angel's move: to this point at this speed (m/s), arriving within this distance. */
 	public record Glide(Vec3 to, double speed, double arrive) {
 	}
+	/** Set by the client: a Lifeline's rope is pulling this entity (ClientTow). */
+	public static Predicate<LivingEntity> roped = entity -> false;
 	/** Set by the client: the crouch key is down (flying, it sinks her). */
 	public static Predicate<LivingEntity> crouchHeld = entity -> false;
 
@@ -382,17 +416,28 @@ public final class OwMovement {
 			&& !entity.isFallFlying();
 	}
 
-	/** Speed multiplier from attribute buffs and slows (e.g. Kitsune Rush +30%), sprinting not included. */
+	/**
+	 * Speed multiplier from attribute buffs and slows (e.g. Kitsune Rush +30%), sprinting not included. A Stalwart tank
+	 * (Sigma) takes 40% less of each slow received (a Slowness potion, Local Anesthetic), not of their own (Tank).
+	 */
 	public static double speedFactor(LivingEntity entity) {
 		AttributeInstance speed = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (speed == null || speed.getBaseValue() <= 0) {
 			return 1;
 		}
-		double factor = speed.getValue() / speed.getBaseValue();
+		double factor = (Tank.resistsSlows.test(entity) ? Tank.resistedSpeed(speed) : speed.getValue()) / speed.getBaseValue();
 		if (entity.isSprinting()) {
 			factor /= 1.3; // Minecraft's sprint modifier; heroes don't sprint
 		}
 		return Math.clamp(factor, 0, 1 + MAX_SPEED_BONUS);
+	}
+
+	/**
+	 * A hero's run against everyone's 5.5 (her mover's forward / strafe / back, back still 90 %, crouching the same 3 m/s):
+	 * Tracer 6.0 (TracerStats.RUN_SPEED). The air cap stays 5.5 (her mover's m_031FE7EE is the default).
+	 */
+	public static double heroRun(LivingEntity entity) {
+		return "tracer".equals(entity.getAttached(HeroManager.HERO)) ? dev.overcraft.tracer.TracerStats.RUN_SPEED / RUN_SPEED : 1;
 	}
 
 	/** Target speed in m/s for this input: x strafe (left +), z forward (+). */
@@ -492,6 +537,30 @@ public final class OwMovement {
 
 	/** Replaces {@code LivingEntity.travelInAir}. {@code input}: x strafe, z forward, as Minecraft passes it. */
 	public static void travel(LivingEntity entity, Vec3 input) {
+		if (held.test(entity)) {
+			entity.setDeltaMovement(Vec3.ZERO);
+			entity.resetFallDistance();
+			// not "on the ground" where she's held (no move runs to say so): a Recall that puts her in mid-air otherwise left
+			// her standing there on the stale flag, the ground friction eating the speed it gives her (T7c)
+			entity.setOnGround(false);
+			return;
+		}
+		if (sigmaFly(entity, input)) {
+			return;
+		}
+		if (dvaBoosters.test(entity)) {
+			// D.Va's Boosters (dev.overcraft.dva.Boosters): 12 m/s along her aim, no gravity, turning with the mouse (047E #158);
+			// she leaves it at that speed, which the steps below then slow
+			entity.resetFallDistance();
+			Vec3 v = entity.getViewVector(1.0f).scale(Ow.speed(dev.overcraft.dva.DvaStats.BOOSTERS_SPEED * speedFactor(entity)));
+			entity.setDeltaMovement(v);
+			entity.move(MoverType.SELF, v);
+			return;
+		}
+		if (pharahBarrage.test(entity)) {
+			pharahBarrage(entity, input);
+			return;
+		}
 		// Lifeweaver's dash first: its last tick sets the speed he leaves it with, which the steps below then start from
 		// (asked after them, its cap never applied: 12 m from a standing jump, found playing)
 		Vec3 dashing = dash.apply(entity);
@@ -525,8 +594,12 @@ public final class OwMovement {
 			v = boots(entity, boots, v, jumps, gliding);
 		}
 		Vec3 flat = new Vec3(input.x, 0, input.z);
+		// Pharah's Hover Jets: +30 % while she hovers with fuel (D 0025 #160)
+		int hover = pharahHover.applyAsInt(entity);
+		double hoverSpeed = dev.overcraft.pharah.Pharah.hoverFast(hover) ? 1 + dev.overcraft.pharah.PharahStats.HOVER_SPEED : 1;
 		double speed = Ow.speed(runSpeed(Math.signum(input.x), Math.signum(input.z), entity.isCrouching())) * speedFactor(entity)
-			* (gliding >= 0 ? 1 + dev.overcraft.juno.JunoStats.GLIDE_SPEED : 1);
+			* (entity.isCrouching() ? 1 : heroRun(entity))
+			* (gliding >= 0 ? 1 + dev.overcraft.juno.JunoStats.GLIDE_SPEED : 1) * hoverSpeed;
 		Vec3 wish = Vec3.ZERO;
 		if (speed > 0 && flat.lengthSqr() > 1.0E-7) {
 			Vec3 dir = flat.normalize();
@@ -558,13 +631,14 @@ public final class OwMovement {
 		Vec3 travelled = Vec3.ZERO;
 		// the tick she jumps she's still on the ground: that tick is in the air already (no friction on take-off); gliding,
 		// she's always in the air (no friction, her glide's mover)
-		boolean grounded = entity.onGround() && v.y <= 0 && gliding < 0;
+		// on a stretched Lifeline there's no friction: dragged along the ground they'd lag 4 m further back (M, the rope's)
+		boolean grounded = entity.onGround() && v.y <= 0 && gliding < 0 && !roped.test(entity);
 		Mover mover = gliding >= 0 ? GLIDE : OwMovement.mover.apply(entity);
 		// Lúcio's floor follows his run speed (5.5, 6.875 on Speed Boost, more amped, less slowed); everyone else's is
 		// scaled under a slow
 		mover = Mover.LUCIO.equals(mover) ? mover.stopAt(RUN_SPEED * speedFactor(entity)) : mover.slowed(speedFactor(entity));
 		// just after Mercy's launch nothing damps the air speed (her data's F808ACE8 0): no decay above the max
-		double maxAirSpeed = undamped.test(entity) ? Double.MAX_VALUE : mover.maxAir() * speedFactor(entity);
+		double maxAirSpeed = undamped.test(entity) ? Double.MAX_VALUE : mover.maxAir() * speedFactor(entity) * hoverSpeed;
 		for (int i = 0; i < SUBSTEPS; i++) {
 			if (gliding >= 0) {
 				// Glide Boost: the burst slows to her glide speed (the recording's curve), and her keys steer it (air
@@ -615,6 +689,19 @@ public final class OwMovement {
 			double[] step = verticalStep(vy, entity.hasEffect(MobEffects.SLOW_FALLING), gravityScale.applyAsDouble(entity) * heavy);
 			dy = step[0];
 			vy = step[1];
+			if (levitating.test(entity)) {
+				// Sigma's Levitation (perk, 51E0 #382): up at 25 m/s² to 3 m/s, gravity off while it holds (M)
+				vy = Math.min(Ow.speed(dev.overcraft.sigma.SigmaStats.LEVITATION_SPEED), v.y + Ow.accel(dev.overcraft.sigma.SigmaStats.LEVITATION_ACCEL));
+				dy = (v.y + vy) / 2;
+				entity.resetFallDistance();
+			}
+			if (hover != 0) {
+				// Pharah's Hover Jets (WS 2026-11-11): her rise eased toward 4.66 m/s, never below gravity's step; with no fuel a
+				// weak push and her fall held at 8 m/s (D #655); her fall doesn't count while it holds
+				vy = dev.overcraft.pharah.Pharah.hoverStep(hover, v.y, vy);
+				dy = (v.y + vy) / 2;
+				entity.resetFallDistance();
+			}
 			if (descent.test(entity) && vy < -Ow.speed(dev.overcraft.mercy.MercyStats.DESCENT_SPEED)) {
 				// Angelic Descent: her fall held at 2 m/s (W; her data's property 978C5453 = 2.0)
 				vy = -Ow.speed(dev.overcraft.mercy.MercyStats.DESCENT_SPEED);
@@ -672,6 +759,59 @@ public final class OwMovement {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Pharah's Barrage cast in the air (WS 2026-11-11: PharahStats.BARRAGE_UP): no gravity, a 3D move at the slowed run speed,
+	 * the move keys level and Jump / Crouch up / down.
+	 */
+	private static void pharahBarrage(LivingEntity entity, Vec3 input) {
+		entity.resetFallDistance();
+		Vec3 flat = new Vec3(input.x, 0, input.z);
+		Vec3 keys = Vec3.ZERO;
+		if (flat.lengthSqr() > 1.0E-7) {
+			Vec3 dir = flat.normalize();
+			double sin = Math.sin(Math.toRadians(entity.getYRot()));
+			double cos = Math.cos(Math.toRadians(entity.getYRot()));
+			keys = new Vec3(dir.x * cos - dir.z * sin, 0, dir.z * cos + dir.x * sin);
+		}
+		Vec3 wish = barrageWish(keys, jumpKeyHeld.test(entity), crouchHeld.test(entity), RUN_SPEED * speedFactor(entity));
+		Vec3 v = entity.getDeltaMovement().scale(20);
+		Vec3 travelled = Vec3.ZERO;
+		for (int i = 0; i < SUBSTEPS; i++) {
+			v = barrageStep(v, wish, 0.05 / SUBSTEPS);
+			travelled = travelled.add(v);
+		}
+		entity.setDeltaMovement(travelled.scale(1.0 / SUBSTEPS / 20));
+		entity.move(MoverType.SELF, entity.getDeltaMovement());
+		Vec3 after = entity.getDeltaMovement();
+		Vec3 end = v.scale(1.0 / 20);
+		entity.setDeltaMovement(after.x == 0 ? 0 : end.x, after.y == 0 ? 0 : end.y, after.z == 0 ? 0 : end.z);
+	}
+
+	/**
+	 * Barrage's flight wish in m/s: {@code keys} the move keys' level unit direction (or zero), plus Jump's +0.375 or Crouch's -1
+	 * up (both: none), at most {@code speed} long (PharahStats.BARRAGE_UP / BARRAGE_DOWN).
+	 */
+	public static Vec3 barrageWish(Vec3 keys, boolean jump, boolean crouch, double speed) {
+		double up = (jump ? dev.overcraft.pharah.PharahStats.BARRAGE_UP : 0) - (crouch ? dev.overcraft.pharah.PharahStats.BARRAGE_DOWN : 0);
+		Vec3 wish = keys.add(0, jump && crouch ? 0 : up, 0);
+		double length = wish.length();
+		return length > 1 ? wish.scale(speed / length) : wish.scale(speed);
+	}
+
+	/**
+	 * One step of Barrage's flight, m/s: toward {@code wish} at the air acceleration (3.5 x its speed: 0 -> 4.4 in the
+	 * recording's 0.29 s), a turn keeping her speed (the recording's |v| stays 4.40 through every turn).
+	 */
+	public static Vec3 barrageStep(Vec3 v, Vec3 wish, double dt) {
+		double target = wish.length();
+		// with no key held she slows at the same rate (ours: not in the log)
+		double rate = AIR_ACCELERATE * (target > 1.0E-9 ? target : RUN_SPEED * (1 - dev.overcraft.pharah.PharahStats.BARRAGE_SLOW));
+		Vec3 next = approach(v, wish, rate * dt);
+		double keep = Math.min(v.length(), target);
+		double length = next.length();
+		return length > 1.0E-9 && length < keep ? next.scale(keep / length) : next;
 	}
 
 	/**
@@ -975,6 +1115,46 @@ public final class OwMovement {
 	}
 
 	/**
+	 * Sigma's flight in Gravitic Flux (1E41 #976 / #977): no gravity, 7.15 m/s every way (W A S D level along his facing,
+	 * jump up, crouch down), reaching it at 8 x that a second and stopping as fast with nothing held (D m_5C6B4602 = 8: L),
+	 * slowed as any move is. In its first 0.6 s he rises at 10 m/s² (#954) whatever he holds. True when it moved him.
+	 */
+	private static boolean sigmaFly(LivingEntity entity, Vec3 input) {
+		int flight = sigmaFlight.applyAsInt(entity);
+		if (flight == 0) {
+			return false;
+		}
+		entity.resetFallDistance();
+		boolean rising = flight == 1;
+		double speed = dev.overcraft.sigma.SigmaStats.FLUX_FLIGHT_SPEED * speedFactor(entity);
+		double yaw = Math.toRadians(entity.getYRot());
+		Vec3 forward = new Vec3(-Math.sin(yaw), 0, Math.cos(yaw));
+		Vec3 side = new Vec3(Math.cos(yaw), 0, Math.sin(yaw));
+		double vert = rising ? 0 : (jumpKeyHeld.test(entity) ? 1 : 0) - (crouchHeld.test(entity) ? 1 : 0);
+		Vec3 dir = forward.scale(Math.signum(input.z)).add(side.scale(Math.signum(input.x))).add(0, vert, 0);
+		Vec3 wish = dir.lengthSqr() > 1.0E-6 ? dir.normalize().scale(speed) : Vec3.ZERO;
+		double rate = dev.overcraft.sigma.SigmaStats.FLUX_FLIGHT_ACCEL * dev.overcraft.sigma.SigmaStats.FLUX_FLIGHT_SPEED;
+		Vec3 v = entity.getDeltaMovement().scale(20);
+		Vec3 travelled = Vec3.ZERO;
+		double dt = 0.05 / SUBSTEPS;
+		for (int i = 0; i < SUBSTEPS; i++) {
+			if (rising) {
+				Vec3 h = approach(new Vec3(v.x, 0, v.z), new Vec3(wish.x, 0, wish.z), rate * dt);
+				v = new Vec3(h.x, v.y + dev.overcraft.sigma.SigmaStats.FLUX_START_RISE * dt, h.z);
+			} else {
+				v = approach(v, wish, rate * dt);
+			}
+			travelled = travelled.add(v);
+		}
+		Vec3 step = travelled.scale(1.0 / SUBSTEPS / 20);
+		entity.setDeltaMovement(step);
+		entity.move(MoverType.SELF, step);
+		Vec3 after = entity.getDeltaMovement();
+		Vec3 end = v.scale(1.0 / 20);
+		entity.setDeltaMovement(after.x == 0 ? 0 : end.x, after.y == 0 ? 0 : end.y, after.z == 0 ? 0 : end.z);
+		return true;
+	}
+	/**
 	 * Mercy's Guardian Angel (her graph 006E: a StateMoveTo): her position (feet) straight to the point beside the ally at
 	 * 17 m/s (25 in Valkyrie), no gravity, the walls stopping her as any move. Within the arrival distance she holds there
 	 * until the server ends it, her speed spent (ours: the graph sets no velocity at the end, and what the engine's move
@@ -1174,16 +1354,101 @@ public final class OwMovement {
 			&& !entity.level().noCollision(entity, band.move(-faceNormal.x * reach, 0, -faceNormal.z * reach));
 	}
 
-	/** Riding a wall right now (the local player only), and on which side: 1 the wall on his right, -1 his left. */
+	/** Riding a wall right now, and on which side: 1 the wall on his right, -1 his left. The local player's from his ride, another's as he told the server (#115). */
 	public static int wallRiding(LivingEntity entity) {
-		Ride ride = RIDES.get(entity);
-		if (ride == null || !ride.riding) {
+		int seen = wallSeen(entity);
+		if (seen != 0) {
+			return wallCodeSide(seen);
+		}
+		Ride ride = riding(entity);
+		if (ride == null) {
 			return 0;
 		}
 		// the wall is on the side the normal points away from: right if (heading x up) points into it
-		Vec3 heading = ride.heading();
+		Vec3 heading = shownHeading(entity, ride);
 		double cross = heading.z * ride.normal.x - heading.x * ride.normal.z;
 		return cross > 0 ? 1 : -1;
+	}
+
+	/**
+	 * The way he's shown riding. Square on, the way isn't set for its first 0.3 s, and heading() says the axis: the clip and what others see began on
+	 * that side and flipped when the ride proper chose (played, #115: wallride_right, then left at 0.3 s). So till then, the side the camera will choose. S held
+	 * at that moment still chooses against it (inputWay needs the input, which isn't here): one flip, as before.
+	 */
+	private static Vec3 shownHeading(LivingEntity entity, Ride ride) {
+		if (ride.way != 0) {
+			return ride.heading();
+		}
+		return cameraWay(entity, ride) < 0 ? ride.axis.scale(-1) : ride.axis;
+	}
+
+	/** Another player's ride on this client, by HeroManager.LUCIO_WALL, or 0. Never one's own: that's his ride itself, and the synced copy lags it. */
+	private static int wallSeen(LivingEntity entity) {
+		return entity.level().isClientSide() && !wallRide.test(entity) ? entity.getAttachedOrElse(HeroManager.LUCIO_WALL, 0) : 0;
+	}
+
+	/** His ride as one number, for the wire (#115): 0 off the wall, else 1 + ride yaw in tenths of a degree x 2 + 1 with the wall on his right. */
+	public static int wallCode(LivingEntity entity) {
+		int side = wallRiding(entity);
+		return side == 0 ? 0 : wallCode(side, wallRideYaw(entity));
+	}
+
+	public static int wallCode(int side, float yaw) {
+		int tenths = Math.floorMod(Math.round(yaw * 10), 3600);
+		return 1 + tenths * 2 + (side > 0 ? 1 : 0);
+	}
+
+	public static int wallCodeSide(int code) {
+		return code == 0 ? 0 : (code - 1) % 2 == 1 ? 1 : -1;
+	}
+
+	public static float wallCodeYaw(int code) {
+		return (code - 1) / 2 / 10f;
+	}
+
+	/**
+	 * His ride, if he's truly on the wall. Only ride() ever cleared the flag, and it runs only for a hero the movement handles: dead, on a
+	 * ladder, under elytra or levitation (handles), out of hero mode (active), switched to another hero (wallRide), the flag stayed up, and the
+	 * camera's roll with it (the critique's B3). Those end the ride here, for good: it doesn't resume in mid air when they're over.
+	 */
+	private static @org.jspecify.annotations.Nullable Ride riding(LivingEntity entity) {
+		Ride ride = RIDES.get(entity);
+		if (ride == null || !ride.riding) {
+			return null;
+		}
+		if (!entity.isAlive() || !handles(entity) || !wallRide.test(entity) || entity.isInWater() || entity.onGround()) {
+			ride.riding = false;
+			return null;
+		}
+		return ride;
+	}
+
+	/** The wall's outward normal, or up off it (for a lifted effect: LucioFx). Another's from his side and ride yaw. */
+	public static Vec3 wallRideNormal(@org.jspecify.annotations.Nullable LivingEntity entity) {
+		int seen = entity == null ? 0 : wallSeen(entity);
+		if (seen != 0) {
+			// (wallRiding's cross read backward: with the heading h, 1 is the normal (h.z, 0, -h.x))
+			double yaw = Math.toRadians(wallCodeYaw(seen));
+			double x = -Math.sin(yaw);
+			double z = Math.cos(yaw);
+			return wallCodeSide(seen) > 0 ? new Vec3(z, 0, -x) : new Vec3(-z, 0, x);
+		}
+		Ride ride = entity == null ? null : riding(entity);
+		return ride == null ? new Vec3(0, 1, 0) : ride.normal;
+	}
+
+	/** The way he rides along the wall as a Minecraft yaw (degrees), or NaN off it. */
+	public static float wallRideYaw(LivingEntity entity) {
+		int seen = wallSeen(entity);
+		if (seen != 0) {
+			return wallCodeYaw(seen);
+		}
+		Ride ride = riding(entity);
+		if (ride == null) {
+			return Float.NaN;
+		}
+		Vec3 heading = shownHeading(entity, ride);
+		return (float) Math.toDegrees(Math.atan2(-heading.x, heading.z));
 	}
 
 	/** Climbing a wall right now (the local player only: other players' movement isn't simulated here). */

@@ -13,8 +13,11 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Which clip a hero plays, from what they're doing, and the pose that gives. The base clip follows movement (idle,
@@ -47,16 +50,8 @@ public final class HeroAnimator {
 	public static final float CLIMB_SHIFT = 0.3f;
 	/** Seconds between the climb's hand grips (dust and scrape): the climb clip's hands land twice a 1.03 s cycle. */
 	private static final float CLIMB_DUST_EVERY = 0.5f;
-	/** The aim sheet's frames per second (its 63 frames are keyed 1/30 s apart in the export). */
-	private static final float AIM_FPS = 30;
-	/** Aim pitch (degrees) at the ends of the sheet's pitch row (ours: Minecraft's whole range). */
-	private static final float AIM_PITCH = 90;
-	/** Which end of the row is looking down: frame 21 tilts the spine one way, 41 the other (checked in game). */
-	private static final float AIM_SIGN = -1;
-	/** How much of the pitch the sheet's spine, neck and head turn at its ends (27-31 of 90 degrees, read from it). */
-	private static final float AIM_SHARE = 0.3f;
 
-	private static final Map<Integer, HeroAnimator> BY_ENTITY = new HashMap<>();
+	private static Map<Integer, HeroAnimator> BY_ENTITY = new HashMap<>();
 
 	private String base = "idle";
 	/** Seconds into the base clip (it can play faster or slower than real time: {@link #rate}). */
@@ -128,8 +123,22 @@ public final class HeroAnimator {
 	private boolean brigitte;
 	/** Juno: gliding (synced), when it and her hover started, when her hover last ended, her last double jump (game s). */
 	private boolean juno, junoGliding;
+	/** Pharah's look (HeroManager.PHARAH_STATE: dev.overcraft.pharah.Pharah.LOOK_*), 0 not her. */
+	private int pharahLook;
 	/** Sojourn: sliding (the synced flag), when the slide began and when a slide jump left the ground (seconds). */
 	private boolean sojourn, sojournSliding;
+	/** Cassidy (his Deadeye's first-person clips are left out: below). */
+	private boolean cassidy;
+	/** Sigma (his actions' clips: trigger). */
+	private boolean sigma;
+	/** D.Va's form (dev.overcraft.dva.Dva.MECH .. WRECK, -1 not her), when it last changed, when she last ejected. */
+	private int dvaForm = -1;
+	private float dvaFormSince = -100, dvaEjectAt = -100;
+
+	/** D.Va in her mech's body (or its wreck): no Light Gun in her hand, the pilot seated inside (HeroWeapon). */
+	public boolean dvaMech() {
+		return dvaForm == dev.overcraft.dva.Dva.MECH || dvaForm == dev.overcraft.dva.Dva.WRECK;
+	}
 	/** Sojourn in Overclock (the synced HeroManager.SOJOURN_GUN): her stance additive add_overclock. */
 	private boolean sojournOverclock;
 	private float slideSince = -100, slideJumpAt = -100;
@@ -184,6 +193,68 @@ public final class HeroAnimator {
 		return blaster;
 	}
 
+	/** When her beam last came on and went off (game s): the staff's start and end layers. */
+	public float beamOnSince() {
+		return beamOnSince;
+	}
+
+	public float beamOffAt() {
+		return beamOffAt;
+	}
+
+	/** The beam's mode before it went off (1 heal, 2 boost): which end layer. */
+	public int beamLast() {
+		return beamLast;
+	}
+
+	/** On the move (a run or strafe base): the weapon's move layer (Lúcio's amp, Sigma's spheres). */
+	public boolean reloadWithAmmo() {
+		return reloadWithAmmo;
+	}
+
+	public boolean moving() {
+		return base.startsWith("run") || base.startsWith("strafe") || base.startsWith("walk") || base.startsWith("skate");
+	}
+
+	/** In the air: Sigma's spheres' air stance. */
+	public boolean airborne() {
+		return base.startsWith("jump") || base.startsWith("fall");
+	}
+
+	/** Seconds since the current burst of shots began (a held automatic: Sombra's pistol's fire layer). */
+	public float burstAge(float now) {
+		return now - burstStart;
+	}
+
+	/** Sojourn's Railgun's energy machine (ours from her energy: its conditions aren't decoded): 0 empty, 3 charging, 2 full. */
+	public int energyState() {
+		return energyState;
+	}
+
+	public int energyFrom() {
+		return energyFrom;
+	}
+
+	public float energyAt() {
+		return energyAt;
+	}
+
+	private int energyState;
+	private int energyFrom;
+	private float energyAt = -100;
+	private int beamLast = 1;
+	/** The newest reload began with ammo left (her "ammo left" clips: 0B94 #33): known for the local player, the common case for anyone else. */
+	private boolean reloadWithAmmo = true;
+
+	private void trackEnergy(int energy, float now) {
+		int target = energy <= 0 ? 0 : energy >= 100 ? 2 : 3;
+		if (target != energyState) {
+			energyFrom = energyState;
+			energyState = target;
+			energyAt = now;
+		}
+	}
+
 	/** The pose last drawn (third person, first person): the weapon hangs on its bones. */
 	private Skeleton.@Nullable Pose lastPose;
 	private Skeleton.@Nullable Pose lastViewPose;
@@ -210,6 +281,31 @@ public final class HeroAnimator {
 	/** An action happened (from the server): plays over the upper body (third person) and the view model. */
 	public static void trigger(int entityId, String action, float now) {
 		HeroAnimator a = BY_ENTITY.computeIfAbsent(entityId, id -> new HeroAnimator());
+		if (action.equals("charged_shot")) {
+			dev.overcraft.hero.PressTrace.seen("clip");
+		}
+		boolean own = net.minecraft.client.Minecraft.getInstance().player != null && net.minecraft.client.Minecraft.getInstance().player.getId() == entityId;
+		if ((action.equals("charged_shot") || action.equals("reload_cut")) && a.since("reload", now) < dev.overcraft.sojourn.SojournStats.RELOAD) {
+			// her Charged Shot ends a reload (Railgun.chargedShot), on every client: its clips and layers, its sound
+			a.actionAt.remove("reload");
+			a.actions.cancel("reload", now);
+			a.actionsFirstPerson.cancel("reload", now);
+			dev.overcraft.client.ClientSojourn.reloadCut(entityId, own);
+		}
+		if (action.equals("charged_ack")) {
+			dev.overcraft.client.ClientSojourn.acked();
+			return;
+		}
+		if (action.equals("reload_cut")) {
+			// (the server to her alone: a reload that crossed her shown press on the wire)
+			return;
+		}
+		// (what her client knows of her fire's locks, for the press: ClientSojourn)
+		if (own && action.equals("charged_shot")) {
+			dev.overcraft.client.ClientSojourn.locked(dev.overcraft.sojourn.SojournStats.CHARGED_LOCKOUT);
+		} else if (own && action.equals("ult") && dev.overcraft.client.ClientHero.hero() == dev.overcraft.hero.Hero.SOJOURN) {
+			dev.overcraft.client.ClientSojourn.locked(dev.overcraft.sojourn.SojournStats.OVERCLOCK_CAST);
+		}
 		if (action.equals("fire")) {
 			a.fireFirst = a.since("fire", now) > BURST_GAP;
 			a.fireRandom = java.util.concurrent.ThreadLocalRandom.current().nextInt(4);
@@ -218,6 +314,11 @@ public final class HeroAnimator {
 			a.burstStart = now;
 		}
 		a.actionAt.put(action, now);
+		if (action.equals("reload") && net.minecraft.client.Minecraft.getInstance().player != null
+			&& net.minecraft.client.Minecraft.getInstance().player.getId() == entityId) {
+			dev.overcraft.net.HeroSyncPayload s = dev.overcraft.client.ClientHero.sync();
+			a.reloadWithAmmo = s == null || s.primaryAmmo() > 0;
+		}
 		if (action.equals("fire")) {
 			// 2D24, 2D25, 2D26, 2D26: the data's Random of the first-person volleys (lucio-map.md)
 			a.fireVariant = new int[] {2, 3, 4, 4}[java.util.concurrent.ThreadLocalRandom.current().nextInt(4)];
@@ -255,11 +356,17 @@ public final class HeroAnimator {
 					viewClip = "ult_cast";
 				}
 				case "torpedo_lock" -> {
+					// the view's start then its hold for the whole window (ActionTrack: torpedo_lock_view)
 					clip = "";
-					viewClip = "torpedo_lock_start";
+					viewClip = "torpedo_lock_view";
 				}
 				case "torpedo_fire" -> clip = "";
-				case "glide", "glide_end", "torpedo_cancel" -> {
+				case "torpedo_cancel" -> {
+					// the view's lock fades back to the gun (ActionTrack); nothing new starts
+					clip = "";
+					viewClip = "torpedo_cancel";
+				}
+				case "glide", "glide_end" -> {
 					clip = "";
 					viewClip = "";
 				}
@@ -274,15 +381,58 @@ public final class HeroAnimator {
 			clip = a.sojournSliding ? base + "_slide" : base;
 			viewClip = action.equals("ult") ? "" : a.sojournSliding ? "disruptor_slide" : "disruptor";
 		}
+		if (a.sigma) {
+			// his actions' clips (sigma.txt / sigma_1p.txt): the volley's three first-person clips cycle (187F v59 0 -> 1 -> 2), the
+			// third-person set holds one (fire_b: the clip map's D5); Grasp's start then its hold (0x60A -> 0x609); the barrier's
+			// deploy (0x1B7) and recall (0x1B6, first person only)
+			switch (action) {
+				case "spheres_0", "spheres_1", "spheres_2" -> {
+					clip = "fire_b";
+					viewClip = "fire_" + (char) ('a' + (action.charAt(8) - '0'));
+				}
+				case "grasp" -> {
+					clip = "grasp_start";
+					viewClip = "grasp_start";
+				}
+				case "grasp_end" -> {
+					clip = "";
+					viewClip = "";
+				}
+				case "barrier_recall" -> {
+					clip = "";
+					viewClip = "barrier_recall_sm1";
+				}
+				// Accretion: the gather (alias 0x608: 3P accretion_cast, 1P its first clip) and the throw (0x60E); cut short, none
+				case "accretion_cast" -> viewClip = "accretion_cast_se0";
+				case "accretion_end" -> {
+					clip = "";
+					viewClip = "";
+				}
+				// Gravitic Flux: start (0x1B8), aim (0x60F), cast (0x691), lift (0x175), slam (0x1B9, no first-person clip)
+				case "flux_slam" -> viewClip = "";
+				default -> {
+				}
+			}
+		}
+		if (a.cassidy && action.startsWith("deadeye")) {
+			// his first-person Deadeye clips (cassidy_1p.txt 1373 / 147A / 14A8) held at their end filled the view with his left arm
+			// and his hat's brim (found playing, cas_t7_deadeye_1p.png): left out until they're checked against Overwatch's view
+			viewClip = "";
+		}
 		if (a.sombra && action.equals("hotfix")) {
 			// Hotfix's channel (alias 0x47D): her 0.5 s cast (cat 0x82, level aim: sombra.txt), the view model's raise
 			// (sombra_1p.txt hack_start)
 			clip = "hack_cat82";
-			viewClip = "hack_start";
+			// (stealthed, her raise is its own: B1CC)
+			viewClip = a.stealthed ? "hack_start_stealth" : "hack_start";
 		}
 		if (action.startsWith("crossfade_") && a.wasSkating) {
 			// skating, his Crossfade is its own clip, one for forward/back and one for the sides (missing ones fall back)
 			clip = action + (a.skateDirection.equals("_left") || a.skateDirection.equals("_right") ? "_moving_side" : "_moving");
+		}
+		if (a.sombra && action.equals("stealth_487") && (a.actionsFirstPerson.playing() != null || a.actions.playing() != null)) {
+			// the fade back never cuts what ended her stealth: EMP's or Cyberspace's cast plays on (0487's priority 0xDD: M)
+			return;
 		}
 		boolean layerOnly = action.equals("fire") || action.equals("charged_shot") || action.equals("soundwave") || action.equals("fire_blaster")
 			|| action.startsWith("flash_heal") || action.equals("ga_start") || action.equals("fire_thorn") || action.equals("charge");
@@ -430,7 +580,7 @@ public final class HeroAnimator {
 	private float emoteStart;
 	private @Nullable Vec3 emoteFrom;
 	/** How far (m) the hero may drift before an emote ends (ours: Minecraft nudges players a little standing still). */
-	private static final double EMOTE_MOVE = 0.15;
+	private static final double EMOTE_MOVE = dev.overcraft.comms.Comms.EMOTE_MOVE;
 	/** Seconds an emote eases in from the movement pose, and a one-shot back out to it (ours). */
 	private static final float EMOTE_EASE = 0.2f;
 
@@ -588,6 +738,7 @@ public final class HeroAnimator {
 	 * machine 0x16E: the bloom's time is the charge, df 0xC9), held full at the end; the volley's layer.
 	 */
 	private void lifeweaverView(SkinnedModel model, Skeleton.Pose pose, float now) {
+		thornCounter(model, pose);
 		if (bloomCharging) {
 			SkinnedModel.Clip bloom = clip(model, "bloom");
 			if (bloom != null) {
@@ -639,6 +790,16 @@ public final class HeroAnimator {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Juno's Pulsar Torpedoes lock window is open, as her actions tell it (lock sent, no fire, cancel or ult since, within the
+	 * 4 s window): every client knows it this way (JunoFx's pods read it the same).
+	 */
+	public boolean junoLocking(float now) {
+		float lockFor = since("torpedo_lock", now);
+		return lockFor < since("torpedo_fire", now) && lockFor < since("torpedo_cancel", now) && lockFor < since("ult", now)
+			&& lockFor < (float) dev.overcraft.juno.JunoStats.LOCK_WINDOW + 0.1f;
 	}
 
 	private void additive(SkinnedModel model, Skeleton.Pose pose, String clipName, String action, float now) {
@@ -941,10 +1102,16 @@ public final class HeroAnimator {
 				// the rise, held at its end until he lands
 				SkinnedModel.Clip start = clip(model, "jump_start");
 				t = Math.clamp(now - airborneSince - (start == null ? 0 : start.duration()), 0, baseClip.duration());
-			} else if (viewBase.equals("idle")) {
+			} else if (viewBase.equals("idle") || viewBase.equals("idle_stealth")) {
+				// (Sombra's stealthed stand, 3EBA: two frames held, as her plain one)
 				t = 0;
 			} else if (viewBase.equals("scope_in")) {
 				t = scopeIn * baseClip.duration();
+			} else if (viewBase.equals("stealth_move_start")) {
+				// her stealthed run's way in and out (3E91 / 3E92, the 4-slot's transitions 0 > 1 and 1 > 0: L), once
+				t = Math.min(now - movingSince, baseClip.duration());
+			} else if (viewBase.equals("stealth_move_stop")) {
+				t = Math.min(now - stoppedAt, baseClip.duration());
 			} else {
 				t = time(baseClip, now, true);
 			}
@@ -981,7 +1148,9 @@ public final class HeroAnimator {
 			lifeweaverView(model, pose, now);
 		}
 		SkinnedModel.Clip idleLayer = clip(model, blaster && clip(model, "add_idle_blaster") != null ? "add_idle_blaster"
-			: thorns && clip(model, "add_idle_thorn") != null ? "add_idle_thorn" : "add_idle");
+			: thorns && clip(model, "add_idle_thorn") != null ? "add_idle_thorn"
+			// Sombra stealthed: her stealthed stand's own layer (B1CB, sombra_1p.txt)
+			: stealthed && clip(model, "add_idle_stealth") != null ? "add_idle_stealth" : "add_idle");
 		if (idleLayer != null) {
 			// her paws' hover sway (195B6, on the clock); Mercy's idle sway, the blaster's with it out. Lifeweaver's blossom
 			// stand (C6C8, 0.167 s) is timed by its state machine's dataflows (df 0xB5 / 0xB8, research clipmap.md), not
@@ -1013,10 +1182,23 @@ public final class HeroAnimator {
 		if (setOff != null && now - movingSince <= setOff.duration()) {
 			Skeleton.addAdditive(setOff, now - movingSince, pose, 1);
 		}
+		wallLean(model, pose, entity);
 		// no walk bob: the add_walk layer (4-4_A525) moves nearly every bone by up to 28 cm and 28 degrees, which played as
 		// raw deltas lifted the arms about 85 px for as long as she moved; Overwatch's arms only drift a little with the
 		// movement (HeroModelRenderer.drift, the owner's playtest: #14)
+		if (sombra && since("stealth_486", now) > (float) dev.overcraft.sombra.SombraStats.STEALTH_IN_CLIP) {
+			// alias 0486 plays 0.525 s of the 0.9 s clip (420C #868), then its own end layer eases her into the stand
+			actionsFirstPerson.cancel("stealth_486", now);
+			actions.cancel("stealth_486", now);
+		}
 		actionsFirstPerson.apply(model, pose, now, null);
+		if (sombra) {
+			SkinnedModel.Clip end = clip(model, "add_stealth_486_end");
+			float past = since("stealth_486", now) - (float) dev.overcraft.sombra.SombraStats.STEALTH_IN_CLIP;
+			if (end != null && past >= 0 && past <= end.duration()) {
+				Skeleton.addAdditive(end, past, pose, 1);
+			}
+		}
 		int tip = UpperBody.fingertip(model);
 		if (tip >= 0) {
 			Skeleton.world(model, pose, tip).getTranslation(fingertip);
@@ -1077,6 +1259,21 @@ public final class HeroAnimator {
 			} else if (scopeIn > 0) {
 				// raising or lowering: the raise clip at the scope's own place (3B84, timed by df 0x6D)
 				want = "scope_in";
+			}
+			if (stealthed) {
+				// Sombra stealthed (graph 420C's category 0x1EE on her view's blend tree, sombra_1p.txt): her own stand, jump
+				// and fall, and a 4-slot walk (s0 / s1 forward and back, s2 left, s3 right) with the stealthed run's quicker
+				// stride. Only the third person had them (#87: her first person kept the plain walk while she ran at 8.8 m/s)
+				SkinnedModel.Clip setOff = clip(model, "stealth_move_start");
+				SkinnedModel.Clip settle = clip(model, "stealth_move_stop");
+				String stealth = want.equals("walk") && setOff != null && now - movingSince < setOff.duration() ? "stealth_move_start"
+					: want.equals("idle") && settle != null && now - stoppedAt < settle.duration() ? "stealth_move_stop"
+					: want.equals("walk") && base.startsWith("strafe_left") ? "walk_stealth_left"
+					: want.equals("walk") && base.startsWith("strafe_right") ? "walk_stealth_right"
+					: want + "_stealth";
+				if (model.clips.containsKey(stealth)) {
+					return stealth;
+				}
 			}
 			return model.clips.containsKey(want) ? want : "idle";
 		}
@@ -1235,7 +1432,11 @@ public final class HeroAnimator {
 		// crouched, its own breathing where there's one (Ana's data uses the standing one crouched too: 3C44)
 		SkinnedModel.Clip breathe = clip(model, base.equals("crouch_idle") && clip(model, "add_breathe_crouch") != null
 			? "add_breathe_crouch" : "add_breathe");
-		if (breathe != null && (base.equals("idle") || base.equals("crouch_idle"))) {
+		if (base.equals("idle_shield")) {
+			// Brigitte's shield-up stand has its own (brigitte.txt: add_breathe_shield, 1.6 s)
+			breathe = clip(model, "add_breathe_shield");
+		}
+		if (breathe != null && (base.equals("idle") || base.equals("crouch_idle") || base.equals("idle_shield"))) {
 			Skeleton.addAdditive(breathe, time(breathe, now, true), pose, 1);
 		}
 		if (poseEmote(model, entity, now, pose)) {
@@ -1290,7 +1491,32 @@ public final class HeroAnimator {
 		additive(model, pose, "add_soundwave", "soundwave", now);
 		if (juno) {
 			// her torpedoes' lock and fire are base additives in 3P (df 0xAE7); their pods a mirrored pair (Skeleton)
-			additive(model, pose, "add_torpedo_lock_start", "torpedo_lock", now);
+			// then the lock's hold (cat 0x1F8, 4695 #1199) looping while the window lasts, over the start's last frame: the
+			// start holds her pods 0.55 m up (3CFB +0.28, +0.55 in every key), the hold's own keys only bob them 1-4 cm about
+			// zero, and the fire's first key has them at +0.3, +0.52, so the three meet only with the start's offset kept
+			// under the hold (M; a contact check of the keys). Alone, the pods folded back down mid-lock (#86)
+			SkinnedModel.Clip start = clip(model, "add_torpedo_lock_start");
+			SkinnedModel.Clip hold = clip(model, "add_torpedo_lock");
+			float lockFor = since("torpedo_lock", now);
+			// the lock's end: its fire takes over at once (its first key is where the hold is); a cancel fades the pods home
+			// over ActionTrack's 0.15 s, as her first person (no exit clip in 3P's df 0xAE7: critique M3)
+			float cancelled = since("torpedo_cancel", now);
+			float weight = junoLocking(now) ? 1 : cancelled < lockFor && lockFor < since("torpedo_fire", now) && cancelled < 0.15f
+				? 1 - cancelled / 0.15f : 0;
+			if (start != null && hold != null && weight > 0) {
+				float held = lockFor - (weight < 1 ? cancelled : 0);
+				if (held <= start.duration()) {
+					Skeleton.addAdditive(start, held, pose, weight);
+				} else {
+					Skeleton.addAdditive(start, start.duration(), pose, weight);
+					Skeleton.addAdditive(hold, (held - start.duration()) % hold.duration(), pose, weight);
+					// and cat 0x1F8's second layer, F788, 4.07 s: the 4 s lock window's own (clipmap.md, M)
+					SkinnedModel.Clip window = clip(model, "add_torpedo_lock_hold");
+					if (window != null) {
+						Skeleton.addAdditive(window, Math.min(held - start.duration(), window.duration()), pose, weight);
+					}
+				}
+			}
 			additive(model, pose, "add_torpedo_fire", "torpedo_fire", now);
 		}
 		additive(model, pose, "add_crossfade_speed", "crossfade_speed", now);
@@ -1299,6 +1525,7 @@ public final class HeroAnimator {
 		if (wallLayer != null) {
 			Skeleton.addAdditive(wallLayer, time(wallLayer, now, true), pose, 1);
 		}
+		wallLean(model, pose, entity);
 		fidget(model, pose, now);
 		if (mercy) {
 			mercyLayers(model, pose, now);
@@ -1313,18 +1540,8 @@ public final class HeroAnimator {
 				}
 			}
 		}
-		// Overwatch's aim pose sheet (A71F) on top of everything: her spine, neck and arms follow where she aims up or
-		// down. Its middle row (frames 21-41) runs through the aim's pitch, 31 level; the rows either side are aim yaw,
-		// not needed while her body faces her aim
-		SkinnedModel.Clip aim = asleep ? null : clip(model, "add_aim");
-		float lookPitch = asleep ? 0 : headPitch;
-		// (Kiriko's sheet: 63 frames. Lúcio's 265E has 74 laid out otherwise, not read yet: his head turns the whole pitch)
-		if (aim != null && Math.round(aim.duration() * AIM_FPS) == 62) {
-			float frame = 31 + AIM_SIGN * 10 * Math.clamp(headPitch / AIM_PITCH, -1, 1);
-			Skeleton.addAdditive(aim, frame / AIM_FPS, pose, 1, UpperBody.aimMask(model));
-			// the sheet already tilts the spine, neck and head by about this share of the pitch: the head turns the rest
-			lookPitch = headPitch * (1 - AIM_SHARE);
-		}
+		// Overwatch's aim pose sheets on top of everything: spine, neck, arms and gun follow where the hero aims up or down (#95)
+		float lookPitch = asleep ? 0 : headPitch - aimSheets(model, pose, now, headPitch);
 
 		stepCloth(model, entity, pose, now);
 		lastPose = pose;
@@ -1332,6 +1549,174 @@ public final class HeroAnimator {
 		Quaternionf look = asleep ? new Quaternionf()
 			: new Quaternionf().rotateY(-netHeadYaw * Mth.DEG_TO_RAD).rotateX(lookPitch * Mth.DEG_TO_RAD);
 		return Skeleton.skin(model, pose, UpperBody.head(model), look);
+	}
+
+	/** Columns in a row of Lúcio's lean sheets (87 frames, 3 rows: level, down, up; his 2927 / 29B3 / 2519 / 251E, measured). */
+	private static final int WALL_LEAN_COLUMNS = 29;
+
+	/**
+	 * Which column of the lean sheet: the middle (14) looking along the ride, -12.86 degrees of aim a column, so +90 of aim to the
+	 * right is column 7, whose root turns the body back +90 (left): the feet stay on the wall while the body faces the aim (HeroAnimator
+	 * .facing). Measured off the sheets (bone_0001's yaw and roll, column by column); the driver is df 5E3 in 3P and df 299 in 1P, whose
+	 * writer isn't in any graph (engine's: searched lucio\graphs). Package-private for WallLeanTest.
+	 */
+	static float wallLeanColumn(float aimOffRide) {
+		return Math.clamp((WALL_LEAN_COLUMNS - 1) / 2f - Mth.wrapDegrees(aimOffRide) / (360f / (WALL_LEAN_COLUMNS - 1)), 0, WALL_LEAN_COLUMNS - 1);
+	}
+
+	/**
+	 * His lean on the wall (#105): alias 0x357's pose sheet over the loop, the aim's yaw off the ride picking the column. Only the sheet's
+	 * level row: the rows up and down hold the same turn at +-89 of pitch, and the aim's pitch is the aim sheet's and the head's here.
+	 */
+	private void wallLean(SkinnedModel model, Skeleton.Pose pose, LivingEntity entity) {
+		if (wallSide == 0) {
+			return;
+		}
+		float heading = dev.overcraft.hero.OwMovement.wallRideYaw(entity);
+		SkinnedModel.Clip sheet = clip(model, wallSide > 0 ? "add_wallride_right_lean" : "add_wallride_left_lean");
+		if (sheet != null && !Float.isNaN(heading)) {
+			Skeleton.addAdditive(sheet, wallLeanColumn(entity.getYHeadRot() - heading) / 30f, pose, 1);
+		}
+	}
+
+	/** The camera's roll at full lean on the wall: the 1P sheets' Camera bone, +-20 at the middle column and its opposite (2519 / 251E). */
+	private static final float WALL_ROLL = 20;
+
+	/**
+	 * The first-person roll on the wall for this aim, in degrees of the camera's own roll, plus to its right (its top leaning right).
+	 * It's the sheets' Camera bone, linear between 0 with the aim square to the wall and 20 with it along it, on the far side the other
+	 * way; the rows at +-89 of pitch hold none, so it goes with the pitch too (linear: the sheet's rows). Away from the wall: M, the
+	 * sheets' sign read by the 3P clip's feet on the wall (a critic should compare with Overwatch). Package-private for WallLeanTest.
+	 */
+	public static float wallRollFor(int side, float aimOffRide, float pitch) {
+		return wallRoll(side, aimOffRide, pitch);
+	}
+
+	static float wallRoll(int side, float aimOffRide, float pitch) {
+		float off = Math.abs(Mth.wrapDegrees(aimOffRide));
+		float along = 1 - off / 90;
+		return -side * WALL_ROLL * along * (1 - Math.min(Math.abs(pitch), 89) / 89);
+	}
+
+	/**
+	 * Lifeweaver's first-person thorn counter (lifeweaver-map.md "Thorn ammo display": overrides D36A .. D361 of the bones of his blossom
+	 * hand, each holding one more chip's bones scaled away; M that they count thorns left, ours how: eight even shares of his 100).
+	 */
+	private void thornCounter(SkinnedModel model, Skeleton.Pose pose) {
+		dev.overcraft.net.HeroSyncPayload s = dev.overcraft.client.ClientHero.sync();
+		if (!thorns || s == null) {
+			return;
+		}
+		int gone = (int) Math.ceil((1 - s.secondaryAmmo() / (double) dev.overcraft.lifeweaver.LifeweaverStats.THORN_AMMO) * 8);
+		SkinnedModel.Clip counter = gone <= 0 ? null : clip(model, "thorn_count_" + Math.min(gone, 8));
+		if (counter != null) {
+			Skeleton.sample(driven(model, counter), 0, pose);
+		}
+	}
+
+	/** The sheet playing and the one it took over from, and when (the sheets differ most at the ends of the pitch). */
+	private @Nullable AimSheet aimSheet;
+	private @Nullable AimSheet aimSheetBefore;
+	private float aimSheetAt = -100;
+	private @Nullable SkinnedModel aimSheetModel;
+	/** The sheet each state resolved to, so a frame builds no names. */
+	private final Map<String, Optional<AimSheet>> aimSheetPicks = new HashMap<>();
+	/** Seconds a sheet takes over from the last (ours: the base clips' own FADE scale). */
+	private static final float AIM_SHEET_FADE = 0.15f;
+
+	/**
+	 * Lays this state's aim sheet over the pose for the aim's pitch, cross-faded from the last, and returns what its chain has
+	 * turned already (degrees): the head's own look turns the rest. No hero's sheet is named alike, so each slot is tried by
+	 * every name it goes by and the clip must measure as a sheet (AimSheet); the data's own pick under each state, in each
+	 * hero's clip map, is why a name is where it is (techniques/animation/aim_sheets.md).
+	 */
+	private float aimSheets(SkinnedModel model, Skeleton.Pose pose, float now, float headPitch) {
+		if (aimSheetModel != model) {
+			// another hero's model (a switch): that hero's sheet keys its bones, not these
+			aimSheetModel = model;
+			aimSheet = null;
+			aimSheetBefore = null;
+			aimSheetPicks.clear();
+		}
+		if (now < aimSheetAt) {
+			// time went backward (another world under the same animator): no fade stays stuck at its start
+			aimSheetAt = now - AIM_SHEET_FADE;
+		}
+		AimSheet sheet = aimSheetNow(model, now);
+		if (sheet != aimSheet) {
+			aimSheetBefore = aimSheet;
+			aimSheet = sheet;
+			aimSheetAt = now;
+		}
+		boolean[] mask = UpperBody.aimMask(model);
+		float w = Math.clamp((now - aimSheetAt) / AIM_SHEET_FADE, 0, 1);
+		float turned = 0;
+		if (aimSheetBefore != null && w < 1) {
+			aimSheetBefore.apply(pose, headPitch, 1 - w, mask);
+			turned += aimSheetBefore.pitchAt(headPitch) * (1 - w);
+		}
+		if (aimSheet != null) {
+			aimSheet.apply(pose, headPitch, w, mask);
+			turned += aimSheet.pitchAt(headPitch) * w;
+		}
+		return turned;
+	}
+
+	private @Nullable AimSheet aimSheetNow(SkinnedModel model, float now) {
+		// the variants: Ana's scope, Sombra's stealth, Brigitte's shield
+		String v = scoped ? "_scoped" : stealthed ? "_stealth" : shieldUp(now) ? "_shield" : blaster ? "_blaster" : "";
+		// Sigma's stand's sheet keys only his neck and head (Arm_R 2 degrees at its ends); his hands aim while he fires, by the fire layer's (add_fire_layer_sm1, sm[1] the third person: Arm_R 21, Weapon_R 40)
+		boolean sigmaFiring = sigma && Math.min(since("spheres_0", now), Math.min(since("spheres_1", now), since("spheres_2", now))) < SIGMA_HANDS_AIM;
+		return aimSheetPicks.computeIfAbsent(base + v + (thorns ? "+t" : "") + (junoGliding ? "+g" : "") + (sigmaFiring ? "+f" : ""),
+			k -> Optional.ofNullable(pickAimSheet(model, v, sigmaFiring))).orElse(null);
+	}
+
+	/** Seconds after a volley that Sigma's hands stay on his aim (ours: about his volley's own clip). */
+	private static final float SIGMA_HANDS_AIM = 1.2f;
+
+	private @Nullable AimSheet pickAimSheet(SkinnedModel model, String v, boolean sigmaFiring) {
+		boolean air = base.startsWith("jump") || base.startsWith("fall") || base.startsWith("air");
+		boolean moving = base.startsWith("run") || base.startsWith("strafe") || base.startsWith("walk");
+		String dir = !moving ? "" : base.startsWith("run_") ? base.substring(3).replace("_stealth", "").replace("_blaster", "").replace("_thorn", "")
+			: base.startsWith("strafe_left") ? "_left" : base.startsWith("strafe_right") ? "_right" : "";
+		List<String> names = new ArrayList<>();
+		if (sigmaFiring) {
+			names.add("add_fire_layer_sm1");
+		}
+		if (base.startsWith("crouch_walk")) {
+			String walkDir = base.substring("crouch_walk".length());
+			names.addAll(List.of("add_aim_crouch_walk" + v + walkDir, "add_aim_crouch_walk" + walkDir, "add_aim_crouch_walk" + v,
+				"add_aim_crouch_walk", "add_crouch_walk"));
+		}
+		if (base.contains("crouch")) {
+			names.addAll(List.of("add_aim_crouch" + v, "add_aim_crouch", "add_crouch" + (thorns ? "_idle_thorn" : "_idle"), "add_crouch",
+				"add_stance_sm1_sm1_stand_1ed"));
+		} else if (junoGliding) {
+			names.add("add_glide");
+		} else if (air) {
+			names.addAll(List.of("add_aim_jump" + v, "add_aim_jump", "add_jump", "add_air", "add_jump_takeoff"));
+		} else if (moving) {
+			names.addAll(List.of("add_aim_run" + v + dir, "add_aim_run" + dir, "add_run" + dir));
+			if (!dir.contains("back")) {
+				// Ana's unscoped back slots ride her stand's sheet, as her clip map has it (3B7D on BR, B, BL)
+				names.addAll(List.of("add_aim_run" + v, "add_aim_run", "add_run"));
+			}
+		}
+		// the stand's: Sojourn's and Lifeweaver's and Mercy's by the layer's name, Juno's and Brigitte's add_aim, Sigma's 72AC
+		names.addAll(List.of("add_aim" + v, "add_aim", blaster ? "add_idle_blaster" : thorns ? "add_idle_thorn" : "add_idle", "add_stand",
+			"add_layer_663"));
+		for (String name : names) {
+			AimSheet sheet = AimSheet.of(model, clip(model, name));
+			if (sheet != null) {
+				return sheet;
+			}
+		}
+		return null;
+	}
+
+	/** Dev only ("aimsheets"): the sheet in use now. */
+	public @Nullable AimSheet aimSheetInUse() {
+		return aimSheet;
 	}
 
 	/** The cloth the clips leave rigid (coat tails): simulated, kept out of the legs and above the floor. */
@@ -1381,15 +1766,32 @@ public final class HeroAnimator {
 		ana = "ana".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		sombra = "sombra".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		brigitte = "brigitte".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
-		stealthed = sombra && entity.isInvisible();
+		// her stealth from its start (the synced HeroManager.SOMBRA_STEALTH: fading in and revealed count, as 420C's state does),
+		// or Minecraft's invisibility (a potion)
+		Long stealthFrom = entity.getAttached(dev.overcraft.hero.HeroManager.SOMBRA_STEALTH);
+		stealthed = sombra && (stealthFrom != null && stealthFrom >= 0 || entity.isInvisible());
 		juno = "juno".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		boolean glideNow = juno && Boolean.TRUE.equals(entity.getAttached(dev.overcraft.hero.HeroManager.JUNO_GLIDE));
 		if (glideNow && !junoGliding) {
 			glideSince = now;
 		}
 		junoGliding = glideNow;
+		Integer pharahNow = "pharah".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO))
+			? entity.getAttached(dev.overcraft.hero.HeroManager.PHARAH_STATE) : null;
+		pharahLook = pharahNow == null ? 0 : pharahNow;
 		boolean sojourn = "sojourn".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		this.sojourn = sojourn;
+		this.cassidy = "cassidy".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
+		this.sigma = "sigma".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
+		int form = entity instanceof net.minecraft.world.entity.player.Player p && dev.overcraft.hero.HeroManager.heroMode(p)
+			? dev.overcraft.dva.Dva.form(p) : -1;
+		if (form != dvaForm) {
+			if (dvaForm == dev.overcraft.dva.Dva.WRECK && form == dev.overcraft.dva.Dva.PILOT) {
+				dvaEjectAt = now;
+			}
+			dvaForm = form;
+			dvaFormSince = now;
+		}
 		boolean slideNow = sojourn && Boolean.TRUE.equals(entity.getAttached(dev.overcraft.hero.HeroManager.SOJOURN_SLIDE));
 		if (slideNow && !sojournSliding) {
 			slideSince = now;
@@ -1400,6 +1802,9 @@ public final class HeroAnimator {
 		sojournSliding = slideNow;
 		Integer gun = sojourn ? entity.getAttached(dev.overcraft.hero.HeroManager.SOJOURN_GUN) : null;
 		sojournOverclock = gun != null && (gun & dev.overcraft.sojourn.Sojourn.SYNC_OVERCLOCK) != 0;
+		if (gun != null) {
+			trackEnergy(gun & (dev.overcraft.sojourn.Sojourn.SYNC_OVERCLOCK - 1), now);
+		}
 		// her Martian Overboots, seen from her motion by anyone: a double jump is a kick upward in the air (10.8 m/s from
 		// whatever she fell at), the hover a fall held at its 3 m/s (0.15 a tick) for a few ticks (ours, as Mercy's descent)
 		if (juno && !entity.onGround() && !wasOnGround && vy - lastVy > 0.3) {
@@ -1429,6 +1834,9 @@ public final class HeroAnimator {
 			beamOnSince = now;
 		} else if (beamNow == 0 && beamMode != 0) {
 			beamOffAt = now;
+		}
+		if (beamNow != 0) {
+			beamLast = beamNow;
 		}
 		beamMode = beamNow;
 		boolean ga = mercy && mercyState.has(dev.overcraft.mercy.Mercy.FLAG_GA);
@@ -1513,8 +1921,19 @@ public final class HeroAnimator {
 		wasSkating = skating;
 
 		String next;
+		SkinnedModel.Clip eject = clip(model, "eject");
 		if (entity.isDeadOrDying()) {
 			next = "death";
+		} else if (dvaForm == dev.overcraft.dva.Dva.WRECK) {
+			// her mech's destruction (alias 0x8, 31C3: D 0276 #482), frozen where it fell
+			next = "destroyed_sm0";
+		} else if (dvaForm == dev.overcraft.dva.Dva.CALLING) {
+			// Call Mech: the cast's 0.2 s, then her run and jump into the falling mech (0xE5, 3120 for 2 s from the spawn:
+			// D 026A #405)
+			next = now - dvaFormSince < dev.overcraft.dva.DvaStats.CALL_CAST ? "idle" : "call_mech";
+		} else if (dvaForm == dev.overcraft.dva.Dva.PILOT && eject != null && now - dvaEjectAt < eject.duration()) {
+			// the eject (alias 0x439, 3382, 0.567 s: D 026A #366)
+			next = "eject";
 		} else if (entity.isPassenger()) {
 			// riding (a boat, a horse): Overwatch has no sitting clip; crouched is the nearest
 			next = "crouch_idle";
@@ -1569,6 +1988,10 @@ public final class HeroAnimator {
 		} else if (!onGround && slideJumpAt >= airborneSince - 0.3f && clip(model, "slide_jump") != null) {
 			// her slide jump until she lands (alias 0x5F3): its take-off, then its fall
 			next = now - slideJumpAt < clip(model, "slide_jump").duration() ? "slide_jump" : "slide_jump_fall";
+		} else if (!onGround && dev.overcraft.client.effect.JetpackCatFx.towed(entity.getId()) && clip(model, "pulled") != null) {
+			// on her rope: alias 0x1C8 (5A8F #1324, H; its 2D blend on df 0x235 / 0x236 isn't driven: its centre). Where the clipmap has it:
+			// Ana, Brigitte, Juno, Sojourn, Sombra. Kiriko, Lúcio, Mercy and Sigma's other name aren't mapped: their air pose
+			next = "pulled";
 		} else if (juno && junoGliding) {
 			// Glide Boost (47B7): its start (0xE5, 2D by her motion), then the loop (0x02F: still at its centre, else 8
 			// ways); a double jump while gliding has its own (0x13E)
@@ -1592,7 +2015,20 @@ public final class HeroAnimator {
 			String d = moving ? (direction(forward, left).isEmpty() ? "_forward" : direction(forward, left)) : "";
 			SkinnedModel.Clip take = clip(model, "double_jump");
 			next = (take != null && now - doubleJumpAt < take.duration() ? "double_jump" : "double_jump_fall") + d;
-		} else if (!onGround && entity.isInWater()) {
+		} else if (!onGround && (pharahLook & (dev.overcraft.pharah.Pharah.LOOK_HOVER | dev.overcraft.pharah.Pharah.LOOK_JET)) != 0) {
+			// Pharah's Hover Jets (alias 0x2F, 0025 #776: its 2D blend, still at its centre, else 8 ways by her motion against her
+			// facing; the jets play it too, D 0027 #346), their Jump Jet clip an action over it
+			String d = moving ? direction(forward, left) : "";
+			next = switch (d) {
+				case "", "_forward" -> moving ? "hover_f" : "hover";
+				case "_forward_left" -> "hover_lf";
+				case "_left" -> "hover_l";
+				case "_back_left" -> "hover_lb";
+				case "_back" -> "hover_b";
+				case "_back_right" -> "hover_rb";
+				case "_right" -> "hover_r";
+				default -> "hover_rf";
+			};		} else if (!onGround && entity.isInWater()) {
 			// treading water: Overwatch has no swimming (and hero mode no sprint-swim), so the air pose
 			next = "fall";
 		} else if (!onGround && skates) {
@@ -1660,14 +2096,74 @@ public final class HeroAnimator {
 		} else if (base.startsWith("crouch_walk")) {
 			// standing still crouched with no crouch idle clip: the crouch-walk's pose, held
 			rate = moving ? (float) Math.clamp(metresPerSecond / CROUCH_CLIP_SPEED, 0.5, 2) : 0;
-		} else if (base.equals("idle") || base.equals("crouch_idle") || base.equals("idle_scoped") || base.equals("crouch_idle_scoped")) {
+		} else if (turnsInPlace(model, base)) {
 			// Overwatch doesn't play its stand clips on the clock: their frame follows a game parameter (turn-in-place
-			// progress) and holds while it doesn't change. Frame 0 is the neutral stand (kiriko-research.md). Ana's scoped
-			// stands are the same sheets (3C5D / 3C9C): on the clock they turned her 120 degrees away (found playing)
+			// progress) and holds while it doesn't change. Frame 0 is the neutral stand (kiriko-research.md). Known by
+			// what they do, not by name: their root turns 120 degrees over the clip (rootyaw_3p.txt: Brigitte's 4E88 /
+			// 4E89, her shield-up 4FE5 / 4FE7). By name, Ana's scoped stands turned her 120 degrees away until added to
+			// the list, then Brigitte's shield-up stand turned her round and round (#88: "brig starts looking around")
 			rate = 0;
 		} else {
 			rate = 1;
 		}
+	}
+
+	/**
+	 * Whether each clip is a turn-in-place stand (TURN_IN_PLACE), worked out once per clip, per model: a model a resource
+	 * reload replaces lets its answers go with it.
+	 */
+	private static final Map<SkinnedModel, Map<String, Boolean>> TURNS = java.util.Collections.synchronizedMap(new java.util.WeakHashMap<>());
+	/**
+	 * How far (degrees) a stand clip's root turns from its first frame to its last to count as a turn-in-place sheet (ours:
+	 * the data's turn sheets go 120; a stand that only sways turns a few).
+	 */
+	static final float TURN_IN_PLACE = 45;
+	/** The frames looked at through a clip for its turn (the largest from the first counts: a turn that comes back too). */
+	private static final int TURN_SAMPLES = 16;
+
+	/**
+	 * A turn-in-place stand: the clip's root (the bone above the pelvis, or the pelvis) faces more than TURN_IN_PLACE
+	 * degrees away from where it faced at the start, at some point of the clip. Overwatch picks such a sheet's frame by the
+	 * turn's progress (H for Kiriko's: kiriko-research.md); played on the clock it spins the hero round.
+	 */
+	public static boolean turnsInPlace(SkinnedModel model, String name) {
+		SkinnedModel.Clip clip = clip(model, name);
+		if (clip == null || clip.duration() <= 0) {
+			return false;
+		}
+		return TURNS.computeIfAbsent(model, m -> new java.util.concurrent.ConcurrentHashMap<>()).computeIfAbsent(name, n -> {
+			int root = UpperBody.mover(model);
+			if (root < 0) {
+				root = model.node("Pelvis");
+			}
+			if (root < 0) {
+				return false;
+			}
+			Skeleton.Pose first = new Skeleton.Pose(model.nodeNames.length).rest(model);
+			Skeleton.sample(clip, 0, first);
+			Matrix4f a = Skeleton.world(model, first, root);
+			for (int i = 1; i <= TURN_SAMPLES; i++) {
+				Skeleton.Pose at = new Skeleton.Pose(model.nodeNames.length).rest(model);
+				Skeleton.sample(clip, clip.duration() * i / TURN_SAMPLES, at);
+				Matrix4f b = Skeleton.world(model, at, root);
+				if (Math.max(yawBetween(a, b, new Vector3f(1, 0, 0)), yawBetween(a, b, new Vector3f(0, 0, 1))) > TURN_IN_PLACE) {
+					return true;
+				}
+			}
+			return false;
+		});
+	}
+
+	/** The angle (degrees) between where {@code axis} points flat on the ground under {@code a} and under {@code b}. */
+	private static float yawBetween(Matrix4f a, Matrix4f b, Vector3f axis) {
+		Vector3f u = a.transformDirection(new Vector3f(axis));
+		Vector3f v = b.transformDirection(new Vector3f(axis));
+		u.y = 0;
+		v.y = 0;
+		if (u.length() < 0.3f || v.length() < 0.3f) {
+			return 0;
+		}
+		return (float) Math.toDegrees(u.angle(v));
 	}
 
 	/** Which of 8 directions the movement goes, relative to the body: "" (forward), "_forward_left", "_left", ... */
@@ -1698,6 +2194,7 @@ public final class HeroAnimator {
 
 	private static boolean loops(String clip) {
 		return !(clip.startsWith("jump") || clip.equals("land") || clip.equals("climb_top") || clip.equals("death")
+			|| clip.equals("call_mech") || clip.equals("eject") || clip.startsWith("destroyed")
 			|| clip.startsWith("skate_stop") || clip.startsWith("knockdown"));
 	}
 
@@ -1724,7 +2221,10 @@ public final class HeroAnimator {
 				case "crouch_walk_back_left" -> "crouch_walk_left";
 				case "crouch_walk_back_right" -> "crouch_walk_right";
 				case "crouch_walk_left", "crouch_walk_right" -> "crouch_walk";
-				case "crouch_idle" -> "crouch_walk"; // held still (see the rate below)
+				// no crouch-walk (Sigma: his one move clip for everything)
+				case "crouch_walk" -> "run";
+				// held still (see the rate below); a hero with no crouch clips at all (Sigma floats) stands
+				case "crouch_idle" -> model.clips.containsKey("crouch_walk") ? "crouch_walk" : "idle";
 				case "run_back", "strafe_left", "strafe_right" -> "run";
 				case "land", "jump" -> "fall";
 				// Lúcio has no fall clip: his jump's rise
@@ -1771,15 +2271,18 @@ public final class HeroAnimator {
 		}
 
 		/**
-		 * The bones the aim sheet moves: the upper body's named bones (spine, neck, head, clavicles, arms, hands). Its
-		 * unnamed helper bones swing up to 177 degrees and its legs a little: left alone.
+		 * The bones the aim sheet moves: the upper body's named bones (spine, neck, head, clavicles, arms, hands), and the gun's
+		 * carrier, 0605 / 0606 under the pelvis (Ana's rifle and Sojourn's Railgun hang on hp 00C9 = bone_0606, outside the arm
+		 * chain: without it their hands bent up and the gun stayed level). Its other helper bones swing up to 177 degrees and
+		 * its legs a little: left alone.
 		 */
 		static boolean[] aimMask(SkinnedModel model) {
 			return AIM_MASKS.computeIfAbsent(model, m -> {
 				boolean[] upper = mask(m);
 				boolean[] aim = new boolean[upper.length];
 				for (int i = 0; i < aim.length; i++) {
-					aim[i] = upper[i] && !m.nodeNames[i].startsWith("bone_");
+					String name = m.nodeNames[i];
+					aim[i] = upper[i] && (!name.startsWith("bone_") || name.equals("bone_0605") || name.equals("bone_0606"));
 				}
 				return aim;
 			});

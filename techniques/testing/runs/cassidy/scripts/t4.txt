@@ -1,0 +1,56 @@
+MARK T4a Deadeye: husks of 20 MC (250 OW) and 40 MC (500 OW) 10 m ahead, a third behind a wall; Q, a /damage 5 at 1 s (expected 3 taken: 40 % less), fire at 2.2 s in (charge 150 x 2 + 300 x 0.2 = 360: the first dead (skull), the second 360 -> 28.8 MC off), the walled one untouched; slowed to 30 %
+cmd /kill @e[type=!player]
+cmd /fill -4 -60 7 -2 -57 7 stone
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /summon husk -0.5 -60 10.5 {NoAI:1b,Tags:["d1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:20}],Health:20f}
+cmd /summon husk 1.5 -60 10.5 {NoAI:1b,Tags:["d2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:40}],Health:40f}
+cmd /summon husk -3 -60 10.5 {NoAI:1b,Tags:["d3"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:40}],Health:40f}
+cmd /overcraft ult @s 100
+cmd /effect give @s minecraft:instant_health 1 5
+sleep 1
+state
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 1.0
+cmd /damage @s 5 minecraft:generic
+sleep 0.2
+state
+screenshot cas_t4_lock1.png
+sleep 1.0
+screenshot cas_t4_lock2.png
+state
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 0.8
+hp @e[tag=d1,limit=1]
+hp @e[tag=d2,limit=1]
+hp @e[tag=d3,limit=1]
+state
+MARK T4b Deadeye cancelled with the right button: charge spent, no shot
+cmd /kill @e[type=husk]
+cmd /summon husk 0.5 -60 10.5 {NoAI:1b,Tags:["d4"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:20}],Health:20f}
+cmd /overcraft ult @s 100
+sleep 0.5
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 1.5
+key primary_fire down
+sleep 0.1
+key primary_fire up
+sleep 0.5
+hp @e[tag=d4,limit=1]
+state
+MARK T4c Deadeye left to time out (7.2 s): no shot
+cmd /overcraft ult @s 100
+sleep 0.3
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 3
+state
+sleep 4.6
+hp @e[tag=d4,limit=1]
+state

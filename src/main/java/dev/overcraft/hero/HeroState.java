@@ -21,6 +21,10 @@ public final class HeroState {
 	 */
 	public boolean primaryFresh, secondaryFresh, primaryLetGo, secondaryLetGo;
 	public boolean wallRiding;
+	/** How he rides, as his client says (OwMovement.wallCode: side and ride yaw, 0 off the wall), for others to see (HeroManager.LUCIO_WALL). */
+	public int wallRide;
+	/** Soundwave Rider: ticks before a part charge starts to drain. */
+	public int riderDrainWait;
 	public boolean wallClimbing;
 
 	// weapons
@@ -76,6 +80,8 @@ public final class HeroState {
 	public boolean pawSide;
 	/** Jetpack Cat: the ally Lifeline tows (entity id), or null, and ticks since it attached. */
 	public @Nullable Integer lifelineTarget;
+	/** Lúcio: the allies his song reached last time it went out, himself not counted (his widget, #85). */
+	public int songAllies;
 	public int lifelineTicks;
 	/** Jetpack Cat's Lifeline is switched on (seeking, or towing lifelineTarget), and for how many ticks. */
 	public boolean lifelineOn;
@@ -111,6 +117,10 @@ public final class HeroState {
 	public double gaMomentum;
 	/** Mercy: an Angelic Descent or a launch is landing her (no fall damage until she's down). */
 	public boolean softLanding;
+	/** Kiriko: game time until which the server's onGround is still the place she stepped from. */
+	public long softLandingGrace;
+	/** Ticks of a soft landing spent in water or on a ladder, in a row (Holds.landingEnds). */
+	public int softLandingTouch;
 	/** Mercy: Flash Heal's charges and its cast's ticks left (-1 none). */
 	public int flashCharges = 1;
 	public int flashCast = -1;
@@ -142,6 +152,8 @@ public final class HeroState {
 	 */
 	public @org.jspecify.annotations.Nullable Integer beaconId;
 	public long stealthFrom = -1, stealthUntil = -1, revealedUntil = -1;
+	/** The length (ticks) stealthUntil was last set to: the ring's full share, a refill's being shorter than a first stealth's. */
+	public int stealthTotal = 1;
 	/** EMP's cast (ticks in, -1 none); when Hotfix may hack again (game time). */
 	public int empCast = -1;
 	public long hackLockoutUntil = -1;
@@ -151,6 +163,8 @@ public final class HeroState {
 	public boolean sombraFiring, sombraStealthed;
 	/** Brigitte: her flail's swing (ticks into it, -1 none), which side it's on (0 forehand, 1 backhand), whom it hit. */
 	public int flailSwing = -1, flailCombo;
+	/** The swing running is her quick melee (V), not the primary fire: the kill feed's fist (kill_feed.md). */
+	public boolean flailMelee;
 	public final java.util.Set<Integer> flailHit = new java.util.HashSet<>();
 	/** Brigitte: when the flail may start Inspire again (game time). */
 	public long inspireReadyAt = -1;
@@ -160,8 +174,54 @@ public final class HeroState {
 	public double barrierHealth;
 	public long barrierDownSince = -10000, barrierBrokenUntil = -1;
 	public int bashTicks = -1, rallyTicks;
+	/** Brigitte: who her last bash in Rally hit: its shockwave passes them over (0EE3 #890). */
+	public @Nullable UUID rallyBashed;
+	/** Brigitte: the last blast her barrier took (a ServerExplosion): charged once, and it stops that blast for all behind. */
+	public @org.jspecify.annotations.Nullable Object barrierBlast;
+	/** Brigitte: broken and not yet allowed up again (synced: her client's camera doesn't foresee it going up then). */
+	public boolean barrierLocked;
 	/** Juno: ticks into Glide Boost (-1 not gliding). */
 	public int junoGlide = -1;
+	/**
+	 * Pharah (dev.overcraft.pharah.Pharah): her fuel (0-100, overfuel to 150 / 200); ticks into a jet (-1 none) and which
+	 * (Pharah.JUMP_JET / JET_DASH); fuel a jet still adds; when overfuel was last filled and when she last hovered or left the
+	 * ground (game time); her client said she hovered this tick; ticks into Concussive Blast's cast and Barrage (-1 none),
+	 * Barrage's rocket owed and its pod; Rocket Salvo armed until (game time) and its mini-rockets due (-1 none); her right
+	 * button last tick; a rocket's recovery left (ticks).
+	 */
+	public double pharahFuel = dev.overcraft.pharah.PharahStats.FUEL_MAX, pharahJetFuel, pharahBarrageClock, pharahRecovery;
+	public int pharahJet = -1, pharahJetKind, pharahConcussive = -1, pharahBarrage = -1, pharahPod, pharahSalvoDue = -1;
+	public long pharahOverfuelAt = -1000, pharahAirAt = -1000, pharahSalvoUntil = -1;
+	public boolean pharahHovering, pharahRightWas, pharahSilenced;
+	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 pharahSalvoAim;
+	/**
+	 * Tracer (dev.overcraft.tracer.Tracer): Blink's charges, its recharge (ticks into the charge coming back), the next press it
+	 * takes and her last Blink (game time) and how many in a row; ticks into Recall (-1 none) with where it holds her and what it
+	 * gives back; ticks into Pulse Bomb's cast (-1 none); her pistols' bloom (0-1), the 0.2 s lock after she lets go, her
+	 * burst going, her last shot (game time); when her magazine went over 40 (Quantum Entanglement); her 3 s of history.
+	 */
+	public int tracerBlinks = dev.overcraft.tracer.TracerStats.BLINK_CHARGES, tracerBlinkRun, tracerRecall = -1, tracerBombCast = -1;
+	public double tracerBlinkTimer, tracerBloom, tracerRecallHealth;
+	public long tracerBlinkReady, tracerBlinkAt = -1000, tracerFireLockUntil, tracerLastShot = -1000, tracerOverAmmoAt = -1000,
+		tracerSpawnAt = -1000, tracerVoiceAt = -1;
+	public boolean tracerFiring, tracerSilenced;
+	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 tracerHold, tracerRecallVelocity, tracerRecallTo, tracerRelease;
+	public float tracerRecallYaw, tracerRecallPitch;
+	public final java.util.ArrayDeque<dev.overcraft.tracer.Tracer.Sample> tracerHistory = new java.util.ArrayDeque<>();
+	/**
+	 * Tracer, more: the Blink presses her client sent that the server has seen (synced back so her client knows which of its Blinks
+	 * the count already shows); the level her history is in (Recall never crosses one); the last lingering cloud that counted as a
+	 * health pack, and when a sourceless one last did.
+	 */
+	public int tracerBlinkSeen;
+	public net.minecraft.resources.@org.jspecify.annotations.Nullable ResourceKey<net.minecraft.world.level.Level> tracerLevel, tracerRecallLevel;
+	public java.util.@org.jspecify.annotations.Nullable UUID tracerPackCloud;
+	public long tracerPackAt = -1000;
+	/** Cassidy (dev.overcraft.cassidy.Cassidy): his kit's state, and the roll direction his client sent with its press. */
+	public final dev.overcraft.cassidy.CassidyState cassidy = new dev.overcraft.cassidy.CassidyState();
+	public int cassidyRollDir;
+	/** Junkrat (dev.overcraft.junkrat.Junkrat): his kit's state. */
+	public final dev.overcraft.junkrat.JunkratState junkrat = new dev.overcraft.junkrat.JunkratState();
 	/** Sojourn: ticks into Power Slide (-1 not sliding), when it last ended (game time), her Railgun's energy (0-100, 150). */
 	public int sojournSlide = -1;
 	public long sojournSlideEndAt = -1000;
@@ -177,6 +237,16 @@ public final class HeroState {
 	public boolean sojournRightWas;
 	/** Sojourn: a Charged Shot pressed and waiting (ticks of its buffer left), 0 none. */
 	public int sojournCharged;
+	/** The buffered press was already shown on her client (HeroInputPayload.PRESS_CHARGED_SHOWN). */
+	public boolean sojournChargedShown;
+	/** The shown press's shot, as she was shown it (Railgun.pressedShown); only while it waits. */
+	public dev.overcraft.sojourn.Railgun.@org.jspecify.annotations.Nullable Aim sojournAim;
+	/** Her position at the end of the last two ticks, for the point on her path she pressed from. */
+	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 sojournPosT1, sojournPosT2;
+	/** Hacked, for her client (Sojourn.MODE_SILENCED). */
+	public boolean sojournSilenced;
+	/** Ticks left of the Charged Shot's recovery (D v2447, 1A23 #438 / #636). */
+	public double sojournChargedLock;
 	/**
 	 * Sojourn: ticks into Disruptor Shot's cast (-1 none), ticks until its cooldown is written (-1 none); ticks into Overclock (-1
 	 * none: cast, active, tail); Power Slide's charges (Dual Thrusters: 2, otherwise unused).
@@ -192,6 +262,87 @@ public final class HeroState {
 	public long sojournFullAt = -1, sojournSlideJumpAt = -1000, sojournOcEndSay = -1;
 	public int sojournOcKills;
 	/** Juno: rounds left in the Mediblaster's volley, and the share of a round owed (34 a second at 20 ticks). */
+	/**
+	 * Sigma (dev.overcraft.sigma.Sigma): ticks to his volley's second sphere (-1: none due), ticks left of the 1.3 s before
+	 * the next volley, the left button's 0.15 s buffer, the volleys fired (his three fire clips cycle); his barrier's entity
+	 * (out: sent or stopped), the right button last tick, when it can go out again; Kinetic Grasp's ticks left (-1: off) and
+	 * the damage it has absorbed (Overwatch points). The barrier's health is barrierHealth, as Brigitte's.
+	 */
+	public int sigmaSecondIn = -1, sigmaBuffer, sigmaVolleys;
+	public double sigmaReload;
+	public @Nullable Integer sigmaBarrierId;
+	public boolean sigmaRightWas;
+	public long sigmaBarrierReadyAt = -1;
+	public int sigmaGrasp = -1;
+	public double sigmaGraspAbsorbed;
+	/** The game time of his kit's last tick (his HUD's cooldowns). */
+	public long sigmaNow;
+	/**
+	 * Sigma's Accretion: ticks left of its gather (-1: none); Gravitic Flux's phase (dev.overcraft.sigma.GraviticFlux.NONE ..
+	 * SLAM), ticks into it, the aimed point; Hyper Strike's direct hits counted and whether his next quick melee carries it.
+	 */
+	public int sigmaCast = -1;
+	public int sigmaFluxPhase, sigmaFluxTicks;
+	public net.minecraft.world.phys.@Nullable Vec3 sigmaFluxPoint;
+	public int sigmaDirectHits;
+	public boolean sigmaStrikeReady;
+	/**
+	 * D.Va (dev.overcraft.dva.Dva): her form (Dva.MECH .. WRECK) and the ticks in it; the Self-Destruct charge kept while she's
+	 * the pilot (the next mech's); the mech's health and armor kept over Minecraft mode (G; -1: none kept); until when Call
+	 * Mech is locked and she can't be hurt (game time); when she last ejected; when Initiator's heal may land again; Call
+	 * Mech's spot and her facing at the press; the unmanned mech (entity id); the game time of her kit's last tick.
+	 */
+	public int dvaForm, dvaTicks;
+	public double dvaMechUlt;
+	public float dvaStoredHealth = -1;
+	public double dvaStoredArmor;
+	public long dvaCallLockUntil = -1, dvaImmuneUntil = -1, dvaEjectedAt = -1000, dvaInitiatorReadyAt = -1, dvaNow;
+	public net.minecraft.world.phys.@Nullable Vec3 dvaCallSpot;
+	public float dvaCallYaw;
+	public @Nullable Integer dvaMechId;
+	/**
+	 * D.Va's mech kit (steps 4-6): Fusion's last volley (game time); Defense Matrix up, its energy, its ticks up, when it went
+	 * down, its cooldown (ticks); Boosters' ticks flown (-1 not flying), ticks to its cooldown (-1 none), when it ended, the
+	 * creatures it hit this flight (each once).
+	 */
+	public long dvaLastVolley = -1000;
+	public boolean dvaMatrix;
+	public double dvaMatrixEnergy;
+	public int dvaMatrixTicks, dvaMatrixCooldown;
+	public long dvaMatrixDownAt = -1000;
+	public int dvaBoost = -1, dvaBoostCooldownIn = -1;
+	public long dvaBoostEndedAt = -1000;
+	public final java.util.Set<Integer> dvaBoostHit = new java.util.HashSet<>();
+	/**
+	 * D.Va's steps 7-9: Micro Missiles' ticks into the cast (-1: no volley), missiles left, the rate's accumulator, the muzzle
+	 * next; the Light Gun's ticks to its next round; the Self-Destructing mech (entity id).
+	 */
+	public int dvaMissileTicks = -1, dvaMissilesLeft, dvaMissileSide;
+	public double dvaMissileClock, dvaGunRecovery;
+	public @Nullable Integer dvaSelfDestructId;
+	/**
+	 * D.Va's perks (step 10, DvaPerks): Extended Boosters' time added to this flight (ticks); Precision Fusion's ticks in (-1:
+	 * off) and when it last ended (game time, for its ramp out); the armor lost under Shield System's shields (Overwatch points:
+	 * a hero with both keeps them apart, Shields).
+	 */
+	public int dvaBoostExtra, dvaPrecision = -1;
+	public long dvaPrecisionEndedAt = -1000;
+	/** When Defense Matrix's "ate something" line is due (game time, -1: none): 0.75 s after an absorb (02CC #343). */
+	public long dvaMatrixLineAt = -1;
+	/** Whether the Fusion Cannons fired last tick (a burst's first volley and its end have their own sounds). */
+	public boolean dvaFusionBurst;
+	/** When Shield System's restore sound may play again (game time). */
+	public long dvaShieldSoundAt;
+	public double armorLost;
+	/**
+	 * His barrier's voice checks each second (1B55 #967 / #971): its health a second ago, and whether it was under 34 % then;
+	 * Levitation's end, for others' look and sound (the server is told it began; ours: 1.75 s on, or a landing).
+	 */
+	public double sigmaBarrierSample = -1;
+	public boolean sigmaBarrierUnder;
+	public long sigmaLevitateUntil = -1;
+	/** When Hyper Regeneration's heal on his barrier was last drawn (6E81: 0.5 s long, so once a 0.5 s at most). */
+	public long sigmaHealFxAt = -100;
 	public int junoVolley;
 	public double junoVolleyClock;
 	/** Juno: ticks into Pulsar Torpedoes' lock (-1 none), each target's lock progress (ticks), the locked, those still to fire. */
@@ -294,6 +445,7 @@ public final class HeroState {
 		ultCharge = 0;
 		ultActive = 0;
 		primaryHeld = secondaryHeld = wallRiding = wallClimbing = false;
+		wallRide = 0;
 		primaryFresh = secondaryFresh = primaryLetGo = secondaryLetGo = false;
 		speedSong = false;
 		songSwap = -1;
@@ -342,6 +494,30 @@ public final class HeroState {
 		perkXp = 0;
 		perkTicks = 0;
 		minorPerk = majorPerk = null;
+	}
+
+	/** The hero's health in the body this player is in (D.Va: the mech's 675 or the pilot's 175), else Hero.owHealth. */
+	public int owHealth(net.minecraft.world.entity.player.Player player) {
+		return hero == Hero.DVA ? dev.overcraft.dva.Dva.owHealth(player) : hero == null ? 0 : hero.owHealth;
+	}
+
+	/** Armor in the body this player is in (D.Va: the mech's 325, the pilot none). */
+	public int armor(net.minecraft.world.entity.player.Player player) {
+		return hero == Hero.DVA ? dev.overcraft.dva.Dva.armor(player) : hero == null ? 0 : hero.armor();
+	}
+
+	/** Shields in the body this player is in. */
+	public int shields(net.minecraft.world.entity.player.Player player) {
+		// D.Va's Shield System: 100 of the mech's health as shields, over its armor
+		// Pharah's Helix Shields: 125 of her 225 as shields
+		return hero == Hero.DVA ? dev.overcraft.dva.DvaPerks.shields(player, this)
+			: hero == Hero.PHARAH ? (has(Perk.PHARAH_HELIX_SHIELDS) ? dev.overcraft.pharah.PharahStats.HELIX_SHIELDS : 0)
+			: hero == null ? 0 : hero.shields();
+	}
+
+	/** The top layer (shields and armor) in the body this player is in. */
+	public int layer(net.minecraft.world.entity.player.Player player) {
+		return shields(player) + armor(player);
 	}
 
 	public boolean has(Perk perk) {

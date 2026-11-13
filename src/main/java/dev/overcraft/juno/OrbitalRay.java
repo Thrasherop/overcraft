@@ -54,6 +54,21 @@ public final class OrbitalRay {
 		Effects.play(juno.level(), "juno_ray", at, along, juno, Ow.ticks(RAY_TIME), juno);
 	}
 
+	/**
+	 * A player has just started to see her (Juno.showState, #96): her ray where it has walked to, with the time left. "juno_ray_state" lays
+	 * no landing and replaces the client's ray of hers: the ray's place and ramp are its age's, so a second arrival can't double it.
+	 */
+	static void showTo(ServerPlayer juno, ServerPlayer viewer) {
+		for (Ray r : RAYS) {
+			if (r.juno == juno) {
+				long left = Ow.ticks(RAY_TIME) - (juno.level().getGameTime() - r.born);
+				if (left > 0) {
+					Effects.sendState(viewer, "juno_ray_state", r.at, r.along, juno, (int) left, juno);
+				}
+			}
+		}
+	}
+
 	public static void tickAll(MinecraftServer server) {
 		for (Iterator<Ray> it = RAYS.iterator(); it.hasNext(); ) {
 			Ray r = it.next();

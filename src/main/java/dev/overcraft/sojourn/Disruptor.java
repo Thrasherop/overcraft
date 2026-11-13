@@ -12,7 +12,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -122,11 +121,12 @@ public final class Disruptor {
 			}
 			DamageSource source = fieldSource(f.owner);
 			for (LivingEntity e : f.level.getEntitiesOfClass(LivingEntity.class, new AABB(f.centre, f.centre).inflate(FIELD_RADIUS),
-				e -> e.isAlive() && e != f.owner && Allies.canHurt(f.owner, e) && inside(e, f.centre))) {
+				e -> e.isAlive() && e != f.owner && Allies.areaHits(f.owner, e) && inside(e, f.centre)
+					&& !dev.overcraft.brigitte.Barrier.shields(e, f.owner, f.centre))) {
 				if (step) {
-					float dealt = Combat.damage(e, source, FIELD_DPS * FIELD_STEP);
-					Combat.credit(f.owner, dealt);
-					Combat.addFireForDamage(f.owner, dealt, Ow.toOw(e.getMaxHealth()));
+					float dealt = Combat.damage(e, source, FIELD_DPS * FIELD_STEP, dev.overcraft.hero.Blow.ability("disruptor_shot").by(dev.overcraft.hero.Hero.SOJOURN));
+					Combat.credit(f.owner, dealt, e);
+					Combat.addFireForDamage(f.owner, dealt, e);
 				}
 				if (f.slows) {
 					slow(e, f.level.getGameTime());
@@ -153,6 +153,16 @@ public final class Disruptor {
 		return centre.distanceToSqr(x, y, z) <= FIELD_RADIUS * FIELD_RADIUS;
 	}
 
+	/** Protection Suzu's cleanse (Combat.cleanse's table): the slow stops now; still inside once the phase ends, it comes back. */
+	public static void cleanse(LivingEntity target) {
+		if (SLOWED.remove(target) != null) {
+			AttributeInstance speed = target.getAttribute(Attributes.MOVEMENT_SPEED);
+			if (speed != null) {
+				speed.removeModifier(SLOW);
+			}
+		}
+	}
+
 	/** Deceleration Field: 25 % slower while inside, renewed each tick there, gone the tick after leaving. */
 	private static void slow(LivingEntity e, long now) {
 		AttributeInstance speed = e.getAttribute(Attributes.MOVEMENT_SPEED);
@@ -165,10 +175,17 @@ public final class Disruptor {
 		SLOWED.put(e, now);
 	}
 
-	/** The field's damage: from her, through armor and pushing no one (magic, as Sombra's zone). */
+	/**
+	 * The field's damage: from her, through armor, pushing no one and not jolting a player's movement (our own type,
+	 * overcraft:field, in the bypasses_armor, no_knockback and no_impact tags). Magic jolted it: a player hurt is sent the
+	 * server's view of their motion, and one walking through an enemy field slowed to 3.5 m/s on every damage step (#82).
+	 */
+	private static final net.minecraft.resources.ResourceKey<net.minecraft.world.damagesource.DamageType> FIELD =
+		net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE, dev.overcraft.Overcraft.id("field"));
+
 	private static DamageSource fieldSource(ServerPlayer owner) {
 		return new DamageSource(owner.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
-			.getOrThrow(DamageTypes.MAGIC), null, owner);
+			.getOrThrow(FIELD), null, owner);
 	}
 
 	/** Slowed by a field now (tests, the harness). */

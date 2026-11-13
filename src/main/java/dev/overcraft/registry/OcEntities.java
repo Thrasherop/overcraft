@@ -103,6 +103,81 @@ public final class OcEntities {
 			.noLootTable().noSave()
 			.sized((float) dev.overcraft.lifeweaver.LifeweaverStats.TRUNK_RADIUS * 2, (float) dev.overcraft.lifeweaver.LifeweaverStats.TRUNK_HEIGHT)
 			.clientTrackingRange(10).updateInterval(2));
+	/** Sigma's Hyperspheres (2D35 / 32B4): 0.32 m (not saved: 0.43 s of flight). */
+	public static final EntityType<dev.overcraft.entity.HypersphereEntity> HYPERSPHERE = register("hypersphere",
+		EntityType.Builder.<dev.overcraft.entity.HypersphereEntity>of(dev.overcraft.entity.HypersphereEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.sigma.SigmaStats.SPHERE_SIZE, (float) dev.overcraft.sigma.SigmaStats.SPHERE_SIZE)
+			.clientTrackingRange(8).updateInterval(1));
+	/**
+	 * Sigma's Experimental Barrier (pet 2D25): its box only a thin post at its middle (no one bumps into it; what it stops
+	 * is its own shape: dev.overcraft.hero.Barriers), not saved.
+	 */
+	public static final EntityType<dev.overcraft.entity.SigmaBarrierEntity> SIGMA_BARRIER = register("sigma_barrier",
+		EntityType.Builder.<dev.overcraft.entity.SigmaBarrierEntity>of(dev.overcraft.entity.SigmaBarrierEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.5f, (float) dev.overcraft.sigma.SigmaStats.BARRIER_HEIGHT)
+			.clientTrackingRange(10).updateInterval(1));
+	/** Sigma's Accretion rock (18B7): 0.3 m against blocks (the box), 0.9 m against creatures (its hit radius), not saved. */
+	public static final EntityType<dev.overcraft.entity.AccretionEntity> ACCRETION = register("accretion",
+		EntityType.Builder.<dev.overcraft.entity.AccretionEntity>of(dev.overcraft.entity.AccretionEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.sigma.SigmaStats.ROCK_BLOCK_SIZE, (float) dev.overcraft.sigma.SigmaStats.ROCK_BLOCK_SIZE)
+			.clientTrackingRange(8).updateInterval(1));
+	/** D.Va's MEKA while nobody drives it (pet 0407): its mover's 1.4 x 2.3 m, not saved. */
+	public static final EntityType<dev.overcraft.entity.DvaMechEntity> DVA_MECH = register("dva_mech",
+		EntityType.Builder.<dev.overcraft.entity.DvaMechEntity>of(dev.overcraft.entity.DvaMechEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(dev.overcraft.dva.DvaStats.MECH_WIDTH, dev.overcraft.dva.DvaStats.MECH_HEIGHT)
+			.clientTrackingRange(10).updateInterval(1));
+	/** D.Va's Micro Missiles (1E8A): 0.175 m (not saved: 2 s of flight). */
+	public static final EntityType<dev.overcraft.entity.DvaMissileEntity> DVA_MISSILE = register("dva_missile",
+		EntityType.Builder.<dev.overcraft.entity.DvaMissileEntity>of(dev.overcraft.entity.DvaMissileEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.dva.DvaStats.MISSILES_RADIUS * 2, (float) dev.overcraft.dva.DvaStats.MISSILES_RADIUS * 2)
+			.clientTrackingRange(8).updateInterval(1));
+	/** Pharah's rockets, Barrage's, Rocket Salvo's and Concussive Blast (pharah-map.md): 0.32 m at most (not saved: 5-10 s of flight). */
+	public static final EntityType<dev.overcraft.entity.PharahRocketEntity> PHARAH_ROCKET = register("pharah_rocket",
+		EntityType.Builder.<dev.overcraft.entity.PharahRocketEntity>of(dev.overcraft.entity.PharahRocketEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.pharah.PharahStats.ROCKET_RADIUS * 2, (float) dev.overcraft.pharah.PharahStats.ROCKET_RADIUS * 2)
+			.clientTrackingRange(8).updateInterval(1));
+	/** Tracer's Pulse Bomb (0045): 0.22 m (not saved: a 1 s fuse, 99 s unstuck). */
+	public static final EntityType<dev.overcraft.entity.PulseBombEntity> PULSE_BOMB = register("pulse_bomb",
+		EntityType.Builder.<dev.overcraft.entity.PulseBombEntity>of(dev.overcraft.entity.PulseBombEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.tracer.TracerStats.BOMB_RADIUS * 2, (float) dev.overcraft.tracer.TracerStats.BOMB_RADIUS * 2)
+			.clientTrackingRange(8).updateInterval(1));
+	/** Cassidy's Flashbang (037D): 0.2 m (not saved: it goes off within 7 m). */
+	public static final EntityType<dev.overcraft.entity.FlashbangEntity> FLASHBANG = register("flashbang",
+		EntityType.Builder.<dev.overcraft.entity.FlashbangEntity>of(dev.overcraft.entity.FlashbangEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.cassidy.CassidyStats.FLASH_RADIUS * 2, (float) dev.overcraft.cassidy.CassidyStats.FLASH_RADIUS * 2)
+			.clientTrackingRange(8).updateInterval(1));
+	/** Junkrat's frag (0385) and Total Mayhem bombs (0515): 0.32 m against blocks (D 28ED + 28A4; not saved: 4.5 s at most). */
+	public static final EntityType<dev.overcraft.entity.FragEntity> FRAG = register("junkrat_frag",
+		EntityType.Builder.<dev.overcraft.entity.FragEntity>of(dev.overcraft.entity.FragEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.32f, 0.32f).clientTrackingRange(8).updateInterval(1));
+	/**
+	 * His Concussion Mine (0F9B): 0.4 m. Saved with its chunk (found playing, J5e: dead, he no longer kept the chunk loaded, it
+	 * unloaded a second after his death and a mine that isn't saved was gone); it goes with him for good (Junkrat.clearWorld).
+	 */
+	public static final EntityType<dev.overcraft.entity.ConcussionMineEntity> CONCUSSION_MINE = register("concussion_mine",
+		EntityType.Builder.<dev.overcraft.entity.ConcussionMineEntity>of(dev.overcraft.entity.ConcussionMineEntity::new, MobCategory.MISC)
+			.noLootTable().sized(0.4f, 0.4f).clientTrackingRange(8).updateInterval(1));
+	/** His Steel Trap (11A9 / 103A): 0.6 m. Saved with its chunk, as the mine. */
+	public static final EntityType<dev.overcraft.entity.SteelTrapEntity> STEEL_TRAP = register("steel_trap",
+		EntityType.Builder.<dev.overcraft.entity.SteelTrapEntity>of(dev.overcraft.entity.SteelTrapEntity::new, MobCategory.MISC)
+			.noLootTable().sized(0.6f, 0.3f).clientTrackingRange(8).updateInterval(1));
+	/** His RIP-Tire (039C): 0.9 m across, 0.8 m tall (not saved: 10 s). */
+	public static final EntityType<dev.overcraft.entity.RipTireEntity> RIP_TIRE = register("rip_tire",
+		EntityType.Builder.<dev.overcraft.entity.RipTireEntity>of(dev.overcraft.entity.RipTireEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized((float) dev.overcraft.junkrat.JunkratStats.TIRE_WIDTH, (float) dev.overcraft.junkrat.JunkratStats.TIRE_HEIGHT)
+			.clientTrackingRange(10).updateInterval(1));
+	/** The pilot's Light Gun rounds (1000): 0.275 m (not saved: 5 s of flight). */
+	public static final EntityType<dev.overcraft.entity.LightGunShotEntity> LIGHT_GUN_SHOT = register("light_gun_shot",
+		EntityType.Builder.<dev.overcraft.entity.LightGunShotEntity>of(dev.overcraft.entity.LightGunShotEntity::new, MobCategory.MISC)
+			.noLootTable().noSave()
+			.sized((float) dev.overcraft.dva.DvaStats.LIGHT_GUN_RADIUS * 2, (float) dev.overcraft.dva.DvaStats.LIGHT_GUN_RADIUS * 2)
+			.clientTrackingRange(8).updateInterval(1));
 	public static final EntityType<KitsuneEntity> KITSUNE = register("kitsune", EntityType.Builder.<KitsuneEntity>of(KitsuneEntity::new, MobCategory.MISC)
 		.noLootTable().noSave().sized(0.8f, 0.8f).clientTrackingRange(8).updateInterval(1));
 

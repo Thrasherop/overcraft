@@ -1,0 +1,20 @@
+MARK T5b Pulse Bomb aimed at t1's head height (the throw falls at 30 m/s2); health read before the stick, after it, after the blast
+cmd /kill @e[type=!player]
+cmd /summon zombie 20.5 -60 6.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /summon zombie 23.2 -60 6.5 {NoAI:1b,Tags:["t2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /tp @s 20.5 -60 0.5
+cmd /execute as @s at @s anchored eyes facing 20.5 -58.0 6.5 run tp @s ~ ~ ~ ~ ~
+ult 100
+sleep 1
+hp @e[tag=t1,limit=1]
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 0.5
+hp @e[tag=t1,limit=1]
+ents PulseBomb
+sleep 1.2
+hp @e[tag=t1,limit=1]
+hp @e[tag=t2,limit=1]
+state
+heard

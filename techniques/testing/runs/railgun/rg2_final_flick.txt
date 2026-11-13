@@ -1,0 +1,27 @@
+{}
+{}
+{'screen': '', 'hero': 'sojourn', 'heroMode': True, 'health': 18.0, 'fps': 10, 'anim': 'idle'}
+flick 0  hit zombie 1000.0 -> 991.7344 yaw -0.0 | 1612.1 sent | 1612.1 clip | 1612.2 snd:charged.fire_mid | 1612.2 snd:charged.shot | 1612.3 fx | 1614.9 frame |
+flick 1  hit zombie 991.7344 -> 983.46875 yaw -0.0 | 1168.8 sent | 1168.8 clip | 1168.9 snd:charged.fire_mid | 1169.0 snd:charged.shot | 1169.1 fx | 1170.0 frame |
+flick 2  hit zombie 983.46875 -> 975.2031 yaw -0.0 | 1161.9 sent | 1161.9 clip | 1161.9 snd:charged.fire_mid | 1162.0 snd:charged.shot | 1162.1 fx | 1164.0 frame |
+flick 3  hit zombie 975.2031 -> 966.9375 yaw -0.0 | 1145.2 sent | 1145.2 clip | 1145.2 snd:charged.fire_mid | 1145.3 snd:charged.shot | 1145.4 fx | 1147.3 frame |
+flick 4  hit zombie 966.9375 -> 958.6719 yaw -0.0 | 1153.2 sent | 1153.2 clip | 1153.2 snd:charged.fire_mid | 1153.3 snd:charged.shot | 1153.4 fx | 1154.3 frame |
+flick 5  hit zombie 958.6719 -> 950.40625 yaw -0.0 | 1151.1 sent | 1151.1 clip | 1151.1 snd:charged.fire_mid | 1151.3 snd:charged.shot | 1151.4 fx | 1152.2 frame |
+flick 0  hit zombie 950.40625 -> 942.1406 yaw -0.0 | 1138.5 sent | 1138.5 clip | 1138.6 snd:charged.fire_mid | 1138.7 snd:charged.shot | 1138.8 fx | 1139.7 frame |
+flick 1  hit zombie 942.1406 -> 933.875 yaw -0.0 | 1130.9 sent | 1130.9 clip | 1131.0 snd:charged.fire_mid | 1131.0 snd:charged.shot | 1131.1 fx | 1132.0 frame |
+flick 2  hit zombie 933.875 -> 925.6094 yaw -0.0 | 1150.0 sent | 1150.0 clip | 1150.1 snd:charged.fire_mid | 1150.2 snd:charged.shot | 1150.3 fx | 1151.3 frame |
+flick 3  hit zombie 925.6094 -> 917.34375 yaw -0.0 | 1140.0 sent | 1140.0 clip | 1140.1 snd:charged.fire_mid | 1140.1 snd:charged.shot | 1140.2 fx | 1141.1 frame |
+flick 4  hit zombie 917.34375 -> 909.0781 yaw -0.0 | 1133.2 sent | 1133.2 clip | 1133.3 snd:charged.fire_mid | 1133.5 snd:charged.shot | 1133.6 fx | 1134.5 frame |
+flick 5  hit zombie 909.0781 -> 900.8125 yaw -0.0 | 1153.6 sent | 1153.7 clip | 1153.7 snd:charged.fire_mid | 1153.8 snd:charged.shot | 1153.9 fx | 1154.8 frame |
+flickhuman 0  hit zombie 900.8125 -> 892.5469 yaw -0.0 | 1314.0 sent | 1314.1 clip | 1314.1 snd:charged.fire_mid | 1314.2 snd:charged.shot | 1314.2 fx | 1316.3 frame |
+flickhuman 1  hit zombie 892.5469 -> 884.28125 yaw -0.0 | 1364.8 sent | 1364.8 clip | 1364.9 snd:charged.fire_mid | 1365.0 snd:charged.shot | 1365.1 fx | 1365.9 frame |
+flickhuman 2  hit zombie 884.28125 -> 876.0156 yaw -0.0 | 1339.7 sent | 1339.8 clip | 1339.9 snd:charged.fire_mid | 1340.1 snd:charged.shot | 1340.3 fx | 1341.3 frame |
+flickhuman 3  hit zombie 876.0156 -> 867.75 yaw -0.0 | 1289.4 sent | 1289.4 clip | 1289.4 snd:charged.fire_mid | 1289.6 snd:charged.shot | 1289.7 fx | 1290.5 frame |
+flickhuman 4  hit zombie 867.75 -> 859.4844 yaw -0.0 | 1294.0 sent | 1294.1 clip | 1294.1 snd:charged.fire_mid | 1294.1 snd:charged.shot | 1294.2 fx | 1295.1 frame |
+flickhuman 5  hit zombie 859.4844 -> 851.21875 yaw -0.0 | 1321.1 sent | 1321.1 clip | 1321.1 snd:charged.fire_mid | 1321.2 snd:charged.shot | 1321.3 fx | 1322.1 frame |
+flickwait 0  hit zombie 851.21875 -> 842.9531 yaw -0.0 | 1186.7 sent | 1186.7 clip | 1186.8 snd:charged.fire_mid | 1187.0 snd:charged.shot | 1187.1 fx | 1188.1 frame |
+flickwait 1  hit zombie 842.9531 -> 834.6875 yaw -0.0 | 1180.4 sent | 1180.4 clip | 1180.4 snd:charged.fire_mid | 1180.5 snd:charged.shot | 1180.5 fx | 1181.4 frame |
+flickwait 2  hit zombie 834.6875 -> 826.4219 yaw -0.0 | 1193.9 sent | 1194.0 clip | 1194.0 snd:charged.fire_mid | 1194.1 snd:charged.shot | 1194.1 fx | 1195.0 frame |
+flickwait 3  hit zombie 826.4219 -> 818.15625 yaw -0.0 | 1194.0 sent | 1194.0 clip | 1194.0 snd:charged.fire_mid | 1194.1 snd:charged.shot | 1194.2 fx | 1196.0 frame |
+flickwait 4  hit zombie 818.15625 -> 809.8906 yaw -0.0 | 1177.5 sent | 1177.5 clip | 1177.6 snd:charged.fire_mid | 1177.6 snd:charged.shot | 1177.7 fx | 1178.5 frame |
+flickwait 5  hit zombie 809.8906 -> 801.625 yaw -0.0 | 1187.9 sent | 1187.9 clip | 1187.9 snd:charged.fire_mid | 1188.0 snd:charged.shot | 1188.1 fx | 1189.0 frame |

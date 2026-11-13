@@ -36,6 +36,21 @@ public class RailgunShotEntity extends OwProjectile {
 		return (float) SojournStats.RAILGUN_RADIUS;
 	}
 
+	/** An enemy barrier takes its 9 (no crit on a barrier: ours). */
+	@Override
+	public double barrierDamage() {
+		return SojournStats.RAILGUN_DAMAGE;
+	}
+
+	/** Stopped by an enemy barrier in flight: her +1 energy on a barrier (Railgun.hit's, for one that reaches its target's), then gone. */
+	@Override
+	public void hitBarrier(net.minecraft.world.phys.Vec3 at) {
+		if (getOwner() instanceof net.minecraft.server.level.ServerPlayer owner) {
+			dev.overcraft.sojourn.Railgun.hitBarrier(owner);
+		}
+		discard();
+	}
+
 	@Override
 	protected Item getDefaultItem() {
 		return Items.SNOWBALL;

@@ -27,8 +27,12 @@ import net.minecraft.world.phys.Vec3;
  * gone after 5 s. Enemies only: allies don't stop it. No falloff.
  */
 public class ThornEntity extends OwProjectile {
-	/** How far below the eyes a hit still counts as the head (blocks): the kunai's. */
-	private static final double HEAD_DEPTH = 0.25;
+	@Override
+	public double barrierDamage() {
+		// what an enemy barrier or Kinetic Grasp takes when it stops it (the critique of 2026-11-02: 0 before)
+		return dev.overcraft.lifeweaver.LifeweaverStats.THORN_DAMAGE;
+	}
+
 
 	public ThornEntity(EntityType<? extends ThornEntity> type, Level level) {
 		super(type, level);
@@ -70,13 +74,13 @@ public class ThornEntity extends OwProjectile {
 		LivingEntity target = part != null ? part.parentMob : hit.getEntity() instanceof LivingEntity living ? living : null;
 		Vec3 at = hit.getLocation();
 		if (target != null && Allies.canHurt(owner, target)) {
-			boolean crit = part != null ? part == part.parentMob.head : at.y >= target.getEyeY() - HEAD_DEPTH;
+			boolean crit = part != null ? part == part.parentMob.head : dev.overcraft.hero.Headshot.crossed(target, at, getDeltaMovement(), hitRadius());
 			double damage = LifeweaverStats.THORN_DAMAGE * (crit ? LifeweaverStats.THORN_CRIT : 1);
-			float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, owner), damage)
-				: Combat.damage(target, damageSources().thrown(this, owner), damage);
+			float dealt = part != null ? Combat.damagePart(level, part, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.LIFEWEAVER))
+				: Combat.damage(target, damageSources().thrown(this, owner), damage, dev.overcraft.hero.Blow.weapon(crit).by(dev.overcraft.hero.Hero.LIFEWEAVER));
 			if (owner instanceof Player lifeweaver) {
-				Combat.credit(lifeweaver, dealt);
-				Combat.addFireForDamage(lifeweaver, dealt, Ow.toOw(target.getMaxHealth()));
+				Combat.credit(lifeweaver, dealt, target);
+				Combat.addFireForDamage(lifeweaver, dealt, target);
 				if (lifeweaver instanceof ServerPlayer shooter) {
 					if (dealt > 0) {
 						Effects.hitMarker(shooter, target, crit);

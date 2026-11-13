@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * Kiriko's hero-specific options as Overwatch has them (the wiki's "Hero-specific options", with Overwatch's
+ * The heroes' hero-specific options as Overwatch has them (the wiki's "Hero-specific options", with Overwatch's
  * defaults), set on the Overwatch options screen's HERO tab and saved in config/overcraft-hero-options.json.
  */
 public final class HeroOptions {
@@ -40,6 +40,11 @@ public final class HeroOptions {
 		 * hero's colours (the owner, 2026-10-27: a setting for either).
 		 */
 		public boolean heroArms = true;
+		/**
+		 * Jetpack Cat's "Hide Purr Range Ring" (her data's hero setting 123DB, var 74715, a switch, off by default): on,
+		 * Purr makes no range wall (70F9).
+		 */
+		public boolean hidePurrRing = false;
 	}
 
 	private static Values values = new Values();
@@ -81,7 +86,7 @@ public final class HeroOptions {
 	public static void send() {
 		if (ClientPlayNetworking.canSend(HeroOptionsPayload.TYPE)) {
 			ClientPlayNetworking.send(new HeroOptionsPayload(values.ofudaSensitivity / 100f, values.swiftStepSensitivity / 100f,
-				values.ofudaCancelsReload, values.friendlyFire));
+				values.ofudaCancelsReload, values.friendlyFire, values.hidePurrRing));
 		}
 	}
 

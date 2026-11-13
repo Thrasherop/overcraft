@@ -1,0 +1,762 @@
+# Cassidy's sound effects: <sound id> = <file under E:/Overwatch Archive/extracted/154088/> (build 154088). Same format as
+# tracer_sfx.txt; his voice is cassidy.txt (cassidy_voice_gen.py). build_asset_pack.py sounds copies / mixes them into
+#  the local pack.
+# Read 2026-11-12 offline (Overwatch and Battle.net checked closed before every archive read and DataTool / TankLib run):
+# his 02C sounds' Wwise banks decoded (ww.py, dump_banks.py), the Init bank's game parameter defaults (1E818, stmg.py).
+# Scripts: E:/Overwatch Archive/research/cassidy/scripts/sounds/ (cassidy_gen.py writes this file from cassidy_table.py; Tracer's
+# pipeline copied and retargeted: fx_graph_cassidy.py, fx_sounds2_cassidy.py, clip_sounds_cassidy.py, fx_timed.py, contacts.py,
+# ww.py, dump_banks.py, extract_banks.py, measure_cassidy.py, overview.py, stmg.py); their data: research/cassidy/sounds/
+# (cassidy_ww.json, banks_raw.json, cassidy_measure.json, contacts.json, overview.txt, clip_sounds.txt) and research/cassidy/work/
+# (graph_effects.json, fx_sounds.txt, fx_timed_kit.json, fx_timed_sub.json). His skin extraction is research/cassidy/extract and
+# the 10 banks it lacked (the bullet's slot and contact sounds, the Flashbang's burst) were extracted into
+#  research/cassidy/sounds/
+# ExtraSounds/Cassidy (extract_banks.py; groups Bullet, Flashbang, Reload: DBB5 has no files).
+# Not mapped: a per-shot fire clip sound (his fire / fan clips have no animation effect: the shot is the bullet's effect); the
+# bullet's 0F98 (1801's twin) and 0141's other materials and type 4 (08E8); 9064 / 8980 (same-file copies, the louder built);
+# the shared ability-denied 0186 / 0FCB; 0043's 6BD4 (5D97, gated on v68945); body foley 0829 / 0835 / 083A / 0729 on his clips;
+# the perk / power effects (01D2 #442 3483 60BE (98 dB down), #981 013A 10C9 and #985 0231 164E (behind 2723.134), #1247 / #1248
+# / #1334 / #1335 6DEC / 6DED DB35 / DB36 (StateAbility 1147), #1305 6528 C27B (a game message); 01E9 #223 727D F257 / F258 (the
+# 6D81 volley, power 2836.134); 022F #648 7221 F208 / F209 (power 0EF7.134)); Deadeye's Stop events (1911 / 0767 / 0766 stop
+# sets not built); 004B / 0033 / 01C7 shared effects (ult charge, health, regen); footsteps (as Tracer's).
+# Ids: 02C sounds (5DC5 = 000000005DC5.02C), 00D effects, 006 clips, 08F clip animation effects, 049 contact sets; graphs
+# 01B with their node numbers. Confidence: H read in the data, M inferred, L guess. Stadium powers' sets are left out.
+# Gains: Wwise volume + make-up gain summed from each file up through its containers and mixers (the middle of a random
+# range included) plus its output bus chain, plus RTPC curves (dB scaling 20*log10(1+y); linear between points) and
+# SetVolume actions. RTPCs are read at their game parameter's default (the Init bank's list); modulators: an LFO at its
+# middle, a time modulator at its start on one-shots and at its end on loops. As in sojourn.txt, ONE offset per family keeps
+# his sounds' balance with each other, bringing the family's loudest single layer to -1 dBFS (the builder's limiter catches
+# sums): own -0.5 dB (loudest: cassidy.peacekeeper.hit_enemy), 3p +0.5 dB (loudest: cassidy.peacekeeper.hit_enemy_3p).
+# Pitch: cents as a speed factor (*). Low / high-pass filters, random pitch / volume per play, fades, Seek, Wwise states
+# and the voice priority RTPCs are not reproduced. Layers more than 60 dB down are left out, and in loops those 20 dB
+# under the loudest loop. A loop's LOOP LENGTH is its longest bed within 6 dB of the loudest layer; shorter layers are
+# tiled across it and beds more than 15 % longer are left out.
+# Own vs others: audience-1 copies and no-range copies are the player the effect plays on ('own': Cassidy, or the shooter for
+# a hit, M as in Sigma's map); ranged copies are everyone else's ('3p'); where two ranged copies hold the same files the
+# louder is built (L which team's / near or far). A sound with no own copy is built once for everyone ('both').
+
+# ===== How each game event is put together (rules)
+# cassidy.peacekeeper.fire: Peacekeeper shot, own: 5D7D (a 1.99-2.33 s report, 3.2-4.1 s tails, a 0.24 s hammer and
+#  0.14 s clicks).
+# Trigger: PRIMARY (01D2 #300 -> #330 StateWeaponVolley, the bullet 02A7: its STUEffectComponent 18D7 -> 057A, H);
+#  057A's 5D7D (audience 1, no range: his, H).
+# Layers: a 5D7D 645387614 RanSeq 3.19-3.59 s x10 +84 cents, net -21; b 5D7D 806817937 RanSeq 1.99-2.33 s x8, net
+#  -6.5; c 5D7D 968280602 RanSeq 0.14-0.15 s x3 +100 cents, net -10; d 5D7D 630270970 RanSeq 3.46-4.12 s x3 -25 cents,
+#  net -17; e 5D7D 50443534 RanSeq 0.14 s x3, net -13; f 5D7D 894456952 Sound 0.24 s, net -15.
+# Left out: 5D7D 324737945 (-210.5 dB), 5D7D 480515742 (-209.5 dB).
+@cassidy.peacekeeper.fire = cassidy.peacekeeper.fire.a*1.050@0.02:-21.5 + cassidy.peacekeeper.fire.b:-7 + cassidy.peacekeeper.fire.c*1.059:-10.5 + cassidy.peacekeeper.fire.d*0.986@0.05:-17.5 + cassidy.peacekeeper.fire.e@0.25:-13.5 + cassidy.peacekeeper.fire.f:-15.5
+# cassidy.peacekeeper.fire_3p: Peacekeeper shot heard by others: 6F09 (100 m: a 1.92-2.23 s report and its tails).
+# Trigger: PRIMARY (01D2 #300 -> #330 StateWeaponVolley, the bullet 02A7: its STUEffectComponent 18D7 -> 057A, H);
+#  057A's 6F09 (100 m, audience 2: everyone else, H).
+# Layers: a 6F09 659846395 RanSeq 3.19-3.59 s x10 +84 cents, net -24.5; b 6F09 468404058 RanSeq 1.92-2.23 s x8, net
+#  -10.5; c 6F09 172272704 RanSeq 0.14-0.15 s x3, net -19; d 6F09 645499693 RanSeq 3.46-4.12 s x3 -25 cents, net
+#  -21.5; e 6F09 668053930 RanSeq 0.14 s x3, net -19.5.
+@cassidy.peacekeeper.fire_3p = cassidy.peacekeeper.fire_3p.a*1.050@0.02:-24 + cassidy.peacekeeper.fire_3p.b:-10 + cassidy.peacekeeper.fire_3p.c:-18.5 + cassidy.peacekeeper.fire_3p.d*0.986@0.05:-21 + cassidy.peacekeeper.fire_3p.e@0.2:-19
+# cassidy.fan.fire: Fan the Hammer shot, own: 620D (the same report as the primary's plus a 0.30-0.31 s fan slap).
+# Trigger: SECONDARY (01D2 #332 -> #346 StateWeaponVolley, 8 shots a second, the bullet 3B7B: STUEffectComponent 356A
+#  -> 356B, H); one per shot; 356B's 620D (audience 1, no range: his, H).
+# Layers: a 620D 1035990132 RanSeq 3.19-3.59 s x10 +84 cents, net -22; b 620D 986844237 RanSeq 1.99-2.33 s x8, net
+#  -7.5; c 620D 565492313 RanSeq 0.30-0.31 s x3, net -9.5; d 620D 1027213587 RanSeq 0.14-0.15 s x3, net -14; e 620D
+#  945159364 RanSeq 3.46-4.12 s x3 -25 cents, net -18; f 620D 227044709 RanSeq 0.14 s x3, net -11.5; g 620D 894456952
+#  Sound 0.24 s, net -15.
+@cassidy.fan.fire = cassidy.fan.fire.a*1.050@0.02:-22.5 + cassidy.fan.fire.b:-8 + cassidy.fan.fire.c:-10 + cassidy.fan.fire.d:-14.5 + cassidy.fan.fire.e*0.986@0.05:-18.5 + cassidy.fan.fire.f@0.2:-12 + cassidy.fan.fire.g:-15.5
+# cassidy.fan.fire_3p: Fan the Hammer shot heard by others: 6F0A (100 m, the report at +150 cents).
+# Trigger: SECONDARY (01D2 #332 -> #346 StateWeaponVolley, 8 shots a second, the bullet 3B7B: STUEffectComponent 356A
+#  -> 356B, H); one per shot; 356B's 6F0A (100 m; audience 1 but ranged: read as everyone else's copy, M as Tracer's
+#  rule).
+# Layers: a 6F0A 366798724 RanSeq 3.19-3.59 s x10 +84 cents, net -26.5; b 6F0A 452986270 RanSeq 1.92-2.23 s x8 +150
+#  cents, net -12.5; c 6F0A 143224314 RanSeq 0.30-0.31 s x3, net -19.5; d 6F0A 952247144 RanSeq 0.14-0.15 s x3, net
+#  -21; e 6F0A 331972811 RanSeq 3.46-4.12 s x3 -25 cents, net -23.5; f 6F0A 150993174 RanSeq 0.14 s x3, net -21.5.
+@cassidy.fan.fire_3p = cassidy.fan.fire_3p.a*1.050@0.02:-26 + cassidy.fan.fire_3p.b*1.091:-12 + cassidy.fan.fire_3p.c:-19 + cassidy.fan.fire_3p.d:-20.5 + cassidy.fan.fire_3p.e*0.986@0.05:-23 + cassidy.fan.fire_3p.f@0.2:-21
+# cassidy.peacekeeper.bullet_3p: Peacekeeper bullet whiz heard by others: 1801 (60 m: a random 35 of 0.36-2.47 s and a
+#  random 28 of 0.42-1.15 s at -375 cents).
+# Trigger: each bullet in flight (02A7 and 3B7B alike): STUProjectileVisualComponent m_2170A015 'sound only' slot
+#  effect 008C -> 0F98 and 1801, both 60 m audience 2 with the same containers: the louder 1801 built (H slot and ids,
+#  L which copy).
+# Layers: a 1801 439357212 RanSeq 0.36-2.47 s x35 -45 cents, net -22; b 1801 259271031 RanSeq 0.42-1.15 s x28 -375
+#  cents, net -14.5.
+@cassidy.peacekeeper.bullet_3p = cassidy.peacekeeper.bullet_3p.a*0.974@0.0025:-21.5 + cassidy.peacekeeper.bullet_3p.b*0.805@0.005:-14
+# cassidy.peacekeeper.hit_enemy: Peacekeeper hit on an enemy, own: 5D50 (four sets of 0.13-0.63 s, one at +600 cents).
+# Trigger: a bullet hits a character: 0141 type 0, material 0001 -> 5D50 (no range: the shooter's, as Tracer's type-0
+#  reading, M); type 1 holds the same three.
+# Layers: a 5D50 586080618 RanSeq 0.29-0.63 s x10, net +2; b 5D50 153062574 RanSeq 0.13-0.23 s x8, net +2; c 5D50
+#  503841111 RanSeq 0.28-0.30 s x8, net -3.5; d 5D50 587249142 RanSeq 0.13-0.31 s x7 +600 cents, net -9.5.
+@cassidy.peacekeeper.hit_enemy = cassidy.peacekeeper.hit_enemy.a:+1.5 + cassidy.peacekeeper.hit_enemy.b:+1.5 + cassidy.peacekeeper.hit_enemy.c@0.06:-4 + cassidy.peacekeeper.hit_enemy.d*1.414@0.035:-10
+# cassidy.peacekeeper.hit_enemy_3p: Peacekeeper hit heard by others: 9060 (500 m: a random 7 of 0.29-0.62 s and a
+#  random 8 of 0.13-0.23 s).
+# Trigger: the same hit, at the target for everyone else: type 0's 9060 (500 m) and 9064 (12 m) hold the same files:
+#  the louder 9060 built (L which copy).
+# Layers: a 9060 677456784 RanSeq 0.13-0.23 s x8, net +3; b 9060 361751686 RanSeq 0.29-0.62 s x7, net +4.
+@cassidy.peacekeeper.hit_enemy_3p = cassidy.peacekeeper.hit_enemy_3p.a:+3.5 + cassidy.peacekeeper.hit_enemy_3p.b:+4.5
+# cassidy.peacekeeper.hit_block: Peacekeeper bullet hits the world: 855D (120 m) + 855C (32 m) ricochets (a random 15
+#  of 1.10-1.61 s).
+# Trigger: a bullet hits the world: 0141 type 2, material 0001 -> 855D (120 m, +50 cents) + 855C (32 m), built
+#  together (Tracer's rule); the other materials have their own (contacts.json).
+# Layers: a 855C 966929452 RanSeq 1.10-1.61 s x15, net -23.5; b 855D 1068701044 RanSeq 1.10-1.61 s x15 +50 cents, net -10.
+@cassidy.peacekeeper.hit_block = cassidy.peacekeeper.hit_block.a:-23 + cassidy.peacekeeper.hit_block.b*1.029@0.0325:-9.5
+# cassidy.reload: Peacekeeper reload, own: 0846 (the gate opens, 0.28-0.31 s, and the cylinder spins, 1.56-1.83 s from
+#  0.3 s), 0843 (0.24 s) and 0847 (0.47 s, -38 cents) as the rounds go in and the gate shuts.
+# Trigger: RELOAD, or an empty cylinder (01D2 #318 StateAnim alias 4): his 1P reload clip 128A's effect 03AC: 0846 @0,
+#  0843 @0.601, 0847 @0.948 (all no range, H); 0829 (foley) and DBB5 (no files) left out.
+# Layers: a 0846 1013347354 RanSeq 1.56-1.83 s x6 -50 cents, net -9.5; b 0846 396439522 RanSeq 0.28-0.31 s x4 +12
+#  cents, net -7.5; c 0843 1061789464 Sound 0.24 s, net -24; d 0847 583209351 Sound 0.47 s -38 cents, net -24.
+@cassidy.reload = cassidy.reload.a*0.972@0.3:-10 + cassidy.reload.b*1.007:-8 + cassidy.reload.c@0.6464:-24.5 + cassidy.reload.d*0.978@0.9684:-24.5
+# cassidy.reload_3p: Peacekeeper reload heard by others: 084F, 0850 and 0851 (45 m).
+# Trigger: the same reload for everyone else: the 3P clip 12CB's effect 048A: 084F @0, 0850 @0.6, 0851 @1.0 of its
+#  1.633 s (45 m, H), scaled to the 1P clip's 1.5 s (0.551, 0.918: M, as Tracer's).
+# Layers: a 084F 119218353 RanSeq 1.56-1.83 s x6 -50 cents, net -18.5; b 084F 837706415 RanSeq 0.59-0.62 s x5, net
+#  -15.5; c 0851 929821921 RanSeq 0.44-0.47 s x4, net -20.5; d 0850 265366926 Sound 0.24 s, net -37.
+@cassidy.reload_3p = cassidy.reload_3p.a*0.972@0.3:-18 + cassidy.reload_3p.b:-15 + cassidy.reload_3p.c@0.918:-20 + cassidy.reload_3p.d@0.596:-36.5
+# cassidy.roll: Combat Roll, own: 6448 (a random 4 of 0.64-0.68 s).
+# Trigger: ABILITY 1 (01F0 #82 StateAbility; #176 STU_691BFA55 holds effect 36B0 over the roll, H); 36B0's 6448
+#  (audience 1, no range: his, H).
+# Layers: a 6448 271482280 RanSeq 0.64-0.68 s x4, net +6.
+@cassidy.roll = cassidy.roll.a:+5.5
+# cassidy.roll_3p: Combat Roll heard by others: 6449 (70 m).
+# Trigger: ABILITY 1 (01F0 #82 StateAbility; #176 STU_691BFA55 holds effect 36B0 over the roll, H); 36B0's 6449 (70 m,
+#  everyone else, H).
+# Layers: a 6449 621186282 RanSeq 0.64-0.68 s x4, net -4.
+@cassidy.roll_3p = cassidy.roll_3p.a:-3.5
+# cassidy.flashbang.throw: Flashbang throw, own: 882D (0.20-0.34 s whips and clicks, one at +525 cents).
+# Trigger: ABILITY 2 (01E9 #82 StateAbility -> #112 StateWeaponVolley, the Flashbang 037D, H); the 3P throw clip
+#  13F6's effect 050A: 882D @0 (audience 1, no range: his, H; 0835 @0.267 foley left out).
+# Layers: a 882D 343111202 RanSeq 0.17-0.23 s x3 +75 cents, net -22.5; b 882D 399051838 Sound 0.29 s +250 cents, net
+#  -13; c 882D 508609734 Sound 0.20 s, net -15; d 882D 764072064 Sound 0.34 s +525 cents, net -26.5; e 882D 1014872876
+#  Sound 0.27 s -50 cents, net -5.
+@cassidy.flashbang.throw = cassidy.flashbang.throw.a*1.044@0.1:-23 + cassidy.flashbang.throw.b*1.155:-13.5 + cassidy.flashbang.throw.c:-15.5 + cassidy.flashbang.throw.d*1.354:-27 + cassidy.flashbang.throw.e*0.972@0.03:-5.5
+# cassidy.flashbang.throw_3p: Flashbang throw heard by others: F25A (35 m).
+# Trigger: ABILITY 2 (01E9 #82 StateAbility -> #112 StateWeaponVolley, the Flashbang 037D, H); 050A's ranged copies
+#  F25A (35 m) and 8980 (40 m) hold the same files: the louder F25A built (L which).
+# Layers: a F25A 525674521 RanSeq 0.17-0.23 s x3 +75 cents, net -23.5; b F25A 111669381 Sound 0.20 s, net -16; c F25A
+#  234550384 Sound 0.29 s +250 cents, net -14; d F25A 912804939 Sound 0.34 s +525 cents, net -27.5; e F25A 540505594
+#  Sound 0.27 s -50 cents, net -6.
+@cassidy.flashbang.throw_3p = cassidy.flashbang.throw_3p.a*1.044@0.1:-23 + cassidy.flashbang.throw_3p.b:-15.5 + cassidy.flashbang.throw_3p.c*1.155:-13.5 + cassidy.flashbang.throw_3p.d*1.354:-27 + cassidy.flashbang.throw_3p.e*0.972@0.03:-5.5
+# cassidy.flashbang.fuse: Flashbang fizz: EE10 (6 m: a random 7 of 0.45-0.62 s at +183 cents and a random 10 of
+#  0.36-0.53 s at +833).
+# Trigger: the Flashbang in flight: 037D's child 0453 STUEffectComponent 0600 -> EE10 @0.067 for 0.57 s (6 m, audience
+#  2, its only copy: built once for everyone, H).
+# Layers: a EE10 924481529 RanSeq 0.36-0.53 s x10 +833 cents, net -15; b EE10 220388268 RanSeq 0.45-0.62 s x7 +183 cents, net -10.
+@cassidy.flashbang.fuse = cassidy.flashbang.fuse.a*1.618@0.0667:-14.5 + cassidy.flashbang.fuse.b*1.111@0.0667:-9.5
+# cassidy.flashbang.explode: Flashbang bang, own: 5D7C (0.73-0.77 s cracks at +460-490 cents, 2.6-3.5 s rings).
+# Trigger: the Flashbang goes off (it bursts on contact: 037D's m_6CB564CC burst slot effect 5C8C, H): 5C8C's 5D7C
+#  (200 m, audience 1: his, as Pharah's rocket burst 5D00, M).
+# Layers: a 5D7C 771998411 RanSeq 0.62-0.75 s x3 +947 cents, net -27; b 5D7C 858292095 RanSeq 3.05-3.47 s x3 +187
+#  cents, net -12.5; c 5D7C 1025681883 RanSeq 2.57-3.02 s x2 +977 cents, net -14; d 5D7C 478750872 Sound 0.77 s +487
+#  cents, net -15.5; e 5D7C 325672269 Sound 0.27 s, net -16; f 5D7C 392897135 Sound 0.73 s +462 cents, net -28.5; g
+#  5D7C 9422038 Sound 0.75 s +487 cents, net -18.5; h 5D7C 962899945 RanSeq 1.24 s +637 cents, net -34.5.
+@cassidy.flashbang.explode = cassidy.flashbang.explode.a*1.728@0.09:-27.5 + cassidy.flashbang.explode.b*1.114@0.279:-13 + cassidy.flashbang.explode.c*1.758:-14.5 + cassidy.flashbang.explode.d*1.325:-16 + cassidy.flashbang.explode.e:-16.5 + cassidy.flashbang.explode.f*1.306@0.005:-29 + cassidy.flashbang.explode.g*1.325@0.02:-19 + cassidy.flashbang.explode.h*1.445@0.19:-35
+# cassidy.flashbang.explode_3p: Flashbang bang heard by others: 071E (200 m).
+# Trigger: the same burst for everyone else: 5C8C's 071E (200 m, audience 2, H).
+# Layers: a 071E 23873237 RanSeq 0.62-0.75 s x3 +947 cents, net -35.5; b 071E 790355508 RanSeq 3.05-3.47 s x3 +687
+#  cents, net -24; c 071E 1043177422 RanSeq 2.57-3.02 s x2 +1477 cents, net -25.5; d 071E 781941959 Sound 0.73 s +462
+#  cents, net -30; e 071E 540352152 Sound 0.75 s +487 cents, net -30; f 071E 639100383 RanSeq 1.24 s +637 cents, net
+#  -38.
+@cassidy.flashbang.explode_3p = cassidy.flashbang.explode_3p.a*1.728@0.09:-35 + cassidy.flashbang.explode_3p.b*1.487@0.279:-23.5 + cassidy.flashbang.explode_3p.c*2.347:-25 + cassidy.flashbang.explode_3p.d*1.306@0.005:-29.5 + cassidy.flashbang.explode_3p.e*1.325@0.02:-29.5 + cassidy.flashbang.explode_3p.f*1.445@0.24:-37.5
+# cassidy.deadeye.start: Deadeye begins, own: 1911's 4.63 s opening.
+# Trigger: ULTIMATE (022F #224 StateAbility -> #274 State onBegin -> #423 STU_691BFA55 holding effect 03AE, H); 1911's
+#  once set at the start (no range: his).
+# Layers: a 1911 321060870 Sound 4.63 s, net -12.
+@cassidy.deadeye.start = cassidy.deadeye.start.a:-12.5
+# cassidy.deadeye.loop: Deadeye charging, own: 1911's 1.45 s bed at +343 cents and its 1.18 s ticks from 0.5 s.
+# Trigger: ULTIMATE (022F #224 StateAbility -> #274 State onBegin -> #423 STU_691BFA55 holding effect 03AE, H); 1911's
+#  two beds, held while Deadeye charges (LOOP 1.19 s / 1.18 s in Wwise).
+# Layers: a 1911 868661514 RanSeq 1.18 s x3, net -17.5; b 1911 805626852 Sound 1.45 s +343 cents, net -25.
+# LOOP LENGTH 1.187 s: play it again every LOOP LENGTH (the built file runs 1.68 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@cassidy.deadeye.loop = cassidy.deadeye.loop.a@0.5:-18 + cassidy.deadeye.loop.b*1.219:-25.5
+# cassidy.deadeye.start_3p: Deadeye begins heard by others: 0767's 4.63 s opening and 2.65 s swell, 0766's 0.4-4.8 s stings.
+# Trigger: ULTIMATE (022F #224 StateAbility -> #274 State onBegin -> #423 STU_691BFA55 holding effect 03AE, H); 0767's
+#  once sets (100 m) and 0766 (75 m, all one-shots), everyone else.
+# Layers: a 0766 576740722 RanSeq 0.56-0.60 s x3 +150 cents, net -24.5; b 0767 664492388 Sound 4.63 s, net -15; c 0766
+#  462926811 Sound 4.78 s, net -35; d 0766 513120883 Sound 0.40 s -25 cents, net -24; e 0766 45898752 Sound 2.35 s,
+#  net -27; f 0767 989219151 Sound 2.65 s, net -17.
+@cassidy.deadeye.start_3p = cassidy.deadeye.start_3p.a*1.091:-24 + cassidy.deadeye.start_3p.b:-14.5 + cassidy.deadeye.start_3p.c:-34.5 + cassidy.deadeye.start_3p.d*0.986@0.2:-23.5 + cassidy.deadeye.start_3p.e@0.25:-26.5 + cassidy.deadeye.start_3p.f@1.069:-16.5
+# cassidy.deadeye.loop_3p: Deadeye charging heard by others: 0767's beds.
+# Trigger: ULTIMATE (022F #224 StateAbility -> #274 State onBegin -> #423 STU_691BFA55 holding effect 03AE, H); 0767's
+#  two beds (100 m), held.
+# Layers: a 0767 747293314 RanSeq 1.18 s x3, net -18.5; b 0767 608139306 Sound 1.45 s +343 cents, net -26.
+# LOOP LENGTH 1.187 s: play it again every LOOP LENGTH (the built file runs 1.19 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@cassidy.deadeye.loop_3p = cassidy.deadeye.loop_3p.a:-18 + cassidy.deadeye.loop_3p.b*1.219:-25.5
+# cassidy.deadeye.fire: Deadeye shot, own: 0853 (a random 3 of 0.56-0.60 s).
+# Trigger: the Deadeye shot (022F #421 on the fire button #251, or #427 when the charge times out; alias 19E): his 1P
+#  shot clip 147A's effect 0523: 0853 @0 (no range: his, H).
+# Layers: a 0853 532575242 RanSeq 0.56-0.60 s x3 +12 cents, net -15.
+@cassidy.deadeye.fire = cassidy.deadeye.fire.a*1.007:-16
+# cassidy.deadeye.fire_3p: Deadeye shot heard by others: 0855 (75 m).
+# Trigger: the same shot for everyone else: the 3P clip 15DC's effect 0525: 0855 (75 m, H).
+# Layers: a 0855 978445120 RanSeq 0.56-0.60 s x3 +12 cents, net -23.5.
+@cassidy.deadeye.fire_3p = cassidy.deadeye.fire_3p.a*1.007:-23
+# cassidy.deadeye.end: Deadeye ends, own: 074C (a 3.38 s tail).
+# Trigger: Deadeye ends (022F #447 StateWait 0.3 s with alias 19F -> #430 0.5 s -> #429 ActionEffect 062A): 074C (no
+#  range: his, H nodes; M the moment).
+# Layers: a 074C 165261296 Sound 3.38 s, net -28.
+@cassidy.deadeye.end = cassidy.deadeye.end.a:-28.5
+# cassidy.melee: Quick melee swing, own: DBAD (a 0.65 s whoosh at +100 cents).
+# Trigger: quick melee (0043 #117 alias D): his 1P melee clip 1287's effect 04EB: DBAD @0.222 (no range, H).
+# Layers: a DBAD 216194267 Sound 0.65 s +100 cents, net -18.5.
+@cassidy.melee = cassidy.melee.a*1.059@0.2221:-19
+
+# ===== Sources (layers of the rules above; not events of their own). One line per file (random variants).
+# cassidy.peacekeeper.fire.a: 5D7D play 645387614 (10 files, 3.188-3.591 s, 2ch); net -21 dB, +84 cents, @0.020 s. H.
+cassidy.peacekeeper.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A66E6.03F.ogg
+cassidy.peacekeeper.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A66CF.03F.ogg
+cassidy.peacekeeper.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A66E5.03F.ogg
+cassidy.peacekeeper.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A6743.03F.ogg
+cassidy.peacekeeper.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A6684.03F.ogg
+cassidy.peacekeeper.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A6671.03F.ogg
+cassidy.peacekeeper.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A673C.03F.ogg
+cassidy.peacekeeper.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A66CD.03F.ogg
+cassidy.peacekeeper.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A66C9.03F.ogg
+cassidy.peacekeeper.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A669F.03F.ogg
+# cassidy.peacekeeper.fire.b: 5D7D play 806817937 (8 files, 1.988-2.335 s, 2ch); net -6.5 dB, +0 cents, @0.000 s,
+#  avoid repeat 5. H.
+cassidy.peacekeeper.fire.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002AE114.03F.ogg
+cassidy.peacekeeper.fire.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002AE103.03F.ogg
+cassidy.peacekeeper.fire.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002ADFC5.03F.ogg
+cassidy.peacekeeper.fire.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002AE164.03F.ogg
+cassidy.peacekeeper.fire.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002AE113.03F.ogg
+cassidy.peacekeeper.fire.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002AE112.03F.ogg
+cassidy.peacekeeper.fire.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002ADFC8.03F.ogg
+cassidy.peacekeeper.fire.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002AE11E.03F.ogg
+# cassidy.peacekeeper.fire.c: 5D7D play 968280602 (3 files, 0.143-0.153 s, 1ch); net -10 dB, +100 cents, @0.000 s,
+#  avoid repeat 2. H.
+cassidy.peacekeeper.fire.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A6688.03F.ogg
+cassidy.peacekeeper.fire.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A66D6.03F.ogg
+cassidy.peacekeeper.fire.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A6753.03F.ogg
+# cassidy.peacekeeper.fire.d: 5D7D play 630270970 (3 files, 3.463-4.121 s, 2ch); net -17 dB, -25 cents, @0.050 s. H.
+cassidy.peacekeeper.fire.d = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A673B.03F.ogg
+cassidy.peacekeeper.fire.d = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A672D.03F.ogg
+cassidy.peacekeeper.fire.d = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A666C.03F.ogg
+# cassidy.peacekeeper.fire.e: 5D7D play 50443534 (3 files, 0.137-0.145 s, 1ch); net -13 dB, +0 cents, @0.250 s. H.
+cassidy.peacekeeper.fire.e = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A6680.03F.ogg
+cassidy.peacekeeper.fire.e = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A674D.03F.ogg
+cassidy.peacekeeper.fire.e = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002A668A.03F.ogg
+# cassidy.peacekeeper.fire.f: 5D7D play 894456952 (1 file, 0.244 s, 1ch); net -15 dB, +0 cents, @0.000 s. H.
+cassidy.peacekeeper.fire.f = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000005D7D.02C/0000002AE172.03F.ogg
+# cassidy.peacekeeper.fire_3p.a: 6F09 play 659846395 (10 files, 3.188-3.591 s, 2ch); net -24.5 dB, +84 cents, @0.020 s. H.
+cassidy.peacekeeper.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A66E6.03F.ogg
+cassidy.peacekeeper.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A66CF.03F.ogg
+cassidy.peacekeeper.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A66E5.03F.ogg
+cassidy.peacekeeper.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A6743.03F.ogg
+cassidy.peacekeeper.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A6684.03F.ogg
+cassidy.peacekeeper.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A6671.03F.ogg
+cassidy.peacekeeper.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A673C.03F.ogg
+cassidy.peacekeeper.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A66CD.03F.ogg
+cassidy.peacekeeper.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A66C9.03F.ogg
+cassidy.peacekeeper.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A669F.03F.ogg
+# cassidy.peacekeeper.fire_3p.b: 6F09 play 468404058 (8 files, 1.924-2.228 s, 2ch); net -10.5 dB, +0 cents, @0.000 s,
+#  avoid repeat 5. H.
+cassidy.peacekeeper.fire_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A66DA.03F.ogg
+cassidy.peacekeeper.fire_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A666D.03F.ogg
+cassidy.peacekeeper.fire_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A6681.03F.ogg
+cassidy.peacekeeper.fire_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A66DE.03F.ogg
+cassidy.peacekeeper.fire_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A66D1.03F.ogg
+cassidy.peacekeeper.fire_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A673D.03F.ogg
+cassidy.peacekeeper.fire_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A6682.03F.ogg
+cassidy.peacekeeper.fire_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A666B.03F.ogg
+# cassidy.peacekeeper.fire_3p.c: 6F09 play 172272704 (3 files, 0.143-0.153 s, 1ch); net -19 dB, +0 cents, @0.000 s. H.
+cassidy.peacekeeper.fire_3p.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A6688.03F.ogg
+cassidy.peacekeeper.fire_3p.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A66D6.03F.ogg
+cassidy.peacekeeper.fire_3p.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A6753.03F.ogg
+# cassidy.peacekeeper.fire_3p.d: 6F09 play 645499693 (3 files, 3.463-4.121 s, 2ch); net -21.5 dB, -25 cents, @0.050 s. H.
+cassidy.peacekeeper.fire_3p.d = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A673B.03F.ogg
+cassidy.peacekeeper.fire_3p.d = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A672D.03F.ogg
+cassidy.peacekeeper.fire_3p.d = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A666C.03F.ogg
+# cassidy.peacekeeper.fire_3p.e: 6F09 play 668053930 (3 files, 0.137-0.145 s, 1ch); net -19.5 dB, +0 cents, @0.200 s. H.
+cassidy.peacekeeper.fire_3p.e = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A6680.03F.ogg
+cassidy.peacekeeper.fire_3p.e = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A674D.03F.ogg
+cassidy.peacekeeper.fire_3p.e = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000057A.00D/Sounds/000000006F09.02C/0000002A668A.03F.ogg
+# cassidy.fan.fire.a: 620D play 1035990132 (10 files, 3.188-3.591 s, 2ch); net -22 dB, +84 cents, @0.020 s. H.
+cassidy.fan.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A66E6.03F.ogg
+cassidy.fan.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A66CF.03F.ogg
+cassidy.fan.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A66E5.03F.ogg
+cassidy.fan.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A6743.03F.ogg
+cassidy.fan.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A6684.03F.ogg
+cassidy.fan.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A6671.03F.ogg
+cassidy.fan.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A673C.03F.ogg
+cassidy.fan.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A66CD.03F.ogg
+cassidy.fan.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A66C9.03F.ogg
+cassidy.fan.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A669F.03F.ogg
+# cassidy.fan.fire.b: 620D play 986844237 (8 files, 1.988-2.335 s, 2ch); net -7.5 dB, +0 cents, @0.000 s, avoid repeat 5. H.
+cassidy.fan.fire.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002AE114.03F.ogg
+cassidy.fan.fire.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002AE103.03F.ogg
+cassidy.fan.fire.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002ADFC5.03F.ogg
+cassidy.fan.fire.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002AE164.03F.ogg
+cassidy.fan.fire.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002AE113.03F.ogg
+cassidy.fan.fire.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002AE112.03F.ogg
+cassidy.fan.fire.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002ADFC8.03F.ogg
+cassidy.fan.fire.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002AE11E.03F.ogg
+# cassidy.fan.fire.c: 620D play 565492313 (3 files, 0.303-0.313 s, 1ch); net -9.5 dB, +0 cents, @0.000 s. H.
+cassidy.fan.fire.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002ADFDE.03F.ogg
+cassidy.fan.fire.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002ADFF1.03F.ogg
+cassidy.fan.fire.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002ADFF7.03F.ogg
+# cassidy.fan.fire.d: 620D play 1027213587 (3 files, 0.143-0.153 s, 1ch); net -14 dB, +0 cents, @0.000 s. H.
+cassidy.fan.fire.d = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A6688.03F.ogg
+cassidy.fan.fire.d = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A66D6.03F.ogg
+cassidy.fan.fire.d = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A6753.03F.ogg
+# cassidy.fan.fire.e: 620D play 945159364 (3 files, 3.463-4.121 s, 2ch); net -18 dB, -25 cents, @0.050 s. H.
+cassidy.fan.fire.e = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A673B.03F.ogg
+cassidy.fan.fire.e = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A672D.03F.ogg
+cassidy.fan.fire.e = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A666C.03F.ogg
+# cassidy.fan.fire.f: 620D play 227044709 (3 files, 0.137-0.145 s, 1ch); net -11.5 dB, +0 cents, @0.200 s. H.
+cassidy.fan.fire.f = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A6680.03F.ogg
+cassidy.fan.fire.f = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A674D.03F.ogg
+cassidy.fan.fire.f = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002A668A.03F.ogg
+# cassidy.fan.fire.g: 620D play 894456952 (1 file, 0.244 s, 1ch); net -15 dB, +0 cents, @0.000 s. H.
+cassidy.fan.fire.g = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/00000000620D.02C/0000002AE172.03F.ogg
+# cassidy.fan.fire_3p.a: 6F0A play 366798724 (10 files, 3.188-3.591 s, 2ch); net -26.5 dB, +84 cents, @0.020 s. H.
+cassidy.fan.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A66E6.03F.ogg
+cassidy.fan.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A66CF.03F.ogg
+cassidy.fan.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A66E5.03F.ogg
+cassidy.fan.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A6743.03F.ogg
+cassidy.fan.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A6684.03F.ogg
+cassidy.fan.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A6671.03F.ogg
+cassidy.fan.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A673C.03F.ogg
+cassidy.fan.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A66CD.03F.ogg
+cassidy.fan.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A66C9.03F.ogg
+cassidy.fan.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A669F.03F.ogg
+# cassidy.fan.fire_3p.b: 6F0A play 452986270 (8 files, 1.924-2.228 s, 2ch); net -12.5 dB, +150 cents, @0.000 s, avoid repeat 5. H.
+cassidy.fan.fire_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A66DA.03F.ogg
+cassidy.fan.fire_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A666D.03F.ogg
+cassidy.fan.fire_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A6681.03F.ogg
+cassidy.fan.fire_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A66DE.03F.ogg
+cassidy.fan.fire_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A66D1.03F.ogg
+cassidy.fan.fire_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A673D.03F.ogg
+cassidy.fan.fire_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A6682.03F.ogg
+cassidy.fan.fire_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A666B.03F.ogg
+# cassidy.fan.fire_3p.c: 6F0A play 143224314 (3 files, 0.303-0.313 s, 1ch); net -19.5 dB, +0 cents, @0.000 s. H.
+cassidy.fan.fire_3p.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002ADFDA.03F.ogg
+cassidy.fan.fire_3p.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002ADF9E.03F.ogg
+cassidy.fan.fire_3p.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002ADFE4.03F.ogg
+# cassidy.fan.fire_3p.d: 6F0A play 952247144 (3 files, 0.143-0.153 s, 1ch); net -21 dB, +0 cents, @0.000 s. H.
+cassidy.fan.fire_3p.d = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A6688.03F.ogg
+cassidy.fan.fire_3p.d = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A66D6.03F.ogg
+cassidy.fan.fire_3p.d = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A6753.03F.ogg
+# cassidy.fan.fire_3p.e: 6F0A play 331972811 (3 files, 3.463-4.121 s, 2ch); net -23.5 dB, -25 cents, @0.050 s. H.
+cassidy.fan.fire_3p.e = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A673B.03F.ogg
+cassidy.fan.fire_3p.e = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A672D.03F.ogg
+cassidy.fan.fire_3p.e = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A666C.03F.ogg
+# cassidy.fan.fire_3p.f: 6F0A play 150993174 (3 files, 0.137-0.145 s, 1ch); net -21.5 dB, +0 cents, @0.200 s. H.
+cassidy.fan.fire_3p.f = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A6680.03F.ogg
+cassidy.fan.fire_3p.f = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A674D.03F.ogg
+cassidy.fan.fire_3p.f = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/00000000356B.00D/Sounds/000000006F0A.02C/0000002A668A.03F.ogg
+# cassidy.peacekeeper.bullet_3p.a: 1801 play 439357212 (35 files, 0.356-2.473 s, 1ch); net -22 dB, -45 cents, @0.003
+#  s, avoid repeat 15. H.
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90AF.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90DA.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90AE.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90DC.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90C4.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90B0.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90C1.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90AD.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90A7.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90A6.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90DE.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90C3.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90B2.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90B4.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90AA.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90C2.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABF00.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002AEA13.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90B3.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002AEA15.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90DB.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002AEA14.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90D7.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002AEA17.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90DF.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90DD.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002AEA16.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90D9.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002AEA12.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90A8.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90B1.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002AEA11.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90D5.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90AB.03F.ogg
+cassidy.peacekeeper.bullet_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002A90A9.03F.ogg
+# cassidy.peacekeeper.bullet_3p.b: 1801 play 259271031 (28 files, 0.420-1.151 s, 1ch); net -14.5 dB, -375 cents,
+#  @0.005 s, avoid repeat 7. H.
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABF2F.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABF2C.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABEE7.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABEE2.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABF07.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABECC.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABEE0.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABEDE.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABEF5.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABED1.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABF05.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABF2A.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABEE6.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABF04.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABEDB.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABED6.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABF29.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABF28.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABEDD.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABF08.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABED7.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABEE8.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABECB.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABEF6.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABF06.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABECD.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABF2D.03F.ogg
+cassidy.peacekeeper.bullet_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000001801.02C/0000002ABF2E.03F.ogg
+# cassidy.peacekeeper.hit_enemy.a: 5D50 play 586080618 (10 files, 0.287-0.633 s, 2ch); net +2 dB, +0 cents, @0.000 s,
+#  avoid repeat 6. H.
+cassidy.peacekeeper.hit_enemy.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AFDF1.03F.ogg
+cassidy.peacekeeper.hit_enemy.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AFEB4.03F.ogg
+cassidy.peacekeeper.hit_enemy.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AFE5D.03F.ogg
+cassidy.peacekeeper.hit_enemy.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AFD0A.03F.ogg
+cassidy.peacekeeper.hit_enemy.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AFCDB.03F.ogg
+cassidy.peacekeeper.hit_enemy.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AFE5B.03F.ogg
+cassidy.peacekeeper.hit_enemy.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AFE5C.03F.ogg
+cassidy.peacekeeper.hit_enemy.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AFE92.03F.ogg
+cassidy.peacekeeper.hit_enemy.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AFD1F.03F.ogg
+cassidy.peacekeeper.hit_enemy.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AFDEB.03F.ogg
+# cassidy.peacekeeper.hit_enemy.b: 5D50 play 153062574 (8 files, 0.133-0.225 s, 1ch); net +2 dB, +0 cents, @0.000 s,
+#  avoid repeat 6. H.
+cassidy.peacekeeper.hit_enemy.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002B1887.03F.ogg
+cassidy.peacekeeper.hit_enemy.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002B188D.03F.ogg
+cassidy.peacekeeper.hit_enemy.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002B1865.03F.ogg
+cassidy.peacekeeper.hit_enemy.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002B183F.03F.ogg
+cassidy.peacekeeper.hit_enemy.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002B1881.03F.ogg
+cassidy.peacekeeper.hit_enemy.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002B188C.03F.ogg
+cassidy.peacekeeper.hit_enemy.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002B1884.03F.ogg
+cassidy.peacekeeper.hit_enemy.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002B1882.03F.ogg
+# cassidy.peacekeeper.hit_enemy.c: 5D50 play 503841111 (8 files, 0.284-0.300 s, 2ch); net -3.5 dB, +0 cents, @0.060 s. H.
+cassidy.peacekeeper.hit_enemy.c = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AE2D4.03F.ogg
+cassidy.peacekeeper.hit_enemy.c = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AE2A0.03F.ogg
+cassidy.peacekeeper.hit_enemy.c = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AE27D.03F.ogg
+cassidy.peacekeeper.hit_enemy.c = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AE2E6.03F.ogg
+cassidy.peacekeeper.hit_enemy.c = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AE338.03F.ogg
+cassidy.peacekeeper.hit_enemy.c = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AE32F.03F.ogg
+cassidy.peacekeeper.hit_enemy.c = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AE297.03F.ogg
+cassidy.peacekeeper.hit_enemy.c = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002AE275.03F.ogg
+# cassidy.peacekeeper.hit_enemy.d: 5D50 play 587249142 (7 files, 0.127-0.311 s, 1ch); net -9.5 dB, +600 cents, @0.035
+#  s, avoid repeat 3. H.
+cassidy.peacekeeper.hit_enemy.d = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002ABB7F.03F.ogg
+cassidy.peacekeeper.hit_enemy.d = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002ABC22.03F.ogg
+cassidy.peacekeeper.hit_enemy.d = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002ABC51.03F.ogg
+cassidy.peacekeeper.hit_enemy.d = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002ABC2B.03F.ogg
+cassidy.peacekeeper.hit_enemy.d = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002ABC46.03F.ogg
+cassidy.peacekeeper.hit_enemy.d = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002ABC48.03F.ogg
+cassidy.peacekeeper.hit_enemy.d = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000005D50.02C/0000002ABC41.03F.ogg
+# cassidy.peacekeeper.hit_enemy_3p.a: 9060 play 677456784 (8 files, 0.133-0.225 s, 1ch); net +3 dB, +0 cents, @0.000
+#  s, avoid repeat 6. H.
+cassidy.peacekeeper.hit_enemy_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000009060.02C/0000002B1887.03F.ogg
+cassidy.peacekeeper.hit_enemy_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000009060.02C/0000002B188D.03F.ogg
+cassidy.peacekeeper.hit_enemy_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000009060.02C/0000002B1865.03F.ogg
+cassidy.peacekeeper.hit_enemy_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000009060.02C/0000002B183F.03F.ogg
+cassidy.peacekeeper.hit_enemy_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000009060.02C/0000002B1881.03F.ogg
+cassidy.peacekeeper.hit_enemy_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000009060.02C/0000002B188C.03F.ogg
+cassidy.peacekeeper.hit_enemy_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000009060.02C/0000002B1884.03F.ogg
+cassidy.peacekeeper.hit_enemy_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000009060.02C/0000002B1882.03F.ogg
+# cassidy.peacekeeper.hit_enemy_3p.b: 9060 play 361751686 (7 files, 0.292-0.623 s, 1ch); net +4 dB, +0 cents, @0.000
+#  s, avoid repeat 6. H.
+cassidy.peacekeeper.hit_enemy_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000009060.02C/0000002AFE94.03F.ogg
+cassidy.peacekeeper.hit_enemy_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000009060.02C/0000002AFD18.03F.ogg
+cassidy.peacekeeper.hit_enemy_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000009060.02C/0000002AFEB5.03F.ogg
+cassidy.peacekeeper.hit_enemy_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000009060.02C/0000002AFE8E.03F.ogg
+cassidy.peacekeeper.hit_enemy_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000009060.02C/0000002AFE6E.03F.ogg
+cassidy.peacekeeper.hit_enemy_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000009060.02C/0000002AFCE3.03F.ogg
+cassidy.peacekeeper.hit_enemy_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/000000009060.02C/0000002AFD37.03F.ogg
+# cassidy.peacekeeper.hit_block.a: 855C play 966929452 (15 files, 1.103-1.615 s, 1ch); net -23.5 dB, +0 cents, @0.000
+#  s, avoid repeat 11. H.
+cassidy.peacekeeper.hit_block.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855C.02C/0000002AE1F7.03F.ogg
+cassidy.peacekeeper.hit_block.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855C.02C/0000002AE219.03F.ogg
+cassidy.peacekeeper.hit_block.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855C.02C/0000002AE224.03F.ogg
+cassidy.peacekeeper.hit_block.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855C.02C/0000002AE216.03F.ogg
+cassidy.peacekeeper.hit_block.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855C.02C/0000002AE226.03F.ogg
+cassidy.peacekeeper.hit_block.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855C.02C/0000002AE227.03F.ogg
+cassidy.peacekeeper.hit_block.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855C.02C/0000002AE22D.03F.ogg
+cassidy.peacekeeper.hit_block.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855C.02C/0000002AE1F3.03F.ogg
+cassidy.peacekeeper.hit_block.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855C.02C/0000002AE221.03F.ogg
+cassidy.peacekeeper.hit_block.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855C.02C/0000002AE367.03F.ogg
+cassidy.peacekeeper.hit_block.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855C.02C/0000002AE1F5.03F.ogg
+cassidy.peacekeeper.hit_block.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855C.02C/0000002AE21C.03F.ogg
+cassidy.peacekeeper.hit_block.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855C.02C/0000002AE21F.03F.ogg
+cassidy.peacekeeper.hit_block.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855C.02C/0000002AE228.03F.ogg
+cassidy.peacekeeper.hit_block.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855C.02C/0000002AE1FB.03F.ogg
+# cassidy.peacekeeper.hit_block.b: 855D play 1068701044 (15 files, 1.103-1.615 s, 1ch); net -10 dB, +50 cents, @0.033
+#  s, avoid repeat 11. H.
+cassidy.peacekeeper.hit_block.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855D.02C/0000002AE1F7.03F.ogg
+cassidy.peacekeeper.hit_block.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855D.02C/0000002AE219.03F.ogg
+cassidy.peacekeeper.hit_block.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855D.02C/0000002AE224.03F.ogg
+cassidy.peacekeeper.hit_block.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855D.02C/0000002AE216.03F.ogg
+cassidy.peacekeeper.hit_block.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855D.02C/0000002AE226.03F.ogg
+cassidy.peacekeeper.hit_block.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855D.02C/0000002AE227.03F.ogg
+cassidy.peacekeeper.hit_block.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855D.02C/0000002AE22D.03F.ogg
+cassidy.peacekeeper.hit_block.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855D.02C/0000002AE1F3.03F.ogg
+cassidy.peacekeeper.hit_block.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855D.02C/0000002AE221.03F.ogg
+cassidy.peacekeeper.hit_block.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855D.02C/0000002AE367.03F.ogg
+cassidy.peacekeeper.hit_block.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855D.02C/0000002AE1F5.03F.ogg
+cassidy.peacekeeper.hit_block.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855D.02C/0000002AE21C.03F.ogg
+cassidy.peacekeeper.hit_block.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855D.02C/0000002AE21F.03F.ogg
+cassidy.peacekeeper.hit_block.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855D.02C/0000002AE228.03F.ogg
+cassidy.peacekeeper.hit_block.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Bullet/Sounds/00000000855D.02C/0000002AE1FB.03F.ogg
+# cassidy.reload.a: 0846 play 1013347354 (6 files, 1.564-1.831 s, 2ch); net -9.5 dB, -50 cents, @0.300 s, avoid repeat 3. H.
+cassidy.reload.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000F082.00C/AnimationEffects/00000000128A/Sounds/000000000846.02C/0000002AEFB8.03F.ogg
+cassidy.reload.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000F082.00C/AnimationEffects/00000000128A/Sounds/000000000846.02C/0000002AEFB3.03F.ogg
+cassidy.reload.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000F082.00C/AnimationEffects/00000000128A/Sounds/000000000846.02C/0000002AEFB2.03F.ogg
+cassidy.reload.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000F082.00C/AnimationEffects/00000000128A/Sounds/000000000846.02C/0000002AF001.03F.ogg
+cassidy.reload.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000F082.00C/AnimationEffects/00000000128A/Sounds/000000000846.02C/0000002AEFA7.03F.ogg
+cassidy.reload.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000F082.00C/AnimationEffects/00000000128A/Sounds/000000000846.02C/0000002AEFA3.03F.ogg
+# cassidy.reload.b: 0846 play 396439522 (4 files, 0.284-0.313 s, 2ch); net -7.5 dB, +12 cents, @0.000 s. H.
+cassidy.reload.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000F082.00C/AnimationEffects/00000000128A/Sounds/000000000846.02C/0000002AEFAE.03F.ogg
+cassidy.reload.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000F082.00C/AnimationEffects/00000000128A/Sounds/000000000846.02C/0000002AEFFD.03F.ogg
+cassidy.reload.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000F082.00C/AnimationEffects/00000000128A/Sounds/000000000846.02C/0000002AEFAB.03F.ogg
+cassidy.reload.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000F082.00C/AnimationEffects/00000000128A/Sounds/000000000846.02C/0000002AEFDC.03F.ogg
+# cassidy.reload.c: 0843 play 1061789464 (1 file, 0.236 s, 2ch); net -24 dB, +0 cents, @0.646 s. H.
+cassidy.reload.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000F082.00C/AnimationEffects/00000000128A/Sounds/000000000843.02C/0000002AEFA6.03F.ogg
+# cassidy.reload.d: 0847 play 583209351 (1 file, 0.473 s, 2ch); net -24 dB, -38 cents, @0.968 s. H.
+cassidy.reload.d = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000F082.00C/AnimationEffects/00000000128A/Sounds/000000000847.02C/0000002AEFA0.03F.ogg
+# cassidy.reload_3p.a: 084F play 119218353 (6 files, 1.564-1.831 s, 2ch); net -18.5 dB, -50 cents, @0.300 s, avoid repeat 3. H.
+cassidy.reload_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000012CB/Sounds/00000000084F.02C/0000002AEFB8.03F.ogg
+cassidy.reload_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000012CB/Sounds/00000000084F.02C/0000002AEFB3.03F.ogg
+cassidy.reload_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000012CB/Sounds/00000000084F.02C/0000002AEFB2.03F.ogg
+cassidy.reload_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000012CB/Sounds/00000000084F.02C/0000002AF001.03F.ogg
+cassidy.reload_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000012CB/Sounds/00000000084F.02C/0000002AEFA7.03F.ogg
+cassidy.reload_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000012CB/Sounds/00000000084F.02C/0000002AEFA3.03F.ogg
+# cassidy.reload_3p.b: 084F play 837706415 (5 files, 0.593-0.620 s, 2ch); net -15.5 dB, +0 cents, @0.000 s. H.
+cassidy.reload_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000012CB/Sounds/00000000084F.02C/0000002AEFAD.03F.ogg
+cassidy.reload_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000012CB/Sounds/00000000084F.02C/0000002AEFA8.03F.ogg
+cassidy.reload_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000012CB/Sounds/00000000084F.02C/0000002AEFBB.03F.ogg
+cassidy.reload_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000012CB/Sounds/00000000084F.02C/0000002AF004.03F.ogg
+cassidy.reload_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000012CB/Sounds/00000000084F.02C/0000002AEFFC.03F.ogg
+# cassidy.reload_3p.c: 0851 play 929821921 (4 files, 0.436-0.468 s, 2ch); net -20.5 dB, +0 cents, @0.918 s, avoid repeat 2. H.
+cassidy.reload_3p.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000012CB/Sounds/000000000851.02C/0000002AF000.03F.ogg
+cassidy.reload_3p.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000012CB/Sounds/000000000851.02C/0000002AEFDB.03F.ogg
+cassidy.reload_3p.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000012CB/Sounds/000000000851.02C/0000002AEFAF.03F.ogg
+cassidy.reload_3p.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000012CB/Sounds/000000000851.02C/0000002AEFB7.03F.ogg
+# cassidy.reload_3p.d: 0850 play 265366926 (1 file, 0.236 s, 2ch); net -37 dB, +0 cents, @0.596 s. H.
+cassidy.reload_3p.d = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000012CB/Sounds/000000000850.02C/0000002AEFA6.03F.ogg
+# cassidy.roll.a: 6448 play 271482280 (4 files, 0.641-0.679 s, 2ch); net +6 dB, +0 cents, @0.000 s. H.
+cassidy.roll.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B0.00D/Sounds/000000006448.02C/0000002A811B.03F.ogg
+cassidy.roll.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B0.00D/Sounds/000000006448.02C/0000002A811D.03F.ogg
+cassidy.roll.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B0.00D/Sounds/000000006448.02C/0000002A8111.03F.ogg
+cassidy.roll.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B0.00D/Sounds/000000006448.02C/0000002A8113.03F.ogg
+# cassidy.roll_3p.a: 6449 play 621186282 (4 files, 0.641-0.679 s, 2ch); net -4 dB, +0 cents, @0.000 s. H.
+cassidy.roll_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B0.00D/Sounds/000000006449.02C/0000002A811B.03F.ogg
+cassidy.roll_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B0.00D/Sounds/000000006449.02C/0000002A811D.03F.ogg
+cassidy.roll_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B0.00D/Sounds/000000006449.02C/0000002A8111.03F.ogg
+cassidy.roll_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000036B0.00D/Sounds/000000006449.02C/0000002A8113.03F.ogg
+# cassidy.flashbang.throw.a: 882D play 343111202 (3 files, 0.175-0.228 s, 1ch); net -22.5 dB, +75 cents, @0.100 s,
+#  avoid repeat 2. H.
+cassidy.flashbang.throw.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000013F6/Sounds/00000000882D.02C/0000002A7177.03F.ogg
+cassidy.flashbang.throw.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000013F6/Sounds/00000000882D.02C/0000002A7175.03F.ogg
+cassidy.flashbang.throw.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000013F6/Sounds/00000000882D.02C/0000002A76AE.03F.ogg
+# cassidy.flashbang.throw.b: 882D play 399051838 (1 file, 0.287 s, 2ch); net -13 dB, +250 cents, @0.000 s. H.
+cassidy.flashbang.throw.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000013F6/Sounds/00000000882D.02C/0000002A8118.03F.ogg
+# cassidy.flashbang.throw.c: 882D play 508609734 (1 file, 0.199 s, 1ch); net -15 dB, +0 cents, @0.000 s. H.
+cassidy.flashbang.throw.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000013F6/Sounds/00000000882D.02C/0000002B2806.03F.ogg
+# cassidy.flashbang.throw.d: 882D play 764072064 (1 file, 0.343 s, 2ch); net -26.5 dB, +525 cents, @0.000 s. H.
+cassidy.flashbang.throw.d = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000013F6/Sounds/00000000882D.02C/0000002A8119.03F.ogg
+# cassidy.flashbang.throw.e: 882D play 1014872876 (1 file, 0.268 s, 2ch); net -5 dB, -50 cents, @0.030 s. H.
+cassidy.flashbang.throw.e = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000013F6/Sounds/00000000882D.02C/0000002B280B.03F.ogg
+# cassidy.flashbang.throw_3p.a: F25A play 525674521 (3 files, 0.175-0.228 s, 1ch); net -23.5 dB, +75 cents, @0.100 s,
+#  avoid repeat 2. H.
+cassidy.flashbang.throw_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000013F6/Sounds/00000000F25A.02C/0000002A7177.03F.ogg
+cassidy.flashbang.throw_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000013F6/Sounds/00000000F25A.02C/0000002A7175.03F.ogg
+cassidy.flashbang.throw_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000013F6/Sounds/00000000F25A.02C/0000002A76AE.03F.ogg
+# cassidy.flashbang.throw_3p.b: F25A play 111669381 (1 file, 0.199 s, 1ch); net -16 dB, +0 cents, @0.000 s. H.
+cassidy.flashbang.throw_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000013F6/Sounds/00000000F25A.02C/0000002B2806.03F.ogg
+# cassidy.flashbang.throw_3p.c: F25A play 234550384 (1 file, 0.287 s, 2ch); net -14 dB, +250 cents, @0.000 s. H.
+cassidy.flashbang.throw_3p.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000013F6/Sounds/00000000F25A.02C/0000002A8118.03F.ogg
+# cassidy.flashbang.throw_3p.d: F25A play 912804939 (1 file, 0.343 s, 2ch); net -27.5 dB, +525 cents, @0.000 s. H.
+cassidy.flashbang.throw_3p.d = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000013F6/Sounds/00000000F25A.02C/0000002A8119.03F.ogg
+# cassidy.flashbang.throw_3p.e: F25A play 540505594 (1 file, 0.268 s, 2ch); net -6 dB, -50 cents, @0.030 s. H.
+cassidy.flashbang.throw_3p.e = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000013F6/Sounds/00000000F25A.02C/0000002B280B.03F.ogg
+# cassidy.flashbang.fuse.a: EE10 play 924481529 (10 files, 0.359-0.529 s, 1ch); net -15 dB, +833 cents, @0.067 s. H.
+cassidy.flashbang.fuse.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/000000000600.00D/Sounds/00000000EE10.02C/0000002AA07B.03F.ogg
+cassidy.flashbang.fuse.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/000000000600.00D/Sounds/00000000EE10.02C/0000002AA019.03F.ogg
+cassidy.flashbang.fuse.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/000000000600.00D/Sounds/00000000EE10.02C/0000002AA02A.03F.ogg
+cassidy.flashbang.fuse.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/000000000600.00D/Sounds/00000000EE10.02C/0000002AA58A.03F.ogg
+cassidy.flashbang.fuse.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/000000000600.00D/Sounds/00000000EE10.02C/0000002AA573.03F.ogg
+cassidy.flashbang.fuse.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/000000000600.00D/Sounds/00000000EE10.02C/0000002AA579.03F.ogg
+cassidy.flashbang.fuse.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/000000000600.00D/Sounds/00000000EE10.02C/0000002AA05E.03F.ogg
+cassidy.flashbang.fuse.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/000000000600.00D/Sounds/00000000EE10.02C/0000002AA570.03F.ogg
+cassidy.flashbang.fuse.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/000000000600.00D/Sounds/00000000EE10.02C/0000002AA02B.03F.ogg
+cassidy.flashbang.fuse.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/000000000600.00D/Sounds/00000000EE10.02C/0000002AA055.03F.ogg
+# cassidy.flashbang.fuse.b: EE10 play 220388268 (7 files, 0.449-0.625 s, 1ch); net -10 dB, +183 cents, @0.067 s. H.
+cassidy.flashbang.fuse.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/000000000600.00D/Sounds/00000000EE10.02C/0000002AA036.03F.ogg
+cassidy.flashbang.fuse.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/000000000600.00D/Sounds/00000000EE10.02C/0000002AA00B.03F.ogg
+cassidy.flashbang.fuse.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/000000000600.00D/Sounds/00000000EE10.02C/0000002AA06A.03F.ogg
+cassidy.flashbang.fuse.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/000000000600.00D/Sounds/00000000EE10.02C/0000002AA568.03F.ogg
+cassidy.flashbang.fuse.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/000000000600.00D/Sounds/00000000EE10.02C/0000002AA59C.03F.ogg
+cassidy.flashbang.fuse.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/000000000600.00D/Sounds/00000000EE10.02C/0000002AA571.03F.ogg
+cassidy.flashbang.fuse.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Effects/000000000600.00D/Sounds/00000000EE10.02C/0000002AA047.03F.ogg
+# cassidy.flashbang.explode.a: 5D7C play 771998411 (3 files, 0.617-0.748 s, 1ch); net -27 dB, +947 cents, @0.090 s. H.
+cassidy.flashbang.explode.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/000000005D7C.02C/0000002A8109.03F.ogg
+cassidy.flashbang.explode.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/000000005D7C.02C/0000002A810D.03F.ogg
+cassidy.flashbang.explode.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/000000005D7C.02C/0000002A8110.03F.ogg
+# cassidy.flashbang.explode.b: 5D7C play 858292095 (3 files, 3.047-3.468 s, 2ch); net -12.5 dB, +187 cents, @0.279 s. H.
+cassidy.flashbang.explode.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/000000005D7C.02C/0000002A810B.03F.ogg
+cassidy.flashbang.explode.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/000000005D7C.02C/0000002A810C.03F.ogg
+cassidy.flashbang.explode.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/000000005D7C.02C/0000002A810A.03F.ogg
+# cassidy.flashbang.explode.c: 5D7C play 1025681883 (2 files, 2.572-3.020 s, 2ch); net -14 dB, +977 cents, @0.000 s. H.
+cassidy.flashbang.explode.c = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/000000005D7C.02C/0000002A69EB.03F.ogg
+cassidy.flashbang.explode.c = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/000000005D7C.02C/0000002A6A30.03F.ogg
+# cassidy.flashbang.explode.d: 5D7C play 478750872 (1 file, 0.767 s, 2ch); net -15.5 dB, +487 cents, @0.000 s. H.
+cassidy.flashbang.explode.d = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/000000005D7C.02C/0000002A83B4.03F.ogg
+# cassidy.flashbang.explode.e: 5D7C play 325672269 (1 file, 0.273 s, 1ch); net -16 dB, +0 cents, @0.000 s. H.
+cassidy.flashbang.explode.e = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/000000005D7C.02C/0000002A810E.03F.ogg
+# cassidy.flashbang.explode.f: 5D7C play 392897135 (1 file, 0.727 s, 2ch); net -28.5 dB, +462 cents, @0.005 s. H.
+cassidy.flashbang.explode.f = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/000000005D7C.02C/0000002A83B5.03F.ogg
+# cassidy.flashbang.explode.g: 5D7C play 9422038 (1 file, 0.748 s, 1ch); net -18.5 dB, +487 cents, @0.020 s. H.
+cassidy.flashbang.explode.g = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/000000005D7C.02C/0000002A811F.03F.ogg
+# cassidy.flashbang.explode.h: 5D7C play 962899945 (1 file, 1.241 s, 2ch); net -34.5 dB, +637 cents, @0.190 s. H.
+cassidy.flashbang.explode.h = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/000000005D7C.02C/0000002A8116.03F.ogg
+# cassidy.flashbang.explode_3p.a: 071E play 23873237 (3 files, 0.617-0.748 s, 1ch); net -35.5 dB, +947 cents, @0.090 s. H.
+cassidy.flashbang.explode_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/00000000071E.02C/0000002A8109.03F.ogg
+cassidy.flashbang.explode_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/00000000071E.02C/0000002A810D.03F.ogg
+cassidy.flashbang.explode_3p.a = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/00000000071E.02C/0000002A8110.03F.ogg
+# cassidy.flashbang.explode_3p.b: 071E play 790355508 (3 files, 3.047-3.468 s, 2ch); net -24 dB, +687 cents, @0.279 s. H.
+cassidy.flashbang.explode_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/00000000071E.02C/0000002A810B.03F.ogg
+cassidy.flashbang.explode_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/00000000071E.02C/0000002A810C.03F.ogg
+cassidy.flashbang.explode_3p.b = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/00000000071E.02C/0000002A810A.03F.ogg
+# cassidy.flashbang.explode_3p.c: 071E play 1043177422 (2 files, 2.572-3.020 s, 2ch); net -25.5 dB, +1477 cents, @0.000 s. H.
+cassidy.flashbang.explode_3p.c = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/00000000071E.02C/0000002A69EB.03F.ogg
+cassidy.flashbang.explode_3p.c = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/00000000071E.02C/0000002A6A30.03F.ogg
+# cassidy.flashbang.explode_3p.d: 071E play 781941959 (1 file, 0.727 s, 2ch); net -30 dB, +462 cents, @0.005 s. H.
+cassidy.flashbang.explode_3p.d = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/00000000071E.02C/0000002A83B5.03F.ogg
+# cassidy.flashbang.explode_3p.e: 071E play 540352152 (1 file, 0.748 s, 1ch); net -30 dB, +487 cents, @0.020 s. H.
+cassidy.flashbang.explode_3p.e = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/00000000071E.02C/0000002A811F.03F.ogg
+# cassidy.flashbang.explode_3p.f: 071E play 639100383 (1 file, 1.241 s, 2ch); net -38 dB, +637 cents, @0.240 s. H.
+cassidy.flashbang.explode_3p.f = ../../research/cassidy/sounds/ExtraSounds/Cassidy/Flashbang/Sounds/00000000071E.02C/0000002A8116.03F.ogg
+# cassidy.deadeye.start.a: 1911 play 321060870 (1 file, 4.628 s, 2ch); net -12 dB, +0 cents, @0.000 s. H.
+cassidy.deadeye.start.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000003AE.00D/Sounds/000000001911.02C/0000002B094F.03F.ogg
+# cassidy.deadeye.loop.a: 1911 play 868661514 (3 files, 1.184 s, 1ch); net -17.5 dB, +0 cents, @0.500 s, period 1.184 s. H.
+cassidy.deadeye.loop.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000003AE.00D/Sounds/000000001911.02C/0000002B0958.03F.ogg
+cassidy.deadeye.loop.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000003AE.00D/Sounds/000000001911.02C/0000002B0902.03F.ogg
+cassidy.deadeye.loop.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000003AE.00D/Sounds/000000001911.02C/0000002B0901.03F.ogg
+# cassidy.deadeye.loop.b: 1911 play 805626852 (1 file, 1.447 s, 1ch); net -25 dB, +343 cents, @0.000 s, period 1.187 s. H.
+cassidy.deadeye.loop.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000003AE.00D/Sounds/000000001911.02C/0000002B0952.03F.ogg
+# cassidy.deadeye.start_3p.a: 0766 play 576740722 (3 files, 0.564-0.604 s, 2ch); net -24.5 dB, +150 cents, @0.000 s. H.
+cassidy.deadeye.start_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000003AE.00D/Sounds/000000000766.02C/0000002B0951.03F.ogg
+cassidy.deadeye.start_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000003AE.00D/Sounds/000000000766.02C/0000002B094E.03F.ogg
+cassidy.deadeye.start_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000003AE.00D/Sounds/000000000766.02C/0000002B0954.03F.ogg
+# cassidy.deadeye.start_3p.b: 0767 play 664492388 (1 file, 4.628 s, 2ch); net -15 dB, +0 cents, @0.000 s. H.
+cassidy.deadeye.start_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000003AE.00D/Sounds/000000000767.02C/0000002B094F.03F.ogg
+# cassidy.deadeye.start_3p.c: 0766 play 462926811 (1 file, 4.775 s, 2ch); net -35 dB, +0 cents, @0.000 s. H.
+cassidy.deadeye.start_3p.c = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000003AE.00D/Sounds/000000000766.02C/0000002A76B1.03F.ogg
+# cassidy.deadeye.start_3p.d: 0766 play 513120883 (1 file, 0.396 s, 1ch); net -24 dB, -25 cents, @0.200 s. H.
+cassidy.deadeye.start_3p.d = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000003AE.00D/Sounds/000000000766.02C/0000002A7691.03F.ogg
+# cassidy.deadeye.start_3p.e: 0766 play 45898752 (1 file, 2.348 s, 2ch); net -27 dB, +0 cents, @0.250 s. H.
+cassidy.deadeye.start_3p.e = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000003AE.00D/Sounds/000000000766.02C/0000002A76AB.03F.ogg
+# cassidy.deadeye.start_3p.f: 0767 play 989219151 (1 file, 2.647 s, 2ch); net -17 dB, +0 cents, @1.069 s. H.
+cassidy.deadeye.start_3p.f = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000003AE.00D/Sounds/000000000767.02C/0000002A672C.03F.ogg
+# cassidy.deadeye.loop_3p.a: 0767 play 747293314 (3 files, 1.184 s, 1ch); net -18.5 dB, +0 cents, @0.000 s, period 1.184 s. H.
+cassidy.deadeye.loop_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000003AE.00D/Sounds/000000000767.02C/0000002B0958.03F.ogg
+cassidy.deadeye.loop_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000003AE.00D/Sounds/000000000767.02C/0000002B0902.03F.ogg
+cassidy.deadeye.loop_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000003AE.00D/Sounds/000000000767.02C/0000002B0901.03F.ogg
+# cassidy.deadeye.loop_3p.b: 0767 play 608139306 (1 file, 1.447 s, 1ch); net -26 dB, +343 cents, @0.000 s, period 1.187 s. H.
+cassidy.deadeye.loop_3p.b = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000003AE.00D/Sounds/000000000767.02C/0000002B0952.03F.ogg
+# cassidy.deadeye.fire.a: 0853 play 532575242 (3 files, 0.564-0.604 s, 2ch); net -15 dB, +12 cents, @0.000 s. H.
+cassidy.deadeye.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000F082.00C/AnimationEffects/00000000147A/Sounds/000000000853.02C/0000002B0951.03F.ogg
+cassidy.deadeye.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000F082.00C/AnimationEffects/00000000147A/Sounds/000000000853.02C/0000002B094E.03F.ogg
+cassidy.deadeye.fire.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000F082.00C/AnimationEffects/00000000147A/Sounds/000000000853.02C/0000002B0954.03F.ogg
+# cassidy.deadeye.fire_3p.a: 0855 play 978445120 (3 files, 0.564-0.604 s, 2ch); net -23.5 dB, +12 cents, @0.000 s. H.
+cassidy.deadeye.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000015DC/Sounds/000000000855.02C/0000002B0951.03F.ogg
+cassidy.deadeye.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000015DC/Sounds/000000000855.02C/0000002B094E.03F.ogg
+cassidy.deadeye.fire_3p.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000EFA3.00C/AnimationEffects/0000000015DC/Sounds/000000000855.02C/0000002B0954.03F.ogg
+# cassidy.deadeye.end.a: 074C play 165261296 (1 file, 3.377 s, 1ch); net -28 dB, +0 cents, @0.000 s. H.
+cassidy.deadeye.end.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000062A.00D/Sounds/00000000074C.02C/0000002B095A.03F.ogg
+# cassidy.melee.a: DBAD play 216194267 (1 file, 0.652 s, 2ch); net -18.5 dB, +100 cents, @0.222 s. H.
+cassidy.melee.a = ../../research/cassidy/extract/Heroes/Cassidy/Skin/Overwatch/Overwatch/Models/00000000F082.00C/AnimationEffects/000000001287/Sounds/00000000DBAD.02C/000000318E12.03F.ogg
+
+# ===== Subtitles (the jar's lang names none of his events)
+$cassidy.peacekeeper.fire = Peacekeeper fires
+$cassidy.peacekeeper.fire_3p = Peacekeeper fires
+$cassidy.fan.fire = Fan the Hammer
+$cassidy.fan.fire_3p = Fan the Hammer
+$cassidy.peacekeeper.bullet_3p = Bullet whizzes
+$cassidy.peacekeeper.hit_enemy = Peacekeeper hit
+$cassidy.peacekeeper.hit_enemy_3p = Peacekeeper hit
+$cassidy.peacekeeper.hit_block = Bullet hits a wall
+$cassidy.reload = Peacekeeper reload
+$cassidy.reload_3p = Peacekeeper reload
+$cassidy.roll = Cassidy rolls
+$cassidy.roll_3p = Cassidy rolls
+$cassidy.flashbang.throw = Flashbang thrown
+$cassidy.flashbang.throw_3p = Flashbang thrown
+$cassidy.flashbang.fuse = Flashbang fizzes
+$cassidy.flashbang.explode = Flashbang explodes
+$cassidy.flashbang.explode_3p = Flashbang explodes
+$cassidy.deadeye.start = Deadeye begins
+$cassidy.deadeye.loop = Deadeye charges
+$cassidy.deadeye.start_3p = Deadeye begins
+$cassidy.deadeye.loop_3p = Deadeye charges
+$cassidy.deadeye.fire = Deadeye fires
+$cassidy.deadeye.fire_3p = Deadeye fires
+$cassidy.deadeye.end = Deadeye ends
+$cassidy.melee = Cassidy swings
+
+# ===== For the integration: each event, loop or one-shot, who it is built for, its length, and what triggers it
+# (own = the player the effect plays on, in the head: Cassidy, or the shooter; 3p = everyone else, at him
+# / the target / the hit point / the barrier; both = one rule for everyone). 'EXTRA' = in the data but not needed for the
+# kit's moments. Not built: see 'Not mapped'.
+#   cassidy.peacekeeper.fire           one-shot own  4.23 s; PRIMARY (01D2 #300 -> #330 StateWeaponVolley, the bullet
+#     02A7: its STUEffectComponent 18D7 -> 057A, H); 057A's 5D7D (audience 1, no range: his, H)
+#   cassidy.peacekeeper.fire_3p        one-shot 3p   4.23 s; PRIMARY (01D2 #300 -> #330 StateWeaponVolley, the bullet
+#     02A7: its STUEffectComponent 18D7 -> 057A, H); 057A's 6F09 (100 m, audience 2: everyone else, H)
+#   cassidy.fan.fire                   one-shot own  4.23 s; SECONDARY (01D2 #332 -> #346 StateWeaponVolley, 8 shots a
+#     second, the bullet 3B7B: STUEffectComponent 356A -> 356B, H); one per shot; 356B's 620D (audience 1, no range:
+#     his, H)
+#   cassidy.fan.fire_3p                one-shot 3p   4.23 s; SECONDARY (01D2 #332 -> #346 StateWeaponVolley, 8 shots a
+#     second, the bullet 3B7B: STUEffectComponent 356A -> 356B, H); one per shot; 356B's 6F0A (100 m; audience 1 but
+#     ranged: read as everyone else's copy, M as Tracer's rule)
+#   cassidy.peacekeeper.bullet_3p      one-shot 3p   2.54 s; each bullet in flight (02A7 and 3B7B alike):
+#     STUProjectileVisualComponent m_2170A015 'sound only' slot effect 008C -> 0F98 and 1801, both 60 m audience 2
+#     with the same containers: the louder 1801 built (H slot and ids, L which copy)
+#   cassidy.peacekeeper.hit_enemy      one-shot own  0.63 s; a bullet hits a character: 0141 type 0, material 0001 ->
+#     5D50 (no range: the shooter's, as Tracer's type-0 reading, M); type 1 holds the same three
+#   cassidy.peacekeeper.hit_enemy_3p   one-shot 3p   0.62 s; the same hit, at the target for everyone else: type 0's
+#     9060 (500 m) and 9064 (12 m) hold the same files: the louder 9060 built (L which copy)
+#   cassidy.peacekeeper.hit_block      one-shot both 1.61 s; a bullet hits the world: 0141 type 2, material 0001 ->
+#     855D (120 m, +50 cents) + 855C (32 m), built together (Tracer's rule); the other materials have their own
+#     (contacts.json)
+#   cassidy.reload                     one-shot own  2.18 s; RELOAD, or an empty cylinder (01D2 #318 StateAnim alias
+#     4): his 1P reload clip 128A's effect 03AC: 0846 @0, 0843 @0.601, 0847 @0.948 (all no range, H); 0829 (foley) and
+#     DBB5 (no files) left out
+#   cassidy.reload_3p                  one-shot 3p   2.18 s; the same reload for everyone else: the 3P clip 12CB's
+#     effect 048A: 084F @0, 0850 @0.6, 0851 @1.0 of its 1.633 s (45 m, H), scaled to the 1P clip's 1.5 s (0.551,
+#     0.918: M, as Tracer's)
+#   cassidy.roll                       one-shot own  0.68 s; ABILITY 1 (01F0 #82 StateAbility; #176 STU_691BFA55 holds
+#     effect 36B0 over the roll, H); 36B0's 6448 (audience 1, no range: his, H)
+#   cassidy.roll_3p                    one-shot 3p   0.68 s; ABILITY 1 (01F0 #82 StateAbility; #176 STU_691BFA55 holds
+#     effect 36B0 over the roll, H); 36B0's 6449 (70 m, everyone else, H)
+#   cassidy.flashbang.throw            one-shot own  0.32 s; ABILITY 2 (01E9 #82 StateAbility -> #112
+#     StateWeaponVolley, the Flashbang 037D, H); the 3P throw clip 13F6's effect 050A: 882D @0 (audience 1, no range:
+#     his, H; 0835 @0.267 foley left out)
+#   cassidy.flashbang.throw_3p         one-shot 3p   0.32 s; ABILITY 2 (01E9 #82 StateAbility -> #112
+#     StateWeaponVolley, the Flashbang 037D, H); 050A's ranged copies F25A (35 m) and 8980 (40 m) hold the same files:
+#     the louder F25A built (L which)
+#   cassidy.flashbang.fuse             one-shot both 0.63 s; the Flashbang in flight: 037D's child 0453
+#     STUEffectComponent 0600 -> EE10 @0.067 for 0.57 s (6 m, audience 2, its only copy: built once for everyone, H)
+#   cassidy.flashbang.explode          one-shot own  3.39 s; the Flashbang goes off (it bursts on contact: 037D's
+#     m_6CB564CC burst slot effect 5C8C, H): 5C8C's 5D7C (200 m, audience 1: his, as Pharah's rocket burst 5D00, M)
+#   cassidy.flashbang.explode_3p       one-shot 3p   2.61 s; the same burst for everyone else: 5C8C's 071E (200 m, audience 2, H)
+#   cassidy.deadeye.start              one-shot own  4.63 s; ULTIMATE (022F #224 StateAbility -> #274 State onBegin ->
+#     #423 STU_691BFA55 holding effect 03AE, H); 1911's once set at the start (no range: his)
+#   cassidy.deadeye.loop               LOOP     own  loop 1.187 s; ULTIMATE (022F #224 StateAbility -> #274 State
+#     onBegin -> #423 STU_691BFA55 holding effect 03AE, H); 1911's two beds, held while Deadeye charges (LOOP 1.19 s /
+#     1.18 s in Wwise)
+#   cassidy.deadeye.start_3p           one-shot 3p   4.78 s; ULTIMATE (022F #224 StateAbility -> #274 State onBegin ->
+#     #423 STU_691BFA55 holding effect 03AE, H); 0767's once sets (100 m) and 0766 (75 m, all one-shots), everyone
+#     else
+#   cassidy.deadeye.loop_3p            LOOP     3p   loop 1.187 s; ULTIMATE (022F #224 StateAbility -> #274 State
+#     onBegin -> #423 STU_691BFA55 holding effect 03AE, H); 0767's two beds (100 m), held
+#   cassidy.deadeye.fire               one-shot own  0.60 s; the Deadeye shot (022F #421 on the fire button #251, or
+#     #427 when the charge times out; alias 19E): his 1P shot clip 147A's effect 0523: 0853 @0 (no range: his, H)
+#   cassidy.deadeye.fire_3p            one-shot 3p   0.60 s; the same shot for everyone else: the 3P clip 15DC's
+#     effect 0525: 0855 (75 m, H)
+#   cassidy.deadeye.end                one-shot own  3.38 s; Deadeye ends (022F #447 StateWait 0.3 s with alias 19F ->
+#     #430 0.5 s -> #429 ActionEffect 062A): 074C (no range: his, H nodes; M the moment)
+#   cassidy.melee                      one-shot own  0.84 s; quick melee (0043 #117 alias D): his 1P melee clip 1287's
+#     effect 04EB: DBAD @0.222 (no range, H)

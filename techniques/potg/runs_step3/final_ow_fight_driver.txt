@@ -1,0 +1,22 @@
+=== phase ow_fight 15:37:27
+  t 5 {'screen': '', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 1589.91, 'primaryAmmo': 4, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 11 {'screen': '', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 1880.75, 'primaryAmmo': 9, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 16 {'screen': '', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 1907.75, 'primaryAmmo': 14, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  t 21 {'screen': '', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 1994.5, 'primaryAmmo': 3, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+overworld fight over {'screen': '', 'fps': 30, 'x': 0.5, 'y': -60.0, 'z': 0.5, 'health': 20.0, 'maxHealth': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2013.5, 'primaryAmmo': 11, 'secondaryAmmo': 10, 'anim': 'idle+throw_kunai_#'}
+  log [15:37:30] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 236 (pinned 83 KB)
+  log [15:37:30] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Sharpshooter 486 (pinned 83 KB)
+  log [15:37:31] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 618 (pinned 95 KB)
+  log [15:37:31] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Sharpshooter 739 (pinned 95 KB)
+  log [15:37:32] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 1000 (pinned 106 KB)
+  log [15:37:32] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Sharpshooter 980 (pinned 106 KB)
+  log [15:37:33] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 1500 (pinned 118 KB)
+  log [15:37:33] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Sharpshooter 1400 (pinned 118 KB)
+  log [15:37:34] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 1618 (pinned 137 KB)
+  log [15:37:34] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Sharpshooter 1617 (pinned 137 KB)
+  log [15:37:35] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 2000 (pinned 148 KB)
+  log [15:37:35] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Sharpshooter 1848 (pinned 148 KB)
+  log [15:37:36] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 2236 (pinned 159 KB)
+  log [15:37:36] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Sharpshooter 2263 (pinned 159 KB)
+  log [15:37:37] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best High Score 2500 (pinned 172 KB)
+  log [15:37:37] [Server thread/INFO] (Overcraft) [POTG] Kiriko: new best Sharpshooter 2286 (pinned 172 KB)

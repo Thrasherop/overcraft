@@ -1,0 +1,60 @@
+=== phase night 18:20:39
+/time set midnight {'ok': True}
+/gamerule minecraft:advance_time false {'ok': True}
+/effect give @a minecraft:resistance 99999 2 true {'ok': True}
+/tp Viewer Kiriko {'ok': True}
+{'screen': 'DeathScreen', 'inWorld': True, 'x': 26.92, 'y': -60.0, 'z': -32.57, 'yaw': 0.0, 'pitch': 0.0, 'health': 0.0, 'hero': 'kiriko', 'heroMode': False, 'ult': 722.25, 'primaryAmmo': 15, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko', 'food': 20}
+{'screen': 'DeathScreen', 'inWorld': True, 'x': -5.61, 'y': -60.0, 'z': -48.18, 'yaw': 0.0, 'pitch': 0.0, 'health': 0.0, 'hero': 'mercy', 'heroMode': False, 'ult': 338.0, 'primaryAmmo': 25, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy', 'food': 20}
+[18:21:22] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 18311 KB; 1e286f74[seg seg-1 raw 10264 KB, 0 zips 0 KB, folder 9139 KB, highlights 0] c6f66a25[seg seg-1 raw 12496 KB, 0 zips 0 KB, folder 9170 KB, highlights 0]
+=== phase night 18:21:35
+/time set midnight {'ok': True}
+/gamerule minecraft:advance_time false {'ok': True}
+/effect give @a minecraft:resistance 99999 2 true {'ok': True}
+/tp Viewer Kiriko {'ok': True}
+{'screen': '', 'inWorld': True, 'x': -13.77, 'y': -60.0, 'z': 7.54, 'yaw': -104.87, 'pitch': -1.39, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 6, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko', 'food': 20}
+{'screen': '', 'inWorld': True, 'x': -10.33, 'y': -60.0, 'z': 9.78, 'yaw': 0.0, 'pitch': 0.0, 'health': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 595.25, 'primaryAmmo': 25, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy', 'food': 20}
+[18:21:39] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 336 (seg-1.zip)
+[18:21:40] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 718 (seg-1.zip)
+[18:21:41] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1100 (seg-1.zip)
+[18:21:42] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1336 (seg-1.zip)
+[18:21:43] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1718 (seg-1.zip)
+[18:21:44] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2100 (seg-1.zip)
+[18:21:45] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2336 (seg-1.zip)
+[18:21:46] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2600 (seg-1.zip)
+[18:21:49] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2718 (seg-1.zip)
+[18:21:50] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 3100 (seg-1.zip)
+[18:22:23] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 33681 KB; 1e286f74[seg seg-1 raw 20969 KB, 0 zips 0 KB, folder 16948 KB, highlights 0] c6f66a25[seg seg-1 raw 22960 KB, 0 zips 0 KB, folder 16731 KB, highlights 1]
+=== phase night 18:34:24
+/time set midnight {'ok': True}
+/gamerule minecraft:advance_time false {'ok': True}
+/effect give @a minecraft:resistance 99999 2 true {'ok': True}
+/tp Viewer Kiriko {'ok': True}
+{'screen': 'DeathScreen', 'inWorld': True, 'x': -84.01, 'y': -100.61, 'z': -36.26, 'yaw': -10.93, 'pitch': -23.74, 'health': 0.0, 'hero': 'kiriko', 'heroMode': False, 'ult': 251.0, 'primaryAmmo': 15, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko', 'food': 20}
+{'screen': 'DeathScreen', 'inWorld': True, 'x': -84.01, 'y': -198.27, 'z': -36.26, 'yaw': -10.93, 'pitch': -23.74, 'health': 0.0, 'hero': 'mercy', 'heroMode': False, 'ult': 157.0, 'primaryAmmo': 25, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy', 'food': 20}
+[18:34:41] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 44560 KB; 1e286f74[seg seg-1 raw 35114 KB, 0 zips 0 KB, folder 34710 KB, highlights 0] c6f66a25[seg seg-3 raw 6228 KB, 2 zips 4725 KB, folder 9848 KB, highlights 4]
+=== phase night 19:04:49
+/time set midnight {'ok': True}
+/gamerule minecraft:advance_time false {'ok': True}
+/effect give @a minecraft:resistance 99999 2 true {'ok': True}
+/tp Viewer Kiriko {'ok': True}
+{'screen': '', 'inWorld': True, 'x': 0.5, 'y': 61.0, 'z': 30.5, 'yaw': -96.96, 'pitch': -9.89, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 2, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko', 'food': 20}
+{'screen': '', 'inWorld': True, 'x': 0.5, 'y': 61.0, 'z': 30.5, 'yaw': -171.59, 'pitch': -61.57, 'health': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 171.25, 'primaryAmmo': 25, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy', 'food': 20}
+[19:04:52] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight Sharpshooter 164 (seg-8.zip)
+[19:04:53] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 500 (seg-8.zip)
+[19:04:54] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 736 (seg-8.zip)
+[19:04:55] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1059 (seg-8.zip)
+[19:04:56] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1500 (seg-8.zip)
+[19:05:07] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 20071 KB; 1e286f74[seg seg-2 raw 9746 KB, 0 zips 0 KB, folder 9182 KB, highlights 0] c6f66a25[seg seg-8 raw 5273 KB, 3 zips 6189 KB, folder 10888 KB, highlights 5]
+=== phase night 19:13:38
+/time set midnight {'ok': True}
+/gamerule minecraft:advance_time false {'ok': True}
+/effect give @a minecraft:resistance 99999 2 true {'ok': True}
+/tp Viewer Kiriko {'ok': True}
+{'screen': '', 'inWorld': True, 'x': -6.07, 'y': 61.0, 'z': 29.96, 'yaw': -94.92, 'pitch': -1.25, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True, 'ult': 2725.0, 'primaryAmmo': 2, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'kiriko', 'food': 20}
+{'screen': '', 'inWorld': True, 'x': 0.5, 'y': 61.0, 'z': 30.5, 'yaw': -96.96, 'pitch': -9.89, 'health': 18.0, 'hero': 'mercy', 'heroMode': True, 'ult': 191.5, 'primaryAmmo': 25, 'camera': 'FIRST_PERSON off blend 0.00 dist -1.00', 'heroAttached': 'mercy', 'food': 20}
+[19:13:43] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 500 (seg-9.zip)
+[19:13:44] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 736 (seg-9.zip)
+[19:13:45] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1000 (seg-9.zip)
+[19:13:46] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1236 (seg-9.zip)
+[19:13:47] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 1500 (seg-9.zip)
+[19:13:56] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 20451 KB; 1e286f74[seg seg-1 raw 9750 KB, 0 zips 0 KB, folder 9182 KB, highlights 0] c6f66a25[seg seg-9 raw 6726 KB, 4 zips 6533 KB, folder 11268 KB, highlights 5]

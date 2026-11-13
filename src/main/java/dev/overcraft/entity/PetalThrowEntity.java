@@ -29,6 +29,23 @@ import net.minecraft.world.phys.Vec3;
  * bounces"; how much is ours), creatures don't stop it.
  */
 public class PetalThrowEntity extends OwProjectile {
+	/** Strong: Grasp can't take it (the wiki's Sigma page). */
+	@Override
+	public boolean strong() {
+		return true;
+	}
+
+	/**
+	 * An enemy barrier: it "acts as if it has hit a wall, bouncing off and deploying" (the wiki's Barrier page): off it as
+	 * off a wall (onHitBlock), so it lands and opens on the ground before it.
+	 */
+	@Override
+	public void hitBarrier(Vec3 at, Vec3 normal) {
+		Vec3 v = getDeltaMovement();
+		setPos(at.add(normal.scale(hitRadius() + 0.01)));
+		setDeltaMovement(v.subtract(normal.scale(2 * v.dot(normal))).scale(BOUNCE));
+	}
+
 	private static final EntityDataAccessor<Boolean> SEED = SynchedEntityData.defineId(PetalThrowEntity.class, EntityDataSerializers.BOOLEAN);
 	/**
 	 * A bounce keeps this much of the speed (ours: the data's bounce block isn't read, L). Half sent a platform thrown
