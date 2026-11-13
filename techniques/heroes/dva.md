@@ -502,6 +502,23 @@ pilot and a seated one overlap was not checked: open); the 1P mech's 0x175 (33CF
 are still the stand-in, step 11's effects run); whether 0276 #175 is the engine's own fade; a call on a slope or a ledge (the clip's camera
 assumes the spot's ground is level with hers); two clients (the bot stood in for the other player).
 
+### The critic's round on 83b6bfa (2026-11-13)
+A critic reproduced five things with harness keys; each reproduced here on 83b6bfa (world `dvaanim3`), fixed, then replayed on the fixed
+tree (`dvaanim4`), one client, harness keys:
+
+| # | Finding | Before (83b6bfa) | Fix | After |
+| --- | --- | --- | --- | --- |
+| 1 | The Light Gun hung mid-view during the 1P call | gun and keychain at the centre at 1.1 / 1.5 s (`b_gun_11.png`, `b_gun_15.png`), and in the End after a level change (`b_dim_12.png`) | `HeroWeapon.place`: no gun in her 1P view while CALLING. Data: the gun is the weapon graph's cosmetic entity (02B8 #73, hp 000A); no node in 026A was found hiding it during the call, so this follows the clips (3531 / 3134 key no gun bone): ours | no gun at 1.1 / 1.5 s (`c_gun_11.png`, `c_gun_15.png`) nor in the End at 1.2 s (`c_dim_12.png`); back in her hand after the cancel (`c_dim_32.png`) |
+| 2a | The climb's camera went into a wall at her back | with her back 0.05 m from stone, the anchored camera's start (2.06 m behind the spot) was inside the wall by position; the forward view looked normal (`b_wall2_05.png`): not seen on screen | `DvaCallView.inOpenAir`: the view is pulled in along the ray from her eyes, eight rays round a 0.2 m cube, 0.1 m off the face (Minecraft's own third-person rule) | forward view unchanged (`c_wall_05.png`); the camera kept on her side of the wall by construction (not measured on screen) |
+| 2b | Off a 2-block ledge the view sank 2 m into the block | at 0.5 s inside the ledge, stone faces round the view (`b_ledge_05.png`) | a spot more than a step (0.6 m) above or below her keeps her height (ours), plus 2a | at 0.5 / 1.0 / 1.5 s her own height, looking down onto the mech landing below (`c_ledge_05.png`, `c_ledge_10.png`, `c_ledge_15.png`) |
+| 2c | A slope | - | - | a half-slab spot 0.5 m up: the climb onto the slab, linked at y -59.5 (`c_slope_10.png`, `c_slope_15.png`) |
+| 3 | A level change mid-call dropped her into the void | `/execute in minecraft:the_end run tp @s 100 50 0` at 0.7 s: linked in the End at the old spot, y -114, 54 -> 40 (`b_dim_32.png`) | `Dva.tickCall`: a call whose level (`HeroState.dvaCallLevel`) isn't hers is cut short as G does: the mech removed from the old level, she's the pilot, the charge spent | the pilot, 14 / 14, standing at y 49 on the End island, Call Mech charging from 0 (`c_dim_32.png`) |
+| 4 | 0276 #175 STU_A90C5991 | - | **Not decided; our fade kept.** Its three uses: here (1 / 1 / 1, on the mech's spawn, before #176), Junkrat's RIP-Tire 0233 #343 (m_5C22817C 1 only, on the tire entity) and Steel Trap 09BB #577 (m_2B82763B 0.25, m_5C22817C 0, after an 8 s wait on the trap). A trap has no camera of its own, so a screen fade doesn't fit all three; an entity's own appear / fade (a dissolve over m_2B82763B s) fits them better (L). | - |
+| 5 | Small guards | - | `DvaCallView.camera`: a pose time in the future (a rejoin into a world whose clock is behind) is stale. **F1 not done:** the black is drawn in the HUD, so a hidden GUI hides it (open) | by reading |
+
+**Still open:** the F1 black (above); the wall row was not seen on screen either way; whether 0276 #175 is an entity fade; real mouse
+and keys.
+
 ## Not yet
 Her **visual effects** (111) and the firing / matrix clips; the hologram colours (step 12's open list); real mouse-and-keys play of step 13. Open
 from steps 4-6: Kinetic Grasp onto `Barriers.absorbBox`; the Toggle Defense Matrix and Hold To Use Boosters options; a guardian's beam

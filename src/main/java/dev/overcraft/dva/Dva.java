@@ -414,6 +414,7 @@ public final class Dva implements HeroKit {
 		s.dvaTicks = 0;
 		s.dvaCallSpot = spot;
 		s.dvaCallYaw = player.getYRot();
+		s.dvaCallLevel = player.level().dimension();
 		player.setAttached(HeroManager.DVA_FORM, CALLING);
 		player.setDeltaMovement(0, Math.min(0, player.getDeltaMovement().y), 0);
 		player.needsSync = true;
@@ -450,6 +451,18 @@ public final class Dva implements HeroKit {
 	private static void tickCall(ServerPlayer player, HeroState s) {
 		ServerLevel level = (ServerLevel) player.level();
 		s.ultActive = Math.max(s.ultActive, 2);
+		if (s.dvaCallLevel != null && player.level().dimension() != s.dvaCallLevel) {
+			// she changed level mid-call (a portal, a /tp): the spot is the old level's, so linking there dropped her into the
+			// void (the critic of 83b6bfa, #133). Cut short as G does: the new mech goes, the charge stays spent (026A #431 onAbort)
+			ServerLevel old = ((ServerLevel) player.level()).getServer().getLevel(s.dvaCallLevel);
+			if (old != null && s.dvaMechId != null && old.getEntity(s.dvaMechId) instanceof DvaMechEntity mech) {
+				mech.discard();
+			}
+			s.dvaMechId = null;
+			s.dvaForm = PILOT;
+			player.setAttached(HeroManager.DVA_FORM, PILOT);
+			return;
+		}
 		if (Sleep.asleep(player) || s.dvaCallSpot == null) {
 			// a stun before the link: the new mech is removed and the charge is spent (D 026A #431 onAbort -> #121, M)
 			removeMech(player, s);
