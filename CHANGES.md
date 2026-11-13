@@ -4,6 +4,23 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-13: 0.3.40 on next (not on main yet)
+
+- **Cassidy (#72)**, the whole kit with his game data's numbers (build 154088; his last live change, 2026-08-11, is older):
+  - Peacekeeper: 70 a shot (x2 on the head), 6 rounds; Fan the Hammer (right button);
+  - Combat Roll (Shift): 6 m, reloads, 50 % less damage during it; Flashbang (E): 75 and a 1.2 s hinder (his live kit
+    since 2024-06-20, not Magnetic Grenade);
+  - Deadeye (Q): locks every enemy in sight, 150 a second then 300, a skull when the shot would kill (armor counted);
+  - Sharpshooter (his sub-role passive), four perks, quick melee, HUD.
+  - Models, voice and emotes come from the player's own install, as for every hero.
+- Fixed in his critic's round: Combat Roll's client and server could disagree (a free roll, or a spent one that didn't
+  move him); Deadeye fired at nothing and spent the ult; its skull ignored armor; he could jump and melee in Deadeye;
+  his shots on the dragon's head did a quarter; Flashbang burst late.
+- Played by his builder, a critic, the fixer and the coordinator's real-input pass
+  (`techniques/testing/runs/cassidy/real_keys_633b3c4.md`).
+- Not yet: his real visual effects, Deadeye's first-person clips (left out: they filled the view), a second player, a
+  Workshop recording of his movement.
+
 ## 2026-11-12: 0.3.39 on next (not on main yet)
 
 - **Every hero (#130), matched to the owner's Workshop recordings:** letting go of the keys stops a hero a little sooner
