@@ -281,6 +281,15 @@ public final class HeroManager {
 	}
 
 	/**
+	 * Whether a push of a hero's own blast (a frag's, a rocket's) lands them soft: only one that leaves them going up, {@code vy} their
+	 * vertical speed after it. One that only slows a fall is a fall (the critic, 2026-11-13: a frag burst under Junkrat 0.4 s into a 20 m
+	 * fall left him at -5.8 m/s, and the whole fall was forgiven; Pharah's rocket the same).
+	 */
+	public static boolean pushLandsSoft(double vy) {
+		return Holds.pushLandsSoft(vy);
+	}
+
+	/**
 	 * A movement ability's fall doesn't count until they're down after it (CLAUDE.md, #35): each tick while {@code moving} or still falling from it. {@code grace}: not down yet whatever the
 	 * ground says, just after a teleport, when the server's onGround is the place she left.
 	 */

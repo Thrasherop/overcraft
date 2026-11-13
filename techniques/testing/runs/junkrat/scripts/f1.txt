@@ -1,0 +1,34 @@
+# F1 RIP-Tire cast in mid-air: is his body held in the air, then a full fall? (critic's repro)
+MARK F1 /tp to y -40 over the -60 floor, ult 100, Q 0.15 s into the fall; his y every 0.5 s, health before and after (bug: y stays ~-40.2 for the tire, then 20 m fall)
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /effect clear @s
+cmd /effect give @s minecraft:instant_health 1 5
+sleep 1
+cmd /overcraft ult
+sleep 0.5
+state
+cmd /tp @s 0.5 -40 0.5 0 0
+sleep 0.15
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 0.5
+state
+sleep 0.5
+state
+sleep 0.5
+state
+screenshot jr_f1_air.png
+sleep 1
+state
+sleep 1
+state
+MARK F1 set it off (Q), then read health
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 2
+state
+sleep 1
+state

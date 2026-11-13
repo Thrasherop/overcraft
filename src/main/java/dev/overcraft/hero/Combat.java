@@ -869,7 +869,8 @@ public final class Combat {
 	}
 
 	/** A timed attribute buff on an entity (Foxtrot's speed), until a game time. */
-	private record Buff(LivingEntity entity, Holder<Attribute> attribute, Identifier id, double amount, long until) {
+	private record Buff(LivingEntity entity, Holder<Attribute> attribute, Identifier id, double amount, AttributeModifier.Operation op,
+						long until) {
 	}
 
 	private static final Map<String, Buff> buffs = new HashMap<>();
@@ -879,10 +880,19 @@ public final class Combat {
 	 * taken off after, as Kitsune Rush's are.
 	 */
 	public static void buff(LivingEntity entity, Holder<Attribute> attribute, Identifier id, double amount, double seconds) {
+		buff(entity, attribute, id, amount, seconds, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+	}
+
+	/**
+	 * The same with Minecraft's operation named: ADD_MULTIPLIED_TOTAL -1 takes the attribute to nothing whatever else is on it (a root:
+	 * Junkrat.root; a base share of -1 left a baby's +50 % speed, and it walked out of Steel Trap, the critic, 2026-11-13).
+	 */
+	public static void buff(LivingEntity entity, Holder<Attribute> attribute, Identifier id, double amount, double seconds,
+							AttributeModifier.Operation op) {
 		long until = now(entity) + Ow.ticks(seconds);
-		buffs.merge(entity.getUUID() + "/" + id, new Buff(entity, attribute, id, amount, until),
+		buffs.merge(entity.getUUID() + "/" + id, new Buff(entity, attribute, id, amount, op, until),
 			(old, fresh) -> fresh.until > old.until ? fresh : old);
-		setModifier(entity, attribute, id, amount);
+		setModifier(entity, attribute, id, amount, op);
 	}
 
 	/** Every server tick: Kitsune Rush's attribute buffs on and off, expired entries dropped. */
@@ -892,7 +902,7 @@ public final class Combat {
 		while (buffIt.hasNext()) {
 			Buff buff = buffIt.next();
 			if (!buff.entity.isAlive() || buff.entity.isRemoved() || now(buff.entity) >= buff.until) {
-				setModifier(buff.entity, buff.attribute, buff.id, 0);
+				setModifier(buff.entity, buff.attribute, buff.id, 0, buff.op);
 				buffIt.remove();
 			}
 		}
@@ -916,6 +926,11 @@ public final class Combat {
 	}
 
 	private static void setModifier(LivingEntity entity, Holder<Attribute> attribute, Identifier id, double amount) {
+		setModifier(entity, attribute, id, amount, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+	}
+
+	private static void setModifier(LivingEntity entity, Holder<Attribute> attribute, Identifier id, double amount,
+									AttributeModifier.Operation op) {
 		AttributeInstance instance = entity.getAttribute(attribute);
 		if (instance == null) {
 			return;
@@ -923,11 +938,11 @@ public final class Combat {
 		AttributeModifier current = instance.getModifier(id);
 		if (amount == 0) {
 			instance.removeModifier(id);
-		} else if (current == null || current.amount() != amount) {
+		} else if (current == null || current.amount() != amount || current.operation() != op) {
 			// a changed amount replaces it (Local Anesthetic's slow eases from 40% to 20%: it stayed at 40% when only
 			// a missing one was added)
 			instance.removeModifier(id);
-			instance.addTransientModifier(new AttributeModifier(id, amount, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+			instance.addTransientModifier(new AttributeModifier(id, amount, op));
 		}
 	}
 

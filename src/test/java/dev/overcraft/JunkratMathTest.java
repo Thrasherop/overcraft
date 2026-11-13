@@ -93,6 +93,27 @@ class JunkratMathTest {
 	}
 
 	@Test
+	void rootHoldsABaby() {
+		// a baby's +50 % of base and the root, in Minecraft's order: nothing left (a base share of -1 left 0.115, the critic's baby husk)
+		var baby = new net.minecraft.world.entity.ai.attributes.AttributeModifier(net.minecraft.resources.Identifier.withDefaultNamespace("baby"),
+			0.5, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+		var root = new net.minecraft.world.entity.ai.attributes.AttributeModifier(Junkrat.rootSpeedId(), -1, Junkrat.ROOT_OP);
+		assertEquals(0, dev.overcraft.hero.Tank.resistedValue(0.23, java.util.List.of(baby, root), java.util.Set.of(Junkrat.rootSpeedId())), 1e-12);
+		// a flat speed bonus too
+		var flat = new net.minecraft.world.entity.ai.attributes.AttributeModifier(net.minecraft.resources.Identifier.withDefaultNamespace("flat"),
+			0.1, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_VALUE);
+		assertEquals(0, dev.overcraft.hero.Tank.resistedValue(0.23, java.util.List.of(flat, root), java.util.Set.of(Junkrat.rootSpeedId())), 1e-12);
+	}
+
+	@Test
+	void tireOverdue() {
+		// a tire that stopped ticking goes off on his clock half a second past its 10 s; one ticking goes off itself at 10 s
+		assertFalse(Junkrat.tireOverdue(200));
+		assertFalse(Junkrat.tireOverdue(210));
+		assertTrue(Junkrat.tireOverdue(211));
+	}
+
+	@Test
 	void nitro() {
 		// +100 % at the start, +62.5 % at 1 s, +25 % from 2 s to 2.5 s, then none
 		assertEquals(1.0, Junkrat.nitroShare(0), 1e-9);

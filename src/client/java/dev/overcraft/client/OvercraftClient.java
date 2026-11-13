@@ -340,6 +340,8 @@ public class OvercraftClient implements ClientModInitializer {
 		// (and Cassidy in Deadeye: W, no jump while channelling)
 		OwMovement.noJump = entity -> entity == mc.player && (ClientHero.hero() == Hero.SIGMA
 			&& (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_GATHER) != 0 || ClientCassidy.inDeadeye()
+			// Junkrat on his tire: Jump is the tire's (Junkrat.driveTire), not his
+			|| ClientJunkrat.inputsOff(entity)
 			// rooted (Steel Trap: its jump strength taken to nothing, as a creature's, Junkrat.root)
 			|| entity.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.JUMP_STRENGTH) <= 1.0E-4);
 		OwMovement.sigmaFlight = entity -> entity != mc.player || ClientHero.hero() != Hero.SIGMA
@@ -358,9 +360,9 @@ public class OvercraftClient implements ClientModInitializer {
 		// Pharah's Hover Jets (and the push her jets turn on)
 		OwMovement.pharahHover = ClientPharah::hover;
 		OwMovement.pharahBarrage = ClientPharah::barrageFlight;
-		// Tracer's Recall holds her still while the server moves her
-		// (and Junkrat while his RIP-Tire runs: D 0232 #476 zeroes his movement inputs)
-		OwMovement.held = entity -> ClientTracer.held(entity) || ClientJunkrat.held(entity);
+		// Tracer's Recall holds her still while the server moves her (Junkrat's tire doesn't: only his inputs are off, gravity still
+		// acts on him: ClientJunkrat.inputsOff, KeyboardInputMixin)
+		OwMovement.held = ClientTracer::held;
 		OwMovement.undamped = ClientMercy::undamped;
 		OwMovement.boosting = entity -> entity == mc.player ? ClientHero.boostTicks() : -1;
 		OwMovement.driven = entity -> entity == mc.player && ClientHero.hero() == Hero.JETPACK_CAT && ClientHero.catnapperDriven();

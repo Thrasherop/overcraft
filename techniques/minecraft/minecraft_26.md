@@ -28,6 +28,11 @@ Read Minecraft's decompiled 26.3 sources for every API (`gradlew genSources`; th
 - **Slows are speed modifiers in Minecraft's order** (`AttributeInstance.calculateValue`: base + flat, then the base's shares,
   then each total share multiplied): Slowness is -0.15 a level of the total, Local Anesthetic a share of the base. Resisting
   "slows received" means recomputing the value with the negative ones scaled (`Tank.resistedValue`), keeping a hero's own.
+- **A root is ADD_MULTIPLIED_TOTAL -1, not a base share** (2026-11-13, [junkrat](../heroes/junkrat.md)): -1 of the base leaves
+  every other base share and flat add (a baby's +50 % speed: a baby husk walked through Steel Trap at 0.115). x0 of the total
+  holds anything (`Combat.buff(..., op)`, `Junkrat.root`). Jump Boost's power is added past the attribute
+  (`LivingEntity.getJumpPower` + `getJumpBoostPower`), so a root also cancels `jumpFromGround` outright (`LivingEntityMixin`). A
+  root isn't a slow: keep it out of a Stalwart's resistance (`Tank.OWN_SLOWS`).
 - **Synced Fabric attachments** must be registered at mod start, not lazily from an event.
 - **Minecraft's projectile hits ignore the projectile's size:** `ProjectileUtil.computeMargin` widens the target boxes
   from 0 to 0.3 m over the first 8 ticks. An Overwatch radius needs that margin replaced (`ProjectileUtilMixin`). Test
@@ -113,6 +118,13 @@ the flag is up rather than relying on the flag at the damage event (Mercy's land
 Again 2026-11-02 (D.Va's Boosters, [heroes/dva](../heroes/dva.md)): the server took her client's "on the ground" 2 m above
 it, two ticks before she landed, and the cleared flag let a 12.8 m fall through (8.44 lost). Every new soft landing should
 reset the fall each tick from the start; check this note before writing one.
+
+The other side (2026-11-13, [junkrat](../heroes/junkrat.md), Pharah the same): a **self-push from a hero's own blast lands soft
+only when it leaves them going up** (`HeroManager.pushLandsSoft`: vy > 0 after `Combat.push`, which starts from the speed the
+client last reported). A frag burst 0.4 s into a 20 m fall left Junkrat at -5.8 m/s and forgave the whole fall; a rocket under
+a falling Pharah the same. A launch that replaces the speed (the mine jump, `Combat.launch`) still sets it. And holding a hero
+still for an ability isn't forgetting their fall: hold the inputs, not the body (RIP-Tire cast in mid-air hung him there for
+10 s, then dropped him the whole way: `ClientJunkrat.inputsOff`).
 
 ## A ledge assist must also carry the hero over
 Lifting a hero who presses into a ledge in the air (OwMovement.ledge) isn't enough: the ledge's face has already

@@ -495,3 +495,375 @@
 03:30:01.114 hp @e[tag=j8c,limit=1] Pos -> Husk has the following entity data: [0.5020776296975692d, -60.0d, 1.7266239893212179d]
 03:30:01.526 hp @e[tag=j8c,limit=1] -> Husk has the following entity data: 92.0f
 03:30:01.550 ents Trap -> {"ents":"247 0.43 -59.99 2.79 v 0.00 0.00 0.00 t335 | "}
+
+=== F1-before 2026-11-13 03:57:43
+03:57:43.806 ﻿# F1 RIP-Tire cast in mid-air: is his body held in the air, then a full fall? (critic's repro) -> {"error":"unknown command ﻿#"}
+
+=== F1-before 2026-11-13 03:57:48
+03:57:48.154 MARK F1 /tp to y -40 over the -60 floor, ult 100, Q 0.15 s into the fall; his y every 0.5 s, health before and after (bug: y stays ~-40.2 for the tire, then 20 m fall)
+03:57:48.161 cmd /kill @e[type=!player] -> {"ok":true}
+03:57:48.167 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+03:57:48.176 cmd /effect clear @s -> {"ok":true}
+03:57:48.185 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+03:57:49.187 cmd /overcraft ult -> {"ok":true}
+03:57:49.699 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 2100.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:57:49.700 cmd /tp @s 0.5 -40 0.5 0 0 -> {"ok":true}
+03:57:49.859 key ultimate down -> {"key":"key.keyboard.q"}
+03:57:49.961 key ultimate up -> {"key":"key.keyboard.q"}
+03:57:50.470 state -> {"screen": "", "x": 0.5, "y": -40.546, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_cast"}
+03:57:50.977 state -> {"screen": "", "x": 0.5, "y": -40.546, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_cast"}
+03:57:51.483 state -> {"screen": "", "x": 0.5, "y": -40.546, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_cast"}
+03:57:51.491 screenshot jr_f1_air.png -> {"file":"E:\\claude\\mods\\overcraft_junkrat\\run\\screenshots\\jr_f1_air.png"}
+03:57:52.493 state -> {"screen": "", "x": 0.5, "y": -40.546, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_cast"}
+03:57:53.501 state -> {"screen": "", "x": 0.5, "y": -40.546, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_cast"}
+03:57:53.501 MARK F1 set it off (Q), then read health
+03:57:53.509 key ultimate down -> {"key":"key.keyboard.q"}
+03:57:53.620 key ultimate up -> {"key":"key.keyboard.q"}
+03:57:55.626 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 4.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 10.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_end"}
+03:57:56.636 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 4.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 15.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_end"}
+
+=== F2-before 2026-11-13 03:58:00
+03:58:00.814 MARK F2 a trap 3 m ahead, an AI baby husk 7 m off walking in (bug: it keeps 0.115 speed and walks past)
+03:58:00.817 cmd /kill @e[type=!player] -> {"ok":true}
+03:58:00.826 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+03:58:00.835 cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 3.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+03:58:11.847 key ability_2 down -> {"key":"key.keyboard.e"}
+03:58:12.014 key ability_2 up -> {"key":"key.keyboard.e"}
+03:58:13.527 ents Trap -> {"ents":"663 0.44 -59.99 2.88 v 0.00 0.00 0.00 t61 | "}
+03:58:13.579 cmd /summon husk 0.5 -60 8.5 {Tags:["f2"],IsBaby:1b,attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100},{id:"minecraft:follow_range",base:32}],Health:100f} -> {"ok":true}
+03:58:14.805 hp @e[tag=f2,limit=1] Pos -> Husk has the following entity data: [0.5d, -60.0d, 8.5d]
+03:58:15.742 hp @e[tag=f2,limit=1] Pos -> Husk has the following entity data: [1.5113347661976062d, -60.0d, 4.594150115605824d]
+03:58:16.174 hp @e[tag=f2,limit=1] -> Husk has the following entity data: 92.0f
+03:58:17.112 hp @e[tag=f2,limit=1] Pos -> Husk has the following entity data: [1.4718595822775689d, -60.0d, 2.920616064756147d]
+03:58:18.046 hp @e[tag=f2,limit=1] Pos -> Husk has the following entity data: [1.161875516988184d, -60.0d, 2.4632970381241326d]
+03:58:18.073 screenshot jr_f2_trap.png -> {"file":"E:\\claude\\mods\\overcraft_junkrat\\run\\screenshots\\jr_f2_trap.png"}
+03:58:19.000 hp @e[tag=f2,limit=1] Pos -> Husk has the following entity data: [0.4873124418945086d, -60.0d, 0.02510851940832326d]
+03:58:19.926 hp @e[tag=f2,limit=1] Pos -> Husk has the following entity data: [0.4054180492076872d, -60.0d, -0.6073028894722301d]
+03:58:20.359 hp @e[tag=f2,limit=1] -> Husk has the following entity data: 92.0f
+03:58:20.388 servercmd /attribute @e[tag=f2,limit=1] minecraft:movement_speed get -> {"ok":true}
+03:58:20.421 ents Trap -> {"ents":"663 0.44 -59.99 2.88 v 0.00 0.00 0.00 t337 | "}
+03:58:20.455 cmd /kill @e[tag=f2] -> {"ok":true}
+
+=== F3-before 2026-11-13 03:58:24
+03:58:24.893 MARK F3a control: a 20 m /tp fall, nothing else (expected 20 -> about 3 MC)
+03:58:24.899 cmd /kill @e[type=!player] -> {"ok":true}
+03:58:24.934 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+03:58:25.936 cmd /tp @s 0.5 -40 0.5 0 0 -> {"ok":true}
+03:58:28.949 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 3.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 697.0, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:58:28.976 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+03:58:29.977 MARK F3b the same fall, a NoGravity husk 2 m below his start, a frag fired straight down 0.4 s in (bug: lands at 20.0)
+03:58:29.977 cmd /tp @s 0.5 -60 0.5 0 90 -> {"ok":true}
+03:58:30.012 cmd /summon husk 0.5 -44 0.5 {Tags:["f3"],NoAI:1b,NoGravity:1b,attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+03:58:30.043 cmd /tp @s 0.5 -40 0.5 0 90 -> {"ok":true}
+03:58:30.446 key secondary_fire down -> {"key":"key.mouse.left"}
+03:58:30.579 key secondary_fire up -> {"key":"key.mouse.left"}
+03:58:30.714 state -> {"screen": "", "x": 0.269, "y": -42.662, "z": 0.362, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 830.75, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.148, "vy": -0.292, "vz": -0.089, "anim": "idle"}
+03:58:33.719 state -> {"screen": "", "x": -4.898, "y": -60.0, "z": -2.74, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 845.75, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:58:33.752 cmd /kill @e[tag=f3] -> {"ok":true}
+03:58:33.786 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+
+=== F4-before 2026-11-13 03:58:38
+03:58:38.104 MARK F4 Q, then into the Nether; ult and mode every 2 s (bug: ult stays 0 for ~12 s; mode has the tire bit)
+03:58:38.133 cmd /kill @e[type=!player] -> {"ok":true}
+03:58:38.168 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+03:58:38.202 cmd /overcraft ult -> {"ok":true}
+03:58:38.736 key ultimate down -> {"key":"key.keyboard.q"}
+03:58:38.869 key ultimate up -> {"key":"key.keyboard.q"}
+03:58:39.880 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 65, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_cast"}
+03:58:39.906 cmd /execute in minecraft:the_nether run tp @s 0.5 120 0.5 -> {"ok":true}
+03:58:41.921 state -> {"screen": "LevelLoadingScreen", "x": 0.5, "y": 120.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:58:41.953 servercmd /execute in minecraft:the_nether run fill -2 119 -2 2 119 2 minecraft:obsidian -> {"ok":true}
+03:58:41.987 servercmd /execute in minecraft:the_nether run fill -2 120 -2 2 122 2 minecraft:air -> {"ok":true}
+03:58:42.023 servercmd /execute in minecraft:the_nether run tp @a 0.5 120 0.5 -> {"ok":true}
+03:58:44.029 state -> {"screen": "LevelLoadingScreen", "x": 0.5, "y": 120.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:58:44.029 MARK F4 a frag at a husk in the Nether: does ult charge rise?
+03:58:44.061 servercmd /execute in minecraft:the_nether run summon husk 0.5 120 4.5 {Tags:["f4"],NoAI:1b,attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+03:58:44.096 cmd /execute as @s at @s anchored eyes facing 0.5 120.5 4.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+03:58:44.628 key secondary_fire down -> {"key":"key.mouse.left"}
+03:58:44.762 key secondary_fire up -> {"key":"key.mouse.left"}
+03:58:46.270 state -> {"screen": "LevelLoadingScreen", "x": 0.5, "y": 120.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:58:50.279 state -> {"screen": "", "x": 0.5, "y": 120.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:58:50.312 cmd /kill @e[tag=f4] -> {"ok":true}
+03:58:50.346 cmd /execute in minecraft:overworld run tp @s 0.5 -60 0.5 -> {"ok":true}
+03:58:52.358 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== F5-before 2026-11-13 03:58:57
+03:58:57.817 MARK F5 a 3-high stone wall at z 2; the mine thrown onto its far side at z 3.5; he stands at z 0.5 (1 m of stone between); the right button (seen: launched? data: distance only)
+03:58:57.843 cmd /kill @e[type=!player] -> {"ok":true}
+03:58:57.877 cmd /fill -3 -60 2 3 -57 2 stone -> {"ok":true}
+03:58:57.911 cmd /tp @s 0.5 -60 3.5 0 90 -> {"ok":true}
+03:58:58.912 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+03:58:59.045 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+03:59:00.248 ents Mine -> {"ents":"1110 0.49 -59.90 3.51 v 0.00 0.00 0.00 t46 | "}
+03:59:00.281 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+03:59:01.293 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 26.25, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+mine_throw"}
+03:59:01.317 key primary_fire down -> {"key":"key.mouse.right"}
+03:59:01.418 key primary_fire up -> {"key":"key.mouse.right"}
+03:59:01.584 state -> {"screen": "", "x": 0.513, "y": -56.797, "z": -2.705, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 27.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.002, "vy": 0.531, "vz": -0.561, "anim": "idle+mine_detonate"}
+03:59:01.919 state -> {"screen": "", "x": 0.524, "y": -54.397, "z": -5.617, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 29.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.002, "vy": 0.269, "vz": -0.43, "anim": "idle+mine_detonate"}
+03:59:03.929 state -> {"screen": "", "x": 0.557, "y": -60.0, "z": -13.737, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 39.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+mine_detonate"}
+03:59:03.963 cmd /fill -3 -60 2 3 -57 2 air -> {"ok":true}
+
+=== P3-before 2026-11-13 03:59:13
+03:59:13.855 hero pharah -> {"ok":true}
+03:59:15.360 close -> {"ok":true}
+03:59:15.360 MARK P3a control: a 20 m /tp fall, nothing else (expected 20 -> about 3 MC)
+03:59:15.390 cmd /kill @e[type=!player] -> {"ok":true}
+03:59:15.423 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+03:59:16.428 cmd /tp @s 0.5 -40 0.5 0 0 -> {"ok":true}
+03:59:19.442 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 1.0, "onGround": true, "heroMode": true, "hero": "pharah", "ult": 28.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": -1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:59:19.468 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+03:59:20.469 MARK P3b the same fall, a NoGravity husk 2 m below his start, a rocket fired straight down 0.4 s in (bug: lands at 20.0)
+03:59:20.472 cmd /tp @s 0.5 -60 0.5 0 90 -> {"ok":true}
+03:59:20.507 cmd /summon husk 0.5 -44 0.5 {Tags:["P3"],NoAI:1b,NoGravity:1b,attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+03:59:20.539 cmd /tp @s 0.5 -40 0.5 0 90 -> {"ok":true}
+03:59:20.973 key secondary_fire down -> {"key":"key.mouse.left"}
+03:59:21.107 key secondary_fire up -> {"key":"key.mouse.left"}
+03:59:21.208 state -> {"screen": "", "x": -0.087, "y": -41.78, "z": -0.406, "yaw": 0.0, "health": 16.4, "onGround": false, "heroMode": true, "hero": "pharah", "ult": 156.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": -1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.19, "vy": 0.062, "vz": -0.293, "anim": "idle"}
+03:59:24.220 state -> {"screen": "", "x": -5.324, "y": -60.0, "z": -8.482, "yaw": 0.0, "health": 16.4, "onGround": true, "heroMode": true, "hero": "pharah", "ult": 171.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": -1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:59:24.250 cmd /kill @e[tag=P3] -> {"ok":true}
+03:59:24.283 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+
+=== P3c-before 2026-11-13 03:59:32
+03:59:32.770 hero pharah -> {"ok":true}
+03:59:34.274 close -> {"ok":true}
+03:59:34.274 MARK P3a control: a 20 m /tp fall, nothing else (expected 20 -> about 3 MC)
+03:59:34.307 cmd /kill @e[type=!player] -> {"ok":true}
+03:59:34.340 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+03:59:35.343 cmd /tp @s 0.5 -40 0.5 0 0 -> {"ok":true}
+03:59:38.359 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 1.0, "onGround": true, "heroMode": true, "hero": "pharah", "ult": 242.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": -1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:59:38.386 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+03:59:39.386 MARK P3c the fall, a NoGravity husk 12 m below his start, a rocket straight down 0.9 s in (falling fast: the push leaves her still falling) (bug: lands at 20.0)
+03:59:39.389 cmd /tp @s 0.5 -60 0.5 0 90 -> {"ok":true}
+03:59:39.422 cmd /summon husk 0.5 -52 0.5 {Tags:["P3"],NoAI:1b,NoGravity:1b,attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+03:59:39.456 cmd /tp @s 0.5 -40 0.5 0 90 -> {"ok":true}
+03:59:40.357 key secondary_fire down -> {"key":"key.mouse.left"}
+03:59:40.491 key secondary_fire up -> {"key":"key.mouse.left"}
+03:59:40.625 state -> {"screen": "", "x": 0.34, "y": -49.492, "z": 0.254, "yaw": 0.0, "health": 17.074, "onGround": false, "heroMode": true, "hero": "pharah", "ult": 373.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": -1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.08, "vy": -0.617, "vz": -0.123, "anim": "idle"}
+03:59:43.633 state -> {"screen": "", "x": -1.24, "y": -60.0, "z": -2.183, "yaw": 0.0, "health": 17.074, "onGround": true, "heroMode": true, "hero": "pharah", "ult": 388.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": -1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:59:43.664 cmd /kill @e[tag=P3] -> {"ok":true}
+03:59:43.698 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+
+=== F6-before 2026-11-13 03:59:55
+03:59:55.559 hero junkrat -> {"ok":true}
+03:59:57.065 close -> {"ok":true}
+03:59:57.065 MARK F6 mine and trap out in the Nether, /kill there, respawn in the Overworld (bug: mode keeps 2|64 = mine and trap out, while they're unreachable)
+03:59:57.098 cmd /spawnpoint @s 0 -60 0 -> {"ok":true}
+03:59:57.133 cmd /execute in minecraft:the_nether run tp @s 0.5 120 0.5 0 60 -> {"ok":true}
+04:00:01.152 state -> {"screen": "", "x": 0.5, "y": 120.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 28.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+04:00:01.178 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+04:00:01.311 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+04:00:02.321 key ability_2 down -> {"key":"key.keyboard.e"}
+04:00:02.483 key ability_2 up -> {"key":"key.keyboard.e"}
+04:00:03.988 state -> {"screen": "", "x": 0.5, "y": 120.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 42.25, "shield": 0.0, "mode": 66, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 8.85, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+trap_throw"}
+04:00:04.021 cmd /kill @s -> {"ok":true}
+04:00:06.036 respawn -> {"ok":true}
+04:00:10.051 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 62.25, "shield": 0.0, "mode": 66, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+04:00:10.084 servercmd /execute in minecraft:the_nether if entity @e[type=overcraft:concussion_mine] run say F6_NETHER_MINE_STILL_THERE -> {"ok":true}
+04:00:10.118 servercmd /execute in minecraft:the_nether if entity @e[type=overcraft:steel_trap] run say F6_NETHER_TRAP_STILL_THERE -> {"ok":true}
+04:00:10.151 key primary_fire down -> {"key":"key.mouse.right"}
+04:00:10.285 key primary_fire up -> {"key":"key.mouse.right"}
+04:00:11.288 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 68.5, "shield": 0.0, "mode": 66, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== F1-after 2026-11-13 04:05:39
+04:05:39.450 MARK F1 /tp to y -40 over the -60 floor, ult 100, Q 0.15 s into the fall; his y every 0.5 s, health before and after (bug: y stays ~-40.2 for the tire, then 20 m fall)
+04:05:39.462 cmd /kill @e[type=!player] -> {"ok":true}
+04:05:39.471 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+04:05:39.475 cmd /effect clear @s -> {"ok":true}
+04:05:39.485 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+04:05:40.489 cmd /overcraft ult -> {"ok":true}
+04:05:41.003 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 2100.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+04:05:41.010 cmd /tp @s 0.5 -40 0.5 0 0 -> {"ok":true}
+04:05:41.170 key ultimate down -> {"key":"key.keyboard.q"}
+04:05:41.273 key ultimate up -> {"key":"key.keyboard.q"}
+04:05:41.782 state -> {"screen": "", "x": 0.5, "y": -44.79, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.621, "vz": 0.0, "anim": "idle+tire_cast"}
+04:05:42.290 state -> {"screen": "", "x": 0.5, "y": -52.676, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.94, "vz": 0.0, "anim": "idle+tire_cast"}
+04:05:42.797 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 3.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_cast"}
+04:05:42.807 screenshot jr_f1_air.png -> {"file":"E:\\claude\\mods\\overcraft_junkrat\\run\\screenshots\\jr_f1_air.png"}
+04:05:43.810 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 3.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_cast"}
+04:05:44.813 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 3.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_cast"}
+04:05:44.813 MARK F1 set it off (Q), then read health
+04:05:44.820 key ultimate down -> {"key":"key.keyboard.q"}
+04:05:44.925 key ultimate up -> {"key":"key.keyboard.q"}
+04:05:46.931 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 3.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 10.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_end"}
+04:05:47.935 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 3.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 15.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_end"}
+
+=== F1b-after 2026-11-13 04:05:51
+04:05:51.427 MARK F1b on the ground: Q, then W and Space held 1 s (expected the tire drives off 12 m/s and jumps; he stays put, doesn't jump)
+04:05:51.429 cmd /kill @e[type=!player] -> {"ok":true}
+04:05:51.439 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+04:05:51.446 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+04:05:51.455 cmd /overcraft ult -> {"ok":true}
+04:05:52.456 key ultimate down -> {"key":"key.keyboard.q"}
+04:05:52.564 key ultimate up -> {"key":"key.keyboard.q"}
+04:05:53.366 key forward down -> {"key":"key.keyboard.w"}
+04:05:53.374 key jump down -> {"key":"key.keyboard.space"}
+04:05:54.378 ents Tire -> {"ents":"528 0.50 -58.59 12.10 v 0.00 -0.29 0.60 t38 | "}
+04:05:54.394 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_cast"}
+04:05:54.402 key jump up -> {"key":"key.keyboard.space"}
+04:05:54.907 key forward up -> {"key":"key.keyboard.w"}
+04:05:54.916 ents Tire -> {"ents":"528 0.50 -60.00 18.70 v 0.00 0.00 0.60 t49 | "}
+04:05:54.925 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_cast"}
+04:05:54.933 screenshot jr_f1b_drive.png -> {"file":"E:\\claude\\mods\\overcraft_junkrat\\run\\screenshots\\jr_f1b_drive.png"}
+04:05:54.941 key ultimate down -> {"key":"key.keyboard.q"}
+04:05:55.058 key ultimate up -> {"key":"key.keyboard.q"}
+04:05:56.562 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 8.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_end"}
+
+=== F2-after 2026-11-13 04:06:04
+04:06:04.211 MARK F2 a trap 3 m ahead, an AI baby husk 7 m off walking in (bug: it keeps 0.115 speed and walks past)
+04:06:04.230 cmd /kill @e[type=!player] -> {"ok":true}
+04:06:04.264 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+04:06:04.298 cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 3.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+04:06:15.300 key ability_2 down -> {"key":"key.keyboard.e"}
+04:06:15.466 key ability_2 up -> {"key":"key.keyboard.e"}
+04:06:16.972 ents Trap -> {"ents":"700 0.44 -59.99 2.88 v 0.00 0.00 0.00 t59 | "}
+04:06:17.021 cmd /summon husk 0.5 -60 8.5 {Tags:["f2"],IsBaby:1b,attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100},{id:"minecraft:follow_range",base:32}],Health:100f} -> {"ok":true}
+04:06:18.253 hp @e[tag=f2,limit=1] Pos -> Husk has the following entity data: [0.5d, -60.0d, 8.5d]
+04:06:19.191 hp @e[tag=f2,limit=1] Pos -> Husk has the following entity data: [0.4990302991925916d, -60.0d, 4.904884841098585d]
+04:06:19.622 hp @e[tag=f2,limit=1] -> Husk has the following entity data: 92.0f
+04:06:20.556 hp @e[tag=f2,limit=1] Pos -> Husk has the following entity data: [0.49930417225166834d, -60.0d, 4.118427383078068d]
+04:06:21.491 hp @e[tag=f2,limit=1] Pos -> Husk has the following entity data: [0.49930417225166834d, -60.0d, 4.118427383078068d]
+04:06:21.518 screenshot jr_f2_trap.png -> {"file":"E:\\claude\\mods\\overcraft_junkrat\\run\\screenshots\\jr_f2_trap.png"}
+04:06:22.428 hp @e[tag=f2,limit=1] Pos -> Husk has the following entity data: [0.49981768427034606d, -60.0d, 1.5494528968968977d]
+04:06:23.369 hp @e[tag=f2,limit=1] Pos -> Husk has the following entity data: [0.4999089753038947d, -60.0d, -0.33423222769602856d]
+04:06:23.800 hp @e[tag=f2,limit=1] -> Husk has the following entity data: 92.0f
+04:06:23.829 servercmd /attribute @e[tag=f2,limit=1] minecraft:movement_speed get -> {"ok":true}
+04:06:23.862 ents Trap -> {"ents":"700 0.44 -59.99 2.88 v 0.00 0.00 0.00 t335 | "}
+04:06:23.895 cmd /kill @e[tag=f2] -> {"ok":true}
+
+=== F3-after 2026-11-13 04:06:29
+04:06:29.151 MARK F3a control: a 20 m /tp fall, nothing else (expected 20 -> about 3 MC)
+04:06:29.176 cmd /kill @e[type=!player] -> {"ok":true}
+04:06:29.210 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+04:06:30.212 cmd /tp @s 0.5 -40 0.5 0 0 -> {"ok":true}
+04:06:33.229 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 3.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 291.25, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+04:06:33.254 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+04:06:34.256 MARK F3b the same fall, a NoGravity husk 2 m below his start, a frag fired straight down 0.4 s in (bug: lands at 20.0)
+04:06:34.257 cmd /tp @s 0.5 -60 0.5 0 90 -> {"ok":true}
+04:06:34.291 cmd /summon husk 0.5 -44 0.5 {Tags:["f3"],NoAI:1b,NoGravity:1b,attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+04:06:34.324 cmd /tp @s 0.5 -40 0.5 0 90 -> {"ok":true}
+04:06:34.758 key secondary_fire down -> {"key":"key.mouse.left"}
+04:06:34.892 key secondary_fire up -> {"key":"key.mouse.left"}
+04:06:35.027 state -> {"screen": "", "x": 0.122, "y": -42.975, "z": 0.273, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 425.25, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.178, "vy": -0.334, "vz": -0.107, "anim": "idle"}
+04:06:38.033 state -> {"screen": "", "x": -4.898, "y": -60.0, "z": -2.74, "yaw": 0.0, "health": 3.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 440.5, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+04:06:38.066 cmd /kill @e[tag=f3] -> {"ok":true}
+04:06:38.100 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+
+=== F3c-after 2026-11-13 04:06:45
+04:06:45.535 MARK F3c the mine jump still lands soft: the mine at his feet, the right button (expected launched 15 up + 15 back, health 20 after)
+04:06:45.557 cmd /kill @e[type=!player] -> {"ok":true}
+04:06:45.591 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+04:06:45.627 cmd /tp @s 0.5 -60 0.5 0 60 -> {"ok":true}
+04:06:46.661 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+04:06:46.794 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+04:06:48.000 key primary_fire down -> {"key":"key.mouse.right"}
+04:06:48.132 key primary_fire up -> {"key":"key.mouse.right"}
+04:06:48.372 state -> {"screen": "", "x": 0.44, "y": -56.797, "z": -2.705, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 492.0, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.01, "vy": 0.531, "vz": -0.561, "anim": "idle+mine_detonate"}
+04:06:51.406 state -> {"screen": "", "x": 0.235, "y": -60.0, "z": -13.735, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 507.25, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+04:06:51.406 MARK F3d a frag jump off the ground (the push leaves him rising): soft (expected health 20 after)
+04:06:51.441 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+04:06:51.474 cmd /fill -2 -60 2 3 -57 2 stone -> {"ok":true}
+04:06:51.508 cmd /execute as @s at @s anchored eyes facing 0.5 -59.6 2.0 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+04:06:52.541 key secondary_fire down -> {"key":"key.mouse.left"}
+04:06:52.676 key secondary_fire up -> {"key":"key.mouse.left"}
+04:06:53.110 state -> {"screen": "", "x": 0.415, "y": -59.886, "z": -0.442, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 515.75, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 3, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.011, "vy": -0.16, "vz": -0.118, "anim": "idle"}
+04:06:55.116 state -> {"screen": "", "x": 0.403, "y": -60.0, "z": -0.576, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 525.75, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 3, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+04:06:55.148 cmd /fill -2 -60 2 3 -57 2 air -> {"ok":true}
+
+=== P3c-after 2026-11-13 04:06:58
+04:06:58.922 hero pharah -> {"ok":true}
+04:07:00.423 close -> {"ok":true}
+04:07:00.424 MARK P3a control: a 20 m /tp fall, nothing else (expected 20 -> about 3 MC)
+04:07:00.457 cmd /kill @e[type=!player] -> {"ok":true}
+04:07:00.491 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+04:07:01.496 cmd /tp @s 0.5 -40 0.5 0 0 -> {"ok":true}
+04:07:04.513 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 1.0, "onGround": true, "heroMode": true, "hero": "pharah", "ult": 28.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": -1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+04:07:04.536 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+04:07:05.537 MARK P3c the fall, a NoGravity husk 12 m below his start, a rocket straight down 0.9 s in (falling fast: the push leaves her still falling) (bug: lands at 20.0)
+04:07:05.539 cmd /tp @s 0.5 -60 0.5 0 90 -> {"ok":true}
+04:07:05.572 cmd /summon husk 0.5 -52 0.5 {Tags:["P3"],NoAI:1b,NoGravity:1b,attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+04:07:05.606 cmd /tp @s 0.5 -40 0.5 0 90 -> {"ok":true}
+04:07:06.507 key secondary_fire down -> {"key":"key.mouse.left"}
+04:07:06.642 key secondary_fire up -> {"key":"key.mouse.left"}
+04:07:06.775 state -> {"screen": "", "x": 0.34, "y": -49.492, "z": 0.254, "yaw": 0.0, "health": 17.074, "onGround": false, "heroMode": true, "hero": "pharah", "ult": 159.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": -1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.08, "vy": -0.617, "vz": -0.123, "anim": "idle"}
+04:07:09.784 state -> {"screen": "", "x": -1.196, "y": -60.0, "z": -2.115, "yaw": 0.0, "health": 0.074, "onGround": true, "heroMode": true, "hero": "pharah", "ult": 174.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": -1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+04:07:09.817 cmd /kill @e[tag=P3] -> {"ok":true}
+04:07:09.851 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+
+=== P3b-after 2026-11-13 04:07:09
+04:07:09.950 hero pharah -> {"ok":true}
+04:07:11.453 close -> {"ok":true}
+04:07:11.453 MARK P3a control: a 20 m /tp fall, nothing else (expected 20 -> about 3 MC)
+04:07:11.486 cmd /kill @e[type=!player] -> {"ok":true}
+04:07:11.520 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+04:07:12.525 cmd /tp @s 0.5 -40 0.5 0 0 -> {"ok":true}
+04:07:15.539 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 1.0, "onGround": true, "heroMode": true, "hero": "pharah", "ult": 203.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": -1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+04:07:15.565 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+04:07:16.566 MARK P3b the same fall, a NoGravity husk 2 m below his start, a rocket fired straight down 0.4 s in (bug: lands at 20.0)
+04:07:16.567 cmd /tp @s 0.5 -60 0.5 0 90 -> {"ok":true}
+04:07:16.601 cmd /summon husk 0.5 -44 0.5 {Tags:["P3"],NoAI:1b,NoGravity:1b,attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+04:07:16.634 cmd /tp @s 0.5 -40 0.5 0 90 -> {"ok":true}
+04:07:17.036 key secondary_fire down -> {"key":"key.mouse.left"}
+04:07:17.169 key secondary_fire up -> {"key":"key.mouse.left"}
+04:07:17.304 state -> {"screen": "", "x": -0.274, "y": -41.168, "z": -0.694, "yaw": 0.0, "health": 16.4, "onGround": false, "heroMode": true, "hero": "pharah", "ult": 332.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": -1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.186, "vy": 0.059, "vz": -0.287, "anim": "idle"}
+04:07:20.311 state -> {"screen": "", "x": -5.626, "y": -60.0, "z": -8.947, "yaw": 0.0, "health": 16.4, "onGround": true, "heroMode": true, "hero": "pharah", "ult": 347.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": -1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+04:07:20.345 cmd /kill @e[tag=P3] -> {"ok":true}
+04:07:20.379 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+
+=== F4-after 2026-11-13 04:07:26
+04:07:26.228 MARK F4 Q, then into the Nether; ult and mode every 2 s (bug: ult stays 0 for ~12 s; mode has the tire bit)
+04:07:26.260 cmd /kill @e[type=!player] -> {"ok":true}
+04:07:26.292 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+04:07:26.326 cmd /overcraft ult -> {"ok":true}
+04:07:26.863 key ultimate down -> {"key":"key.keyboard.q"}
+04:07:26.994 key ultimate up -> {"key":"key.keyboard.q"}
+04:07:28.003 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_cast"}
+04:07:28.030 cmd /execute in minecraft:the_nether run tp @s 0.5 120 0.5 -> {"ok":true}
+04:07:30.049 state -> {"screen": "", "x": 0.5, "y": 90.706, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -1.243, "vz": 0.0, "anim": "idle+tire_end"}
+04:07:30.082 servercmd /execute in minecraft:the_nether run fill -2 119 -2 2 119 2 minecraft:obsidian -> {"ok":true}
+04:07:30.115 servercmd /execute in minecraft:the_nether run fill -2 120 -2 2 122 2 minecraft:air -> {"ok":true}
+04:07:30.149 servercmd /execute in minecraft:the_nether run tp @a 0.5 120 0.5 -> {"ok":true}
+04:07:32.155 state -> {"screen": "", "x": 0.5, "y": 31.816, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -1.478, "vz": 0.0, "anim": "idle+tire_end"}
+04:07:32.155 MARK F4 a frag at a husk in the Nether: does ult charge rise?
+04:07:32.188 servercmd /execute in minecraft:the_nether run summon husk 0.5 120 4.5 {Tags:["f4"],NoAI:1b,attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+04:07:32.221 cmd /execute as @s at @s anchored eyes facing 0.5 120.5 4.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+04:07:32.755 key secondary_fire down -> {"key":"key.mouse.left"}
+04:07:32.888 key secondary_fire up -> {"key":"key.mouse.left"}
+04:07:34.392 state -> {"screen": "", "x": 0.5, "y": -35.333, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -1.498, "vz": 0.0, "anim": "idle+tire_end"}
+04:07:38.412 state -> {"screen": "", "x": 0.011, "y": 120.0, "z": -0.67, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 18.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+04:07:38.446 cmd /kill @e[tag=f4] -> {"ok":true}
+04:07:38.479 cmd /execute in minecraft:overworld run tp @s 0.5 -60 0.5 -> {"ok":true}
+04:07:40.501 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 28.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== F6-after 2026-11-13 04:08:00
+04:08:00.064 hero junkrat -> {"ok":true}
+04:08:01.565 close -> {"ok":true}
+04:08:01.565 MARK F6 mine and trap out in the Nether, /kill there, respawn in the Overworld (bug: mode keeps 2|64 = mine and trap out, while they're unreachable)
+04:08:01.600 cmd /spawnpoint @s 0 -60 0 -> {"ok":true}
+04:08:01.633 cmd /execute in minecraft:the_nether run tp @s 0.5 120 0.5 0 60 -> {"ok":true}
+04:08:05.668 state -> {"screen": "", "x": 0.5, "y": 120.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 154.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+04:08:05.694 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+04:08:05.827 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+04:08:06.835 key ability_2 down -> {"key":"key.keyboard.e"}
+04:08:06.997 key ability_2 up -> {"key":"key.keyboard.e"}
+04:08:08.502 state -> {"screen": "", "x": 0.5, "y": 120.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 168.5, "shield": 0.0, "mode": 66, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 8.9, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+trap_throw"}
+04:08:08.536 cmd /kill @s -> {"ok":true}
+04:08:10.542 respawn -> {"ok":true}
+04:08:14.569 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 188.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+trap_throw"}
+04:08:14.601 servercmd /execute in minecraft:the_nether if entity @e[type=overcraft:concussion_mine] run say F6_NETHER_MINE_STILL_THERE -> {"ok":true}
+04:08:14.635 servercmd /execute in minecraft:the_nether if entity @e[type=overcraft:steel_trap] run say F6_NETHER_TRAP_STILL_THERE -> {"ok":true}
+04:08:14.668 key primary_fire down -> {"key":"key.mouse.right"}
+04:08:14.802 key primary_fire up -> {"key":"key.mouse.right"}
+04:08:15.807 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 195.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== F7-after 2026-11-13 04:08:22
+04:08:22.891 MARK F7 Total Mayhem: he dies next to a NoAI husk (expected bombs drop and go off 0.8-1.3 s later: the husk takes 50 OW = 4 MC per bomb within 2 m, no errors)
+04:08:22.895 cmd /kill @e[type=!player] -> {"ok":true}
+04:08:22.929 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+04:08:22.963 cmd /summon husk 0.5 -60 1.5 {Tags:["f7"],NoAI:1b,attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+04:08:24.403 hp @e[tag=f7,limit=1] -> Husk has the following entity data: 100.0f
+04:08:24.430 cmd /kill @s -> {"ok":true}
+04:08:27.380 hp @e[tag=f7,limit=1] -> No entity was found
+04:08:27.404 respawn -> {"ok":true}
+04:08:29.418 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 398.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+04:08:29.445 cmd /kill @e[tag=f7] -> {"ok":true}

@@ -56,6 +56,11 @@ public abstract class LivingEntityMixin {
 	@Inject(method = "jumpFromGround", at = @At("HEAD"), cancellable = true)
 	private void overcraft$owJump(CallbackInfo ci) {
 		LivingEntity self = (LivingEntity) (Object) this;
+		if (dev.overcraft.junkrat.Junkrat.rooted(self)) {
+			// held by Steel Trap: no jump, Jump Boost's included (its power is added past the attribute: getJumpPower)
+			ci.cancel();
+			return;
+		}
 		if (OwMovement.handles(self) && OwMovement.noJump.test(self)) {
 			// an ability holds the jump (Sigma's Accretion gather: 1BBB #651)
 			ci.cancel();

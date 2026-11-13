@@ -46,6 +46,9 @@ Each number in `JunkratStats` with its source (D / BZ / W) and H / M / L.
   SPECIALIST, 250 HEALTH, LMB LSHIFT E Q PASSIVE.
 
 ## Played (2026-11-13, one dev client, `-Xmx3G`, fresh flat survival worlds `jr1` / `jr2`, harness keys)
+The critic's defects, reproduced and fixed (2026-11-13): [runs/junkrat/fix_1.md](../testing/runs/junkrat/fix_1.md) (the tire
+in mid-air, the root on a baby, frag pushes and falls, the tire across dimensions, the mine jump through a wall kept from the data).
+
 Raw stamped output: [runs/junkrat/runs.txt](../testing/runs/junkrat/runs.txt), scripts in [runs/junkrat/scripts](../testing/runs/junkrat/scripts/)
 (`drive.py`, `fight.py`, `j1..j8`). Screenshots in `run/screenshots/` (not committed; each opened): `jr_select1.png`, `jr2_select.png`,
 `jr_hud0.png`, `jr_1p.png`, `jr2_1p.png`, `jr_front_big.png`, `jr2_back_big.png`, `jr_j3_trap.png`, `jr_j4_drive.png`, `jr2_rejoin.png`,

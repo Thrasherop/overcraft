@@ -9,8 +9,8 @@ import net.minecraft.world.entity.LivingEntity;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Junkrat on his own client. The server drives RIP-Tire from his keys and facing (Junkrat.driveTire); here he's held still while
- * it runs (OwMovement.held: D 0232 #476 zeroes his movement inputs) and the view follows the tire from behind (CameraMixin, W:
+ * Junkrat on his own client. The server drives RIP-Tire from his keys and facing (Junkrat.driveTire); here his walk and jump are
+ * off while it runs (inputsOff: D 0232 #476 zeroes his movement inputs) and the view follows the tire from behind (CameraMixin, W:
  * "view on the tire"), the mouse still turning him, which turns the tire.
  */
 public final class ClientJunkrat {
@@ -30,8 +30,12 @@ public final class ClientJunkrat {
 		return ClientHero.hero() == Hero.JUNKRAT && ClientHero.controls() && (ClientHero.sync().mode() & Junkrat.MODE_TIRE) != 0;
 	}
 
-	/** Held still while the tire runs (OwMovement.held). */
-	public static boolean held(LivingEntity entity) {
+	/**
+	 * His walk and jump off while the tire runs (D 0232 #476 zeroes his movement inputs; KeyboardInputMixin, OwMovement.noJump): only
+	 * the inputs, his body still under gravity, so a tire cast in mid-air leaves him falling where he was (critic, 2026-11-13: held
+	 * whole, he hung in the air for the tire's 10 s and took the fall after). His keys still reach the server, which drives the tire.
+	 */
+	public static boolean inputsOff(LivingEntity entity) {
 		return entity == Minecraft.getInstance().player && onTire();
 	}
 

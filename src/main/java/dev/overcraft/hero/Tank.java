@@ -48,7 +48,9 @@ public final class Tank {
 	 */
 	private static final Set<Identifier> OWN_SLOWS = new HashSet<>(Set.of(
 		// Sigma's Accretion gather (-75%: dev.overcraft.sigma.Accretion.CAST_SLOW; here, so his own client knows it too)
-		Identifier.fromNamespaceAndPath("overcraft", "sigma_accretion_cast")));
+		Identifier.fromNamespaceAndPath("overcraft", "sigma_accretion_cast"),
+		// Steel Trap's root (Junkrat.root): a root, not a slow, holds a Stalwart as fully (ours: W's tank passive names slows)
+		Identifier.fromNamespaceAndPath("overcraft", "steel_trap_root")));
 
 	public static boolean tank(@Nullable Hero hero) {
 		return hero != null && hero.role == Hero.Role.TANK;

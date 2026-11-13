@@ -52,7 +52,7 @@ import static dev.overcraft.junkrat.JunkratStats.*;
  * left button the Frag Launcher, Shift Concussion Mine (the right button sets it off), E Steel Trap, Q RIP-Tire (either fire button or
  * Q sets it off; Shift is Nitro Boost on it). The server owns everything: his frags, mine, trap and tire are its entities, the mine's
  * launch is its push (sent to his client as any knockback is), and the tire is driven by the server from his keys and facing, his own
- * client holding him still and showing the tire (ClientJunkrat). Total Mayhem: none of his explosions hurt him, and he drops six bombs
+ * client turning his walk and jump off (his body still falls) and showing the tire (ClientJunkrat). Total Mayhem: none of his explosions hurt him, and he drops six bombs
  * when he dies.
  */
 public final class Junkrat implements HeroKit {
@@ -75,9 +75,13 @@ public final class Junkrat implements HeroKit {
 		// his mine and trap outlive a death (HeroKit.leavePlay): the respawn's fresh kit keeps them his (a switch has already cleared
 		// them: clearWorld)
 		UUID mine = s.junkrat.mine, trap = s.junkrat.trap;
+		var level = s.junkrat.level;
 		s.junkrat.clear();
 		s.junkrat.mine = mine;
 		s.junkrat.trap = trap;
+		// and the world they're in: a respawn in another dimension clears them on the next tick (forgotten, they stayed "out" on his
+		// HUD while out of his reach: the critic, 2026-11-13)
+		s.junkrat.level = level;
 		s.primaryAmmo = AMMO;
 		s.primaryReload = -1;
 		s.weaponRecovery = 0;
@@ -91,7 +95,7 @@ public final class Junkrat implements HeroKit {
 		j.silenced = dev.overcraft.sombra.Hack.silenced(player);
 		if (j.level != null && j.level != player.level().dimension()) {
 			// another dimension: his mine, trap and tire are out of his reach (they'd be left there for good)
-			clearWorld(player, j);
+			clearWorld(player, s, j);
 		}
 		j.level = player.level().dimension();
 		double rate = Combat.cooldownRate(player);
@@ -119,6 +123,11 @@ public final class Junkrat implements HeroKit {
 		boolean able = controls && player.isAlive() && !Sleep.asleep(player);
 		mineCast(player, s, j, able);
 		RipTireEntity tire = tire(player, j);
+		if (tire != null && tireOverdue(now - j.tireAt)) {
+			// out past the simulation distance it's loaded but doesn't tick (its own 10 s never comes): it goes off on his clock
+			tireBlast(player, s, tire);
+			tire = null;
+		}
 		if (j.tire != null && tire == null) {
 			// the tire went without us (unloaded, killed off by the game): the ult is over
 			endTire(player, s, j, null);
@@ -319,6 +328,9 @@ public final class Junkrat implements HeroKit {
 		JunkratSounds.split(player, "mine.detonate", player.getEyePosition(), 30);
 		Vec3 at = mine.position();
 		Vec3 centre = player.getBoundingBox().getCenter();
+		// distance only, through a wall too: the data's whole test is #264 / #438 op71(op94(self, mine), 3.5) after #306 (the mine
+		// exists) and #297 (not hacked); no sight check (c_096A.txt, read 2026-11-13 on the critic's report), unlike the blast's
+		// TrackTargets on enemies
 		if (mineLaunches(centre.distanceTo(at))) {
 			Vec3 away = horizontalAway(at, centre);
 			// set, not added (ours, M: the data's STU_FF3471E9 is read as a launch; a fall's speed doesn't eat it)
@@ -414,12 +426,32 @@ public final class Junkrat implements HeroKit {
 		Voice.say(owner, "trap", 1);
 	}
 
-	/** A root: its speed and jump to nothing for {@code seconds} (attribute buffs, so creatures and players both: OwMovement.speedFactor). */
+	/**
+	 * A root: its speed and jump to nothing for {@code seconds} (attribute buffs, so creatures and players both: OwMovement.speedFactor).
+	 * x0 of the total ({@link #ROOT_OP}), not -1 of the base: a base share leaves whatever else adds to the base (a baby's +50 % speed:
+	 * a baby husk walked through it at 0.115, the critic, 2026-11-13). Jump Boost's power is added past the attribute
+	 * (LivingEntity.getJumpPower), so a rooted jump is cancelled outright too (LivingEntityMixin, {@link #rooted}).
+	 */
 	public static void root(LivingEntity victim, double seconds) {
-		Combat.buff(victim, Attributes.MOVEMENT_SPEED, ROOT_SPEED, -1, seconds);
-		Combat.buff(victim, Attributes.JUMP_STRENGTH, ROOT_JUMP, -1, seconds);
+		Combat.buff(victim, Attributes.MOVEMENT_SPEED, ROOT_SPEED, -1, seconds, ROOT_OP);
+		Combat.buff(victim, Attributes.JUMP_STRENGTH, ROOT_JUMP, -1, seconds, ROOT_OP);
 		victim.setDeltaMovement(0, Math.min(0, victim.getDeltaMovement().y), 0);
 		Combat.send(victim);
+	}
+
+	/** The root's operation: the whole value x (1 - 1) = 0, after every other modifier (AttributeInstance.calculateValue). */
+	public static final net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation ROOT_OP =
+		net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL;
+
+	/** The root's speed modifier (its id, for a Stalwart's slow resistance to leave alone: Tank.OWN_SLOWS). */
+	public static Identifier rootSpeedId() {
+		return ROOT_SPEED;
+	}
+
+	/** Whether Steel Trap holds {@code e} now (its jump modifier is on it). */
+	public static boolean rooted(LivingEntity e) {
+		var jump = e.getAttribute(Attributes.JUMP_STRENGTH);
+		return jump != null && jump.getModifier(ROOT_JUMP) != null;
 	}
 
 	public static void trapReleased(ServerPlayer owner, SteelTrapEntity trap, LivingEntity victim) {
@@ -483,6 +515,11 @@ public final class Junkrat implements HeroKit {
 					hero.getX(), hero.getEyeY(), hero.getZ(), 5, 1.0f, hero.getRandom().nextLong()));
 			}
 		}
+	}
+
+	/** Whether a tire out {@code ticks} of game time is past its 10 s by more than half a second (one that stopped ticking: ours). */
+	public static boolean tireOverdue(long ticks) {
+		return ticks > Ow.ticks(TIRE_TIME) + 10;
 	}
 
 	public static boolean tireArmed(RipTireEntity tire) {
@@ -549,7 +586,8 @@ public final class Junkrat implements HeroKit {
 		tire.wasDown = tire.onGround();
 		tire.setYRot(owner.getYRot());
 		j.tireLeft = Ow.ticks(TIRE_TIME) - tire.age;
-		owner.resetFallDistance();
+		// (his body's fall counts as any fall: a tire cast in mid-air leaves him falling, and that fall hurts as it would; the critic,
+		// 2026-11-13: forgotten each tick, a 20 m drop during the tire was erased)
 	}
 
 	/** It goes off: 600 inside 2 m down to 50 at 10 m (x0.5 after Nitro Boost) and its push on every enemy in sight (D 0233 #432-#444). */
@@ -711,7 +749,8 @@ public final class Junkrat implements HeroKit {
 				double k = knockShare(d, full, radius, knockEdge) * (me ? self : 1);
 				Vec3 dir = horizontalAway(at, e.getBoundingBox().getCenter());
 				Combat.push(e, dir.scale(Ow.speed(away * k)).add(0, Ow.speed(up * k), 0), owner, blow);
-				if (me) {
+				if (me && HeroManager.pushLandsSoft(owner.getDeltaMovement().y)) {
+					// (Combat.push set his speed from the one his client last reported, plus the push)
 					HeroState s = HeroManager.state(owner);
 					if (s != null) {
 						s.softLanding = true;
@@ -842,8 +881,11 @@ public final class Junkrat implements HeroKit {
 		return j.tire != null && player.level().getEntity(j.tire) instanceof RipTireEntity t && t.isAlive() ? t : null;
 	}
 
-	/** Every mine, trap, frag and tire of his, in every world: gone. */
-	private static void clearWorld(ServerPlayer player, JunkratState j) {
+	/** Every mine, trap, frag and tire of his, in every world: gone (the tire's ult ended with it, no blast). */
+	private static void clearWorld(ServerPlayer player, HeroState s, JunkratState j) {
+		// the ult over first: its tire forgotten without it, ultActive stayed set and his charge didn't build for the rest of the
+		// 10 s (the critic, 2026-11-13: Q, then the Nether, ult 0 for 12 s)
+		endTire(player, s, j, null);
 		UUID me = player.getUUID();
 		for (ServerLevel level : player.level().getServer().getAllLevels()) {
 			for (Entity e : level.getAllEntities()) {
@@ -941,7 +983,7 @@ public final class Junkrat implements HeroKit {
 			mayhem(player);
 		}
 		if (why.forGood()) {
-			clearWorld(player, j);
+			clearWorld(player, s, j);
 		}
 	}
 }
