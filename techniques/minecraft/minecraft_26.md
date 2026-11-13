@@ -92,6 +92,11 @@ is left alone. Mind which point the server aims from: still the eyes, so the cam
   `EntityTrackingEvents.START_TRACKING`, send that player the current state (`JetpackCat.showState`). It fires
   before the entity's own packets; send ids, not looked-up entities.
 
+## A dead player keeps no chunk loaded (2026-11-13, [junkrat](../heroes/junkrat.md))
+26.x has no spawn chunks: a dead player's chunk unloads about a second after the death, and an entity type built with `noSave()` is
+lost with it, with no `remove()` call (Junkrat's mine and trap were gone after every death). Anything a hero places that should outlive
+a death has to be saved with its chunk (its state in add/readAdditionalSaveData), and then needs its own rule for when it's stale.
+
 ## A plain vanilla server
 For "the mod stays invisible" checks (#32):
 1. Copy Loom's `~/.gradle/caches/fabric-loom/26.3/minecraft-server.jar` to a folder outside the repo.

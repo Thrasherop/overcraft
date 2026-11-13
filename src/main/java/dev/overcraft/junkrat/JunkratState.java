@@ -36,6 +36,8 @@ public final class JunkratState {
 	public boolean reloadFast;
 	/** The fire buttons last tick (the right's press sets the mine off; either's sets the tire off). */
 	public boolean rightWas, leftWas;
+	/** Ticks a launch of his still counts as moving him (the soft landing), until the server sees him off the ground. */
+	public int launchGrace;
 	/** Hacked now (no abilities: the mine's remote too, W). */
 	public boolean silenced;
 	/** The dimension his mine, trap and tire are in: a change ends them (they're out of his reach). */
@@ -57,6 +59,7 @@ public final class JunkratState {
 		specialistUntil = -1000;
 		reloadFast = false;
 		rightWas = leftWas = false;
+		launchGrace = 0;
 		silenced = false;
 		level = null;
 	}

@@ -1,0 +1,91 @@
+# J2 Concussion Mine: throw, stick, set off, blast, push, charges, his launch and its landing.
+MARK J2a blast: a husk 6 m ahead; the mine at the floor 5.5 m ahead; the right button 1 s later (expected 120 OW = 9.6 MC inside 1 m; no launch for him 5 m off; charges 2 -> 1)
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /summon husk 0.5 -60 6.5 {NoAI:1b,Tags:["j2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 5.5 run tp @s ~ ~ ~ ~ ~
+sleep 1
+state
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 0.8
+ents Mine
+state
+hp @e[tag=j2,limit=1]
+key primary_fire down
+sleep 0.1
+key primary_fire up
+sleep 0.5
+hp @e[tag=j2,limit=1]
+hp @e[tag=j2,limit=1] Pos
+state
+MARK J2b falloff: the mine 2 m from the husk's box (expected 120 -> 55 linear 1-3 m: 87.5 OW = 7 MC)
+cmd /data merge entity @e[tag=j2,limit=1] {Health:100f}
+cmd /tp @e[tag=j2] 0.5 -60 8.0
+cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 5.7 run tp @s ~ ~ ~ ~ ~
+sleep 0.5
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 0.8
+ents Mine
+key primary_fire down
+sleep 0.1
+key primary_fire up
+sleep 0.5
+hp @e[tag=j2,limit=1]
+state
+MARK J2c no third throw with both charges out (expected 0 charges, the next in 7 s from the first throw)
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 0.3
+state
+sleep 3.5
+state
+sleep 3.5
+state
+MARK J2d mine jump: the mine at his feet, the right button (expected launched 15 up + 15 back, no damage, lands soft: health 20 after)
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 1.5 run tp @s ~ ~ ~ ~ ~
+sleep 7
+state
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 0.5
+state
+key primary_fire down
+sleep 0.1
+key primary_fire up
+sleep 0.15
+state
+sleep 0.3
+state
+sleep 0.4
+state
+sleep 0.5
+state
+sleep 0.6
+state
+sleep 1.0
+state
+screenshot jr_j2_jump.png
+MARK J2e the right button 0.05 s after the throw (expected nothing: from 0.1 s), then 0.3 s later it goes
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 6.5 run tp @s ~ ~ ~ ~ ~
+sleep 1
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 0.15
+key primary_fire tap
+sleep 0.2
+ents Mine
+key primary_fire down
+sleep 0.1
+key primary_fire up
+sleep 0.4
+ents Mine

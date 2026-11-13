@@ -156,14 +156,17 @@ public final class OcEntities {
 	public static final EntityType<dev.overcraft.entity.FragEntity> FRAG = register("junkrat_frag",
 		EntityType.Builder.<dev.overcraft.entity.FragEntity>of(dev.overcraft.entity.FragEntity::new, MobCategory.MISC)
 			.noLootTable().noSave().sized(0.32f, 0.32f).clientTrackingRange(8).updateInterval(1));
-	/** His Concussion Mine (0F9B): 0.4 m (not saved: it goes with him). */
+	/**
+	 * His Concussion Mine (0F9B): 0.4 m. Saved with its chunk (found playing, J5e: dead, he no longer kept the chunk loaded, it
+	 * unloaded a second after his death and a mine that isn't saved was gone); it goes with him for good (Junkrat.clearWorld).
+	 */
 	public static final EntityType<dev.overcraft.entity.ConcussionMineEntity> CONCUSSION_MINE = register("concussion_mine",
 		EntityType.Builder.<dev.overcraft.entity.ConcussionMineEntity>of(dev.overcraft.entity.ConcussionMineEntity::new, MobCategory.MISC)
-			.noLootTable().noSave().sized(0.4f, 0.4f).clientTrackingRange(8).updateInterval(1));
-	/** His Steel Trap (11A9 / 103A): 0.6 m (not saved). */
+			.noLootTable().sized(0.4f, 0.4f).clientTrackingRange(8).updateInterval(1));
+	/** His Steel Trap (11A9 / 103A): 0.6 m. Saved with its chunk, as the mine. */
 	public static final EntityType<dev.overcraft.entity.SteelTrapEntity> STEEL_TRAP = register("steel_trap",
 		EntityType.Builder.<dev.overcraft.entity.SteelTrapEntity>of(dev.overcraft.entity.SteelTrapEntity::new, MobCategory.MISC)
-			.noLootTable().noSave().sized(0.6f, 0.3f).clientTrackingRange(8).updateInterval(1));
+			.noLootTable().sized(0.6f, 0.3f).clientTrackingRange(8).updateInterval(1));
 	/** His RIP-Tire (039C): 0.9 m across, 0.8 m tall (not saved: 10 s). */
 	public static final EntityType<dev.overcraft.entity.RipTireEntity> RIP_TIRE = register("rip_tire",
 		EntityType.Builder.<dev.overcraft.entity.RipTireEntity>of(dev.overcraft.entity.RipTireEntity::new, MobCategory.MISC)

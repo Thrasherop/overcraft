@@ -1,0 +1,97 @@
+# J4 RIP-Tire: cast, his own stillness, drive, blast at 1.6 s+, falloff, timeout, wall climb.
+MARK J4a cast and drive: ult full, Q (expected the tire ahead of him, him held still, the view behind the tire; forward held 1.5 s: about 18 m)
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 -60 0.5 0 0
+ult 100
+sleep 1
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 0.3
+state
+ents RipTire
+key move_forward down
+sleep 1.5
+key move_forward up
+sleep 0.2
+state
+ents RipTire
+screenshot jr_j4_drive.png
+MARK J4b set it off by the left button with two husks: one 1 m off the tire, one 6 m off (expected 600 OW = 48 MC -> the near one dead (100 MC = 1250 OW: 48 MC); the far one 600 - 550 x 4/8 = 325 OW = 26 MC)
+cmd /execute at @e[type=overcraft:rip_tire,limit=1] run summon husk ~1.5 ~ ~ {NoAI:1b,Tags:["j4n"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /execute at @e[type=overcraft:rip_tire,limit=1] run summon husk ~6.8 ~ ~ {NoAI:1b,Tags:["j4f"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+sleep 0.3
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 0.4
+hp @e[tag=j4n,limit=1]
+hp @e[tag=j4f,limit=1]
+state
+ents RipTire
+MARK J4c the 10 s timeout: cast, nothing pressed (expected it goes off on its own at 10 s, ult spent)
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 -60 0.5 0 0
+ult 100
+sleep 0.5
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 5
+state
+sleep 4.7
+state
+sleep 0.6
+state
+ents RipTire
+MARK J4d no early blast: Q again at 0.5 s (expected nothing), at 2 s (expected the blast)
+ult 100
+sleep 0.3
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 0.5
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 0.2
+ents RipTire
+sleep 1.2
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 0.3
+ents RipTire
+state
+MARK J4e wall climb: a wall 3 high 6 m ahead; drive into it with Jump held (expected it climbs and goes over); jump on flat ground
+cmd /fill -3 -60 7 4 -58 7 stone
+cmd /tp @s 0.5 -60 0.5 0 0
+ult 100
+sleep 0.5
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 0.3
+key move_forward down
+key jump down
+sleep 0.5
+ents RipTire
+sleep 0.5
+ents RipTire
+sleep 0.5
+ents RipTire
+sleep 0.5
+ents RipTire
+key jump up
+key move_forward up
+screenshot jr_j4_climb.png
+sleep 0.5
+key jump down
+sleep 0.1
+key jump up
+sleep 0.2
+ents RipTire
+sleep 2
+key secondary_fire tap
+sleep 0.5
+cmd /fill -3 -60 7 4 -58 7 air

@@ -606,12 +606,13 @@ public class HeroSelectScreen extends OwScreen {
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "flashbang"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "deadeye"));
 			// his data's loadouts: the Frag Launcher (the left button), Concussion Mine (Shift; the right button sets it off), Steel Trap,
-			// RIP-Tire; Total Mayhem, his passive, has no key (no hero's passive is listed here; Specialist is the sub-role's)
+			// RIP-Tire; Total Mayhem his passive (Specialist is the sub-role's)
 			case JUNKRAT -> List.of(
 				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "frag_launcher"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "concussion_mine"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "steel_trap"),
-				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "rip_tire"));
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "rip_tire"),
+				new Line(Component.translatable("overcraft.key.passive").getString(), "total_mayhem"));
 			case BRIGITTE -> List.of(
 				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "rocket_flail"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "barrier_shield"),

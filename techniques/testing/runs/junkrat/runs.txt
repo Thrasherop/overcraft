@@ -1,0 +1,497 @@
+
+=== J1 2026-11-13 02:48:19
+02:48:20.032 cmd /gamerule spawn_monsters false -> {"ok":true}
+02:48:20.038 cmd /difficulty easy -> {"ok":true}
+02:48:20.072 cmd /time set noon -> {"ok":true}
+02:48:20.072 MARK J1a direct: a 100 MC (1250 OW) husk 6 m ahead, chest; one tap (expected 45 + 80 = 125 OW = 10 MC; ammo 5 -> 4)
+02:48:20.130 cmd /kill @e[type=!player] -> {"ok":true}
+02:48:20.170 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+02:48:20.274 cmd /summon husk 0.5 -60 6.5 {NoAI:1b,Tags:["j1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+02:48:20.284 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 6.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+02:48:21.710 hp @e[tag=j1,limit=1] -> Husk has the following entity data: 100.0f
+02:48:21.737 key secondary_fire down -> {"key":"key.mouse.left"}
+02:48:21.869 key secondary_fire up -> {"key":"key.mouse.left"}
+02:48:23.313 hp @e[tag=j1,limit=1] -> Husk has the following entity data: 90.0f
+02:48:23.352 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1022.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:48:23.352 MARK J1b splash on a neighbour: a second husk 1 m to the first's side (box gap ~0.4 m); one direct hit on the first (expected first 10 MC more; second 56-80 OW = 4.5-6.4 MC)
+02:48:23.377 cmd /data merge entity @e[tag=j1,limit=1] {Health:100f} -> {"ok":true}
+02:48:23.411 cmd /summon husk 1.9 -60 6.5 {NoAI:1b,Tags:["j1b"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+02:48:24.212 key secondary_fire down -> {"key":"key.mouse.left"}
+02:48:24.346 key secondary_fire up -> {"key":"key.mouse.left"}
+02:48:25.788 hp @e[tag=j1,limit=1] -> Husk has the following entity data: 90.0f
+02:48:26.224 hp @e[tag=j1b,limit=1] -> Husk has the following entity data: 95.87475f
+02:48:26.224 MARK J1c rate and reload: hold the left button 5 s from 5 frags (expected shots at 0, 0.67, 1.33, 2.0, 2.67 s; empty -> reload by itself 0.67 s after the last; frags back 0.87 s into it, done 1.5 s)
+02:48:26.248 cmd /kill @e[type=!player] -> {"ok":true}
+02:48:26.283 key reload tap -> {"key":"key.keyboard.r"}
+02:48:28.298 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1643.566, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:48:28.331 key secondary_fire down -> {"key":"key.mouse.left"}
+02:48:29.333 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1648.566, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 3, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:48:31.337 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1658.566, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:48:32.342 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1663.566, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": 0.3, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+02:48:32.976 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1666.816, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": 0.733, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+02:48:33.577 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1669.816, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+02:48:33.610 key secondary_fire up -> {"key":"key.mouse.left"}
+02:48:34.111 MARK J1d self: aim at the floor 1.5 m ahead and fire (expected the frag bounces once, then goes off on the next ground bounce near him: no damage to him (Total Mayhem), a small push)
+02:48:34.111 cmd /kill @e[type=overcraft:junkrat_frag] -> {"ok":true}
+02:48:34.145 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+02:48:34.178 cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 2.0 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+02:48:36.185 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1682.816, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:48:36.219 key secondary_fire down -> {"key":"key.mouse.left"}
+02:48:36.352 key secondary_fire up -> {"key":"key.mouse.left"}
+02:48:36.519 ents Frag -> {"ents":"857 0.81 -59.00 3.59 v 0.16 0.46 0.82 t5 | "}
+02:48:36.786 ents Frag -> {"ents":"857 1.79 -57.15 8.54 v 0.16 0.20 0.82 t11 | "}
+02:48:37.220 ents Frag -> {"ents":"857 3.09 -57.08 15.14 v 0.16 -0.14 0.82 t19 | "}
+02:48:37.254 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1688.316, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 3, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:48:38.258 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1693.316, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 3, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:48:38.292 screenshot jr_j1_self.png -> {"file":"E:\\claude\\mods\\overcraft_junkrat\\run\\screenshots\\jr_j1_self.png"}
+02:48:38.292 MARK J1e R reload from 3 (expected 1.5 s, the frags at 0.87 s)
+02:48:38.325 key secondary_fire down -> {"key":"key.mouse.left"}
+02:48:39.734 key secondary_fire up -> {"key":"key.mouse.left"}
+02:48:39.935 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1701.566, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:48:39.968 key reload tap -> {"key":"key.keyboard.r"}
+02:48:40.469 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1704.316, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": 0.333, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+02:48:40.972 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1706.816, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": 0.667, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+02:48:41.605 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1710.066, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+
+=== J1f 2026-11-13 02:49:08
+02:49:08.344 MARK J1f self: a stone wall 2 m ahead, aimed at its foot (expected the frag bounces off the wall, then goes off on the ground near him: within 2 m, no damage to him (Total Mayhem), a push up to 2.5 / 4 m/s)
+02:49:08.375 cmd /kill @e[type=!player] -> {"ok":true}
+02:49:08.409 cmd /fill -2 -60 3 3 -57 3 stone -> {"ok":true}
+02:49:08.442 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+02:49:08.475 cmd /execute as @s at @s anchored eyes facing 0.5 -59.6 3.0 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+02:49:09.988 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1851.816, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:49:10.012 key secondary_fire down -> {"key":"key.mouse.left"}
+02:49:10.145 key secondary_fire up -> {"key":"key.mouse.left"}
+02:49:10.279 ents Frag -> {"ents":""}
+02:49:10.413 ents Frag -> {"ents":""}
+02:49:10.446 state -> {"screen": "", "x": 0.483, "y": -59.754, "z": 0.005, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 1854.316, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.003, "vy": -0.06, "vz": -0.099, "anim": "fall"}
+02:49:10.614 ents Frag -> {"ents":""}
+02:49:10.647 state -> {"screen": "", "x": 0.472, "y": -60.0, "z": -0.303, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1855.316, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.0, "vy": 0.0, "vz": -0.0, "anim": "idle"}
+02:49:10.813 ents Frag -> {"ents":""}
+02:49:10.846 state -> {"screen": "", "x": 0.472, "y": -60.0, "z": -0.303, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1856.316, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:49:11.381 state -> {"screen": "", "x": 0.472, "y": -60.0, "z": -0.303, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1858.816, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:49:12.383 state -> {"screen": "", "x": 0.472, "y": -60.0, "z": -0.303, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1863.816, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:49:12.419 cmd /fill -2 -60 3 3 -57 3 air -> {"ok":true}
+
+=== J2 2026-11-13 02:49:17
+02:49:17.196 MARK J2a blast: a husk 6 m ahead; the mine at the floor 5.5 m ahead; the right button 1 s later (expected 120 OW = 9.6 MC inside 1 m; no launch for him 5 m off; charges 2 -> 1)
+02:49:17.211 cmd /kill @e[type=!player] -> {"ok":true}
+02:49:17.244 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+02:49:17.279 cmd /summon husk 0.5 -60 6.5 {NoAI:1b,Tags:["j2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+02:49:17.312 cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 5.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+02:49:18.353 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1893.816, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:49:18.380 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+02:49:18.513 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+02:49:19.347 ents Mine -> {"ents":"964 0.57 -60.20 4.33 v 0.00 0.00 0.00 t29 | "}
+02:49:19.380 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1898.816, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+mine_throw"}
+02:49:19.822 hp @e[tag=j2,limit=1] -> Husk has the following entity data: 100.0f
+02:49:19.849 key primary_fire down -> {"key":"key.mouse.right"}
+02:49:19.983 key primary_fire up -> {"key":"key.mouse.right"}
+02:49:20.925 hp @e[tag=j2,limit=1] -> Husk has the following entity data: 100.0f
+02:49:21.362 hp @e[tag=j2,limit=1] Pos -> Husk has the following entity data: [0.5d, -60.0d, 6.5d]
+02:49:21.386 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1908.816, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:49:21.386 MARK J2b falloff: the mine 2 m from the husk's box (expected 120 -> 55 linear 1-3 m: 87.5 OW = 7 MC)
+02:49:21.420 cmd /data merge entity @e[tag=j2,limit=1] {Health:100f} -> {"ok":true}
+02:49:21.453 cmd /tp @e[tag=j2] 0.5 -60 8.0 -> {"ok":true}
+02:49:21.486 cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 5.7 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+02:49:22.020 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+02:49:22.153 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+02:49:22.987 ents Mine -> {"ents":"965 0.57 -59.90 4.53 v 0.00 0.00 0.00 t29 | "}
+02:49:23.020 key primary_fire down -> {"key":"key.mouse.right"}
+02:49:23.155 key primary_fire up -> {"key":"key.mouse.right"}
+02:49:24.099 hp @e[tag=j2,limit=1] -> Husk has the following entity data: 100.0f
+02:49:24.125 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1922.566, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 1.4, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+mine_detonate"}
+02:49:24.125 MARK J2c no third throw with both charges out (expected 0 charges, the next in 7 s from the first throw)
+02:49:24.158 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+02:49:24.290 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+02:49:24.627 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1925.066, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.9, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:49:28.132 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1942.566, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:49:31.639 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1960.066, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:49:31.639 MARK J2d mine jump: the mine at his feet, the right button (expected launched 15 up + 15 back, no damage, lands soft: health 20 after)
+02:49:31.673 cmd /kill @e[type=!player] -> {"ok":true}
+02:49:31.706 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+02:49:31.740 cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 1.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+02:49:38.756 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1995.816, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:49:38.790 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+02:49:38.924 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+02:49:39.426 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1999.066, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+mine_throw"}
+02:49:39.459 key primary_fire down -> {"key":"key.mouse.right"}
+02:49:39.560 key primary_fire up -> {"key":"key.mouse.right"}
+02:49:39.727 state -> {"screen": "", "x": 0.453, "y": -57.35, "z": -2.134, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 2000.566, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.011, "vy": 0.575, "vz": -0.591, "anim": "jump+mine_detonate"}
+02:49:40.028 state -> {"screen": "", "x": 0.398, "y": -54.688, "z": -5.18, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 2002.066, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.008, "vy": 0.312, "vz": -0.447, "anim": "jump+mine_detonate"}
+02:49:40.429 state -> {"screen": "", "x": 0.342, "y": -53.588, "z": -8.304, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 2004.066, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.006, "vy": -0.038, "vz": -0.351, "anim": "fall+mine_detonate"}
+02:49:40.930 state -> {"screen": "", "x": 0.284, "y": -56.115, "z": -11.523, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 2006.566, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.005, "vy": -0.462, "vz": -0.302, "anim": "fall"}
+02:49:41.531 state -> {"screen": "", "x": 0.247, "y": -60.0, "z": -13.584, "yaw": -0.0, "health": 17.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 2009.566, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:49:42.533 state -> {"screen": "", "x": 0.247, "y": -60.0, "z": -13.584, "yaw": -0.0, "health": 17.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 2014.566, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:49:42.567 screenshot jr_j2_jump.png -> {"file":"E:\\claude\\mods\\overcraft_junkrat\\run\\screenshots\\jr_j2_jump.png"}
+02:49:42.567 MARK J2e the right button 0.05 s after the throw (expected nothing: from 0.1 s), then 0.3 s later it goes
+02:49:42.601 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+02:49:42.640 cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 6.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+02:49:43.643 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+02:49:43.743 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+02:49:43.910 key primary_fire tap -> {"key":"key.mouse.right"}
+02:49:44.144 ents Mine -> {"ents":""}
+02:49:44.177 key primary_fire down -> {"key":"key.mouse.right"}
+02:49:44.278 key primary_fire up -> {"key":"key.mouse.right"}
+02:49:44.713 ents Mine -> {"ents":""}
+
+=== J3 2026-11-13 02:50:11
+02:50:11.692 MARK J3a a husk with its AI 9 m ahead walks at him; the trap thrown 4 m ahead (expected it sets down, arms 0.75 s, springs: 100 OW = 8 MC; the husk held 2.5 s; cooldown 10 s from 0.5 s after the throw)
+02:50:11.707 cmd /kill @e[type=!player] -> {"ok":true}
+02:50:11.740 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+02:50:11.774 cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 4.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+02:50:12.776 key ability_2 down -> {"key":"key.keyboard.e"}
+02:50:12.909 key ability_2 up -> {"key":"key.keyboard.e"}
+02:50:13.218 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 2100.0, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 10.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+trap_throw"}
+02:50:13.746 ents Trap -> {"ents":"1029 0.42 -59.99 3.38 v 0.00 0.00 0.00 t34 | "}
+02:50:13.779 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 2100.0, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 9.55, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+trap_throw"}
+02:50:13.813 cmd /summon husk 0.5 -60 9.5 {Tags:["j3"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100},{id:"minecraft:follow_range",base:32}],Health:100f} -> {"ok":true}
+02:50:15.259 hp @e[tag=j3,limit=1] Pos -> Husk has the following entity data: [0.5d, -60.0d, 9.5d]
+02:50:16.490 hp @e[tag=j3,limit=1] Pos -> Husk has the following entity data: [0.51497450798392d, -60.0d, 6.965351537028648d]
+02:50:16.928 hp @e[tag=j3,limit=1] -> Husk has the following entity data: 100.0f
+02:50:16.953 screenshot jr_j3_trap.png -> {"file":"E:\\claude\\mods\\overcraft_junkrat\\run\\screenshots\\jr_j3_trap.png"}
+02:50:18.371 hp @e[tag=j3,limit=1] Pos -> Husk has the following entity data: [0.5040707850846097d, -60.0d, 4.635167899554618d]
+02:50:20.004 hp @e[tag=j3,limit=1] Pos -> Husk has the following entity data: [0.503878059992872d, -60.0d, 4.5822682476278755d]
+02:50:21.949 hp @e[tag=j3,limit=1] Pos -> Husk has the following entity data: [0.5003025010099795d, -60.0d, 0.2310379891562522d]
+02:50:21.973 state -> {"screen": "", "x": 0.498, "y": -60.0, "z": -2.857, "yaw": -0.0, "health": 17.5, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 2100.0, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 1.35, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:50:21.973 MARK J3b one at a time: a second throw after the cooldown (expected the first trap gone)
+02:50:22.007 cmd /kill @e[tag=j3] -> {"ok":true}
+02:50:30.035 state -> {"screen": "", "x": 0.498, "y": -60.0, "z": -2.857, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 2100.0, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:50:30.067 ents Trap -> {"ents":""}
+02:50:30.101 key ability_2 down -> {"key":"key.keyboard.e"}
+02:50:30.235 key ability_2 up -> {"key":"key.keyboard.e"}
+02:50:31.236 ents Trap -> {"ents":"1048 0.42 -59.99 0.02 v 0.00 0.00 0.00 t40 | "}
+
+=== J4 2026-11-13 02:50:41
+02:50:41.230 MARK J4a cast and drive: ult full, Q (expected the tire ahead of him, him held still, the view behind the tire; forward held 1.5 s: about 18 m)
+02:50:41.261 cmd /kill @e[type=!player] -> {"ok":true}
+02:50:41.296 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+02:50:41.332 ult 100 -> {"ok":true}
+02:50:42.365 key ultimate down -> {"key":"key.keyboard.q"}
+02:50:42.498 key ultimate up -> {"key":"key.keyboard.q"}
+02:50:42.807 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 65, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "fall+tire_cast"}
+02:50:42.833 ents RipTire -> {"ents":"1066 0.50 -60.00 1.30 v 0.00 0.00 0.00 t9 | "}
+02:50:42.868 key move_forward down -> {"key":"key.keyboard.w"}
+02:50:44.393 key move_forward up -> {"key":"key.keyboard.w"}
+02:50:44.628 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 65, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "fall+tire_cast"}
+02:50:44.660 ents RipTire -> {"ents":"1066 0.50 -60.00 19.90 v 0.00 0.00 0.00 t45 | "}
+02:50:44.694 screenshot jr_j4_drive.png -> {"file":"E:\\claude\\mods\\overcraft_junkrat\\run\\screenshots\\jr_j4_drive.png"}
+02:50:44.694 MARK J4b set it off by the left button with two husks: one 1 m off the tire, one 6 m off (expected 600 OW = 48 MC -> the near one dead (100 MC = 1250 OW: 48 MC); the far one 600 - 550 x 4/8 = 325 OW = 26 MC)
+02:50:44.728 cmd /execute at @e[type=overcraft:rip_tire,limit=1] run summon husk ~1.5 ~ ~ {NoAI:1b,Tags:["j4n"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+02:50:44.766 cmd /execute at @e[type=overcraft:rip_tire,limit=1] run summon husk ~6.8 ~ ~ {NoAI:1b,Tags:["j4f"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+02:50:45.102 key secondary_fire down -> {"key":"key.mouse.left"}
+02:50:45.233 key secondary_fire up -> {"key":"key.mouse.left"}
+02:50:46.075 hp @e[tag=j4n,limit=1] -> Husk has the following entity data: 52.0f
+02:50:46.510 hp @e[tag=j4f,limit=1] -> Husk has the following entity data: 76.75f
+02:50:46.537 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 34.868, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:50:46.570 ents RipTire -> {"ents":""}
+02:50:46.570 MARK J4c the 10 s timeout: cast, nothing pressed (expected it goes off on its own at 10 s, ult spent)
+02:50:46.603 cmd /kill @e[type=!player] -> {"ok":true}
+02:50:46.638 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+02:50:46.671 ult 100 -> {"ok":true}
+02:50:47.172 key ultimate down -> {"key":"key.keyboard.q"}
+02:50:47.306 key ultimate up -> {"key":"key.keyboard.q"}
+02:50:52.323 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 65, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "fall"}
+02:50:57.031 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 0.0, "shield": 0.0, "mode": 65, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "fall"}
+02:50:57.634 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 2.5, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_end"}
+02:50:57.667 ents RipTire -> {"ents":""}
+02:50:57.668 MARK J4d no early blast: Q again at 0.5 s (expected nothing), at 2 s (expected the blast)
+02:50:57.702 ult 100 -> {"ok":true}
+02:50:58.035 key ultimate down -> {"key":"key.keyboard.q"}
+02:50:58.136 key ultimate up -> {"key":"key.keyboard.q"}
+02:50:58.637 key ultimate down -> {"key":"key.keyboard.q"}
+02:50:58.773 key ultimate up -> {"key":"key.keyboard.q"}
+02:50:59.004 ents RipTire -> {"ents":"1109 0.50 -60.00 1.30 v 0.00 0.00 0.00 t18 | "}
+02:51:00.208 key ultimate down -> {"key":"key.keyboard.q"}
+02:51:00.340 key ultimate up -> {"key":"key.keyboard.q"}
+02:51:00.675 ents RipTire -> {"ents":""}
+02:51:00.707 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 2.5, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+tire_end"}
+02:51:00.707 MARK J4e wall climb: a wall 3 high 6 m ahead; drive into it with Jump held (expected it climbs and goes over); jump on flat ground
+02:51:00.741 cmd /fill -3 -60 7 4 -58 7 stone -> {"ok":true}
+02:51:00.775 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+02:51:00.808 ult 100 -> {"ok":true}
+02:51:01.310 key ultimate down -> {"key":"key.keyboard.q"}
+02:51:01.443 key ultimate up -> {"key":"key.keyboard.q"}
+02:51:01.744 key move_forward down -> {"key":"key.keyboard.w"}
+02:51:01.778 key jump down -> {"key":"key.keyboard.space"}
+02:51:02.312 ents RipTire -> {"ents":"1110 0.50 -57.23 6.55 v 0.00 0.30 0.00 t19 | "}
+02:51:02.846 ents RipTire -> {"ents":"1110 0.50 -56.33 13.15 v 0.00 -0.14 0.60 t30 | "}
+02:51:03.386 ents RipTire -> {"ents":"1110 0.50 -60.00 19.15 v 0.00 0.00 0.60 t40 | "}
+02:51:03.919 ents RipTire -> {"ents":"1110 0.50 -60.00 25.75 v 0.00 0.00 0.60 t51 | "}
+02:51:03.950 key jump up -> {"key":"key.keyboard.space"}
+02:51:03.984 key move_forward up -> {"key":"key.keyboard.w"}
+02:51:04.017 screenshot jr_j4_climb.png -> {"file":"E:\\claude\\mods\\overcraft_junkrat\\run\\screenshots\\jr_j4_climb.png"}
+02:51:04.523 key jump down -> {"key":"key.keyboard.space"}
+02:51:04.656 key jump up -> {"key":"key.keyboard.space"}
+02:51:04.858 ents RipTire -> {"ents":"1110 0.50 -57.96 27.55 v 0.00 0.23 0.00 t70 | "}
+02:51:06.867 key secondary_fire tap -> {"key":"key.mouse.left"}
+02:51:07.398 cmd /fill -3 -60 7 4 -58 7 air -> {"ok":true}
+
+=== J5 2026-11-13 02:51:21
+02:51:21.073 MARK J5a G mid-tire (expected Minecraft mode, the tire gone with no blast, him free to walk, ult spent)
+02:51:21.099 cmd /kill @e[type=!player] -> {"ok":true}
+02:51:21.132 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+02:51:21.166 ult 100 -> {"ok":true}
+02:51:21.699 key ultimate down -> {"key":"key.keyboard.q"}
+02:51:21.833 key ultimate up -> {"key":"key.keyboard.q"}
+02:51:22.635 ents RipTire -> {"ents":"1135 0.50 -60.00 1.30 v 0.00 0.00 0.00 t18 | "}
+02:51:22.669 press key.keyboard.g -> {"key":"key.keyboard.g"}
+02:51:23.177 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": false, "hero": "junkrat", "ult": 2.5, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "idle+tire_end"}
+02:51:23.178 ents RipTire -> {"ents":""}
+02:51:23.187 press key.keyboard.g -> {"key":"key.keyboard.g"}
+02:51:23.693 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 5.0, "shield": 0.0, "mode": 64, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:51:23.693 MARK J5b mine and trap out, then death with three husks round him (expected six bombs fall and go off 0.8-1.3 s later: each husk within 2 m takes 50 a bomb, up to 300 OW = 24 MC; his mine and trap stay through death)
+02:51:33.702 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+02:51:33.810 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+02:51:34.317 key ability_2 down -> {"key":"key.keyboard.e"}
+02:51:34.427 key ability_2 up -> {"key":"key.keyboard.e"}
+02:51:35.428 cmd /summon husk 1.5 -60 0.5 {NoAI:1b,Tags:["j5"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+02:51:35.437 cmd /summon husk -0.5 -60 0.5 {NoAI:1b,Tags:["j5"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+02:51:35.446 cmd /summon husk 0.5 -60 -0.7 {NoAI:1b,Tags:["j5"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+02:51:35.950 ents Mine -> {"ents":"1151 0.76 -59.90 9.81 v 0.00 0.00 0.00 t75 | "}
+02:51:35.959 ents Trap -> {"ents":"1152 0.28 -59.99 6.42 v 0.00 0.00 0.00 t56 | "}
+02:51:35.967 cmd /kill @s -> {"ok":true}
+02:51:36.373 ents Frag -> {"ents":"1157 0.73 -59.88 0.73 v 0.02 0.07 0.02 t8 | 1158 0.59 -59.87 0.64 v 0.01 0.08 0.01 t8 | 1159 0.57 -60.00 0.86 v 0.01 -0.27 0.05 t8 | 1160 0.50 -59.87 0.49 v 0.00 0.08 -0.00 t8 | 1161 0.41 -59.88 0.14 v -0.01 0.07 -0.03 t8 | 1162 0.68 -59.87 0.70 v 0.02 0.08 0.02 t8 | "}
+02:51:38.193 hp @e[tag=j5,limit=1,sort=nearest] -> No entity was found
+02:51:38.197 cmd /execute as @e[tag=j5] run data get entity @s Health -> {"ok":true}
+02:51:38.702 screenshot jr_j5_dead.png -> {"file":"E:\\claude\\mods\\overcraft_junkrat\\run\\screenshots\\jr_j5_dead.png"}
+02:51:38.711 respawn -> {"ok":true}
+02:51:40.715 state -> {"screen": "", "x": 5.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 526.5, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:51:40.723 ents Mine -> {"ents":""}
+02:51:40.730 ents Trap -> {"ents":""}
+02:51:40.730 MARK J5c hero switch at spawn: Tracer, back to Junkrat (expected the mine and trap gone; Junkrat full: 5 frags, 2 mines)
+02:51:40.740 hero tracer -> {"ok":true}
+02:51:42.244 state -> {"screen": "", "x": 5.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 7.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+02:51:42.252 ents Mine -> {"ents":""}
+02:51:42.260 ents Trap -> {"ents":""}
+02:51:42.269 hero junkrat -> {"ok":true}
+02:51:43.776 state -> {"screen": "", "x": 5.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 7.5, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== J5d 2026-11-13 02:52:05
+02:52:05.830 MARK J5d again, read closer: mine and trap out, three husks round him, /kill (expected each husk -4 MC a bomb in 2 m, up to 24 MC; mine and trap still there before and after the respawn)
+02:52:05.835 cmd /kill @e[type=!player] -> {"ok":true}
+02:52:05.845 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+02:52:12.848 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+02:52:12.955 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+02:52:13.462 key ability_2 down -> {"key":"key.keyboard.e"}
+02:52:13.563 key ability_2 up -> {"key":"key.keyboard.e"}
+02:52:14.566 cmd /summon husk 1.5 -60 0.5 {NoAI:1b,Tags:["j5"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+02:52:14.575 cmd /summon husk -0.5 -60 0.5 {NoAI:1b,Tags:["j5"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+02:52:14.583 cmd /summon husk 0.5 -60 -0.7 {NoAI:1b,Tags:["j5"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+02:52:15.088 ents Mine -> {"ents":"1214 0.76 -59.90 9.81 v 0.00 0.00 0.00 t75 | "}
+02:52:15.098 ents Trap -> {"ents":"1215 0.28 -59.99 6.42 v 0.00 0.00 0.00 t54 | "}
+02:52:15.106 ents Husk -> {"ents":"1216 1.50 -60.00 0.50 v 0.00 0.00 0.00 t10 | 1217 -0.50 -60.00 0.50 v 0.00 0.00 0.00 t10 | 1218 0.50 -60.00 -0.70 v 0.00 0.00 0.00 t10 | "}
+02:52:15.114 cmd /kill @s -> {"ok":true}
+02:52:15.419 ents Mine -> {"ents":"1214 0.76 -59.90 9.81 v 0.00 0.00 0.00 t89 | "}
+02:52:15.427 ents Trap -> {"ents":"1215 0.28 -59.99 6.42 v 0.00 0.00 0.00 t68 | "}
+02:52:17.031 ents Husk -> {"ents":""}
+02:52:17.040 ents Mine -> {"ents":""}
+02:52:17.048 respawn -> {"ok":true}
+02:52:19.049 ents Husk -> {"ents":"1233 0.50 -60.00 -0.70 v 0.00 0.00 0.00 t37 | 1228 -0.50 -60.00 0.50 v 0.00 0.00 0.00 t37 | 1236 1.50 -60.00 0.50 v 0.00 0.00 0.00 t37 | "}
+02:52:19.058 servercmd /execute as @e[type=husk] run data get entity @s Health -> {"ok":true}
+02:52:19.066 ents Mine -> {"ents":""}
+02:52:19.075 ents Trap -> {"ents":""}
+02:52:19.091 state -> {"screen": "", "x": -9.5, "y": -60.0, "z": -7.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 624.25, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== J5d-hp 2026-11-13 02:52:27
+02:52:28.314 hp @e[type=husk,limit=1,sort=nearest] -> Husk has the following entity data: 88.0f
+02:52:28.748 hp @e[type=husk,limit=1,sort=furthest] -> Husk has the following entity data: 88.0f
+
+=== J2-fix 2026-11-13 03:07:29
+03:07:29.140 MARK J2a blast: a husk 6 m ahead; the mine at the floor 5.5 m ahead; the right button 1 s later (expected 120 OW = 9.6 MC inside 1 m; no launch for him 5 m off; charges 2 -> 1)
+03:07:29.155 cmd /kill @e[type=!player] -> {"ok":true}
+03:07:29.191 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+03:07:29.252 cmd /summon husk 0.5 -60 6.5 {NoAI:1b,Tags:["j2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+03:07:29.258 cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 5.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+03:07:30.272 state -> {"screen": "", "x": 0.5, "y": -60.062, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 407.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:07:30.295 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+03:07:30.431 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+03:07:31.232 ents Mine -> {"ents":"509 0.57 -60.26 4.33 v 0.00 0.00 0.00 t26 | "}
+03:07:31.266 state -> {"screen": "", "x": 0.5, "y": -60.062, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 412.0, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+mine_throw"}
+03:07:31.709 hp @e[tag=j2,limit=1] -> Husk has the following entity data: 100.0f
+03:07:31.733 key primary_fire down -> {"key":"key.mouse.right"}
+03:07:31.867 key primary_fire up -> {"key":"key.mouse.right"}
+03:07:32.811 hp @e[tag=j2,limit=1] -> Husk has the following entity data: 93.064476f
+03:07:33.245 hp @e[tag=j2,limit=1] Pos -> Husk has the following entity data: [0.5d, -60.0d, 6.5d]
+03:07:33.272 state -> {"screen": "", "x": 0.5, "y": -60.062, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 508.694, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:07:33.272 MARK J2b falloff: the mine 2 m from the husk's box (expected 120 -> 55 linear 1-3 m: 87.5 OW = 7 MC)
+03:07:33.305 cmd /data merge entity @e[tag=j2,limit=1] {Health:100f} -> {"ok":true}
+03:07:33.340 cmd /tp @e[tag=j2] 0.5 -60 8.0 -> {"ok":true}
+03:07:33.376 cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 5.7 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+03:07:33.906 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+03:07:34.040 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+03:07:34.874 ents Mine -> {"ents":"511 0.58 -59.96 4.63 v 0.00 0.00 0.00 t27 | "}
+03:07:34.908 key primary_fire down -> {"key":"key.mouse.right"}
+03:07:35.041 key primary_fire up -> {"key":"key.mouse.right"}
+03:07:35.983 hp @e[tag=j2,limit=1] -> Husk has the following entity data: 100.0f
+03:07:36.010 state -> {"screen": "", "x": 0.5, "y": -60.062, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 522.444, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 1.45, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+mine_detonate"}
+03:07:36.010 MARK J2c no third throw with both charges out (expected 0 charges, the next in 7 s from the first throw)
+03:07:36.043 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+03:07:36.144 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+03:07:36.478 state -> {"screen": "", "x": 0.5, "y": -60.062, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 524.694, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 1.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:07:39.987 state -> {"screen": "", "x": 0.5, "y": -60.062, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 542.194, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:07:43.500 state -> {"screen": "", "x": 0.5, "y": -60.062, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 559.694, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:07:43.500 MARK J2d mine jump: the mine at his feet, the right button (expected launched 15 up + 15 back, no damage, lands soft: health 20 after)
+03:07:43.532 cmd /kill @e[type=!player] -> {"ok":true}
+03:07:43.567 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+03:07:43.601 cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 1.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+03:07:50.621 state -> {"screen": "", "x": 0.5, "y": -60.062, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 595.444, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:07:50.652 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+03:07:50.785 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+03:07:51.320 state -> {"screen": "", "x": 0.5, "y": -60.062, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 598.944, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+mine_throw"}
+03:07:51.353 key primary_fire down -> {"key":"key.mouse.right"}
+03:07:51.492 key primary_fire up -> {"key":"key.mouse.right"}
+03:07:51.654 state -> {"screen": "", "x": 0.442, "y": -56.859, "z": -2.705, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 600.694, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.01, "vy": 0.531, "vz": -0.561, "anim": "jump+mine_detonate"}
+03:07:51.989 state -> {"screen": "", "x": 0.381, "y": -54.213, "z": -6.036, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 602.194, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.008, "vy": 0.225, "vz": -0.415, "anim": "jump+mine_detonate"}
+03:07:52.423 state -> {"screen": "", "x": 0.327, "y": -53.813, "z": -8.989, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 604.444, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.006, "vy": -0.125, "vz": -0.337, "anim": "fall+mine_detonate"}
+03:07:52.925 state -> {"screen": "", "x": 0.27, "y": -57.18, "z": -12.122, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "junkrat", "ult": 606.944, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.005, "vy": -0.54, "vz": -0.297, "anim": "fall"}
+03:07:53.559 state -> {"screen": "", "x": 0.24, "y": -60.0, "z": -13.735, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 610.194, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:07:54.594 state -> {"screen": "", "x": 0.24, "y": -60.0, "z": -13.735, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 615.194, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:07:54.627 screenshot jr_j2_jump.png -> {"file":"E:\\claude\\mods\\overcraft_junkrat\\run\\screenshots\\jr_j2_jump.png"}
+03:07:54.627 MARK J2e the right button 0.05 s after the throw (expected nothing: from 0.1 s), then 0.3 s later it goes
+03:07:54.660 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+03:07:54.703 cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 6.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+03:07:55.737 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+03:07:55.871 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+03:07:56.038 key primary_fire tap -> {"key":"key.mouse.right"}
+03:07:56.270 ents Mine -> {"ents":""}
+03:07:56.304 key primary_fire down -> {"key":"key.mouse.right"}
+03:07:56.438 key primary_fire up -> {"key":"key.mouse.right"}
+03:07:56.839 ents Mine -> {"ents":""}
+
+=== J5e 2026-11-13 03:08:41
+03:08:41.792 MARK J5e the mine through death, read on the server each half second (expected it stays: HeroKit.leavePlay, DEATH keeps what's placed)
+03:08:41.816 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+03:08:42.829 state -> {"screen": "", "x": 0.5, "y": -60.062, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 840.694, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:08:42.854 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+03:08:43.022 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+03:08:44.024 servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J5E_BEFORE_KILL_EXISTS -> {"ok":true}
+03:08:44.059 cmd /kill @s -> {"ok":true}
+03:08:44.093 servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J5E_0.0_EXISTS -> {"ok":true}
+03:08:44.626 servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J5E_0.5_EXISTS -> {"ok":true}
+03:08:45.128 servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J5E_1.0_EXISTS -> {"ok":true}
+03:08:45.662 servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J5E_1.5_EXISTS -> {"ok":true}
+03:08:46.663 servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J5E_2.5_EXISTS -> {"ok":true}
+03:08:46.697 respawn -> {"ok":true}
+03:08:48.210 servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J5E_RESPAWNED_EXISTS -> {"ok":true}
+03:08:48.244 ents Mine -> {"ents":""}
+
+=== J6 2026-11-13 03:09:33
+03:09:33.363 MARK J6a perks to level 3; minor: Bomb Voyage (the second), major: Frag Cannon (the first)
+03:09:33.383 overcraft perks @s 3 -> {"error":"unknown command overcraft"}
+03:09:33.416 cmd /overcraft perks @s 3 -> {"ok":true}
+03:09:33.917 key perk_menu down -> {"key":"key.keyboard.left.alt"}
+03:09:34.126 key primary_fire down -> {"key":"key.mouse.right"}
+03:09:34.292 key primary_fire up -> {"key":"key.mouse.right"}
+03:09:34.626 key secondary_fire down -> {"key":"key.mouse.left"}
+03:09:34.794 key secondary_fire up -> {"key":"key.mouse.left"}
+03:09:35.028 key perk_menu up -> {"key":"key.keyboard.left.alt"}
+03:09:35.537 state -> {"screen": "", "x": 9.5, "y": -60.0, "z": 6.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1090.944, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:09:35.537 MARK J6b Frag Cannon: a frag's speed (expected 37.5 m/s = 1.875 blocks a tick)
+03:09:35.563 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+03:09:35.597 cmd /execute as @s at @s anchored eyes facing 0.5 -58.4 30 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+03:09:36.600 key secondary_fire down -> {"key":"key.mouse.left"}
+03:09:36.733 key secondary_fire up -> {"key":"key.mouse.left"}
+03:09:36.767 ents Frag -> {"ents":"825 0.26 -58.63 2.50 v 0.01 -0.04 1.50 t2 | "}
+03:09:36.868 ents Frag -> {"ents":"825 0.28 -58.84 5.50 v 0.01 -0.12 1.50 t4 | "}
+03:09:36.868 MARK J6c Bomb Voyage: a mine jump, then hold fire 2 s (expected shots 0.667 / 1.35 = 0.49 s apart: 5 in 2 s against 3 without)
+03:09:37.871 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+03:09:37.905 cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 1.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+03:09:37.938 key reload tap -> {"key":"key.keyboard.r"}
+03:09:39.946 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+03:09:40.081 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+03:09:40.482 key primary_fire down -> {"key":"key.mouse.right"}
+03:09:40.615 key primary_fire up -> {"key":"key.mouse.right"}
+03:09:40.917 key secondary_fire down -> {"key":"key.mouse.left"}
+03:09:43.018 key secondary_fire up -> {"key":"key.mouse.left"}
+03:09:43.119 state -> {"screen": "", "x": 0.24, "y": -60.0, "z": -13.735, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1128.944, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 1, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:09:46.121 key reload tap -> {"key":"key.keyboard.r"}
+03:09:48.122 MARK J6d control: fire 2 s with no Bomb Voyage (expected 3 shots: 5 -> 2)
+03:09:48.122 key secondary_fire down -> {"key":"key.mouse.left"}
+03:09:50.226 key secondary_fire up -> {"key":"key.mouse.left"}
+03:09:50.326 state -> {"screen": "", "x": 0.24, "y": -60.0, "z": -13.735, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1164.944, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 2, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== J7-night 2026-11-13 03:10:15
+03:10:20.459 RIP-TIRE with 5 within 20 m, driven 3.3 s
+03:10:24.162 t 9 hp 17.00 ammo 4 mines 2 trapCd 0.0 ult 6 | Zombie 2.6, Zombie 7.8, Zombie 13.4, Skeleton 17.3
+03:10:26.863 t 12 hp 11.00 ammo 4 mines 1 trapCd 9.1 ult 237 | Zombie 3.8, Zombie 6.7, Zombie 12.2, Skeleton 16.3
+03:10:30.064 t 15 hp 11.00 ammo 0 mines 0 trapCd 4.8 ult 542 | Skeleton 14.0, Zombie 17.5, Skeleton 20.3, Skeleton 30.4
+03:10:33.271 t 18 hp 3.00 ammo 0 mines 1 trapCd 1.6 ult 558 | Skeleton 11.7, Zombie 13.6, Skeleton 23.6, Zombie 33.7
+03:10:35.201 DEATH 1 at -24.6 26.3
+03:10:38.867 respawned: {"hero": "junkrat", "heroMode": false}
+03:10:40.285 t 25 hp 20.00 ammo 5 mines 2 trapCd 0.0 ult 580 | Zombie 24.4, Zombie 27.2, Skeleton 27.8, Skeleton 31.8
+03:10:43.488 t 28 hp 20.00 ammo 2 mines 2 trapCd 0.0 ult 596 | Zombie 20.5, Zombie 26.0, Skeleton 31.8, Skeleton 34.4
+03:10:46.689 t 32 hp 20.00 ammo 4 mines 2 trapCd 0.0 ult 612 | Zombie 13.4, Zombie 30.1, Skeleton 31.8, Skeleton 34.4
+03:10:49.892 t 35 hp 20.00 ammo 0 mines 2 trapCd 0.0 ult 878 | Zombie 9.3, Zombie 26.1, Skeleton 31.8, Skeleton 34.4
+03:10:53.092 t 38 hp 20.00 ammo 2 mines 2 trapCd 0.0 ult 894 | Zombie 19.1, Skeleton 31.8, Skeleton 34.4, Spider 37.8
+03:10:56.293 t 41 hp 20.00 ammo 4 mines 2 trapCd 0.0 ult 910 | Zombie 11.9, Skeleton 31.9, Skeleton 34.4, Zombie 36.5
+03:10:59.694 t 45 hp 20.00 ammo 0 mines 2 trapCd 0.0 ult 1172 | Zombie 6.9, Zombie 29.5, Skeleton 34.4, Spider 37.8
+03:11:02.296 t 47 hp 20.00 ammo 4 mines 2 trapCd 10.0 ult 1185 | Zombie 3.8, Zombie 25.7, Skeleton 34.4, Spider 37.8
+03:11:05.499 t 50 hp 20.00 ammo 0 mines 1 trapCd 6.0 ult 1206 | Zombie 16.7, Skeleton 34.4, Spider 37.8, Skeleton 38.3
+03:11:08.701 t 54 hp 20.00 ammo 1 mines 1 trapCd 2.7 ult 1346 | Zombie 10.8, Skeleton 34.4, Spider 37.8, Skeleton 38.3
+03:11:12.208 t 57 hp 20.00 ammo 3 mines 2 trapCd 0.0 ult 1488 | Zombie 6.3, Skeleton 34.4, Spider 37.8, Skeleton 38.3
+03:11:15.509 t 60 hp 20.00 ammo 5 mines 2 trapCd 8.3 ult 1506 | Skeleton 34.4, Spider 37.8, Skeleton 38.3, Skeleton 42.9
+03:11:18.744 t 64 hp 20.00 ammo 5 mines 2 trapCd 5.2 ult 1522 | Skeleton 34.4, Spider 37.8, Skeleton 38.3, Skeleton 42.9
+03:11:21.948 t 67 hp 20.00 ammo 5 mines 2 trapCd 1.9 ult 1538 | Skeleton 34.4, Spider 37.8, Skeleton 38.3, Skeleton 42.9
+03:11:25.149 t 70 hp 20.00 ammo 5 mines 2 trapCd 0.0 ult 1554 | Skeleton 34.4, Spider 37.8, Skeleton 38.3, Skeleton 42.9
+03:11:28.352 t 73 hp 20.00 ammo 5 mines 2 trapCd 0.0 ult 1571 | Skeleton 34.4, Spider 37.8, Skeleton 38.3, Spider 44.0
+03:11:30.203 END: 1 deaths, 3 mines (1 close), 3 traps, 1 tires
+
+=== J8 2026-11-13 03:24:45
+
+=== J8 2026-11-13 03:29:04
+03:29:04.911 MARK J8a mine and trap out, /kill, read on the server before and after the respawn (expected both there all through; after the respawn the right button sets the mine off)
+03:29:04.977 cmd /gamerule spawn_monsters false -> {"ok":true}
+03:29:04.999 cmd /kill @e[type=!player] -> {"ok":true}
+03:29:05.033 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+03:29:05.051 cmd /spawnpoint @s 0 -60 0 -> {"ok":true}
+03:29:06.054 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+03:29:06.219 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+03:29:06.829 key ability_2 down -> {"key":"key.keyboard.e"}
+03:29:06.996 key ability_2 up -> {"key":"key.keyboard.e"}
+03:29:07.999 servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J8_BEFORE_MINE -> {"ok":true}
+03:29:08.034 servercmd /execute if entity @e[type=overcraft:steel_trap] run say J8_BEFORE_TRAP -> {"ok":true}
+03:29:08.066 cmd /kill @s -> {"ok":true}
+03:29:10.589 servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J8_DEAD_2.5_MINE -> {"ok":true}
+03:29:10.622 servercmd /execute if entity @e[type=overcraft:steel_trap] run say J8_DEAD_2.5_TRAP -> {"ok":true}
+03:29:10.655 respawn -> {"ok":true}
+03:29:12.670 ents Mine -> {"ents":"169 0.74 -59.96 9.84 v 0.00 0.00 0.00 t72 | "}
+03:29:12.704 ents Trap -> {"ents":"170 0.28 -59.99 6.30 v 0.00 0.00 0.00 t74 | "}
+03:29:12.746 state -> {"screen": "", "x": 0.5, "y": -60.062, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 1859.5, "shield": 0.0, "mode": 66, "perkLevel": 3, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+03:29:12.770 key primary_fire down -> {"key":"key.mouse.right"}
+03:29:12.903 key primary_fire up -> {"key":"key.mouse.right"}
+03:29:13.433 ents Mine -> {"ents":""}
+03:29:13.433 MARK J8b the trap springs on a husk walking at him (expected 100 OW = 8 MC off it and it held 2.5 s)
+03:29:13.467 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+03:29:13.547 cmd /summon husk 0.5 -60 9.5 {Tags:["j8"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100},{id:"minecraft:follow_range",base:32}],Health:100f} -> {"ok":true}
+03:29:16.975 hp @e[tag=j8,limit=1] Pos -> Husk has the following entity data: [0.5d, -60.0625d, 9.5d]
+03:29:17.407 hp @e[tag=j8,limit=1] -> Husk has the following entity data: 100.0f
+03:29:18.848 hp @e[tag=j8,limit=1] Pos -> Husk has the following entity data: [0.521303390223261d, -60.0d, 7.547780264442617d]
+03:29:20.885 hp @e[tag=j8,limit=1] Pos -> Husk has the following entity data: [0.512185261168049d, -60.0d, 6.75484717480784d]
+03:29:20.924 screenshot jr_j8_trap.png -> {"file":"E:\\claude\\mods\\overcraft_junkrat\\run\\screenshots\\jr_j8_trap.png"}
+03:29:20.944 cmd /kill @e[tag=j8] -> {"ok":true}
+
+=== J8b-read 2026-11-13 03:29:28
+03:29:28.950 hp @e[type=husk,limit=1] Pos -> No entity was found
+03:29:29.384 hp @e[type=husk,limit=1] -> No entity was found
+03:29:31.324 hp @e[type=husk,limit=1] Pos -> No entity was found
+03:29:31.350 ents Trap -> {"ents":""}
+
+=== J8c 2026-11-13 03:29:41
+03:29:42.002 MARK J8c the trap again on a fresh throw, the husk 6 m off walking in, its health and place every half second (expected 8 MC off, held 2.5 s)
+03:29:42.012 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+03:29:42.045 cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 3.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+03:29:53.077 key ability_2 down -> {"key":"key.keyboard.e"}
+03:29:53.244 key ability_2 up -> {"key":"key.keyboard.e"}
+03:29:54.446 ents Trap -> {"ents":"247 0.43 -59.99 2.79 v 0.00 0.00 0.00 t51 | "}
+03:29:54.481 cmd /summon husk 0.5 -60 7.5 {Tags:["j8c"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100},{id:"minecraft:follow_range",base:32}],Health:100f} -> {"ok":true}
+03:29:55.923 hp @e[tag=j8c,limit=1] Pos -> Husk has the following entity data: [0.5d, -60.0d, 7.5d]
+03:29:55.950 ents Trap -> {"ents":"247 0.43 -59.99 2.79 v 0.00 0.00 0.00 t111 | "}
+03:29:56.860 hp @e[tag=j8c,limit=1] Pos -> Husk has the following entity data: [0.521303390223261d, -60.0625d, 5.547780264442616d]
+03:29:57.296 hp @e[tag=j8c,limit=1] -> Husk has the following entity data: 100.0f
+03:29:58.234 hp @e[tag=j8c,limit=1] Pos -> Husk has the following entity data: [0.5088381283836485d, -60.0625d, 4.033347213372398d]
+03:29:59.670 hp @e[tag=j8c,limit=1] Pos -> Husk has the following entity data: [0.5088381283836485d, -60.0625d, 4.033347213372398d]
+03:29:59.697 screenshot jr_j8c_trap.png -> {"file":"E:\\claude\\mods\\overcraft_junkrat\\run\\screenshots\\jr_j8c_trap.png"}
+03:30:01.114 hp @e[tag=j8c,limit=1] Pos -> Husk has the following entity data: [0.5020776296975692d, -60.0d, 1.7266239893212179d]
+03:30:01.526 hp @e[tag=j8c,limit=1] -> Husk has the following entity data: 92.0f
+03:30:01.550 ents Trap -> {"ents":"247 0.43 -59.99 2.79 v 0.00 0.00 0.00 t335 | "}

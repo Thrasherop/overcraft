@@ -102,6 +102,10 @@ public class SteelTrapEntity extends OwProjectile {
 			}
 			return;
 		}
+		if (tickCount > 1 && !Junkrat.stillHis(this, getOwner(), false)) {
+			discard();
+			return;
+		}
 		if (stage() == 0) {
 			super.tick();
 			return;
@@ -173,6 +177,25 @@ public class SteelTrapEntity extends OwProjectile {
 	@Override
 	protected void expire() {
 		discard();
+	}
+
+	/** Its stage, its time down and its health kept with its chunk (a sprung trap lets go when it unloads: remove). */
+	@Override
+	protected void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput output) {
+		super.addAdditionalSaveData(output);
+		output.putInt("Stage", stage());
+		output.putInt("Landed", landed);
+		output.putInt("Sprung", sprung);
+		output.putDouble("Health", health);
+	}
+
+	@Override
+	protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput input) {
+		super.readAdditionalSaveData(input);
+		entityData.set(STAGE, input.getIntOr("Stage", 0));
+		landed = input.getIntOr("Landed", -1);
+		sprung = input.getIntOr("Sprung", -1);
+		health = input.getDoubleOr("Health", JunkratStats.TRAP_HEALTH);
 	}
 
 	@Override

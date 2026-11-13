@@ -35,6 +35,8 @@ public class ConcussionMineEntity extends OwProjectile {
 	/** Ticks to its blast once set off (-1 waiting). */
 	private int fuse = -1;
 	private double health = JunkratStats.MINE_HEALTH;
+	/** The face it stuck to, outward (up until it sticks). */
+	private Vec3 normal = new Vec3(0, 1, 0);
 
 	public ConcussionMineEntity(EntityType<? extends ConcussionMineEntity> type, Level level) {
 		super(type, level);
@@ -92,10 +94,14 @@ public class ConcussionMineEntity extends OwProjectile {
 			}
 			return;
 		}
+		if (fuse < 0 && tickCount > 1 && !Junkrat.stillHis(this, getOwner(), true)) {
+			discard();
+			return;
+		}
 		if (fuse >= 0) {
 			if (--fuse <= 0) {
 				if (getOwner() instanceof ServerPlayer owner && owner.level() == level()) {
-					Junkrat.mineBlast(owner, this, position());
+					Junkrat.mineBlast(owner, this, blastPoint());
 				}
 				discard();
 			}
@@ -108,6 +114,14 @@ public class ConcussionMineEntity extends OwProjectile {
 			return;
 		}
 		super.tick();
+	}
+
+	/**
+	 * Where its blast starts: its middle, 0.15 m off the face it's on and up (found playing, J2a: from its own place, on or in the
+	 * floor's face, every sight line started in the block and the husk 1.9 m off took nothing).
+	 */
+	public Vec3 blastPoint() {
+		return getBoundingBox().getCenter().add(normal.scale(0.15)).add(0, 0.15, 0);
 	}
 
 	/** Set off: it goes off 0.1 s from now (D 096B #400). */
@@ -135,6 +149,7 @@ public class ConcussionMineEntity extends OwProjectile {
 			return;
 		}
 		Direction face = hit.getDirection();
+		normal = new Vec3(face.getStepX(), face.getStepY(), face.getStepZ());
 		Vec3 at = hit.getLocation().add(face.getStepX() * 0.1, face.getStepY() * 0.1 - (face == Direction.UP ? 0 : getBbHeight() / 2),
 			face.getStepZ() * 0.1);
 		entityData.set(STUCK, true);
@@ -150,6 +165,25 @@ public class ConcussionMineEntity extends OwProjectile {
 	public void hitBarrier(Vec3 at) {
 		// an enemy barrier: it drops there (ours: W says it bounces off once)
 		setDeltaMovement(Vec3.ZERO);
+	}
+
+	/** Stuck, its face and health kept with its chunk. */
+	@Override
+	protected void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput output) {
+		super.addAdditionalSaveData(output);
+		output.putBoolean("Stuck", stuck());
+		output.putDouble("Health", health);
+		output.putDouble("NX", normal.x);
+		output.putDouble("NY", normal.y);
+		output.putDouble("NZ", normal.z);
+	}
+
+	@Override
+	protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput input) {
+		super.readAdditionalSaveData(input);
+		entityData.set(STUCK, input.getBooleanOr("Stuck", false));
+		health = input.getDoubleOr("Health", JunkratStats.MINE_HEALTH);
+		normal = new Vec3(input.getDoubleOr("NX", 0), input.getDoubleOr("NY", 1), input.getDoubleOr("NZ", 0));
 	}
 
 	@Override

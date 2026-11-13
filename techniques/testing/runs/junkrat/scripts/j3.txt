@@ -1,0 +1,38 @@
+# J3 Steel Trap: throw, land, arm, spring on a walking husk, root, damage, cooldown, one at a time.
+MARK J3a a husk with its AI 9 m ahead walks at him; the trap thrown 4 m ahead (expected it sets down, arms 0.75 s, springs: 100 OW = 8 MC; the husk held 2.5 s; cooldown 10 s from 0.5 s after the throw)
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 4.5 run tp @s ~ ~ ~ ~ ~
+sleep 1
+key ability_2 down
+sleep 0.1
+key ability_2 up
+sleep 0.3
+state
+sleep 0.5
+ents Trap
+state
+cmd /summon husk 0.5 -60 9.5 {Tags:["j3"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100},{id:"minecraft:follow_range",base:32}],Health:100f}
+sleep 1.0
+hp @e[tag=j3,limit=1] Pos
+sleep 0.8
+hp @e[tag=j3,limit=1] Pos
+hp @e[tag=j3,limit=1]
+screenshot jr_j3_trap.png
+sleep 1.0
+hp @e[tag=j3,limit=1] Pos
+sleep 1.2
+hp @e[tag=j3,limit=1] Pos
+sleep 1.5
+hp @e[tag=j3,limit=1] Pos
+state
+MARK J3b one at a time: a second throw after the cooldown (expected the first trap gone)
+cmd /kill @e[tag=j3]
+sleep 8
+state
+ents Trap
+key ability_2 down
+sleep 0.1
+key ability_2 up
+sleep 1.0
+ents Trap

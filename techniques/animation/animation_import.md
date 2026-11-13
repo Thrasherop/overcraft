@@ -52,6 +52,9 @@ doesn't keep them**: its bones point Y down the bone, which showed every hand ha
 and a fix by eye was built on that. Read frames from the raw reference pose or the glb, never from Blender's bones.
 
 ## Finding the right clip
+- **One clip can sit at two leaves: name it for the stand** (2026-11-13, [junkrat](../heroes/junkrat.md)). Junkrat's 1P set and his launcher's
+  play the same clip for the stand (df18 default) and the crouch (cat66), and the clip map named it `crouch`: with no `idle` his 1P arms
+  and launcher stayed out of view. Grep the set's `compact_<set>.txt` for the clip id: every leaf it plays at shows there.
 - **Contact sheets.** Render clips as frame strips and look at many at once (`tools/owm_survey.py --survey --shots=N`,
   `--side` for leg cycles; scratchpad `sheets.py` stacks strips). The owner spotted the wall climb on one; send the
   owner sheets when stuck, since a human recognizes poses instantly.

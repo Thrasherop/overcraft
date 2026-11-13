@@ -65,12 +65,19 @@ public final class Junkrat implements HeroKit {
 	static final Blow TRAP_BLOW = Blow.ability("steel_trap").by(Hero.JUNKRAT);
 	static final Blow TIRE_BLOW = Blow.ult("rip_tire").by(Hero.JUNKRAT);
 	static final Blow MAYHEM_BLOW = Blow.ability("total_mayhem").by(Hero.JUNKRAT);
+	/** How long a launch of his counts as moving him before the server sees him off the ground (ticks, ours: 0.5 s). */
+	static final int LAUNCH_GRACE = 10;
 	private static final Identifier ROOT_SPEED = Overcraft.id("steel_trap_root");
 	private static final Identifier ROOT_JUMP = Overcraft.id("steel_trap_root_jump");
 
 	@Override
 	public void equip(ServerPlayer player, HeroState s) {
+		// his mine and trap outlive a death (HeroKit.leavePlay): the respawn's fresh kit keeps them his (a switch has already cleared
+		// them: clearWorld)
+		UUID mine = s.junkrat.mine, trap = s.junkrat.trap;
 		s.junkrat.clear();
+		s.junkrat.mine = mine;
+		s.junkrat.trap = trap;
 		s.primaryAmmo = AMMO;
 		s.primaryReload = -1;
 		s.weaponRecovery = 0;
@@ -131,7 +138,14 @@ public final class Junkrat implements HeroKit {
 				detonateMine(player, s, j, now);
 			}
 		}
-		HeroManager.softLanding(player, s, false, false);
+		// a launch of his own (the mine's, his frag's push) lands him unhurt (CLAUDE.md, #35): it counts as moving until the server
+		// sees him leave the ground, half a second at most (found playing, J2d: the tick after the launch the server still had him on
+		// the ground, which ended the soft landing at once, and a 6 m mine jump took 37.5)
+		boolean launched = j.launchGrace > 0;
+		if (launched) {
+			j.launchGrace = player.onGround() ? j.launchGrace - 1 : 0;
+		}
+		HeroManager.softLanding(player, s, launched, false);
 	}
 
 	// ---- Frag Launcher (022B) ----
@@ -310,6 +324,7 @@ public final class Junkrat implements HeroKit {
 			// set, not added (ours, M: the data's STU_FF3471E9 is read as a launch; a fall's speed doesn't eat it)
 			Combat.launch(player, away.scale(Ow.speed(MINE_SELF_AWAY)).add(0, Ow.speed(MINE_SELF_UP), 0), player, MINE_BLOW);
 			s.softLanding = true;
+			j.launchGrace = LAUNCH_GRACE;
 			JunkratSounds.all(player.level(), "mine.jump", player.position(), 40);
 			Voice.say(player, "mine_jump", 1);
 			if (s.has(Perk.JUNKRAT_BOMB_VOYAGE)) {
@@ -700,6 +715,7 @@ public final class Junkrat implements HeroKit {
 					HeroState s = HeroManager.state(owner);
 					if (s != null) {
 						s.softLanding = true;
+						s.junkrat.launchGrace = LAUNCH_GRACE;
 					}
 				}
 			}
@@ -801,6 +817,18 @@ public final class Junkrat implements HeroKit {
 	}
 
 	// ---- what's his in the world ----
+
+	/**
+	 * Whether a placed mine or trap of {@code owner}'s is still the one he has out: not once he's another hero, or has thrown a newer one
+	 * (one left from a session that ended without his leaving: they're saved with their chunks). Unknown while he's away: kept.
+	 */
+	public static boolean stillHis(Entity placed, @Nullable Entity owner, boolean mine) {
+		if (!(owner instanceof ServerPlayer player)) {
+			return true;
+		}
+		HeroState s = HeroManager.state(player);
+		return s != null && s.hero == Hero.JUNKRAT && placed.getUUID().equals(mine ? s.junkrat.mine : s.junkrat.trap);
+	}
 
 	static @Nullable ConcussionMineEntity mine(ServerPlayer player, JunkratState j) {
 		return j.mine != null && player.level().getEntity(j.mine) instanceof ConcussionMineEntity m && m.isAlive() ? m : null;
