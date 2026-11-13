@@ -1,0 +1,10 @@
+# Junkrat's Steel Trap in flight (entity 11A9, model 0000000100DC.00C, base 28CD; set 057F). The deployed trap is entity 103A
+# (model 0000000029B2.00C, graphs 25B4 / 596F / 09BB), its jaws 103B (model 100DC again).
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\junkrat\scripts\clipmaps_junkrat.py from the
+# compacted blend-tree sets (research\junkrat\work\clipmap_junkrat\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+0-36_000000003503 = base   # 1 s; set 057F alias 2 (the base tree (locomotion + layers)); -
+# Extracted under this model but in none of its sets (8, not named): 003500 003505 003506 003507 003513 00351C 00A01E 00B564

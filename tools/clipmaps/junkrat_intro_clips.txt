@@ -1,0 +1,18 @@
+# Junkrat's Play of the Game highlight intro: the clips only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/junkrat.glb by bone name (HeroModels, from hero_models/junkrat_intro_clips.glb), as Cassidy's (cassidy_intro_clips.txt).
+# From DataTool's extract-unlocks "Junkrat|highlightintro=*" (build 154088, archived: research\junkrat\extract\Unlocks\Heroes\Junkrat\
+# HighlightIntro). The default Overwatch plays: "Heroic" (the Overwatch\Heroic folder; his other base intros are I'm Flying!, RIP-Tire
+# and Unfortunate). Heroic holds ten clips (research\junkrat\work\intro_clips_out.txt): group 33 BCF4 6.667 s (animation effect 46A2),
+# BEA6 / BEA7 / BEA8 3.333 s (effects 4878 / 487D / 487C), BEA9 8.0 s (effect 487E); group 36 BDD0 6.667 s and group 60 C144 / C1C6 /
+# C1C7 3.333 s, C1C8 8.0 s (L: the clips of the intro's props, the same lengths as the body's; not kept). His intro set 42FB's alias B33
+# is a SEQUENCE: seq[0] 5.167 -> seq[1] 3.333 -> seq[2] 3.333 -> seq[3] 8.0 -> seq[4] a 3.333 or a random pick of 3.333 / 3.333 / 8.0
+# (H tree, work\clipmap_junkrat\compact_42FB.txt; the set's own clip ids 19ECE-19ED1 are not extracted under 1170A, as Cassidy's weren't).
+# So BCF4 is the opening (M: the only long body clip that isn't 8 s; the set's opening is 5.167 s, the extracted 6.667 s), BEA6 /
+# BEA7 the two 3.333 s steps, BEA9 the 8 s step, BEA8 the 3.333 s random pick (M by length and id order). Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <1170A.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/junkrat_intro_clips.txt --clips-from=<...>\Heroes\Junkrat\HighlightIntro\Overwatch\Heroic
+emote_00000000BCF4 = potg_intro
+emote_00000000BEA6 = potg_intro_2
+emote_00000000BEA7 = potg_intro_3
+emote_00000000BEA9 = potg_intro_4
+emote_00000000BEA8 = potg_intro_4b

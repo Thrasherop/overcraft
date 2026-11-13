@@ -1,0 +1,32 @@
+# Junkrat's Frag Launcher (entity 0452, model 00000001022D.00C, base 1283; set 01E3), on his hardpoint 000A (R), var 193F.
+# 'not extracted' rows are clips the set names that DataTool didn't extract under this model.
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\junkrat\scripts\clipmaps_junkrat.py from the
+# compacted blend-tree sets (research\junkrat\work\clipmap_junkrat\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+0-32_000000001D59 = base_85_air_sm0_se0   # 0.3 s; set 01E3 alias 85 (a second copy of the base tree (L)); @8078C02E sel[1] @8078C009 sm[0] sm[5] @8078C029 @85 df18=cat6 @8078C012 sm[0] seq[0]; on 3 paths
+0-32_000000001D5A = base_85_air_sm0_se1   # 0.3667 s; set 01E3 alias 85 (a second copy of the base tree (L)); @8078C02E sel[1] @8078C009 sm[0] sm[5] @8078C029 @85 df18=cat6 @8078C012 sm[0] seq[1]; on 6 paths
+0-36_000000001D58 = base_85_crouch_move   # 0.6 s; set 01E3 alias 85 (a second copy of the base tree (L)); @8078C02E sel[1] @8078C009 sm[0] sm[5] @8078C029 @85 df18=cat65; on 6 paths
+0-60_000000001C88 = base_85_crouch   # 0.1667 s; set 01E3 alias 85 (a second copy of the base tree (L)); @8078C02E sel[1] @8078C009 sm[0] sm[5] @8078C029 @85 df18=cat66; on 6 paths
+4-32_000000001D5D = add_base_85_sm2   # 0.5667 s; set 01E3 alias 85 (a second copy of the base tree (L)); @8078C02E sel[1] @8078C009 sm[0] sm[5] @8078C029 @85 df18:+add() sm[2] df18:tr[0>4, 2, 1, 3]; on 3 paths
+4-38_000000003511 = add_base_se1_sm0_sm5   # 0.1667 s; set 01E3 alias A0E (the set's base tree (1P / weapon / poses)); @8078C02E sel[1] @8078C009 sm[0] sm[5] @8078C029 +add({'bound': None}) @8078C028; on 2 paths
+4-38_00000000350E = add_base_se1_sm0_sm5_2   # 0.4667 s; set 01E3 alias A0E (the set's base tree (1P / weapon / poses)); @8078C02E sel[1] @8078C009 sm[0] sm[5] @8078C029 +add({'bound': None}) @8078C028 +add(); on 2 paths
+4-36_00000000350A = add_base_se1_sm0_sm5_3   # 1 s; set 01E3 alias A0E (the set's base tree (1P / weapon / poses)); @8078C02E sel[1] @8078C009 sm[0] sm[5] @8078C029 +add({'bound': None}) @8078C028 +add() +add(); on 2 paths
+4-28_0000000031F0 = add_base_sm0   # 0.6667 s; set 01E3 alias A0E (the set's base tree (1P / weapon / poses)); +add({'bound': None}) @8078C01E sm[0]
+4-32_000000001D5E = add_base_sm1   # 0.6667 s; set 01E3 alias A0E (the set's base tree (1P / weapon / poses)); +add({'bound': None}) @8078C01E sm[1]
+4-0_000000003186 = add_base_sm2   # 0.6667 s; set 01E3 alias A0E (the set's base tree (1P / weapon / poses)); +add({'bound': None}) @8078C01E sm[2]
+4-0_000000003188 = add_base_sm3   # 0.6667 s; set 01E3 alias A0E (the set's base tree (1P / weapon / poses)); +add({'bound': None}) @8078C01E sm[3]
+4-0_000000003187 = add_base_sm4   # 0.6667 s; set 01E3 alias A0E (the set's base tree (1P / weapon / poses)); +add({'bound': None}) @8078C01E sm[4]
+4-0_000000003189 = add_base_sm5   # 0.6667 s; set 01E3 alias A0E (the set's base tree (1P / weapon / poses)); +add({'bound': None}) @8078C01E sm[5]
+4-4_000000003173 = add_base   # 1.6667 s; set 01E3 alias A0E (the set's base tree (1P / weapon / poses)); +add({'bound': None}) @8078C01E +add()
+4-12_000000003058 = add_base_2   # 6.1667 s; set 01E3 alias A0E (the set's base tree (1P / weapon / poses)); +add({'bound': None}) @8078C01E +add()
+0-32_000000001D56 = reload   # 1.5 s; set 01E3 alias 84 ((was reload_1p_layer: alias 4 sm[0] @84 (1.5 s, as the 1P reload)) launcher sm[0] under alias 4 (M)); sm[0] @84; on 2 paths
+0-32_000000002E28 = reload_3p   # 1.4333 s; set 01E3 alias 83 ((was reload_3p_layer: alias 4 sm[1] @83 (1.43 s)) launcher sm[1] under alias 4 (M)); sm[1] @83; on 2 paths
+0-32_000000001D5C = left_hand   # 0.8 s; set 01E3 alias D ((was melee: the launcher while his left hand works: alias D (melee), 392 (mine throw), 432 (trap throw), all the same clip (M)) quick melee (shared 0043, 0.8 s, 1D blend by pitch) (H, as Cassidy's)); dfE4=cat7E @8078C020; on 4 paths
+# Extracted under this model but in none of its sets (4, not named): 001D57 001D5B 003953 00395B
+
+# emote clips the data plays on the Frag Launcher (slot 193F, EntityControls with action 4: tools/emote_data.py WEAPON_SLOTS), from
+# the emote folders (--clips-from): research\junkrat\extract\Unlocks\Heroes\Junkrat\Emote\Overwatch\Heroic\Animations\0\12
+emote_000000003A92 = emote_heroic   # Heroic: 0-3.6 s
