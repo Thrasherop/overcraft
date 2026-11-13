@@ -4,7 +4,24 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-13: 0.3.40 on next (not on main yet)
+## 2026-11-13: 0.3.41 on next (not on main yet)
+
+- **Junkrat (#73)**, the whole kit with his game data's numbers (build 154088; his last live change, 2026-09-08, is
+  already in the data):
+  - Frag Launcher: 45 direct + 80 splash, 5 frags, bounces, no damage to himself;
+  - Concussion Mine (Shift, 2 charges): 120 → 55, launches him and enemies, set off with the right button;
+  - Steel Trap (E): 100 damage and a 2.5 s root; RIP-Tire (Q): drive it 10 s, 600 → 50 blast, climbs walls and jumps;
+  - Total Mayhem (bombs when he dies), Specialist (his sub-role passive), four perks, quick melee, HUD.
+  - Models, voice and emotes come from the player's own install, as for every hero. His third-person launcher doesn't
+    show yet.
+- Fixed in his critic's round: a RIP-Tire cast in the air hung his body there for 10 s (it falls now, and the fall
+  counts); Steel Trap didn't hold baby mobs or Jump Boost; a frag burst during any long fall cancelled its damage (Pharah's
+  rockets had the same hole, fixed too); a dimension change during the tire stopped his ult charging; his mine and trap
+  stayed marked out after a respawn in another dimension.
+- Played by his builder, a critic, the fixer and the coordinator's real-input pass
+  (`techniques/testing/runs/junkrat/real_keys_24d22a1.md`).
+
+## 2026-11-13: 0.3.40
 
 - **Cassidy (#72)**, the whole kit with his game data's numbers (build 154088; his last live change, 2026-08-11, is older):
   - Peacekeeper: 70 a shot (x2 on the head), 6 rounds; Fan the Hammer (right button);
