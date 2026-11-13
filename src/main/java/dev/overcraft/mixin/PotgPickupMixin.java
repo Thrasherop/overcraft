@@ -21,6 +21,6 @@ public abstract class PotgPickupMixin {
 	@Inject(method = "playerTouch", at = @At(value = "INVOKE",
 		target = "Lnet/minecraft/world/entity/player/Player;take(Lnet/minecraft/world/entity/Entity;I)V"))
 	private void overcraft$potgPickup(Player player, CallbackInfo ci, @Local Item item, @Local int orgCount) {
-		PlayScore.pickup(player, item, orgCount - ((ItemEntity) (Object) this).getItem().getCount());
+		PlayScore.pickup(player, (ItemEntity) (Object) this, item, orgCount - ((ItemEntity) (Object) this).getItem().getCount());
 	}
 }

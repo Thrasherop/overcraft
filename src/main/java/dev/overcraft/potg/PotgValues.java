@@ -58,10 +58,20 @@ public final class PotgValues {
 		"minecraft:wither_skeleton", 200.0, // owner, 2026-11-11
 		"minecraft:elder_guardian", 1000.0, // owner, 2026-11-11
 		"minecraft:wither", 2000.0); // owner, 2026-11-11
-	/** Picking up an item, by item id, to High Score: per item, no cap (owner, 2026-11-11). */
+	/**
+	 * Picking up an item, by item id, to High Score: per item, no cap (owner, 2026-11-11). Only as the mob in
+	 * {@link #PICKUP_FROM} dropped it at its death, and only the first pickup (owner, 2026-11-12: "It should only score
+	 * when a blaze drops it and then it is picked up. No other time"): not a re-picked drop, a chest's, a trade's.
+	 */
 	public static final Map<String, Double> PICKUP = Map.of(
 		"minecraft:blaze_rod", 250.0, // owner, 2026-11-11
 		"minecraft:ender_pearl", 150.0); // owner, 2026-11-11
+	/** Which mob's death drop each PICKUP item must be (the owner named the blaze; the pearl's enderman is ours, likewise). */
+	public static final Map<String, String> PICKUP_FROM = Map.of(
+		"minecraft:blaze_rod", "minecraft:blaze",
+		"minecraft:ender_pearl", "minecraft:enderman");
+	/** The entity tag a scoring drop carries until its first pickup. */
+	public static final String DROP_TAG = "overcraft.potg_drop";
 	/** An end crystal destroyed by a hero, directly or by their projectile or explosion. Owner, 2026-11-11 ("there is like
 	 *  9 of them ... not the most exciting POTG"). Not Shutdown (undecided). */
 	public static final double END_CRYSTAL = 400;
