@@ -495,3 +495,23 @@ Written from `fix/reticle-ui`, not built here: her widgets are on her own branch
 - **Self-Destruct warning:** 0031 at the mech + 2 m for anyone within 21 m, texts 947F / AAD9, texture 4EA7 (`decomp_0B2F.txt` 476-553): a world widget, for every player near, not only hers: not in `ReticleHud`; project it as `targetMarker` does.
 - **Crosshairs:** separate in the mech and as the pilot: Fusion CF, Light Gun E0; the Light Gun's ammo widget 02AB (`decomp_050A.txt` 382, `decomp_02B8.txt` 516 / 533). `crosshair` falls to the "+" until she has a case.
 - **As the pilot:** the mech's saved Self-Destruct charge (a second 01EE, `decomp_026A.txt` 1264) and the Call Mech 1 s lock.
+
+## Calibrated to the Workshop recording (2026-11-12, branch feature/calibration-1111)
+The owner's call (2026-11-12): "our game should match overwatch". Applied from [dva_workshop_2026-11-11](dva_workshop_2026-11-11.md).
+Played with the harness (`dev.py` keys and state, not a person's hands), one dev client at a time, fresh flat survival worlds, the old
+build (`next` 89289d2) first, then this one. Driver and raw output: the session scratchpad `calib/` (old_* / new_*).
+
+| Change | Recording | Old build (seen) | This build (seen) |
+|---|---|---|---|
+| Boosters' push: the flat direction from her to the target (`Boosters.away`) | 17.0 level + 4 up, along her-to-the-bot | NoAI zombie 1.4 m to the side, 5.5 m ahead, flown straight past: server Motion (0, 4.0, 17.0) m/s, along her look | the same flight: (7.18, 4.0, 15.41), 17.0 level, 25 deg toward the zombie's side |
+| Eject adds 6 back and 7 up to her motion (`Dva.eject`, Combat.motion) | the mech's velocity kept + 6.0 back + 7.00 up | Boosters at 12 m/s, Self-Destruct at 0.6 s: 5.97 m/s back, 6.16 up (the 12 dropped) | the same: +5.96 m/s forward (12 - 6), 6.12 up (7 less the tick's gravity) |
+| `MISSILES_CAST` 0.25 confirmed (comment only) | first missile 0.25 s after the press | - | - |
+| Every hero's stop and jump (#130): see [pharah](pharah.md) | stop 0.067 s, 0.14 m; top 0.98 m, 0.67 s | mech: stop 3.00 then 0.25 m/s ticks, 0.1625 m; top 0.979 m | stop 2.75 then 0, 0.1375 m; top 0.979 m, first air tick 4.99 |
+
+**The ~2-health drop after the eject (real-input pass 09a6f4c): not reproduced, and not ours as far as can be seen.** Tried on the old
+build: `/damage 80` into a called mech with no mob near (pilot 14/14 for 6 s after); the same after G out and back first (14/14); a
+Boosted Self-Destruct eject (14/14 for 4 s); and with a live zombie near on normal / easy, where the pilot lost exactly the zombie's
+hits (3 / 2.5 each), every one with a hit's knockback. The pass's own log (`dva_log.txt`) has the drop at 2.15 s with her lifted
+(`y -58.73`, clip `jump`) while backing up from its 1000-health zombie: a mob hit's knockback. Its 2.0 (not 3 or 2.5) is unexplained;
+no code path of ours was found that takes 2 from the pilot. The Workshop D.Va was never hit, so its "no drop" doesn't make this a bug.
+Seen in passing, not chased: one Boosters hit took a zombie 20 -> 17.08 on the old build and 20 -> 16.08 on this one (25 OW is 2.0).

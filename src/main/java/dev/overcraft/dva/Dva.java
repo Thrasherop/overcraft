@@ -370,9 +370,11 @@ public final class Dva implements HeroKit {
 			// "Pilot disengaging!" (0497)
 			dev.overcraft.hero.Voice.say(player, "eject", 1);
 		}
-		// launched away from a point 1 m ahead of the mech: 6 m/s back, 7 up (#97's knockback); her fall from it doesn't hurt
+		// launched away from a point 1 m ahead of the mech: 6 m/s back, 7 up (#97's knockback), added to the mech's motion
+		// (WS 2026-11-11, dva_workshop_2026-11-11.md: all four ejects kept the mech's velocity, 0.3-0.9 m/s off, plus 5.7-6.15 back
+		// along her facing and 7.00 up; a boosted Self-Destruct flies on); her fall from it doesn't hurt
 		Vec3 back = facing.scale(-Ow.speed(EJECT_BACK));
-		player.setDeltaMovement(back.x, Ow.speed(EJECT_UP), back.z);
+		player.setDeltaMovement(dev.overcraft.hero.Combat.motion(player).add(back.x, Ow.speed(EJECT_UP), back.z));
 		// straight to her client, which moves her (needsSync alone never reached it: found playing, she stayed put)
 		player.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(player));
 		// (her eject clip is her base state's: every client sees the form change, HeroAnimator)

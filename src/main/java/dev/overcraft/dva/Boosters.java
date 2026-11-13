@@ -130,15 +130,23 @@ public final class Boosters {
 			if (dealt > 0) {
 				Effects.hitMarker(player, e, false);
 			}
-			// thrown along her flight, 17 m/s and 4 up (the target's own resistance and a Stalwart's 40 % less count)
-			// its fall cut first (the push lifts it); Combat.push scales, sends and credits it (#93)
+			// thrown 17 m/s level and 4 up away from her: the flat direction from her to it (WS 2026-11-11,
+			// dva_workshop_2026-11-11.md: three hits pushed along her-to-the-bot, 2-8 deg closer to it than to her flight; her
+			// look when it's on top of her). The target's own resistance and a Stalwart's 40 % less count; its fall cut first
+			// (the push lifts it); Combat.push scales, sends and credits it (#93)
 			if (before.y < 0) {
 				e.setDeltaMovement(before.x, 0, before.z);
 			}
-			Combat.push(e, flat.scale(Ow.speed(BOOSTERS_KNOCKBACK)).add(0, Ow.speed(BOOSTERS_KNOCKBACK_UP), 0), player, BLOW);
+			Combat.push(e, away(player, e, flat).scale(Ow.speed(BOOSTERS_KNOCKBACK)).add(0, Ow.speed(BOOSTERS_KNOCKBACK_UP), 0), player, BLOW);
 			// the slam (message 2D4E -> #465 effect 68E6: C8DD, hers)
 			DvaSounds.own(player, "boosters.hit");
 		}
+	}
+
+	/** The level unit direction from her feet to the target's, or {@code fallback} (her flat look) when it's right over her. */
+	static Vec3 away(LivingEntity from, LivingEntity to, Vec3 fallback) {
+		Vec3 d = new Vec3(to.getX() - from.getX(), 0, to.getZ() - from.getZ());
+		return d.lengthSqr() < 1.0E-4 ? fallback : d.normalize();
 	}
 
 	/** Knockback on her while she flies: a tenth (#243 1E09 -0.9); 1 otherwise. */

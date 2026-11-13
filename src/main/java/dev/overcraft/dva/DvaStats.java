@@ -124,7 +124,11 @@ public final class DvaStats {
 	public static final int LIGHT_GUN_AMMO = 20;
 
 	// ---- Micro Missiles (dva.md "Micro Missiles", 1128) ----
-	/** The wait before the first missile: 0.25 s (D 1128 #652 / #363 v670; W 0.16) L. */
+	/**
+	 * The wait before the first missile: 0.25 s (D 1128 #652 / #363 v670) H, confirmed by WS 2026-11-11
+	 * (dva_workshop_2026-11-11.md: "in use" 1.46 s all three volleys, the last hit landing as it ends, so the first left
+	 * 1.46 - 17/14 = 0.25 s after the press). W's 0.16 is out.
+	 */
 	public static final double MISSILES_CAST = 0.25;
 	/** 18 missiles at 14 a second: 1.29 s a volley (D 1B56 18, 0404 14 at #645; BZ 2026-10-06 11 -> 14; W 18) H. */
 	public static final int MISSILES_COUNT = 18;

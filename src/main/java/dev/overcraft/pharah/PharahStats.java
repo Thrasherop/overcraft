@@ -62,6 +62,12 @@ public final class PharahStats {
 	// ---- Jet Dash (4B92, the right button) ----
 	/** 19 m/s along the move input (forward without) and 8 up (D #36 1E29 / 1E2A / 1E2B, #545) H; 0.85 s (D v9110, M). */
 	public static final double JET_DASH_ALONG = 19, JET_DASH_UP = 8;
+	/**
+	 * It keeps 0.3 of her horizontal velocity from before (ours from WS 2026-11-11, pharah_workshop_2026-11-11.md: from a
+	 * 5.5 run 20.65 m/s, the residual 1.59 / 0.44 of 5.38 / 1.13; strafing, (-1.35, 1.21) of (-4.34, 4.28)) M; the data's
+	 * field not found yet (Jump Jet's x57643451 0.1 is the like of it for the rise).
+	 */
+	public static final double JET_DASH_KEEP = 0.3;
 	/** 9 s cooldown from its end (D 1A89, #523; BZ 2024-12-10 8 -> 9; W) H. No fuel of its own (D) H. */
 	public static final double JET_DASH_COOLDOWN = 9;
 
@@ -75,21 +81,33 @@ public final class PharahStats {
 	/** Overfuel is held 5 s, then drains to 100 at 30 a second, 80 while hovering (D #682 / #681 / #688) M. */
 	public static final double OVERFUEL_HOLD = 5, OVERFUEL_DECAY = 30, OVERFUEL_DECAY_HOVER = 80;
 	/**
-	 * The push: 50 m/s² up (55 while falling) until she rises at 2.9 m/s (D 0B9A / 0B99, #650: M meaning). W says she rises at
-	 * 4.66 m/s; the data's 2.9 is used (to measure against a clip: pharah-map.md "Open").
+	 * The hover: her rise eases toward 4.66 m/s, dv/dt = 6 x (4.66 - vy) with gravity included, never pulling her down harder
+	 * than gravity (WS 2026-11-11, techniques/heroes/pharah_workshop_2026-11-11.md: settled at 4.66 for 1 s, k 5.9-6.0 from
+	 * -19.6 to +5 m/s, -17.5 exactly with Jump held above it in a jet; W 4.66) H. In place of the data reading of a 50 m/s² push
+	 * (55 falling) to 2.9 m/s (D 0B9A / 0B99, the meaning M), which the recording rules out.
 	 */
-	public static final double HOVER_PUSH = 50, HOVER_PUSH_FALLING = 55, HOVER_RISE = 2.9;
-	/** During a jet: the push 80, 30 with no fuel, the hover on without the key and no fuel spent (D 0025 #698 / #694 / #29) H/M. */
-	public static final double JET_PUSH = 80, JET_PUSH_EMPTY = 30;
+	public static final double HOVER_RISE = 4.66, HOVER_EASE = 6.0;
+	/**
+	 * A jet gives the hover only with Jump held, then the same ease and no fuel spent (D 0025 #29); without the key she flies
+	 * the plain arc (WS 2026-11-11: Jump Jet without Jump falls at -17.5 to its end, Jet Dash's top 1.72 m then a plain fall).
+	 * The data's jet pushes (80, 30 with no fuel: #698 / #694, "on without the key") aren't what the game does: retired.
+	 */
 	/** With no fuel the key held still slows her fall: a 7.5 m/s² push and a fall of 8 m/s at most (D #655, 1E54; BZ 2024-02-13; W) H. */
 	public static final double EMPTY_PUSH = 7.5, EMPTY_FALL = 8;
 	/** Horizontal speed +30 % while she hovers with fuel (D 1E36 on x786680F6, M field; BZ 2026-04-14 40 -> 30 %; W) H. */
 	public static final double HOVER_SPEED = 0.3;
-	/** From the ground it takes 0.2 s of holding (D #22, M); in the air it's at once. */
+	/**
+	 * From a ground press it takes 0.2 s of holding, counted from the press though the press's jump has her airborne by then
+	 * (D #22, M; WS 2026-11-11: the 5.72 jump, 13 ticks = 0.21 s of plain gravity, then the hover, three ground presses); a
+	 * press in the air takes over at once (WS: the ease from the next tick, ten air presses). Fuel isn't spent meanwhile.
+	 */
 	public static final double HOVER_FROM_GROUND = 0.2;
 
 	// ---- Concussive Blast (007B, E) ----
-	/** 8 s cooldown (D 092B; BZ 2026-08-11 7 -> 8; W) H. */
+	/**
+	 * 8 s cooldown (D 092B; BZ 2026-08-11 7 -> 8; W) H, from the end of the cast and its recovery (WS 2026-11-11: "in use"
+	 * 0.66 s = 0.167 + 0.5, then 7.99 s; 8.66 s press to ready) H.
+	 */
 	public static final double CONCUSSIVE_COOLDOWN = 8;
 	/** It leaves 0.167 s into the cast; 0.5 s before she can fire again (D #85 / #257 / #61) H. */
 	public static final double CONCUSSIVE_CAST = 0.1667, CONCUSSIVE_RECOVERY = 0.5;
@@ -114,6 +132,15 @@ public final class PharahStats {
 	public static final double BARRAGE_SPEED = 45, BARRAGE_SIZE = 0.075, BARRAGE_SPREAD = 8, BARRAGE_SELF = 0.5;
 	/** She moves at -20 % (D 24A8 0.8 on x786680F6, #377: M field; BZ 2026-04-14 "can move"; W 4.4 m/s) M. */
 	public static final double BARRAGE_SLOW = 0.2;
+	/**
+	 * Cast in the air she holds her height (WS 2026-11-11, pharah_workshop_2026-11-11.md, 48.97-51.47): her velocity zeroed at
+	 * the cast, no gravity, a 3D move at the slowed run speed (|v| 4.40 exactly), reached at the air acceleration (0 -> 4.4 in
+	 * 0.29 s: 3.5 x 4.4 = 15.4 m/s²) and turning at that speed. Up and down are Jump and Crouch: Crouch with a move key 45° down
+	 * (-3.11 at 4.40), Jump and Crouch level, Jump with a move key about 20° up (+1.5 of 4.40: tan 20.5° = 0.375). Ours, fitted
+	 * to those three: Crouch's share of the 3D wish -1, Jump's +0.375, both 0; with no move key held the wish is that share alone
+	 * (not in the log).
+	 */
+	public static final double BARRAGE_UP = 0.375, BARRAGE_DOWN = 1;
 	/**
 	 * The pods it fires from, in turn (D #21: hp 0034 / 0035 / 0037 / 0036 / 0037 / 0035 / 0034 / 0036), from her feet in her
 	 * facing's frame (right, up, ahead, m): shoulders (+-0.273, 1.564, -0.052), hips (-+0.159, 0.886, 0.051) H (her rest pose).
