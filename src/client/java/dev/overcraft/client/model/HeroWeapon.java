@@ -77,6 +77,12 @@ public final class HeroWeapon {
 			// in the mech she holds no gun (the cannons are the mech's)
 			return null;
 		}
+		if (hero == Hero.DVA && firstPerson && animator.dvaForm() == dev.overcraft.dva.Dva.CALLING) {
+			// her first-person call (3531, 3134) has both hands free and keys no gun bone, so the gun hung unposed mid-view (the
+			// critic of 83b6bfa, #133). The data's gun is a cosmetic entity of the weapon graph (02B8 #73, hp 000A); no node read in
+			// 026A hides it during the call: hidden here by the clips (ours)
+			return null;
+		}
 		// Mercy holds one of two (hero_models/mercy_staff.glb, mercy_blaster.glb): the one her state has out
 		HeroModels.Loaded weapon = hero == Hero.MERCY ? HeroModels.get(animator.blaster() ? "mercy_blaster" : "mercy_staff")
 			: HeroModels.weapon(hero);

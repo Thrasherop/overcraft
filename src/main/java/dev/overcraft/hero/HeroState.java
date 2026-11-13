@@ -299,6 +299,8 @@ public final class HeroState {
 	public long dvaCallLockUntil = -1, dvaImmuneUntil = -1, dvaEjectedAt = -1000, dvaInitiatorReadyAt = -1, dvaNow;
 	public net.minecraft.world.phys.@Nullable Vec3 dvaCallSpot;
 	public float dvaCallYaw;
+	/** The level Call Mech was cast in (a change of level mid-call cancels it: the critic of 83b6bfa, #133). */
+	public net.minecraft.resources.@Nullable ResourceKey<net.minecraft.world.level.Level> dvaCallLevel;
 	public @Nullable Integer dvaMechId;
 	/**
 	 * D.Va's mech kit (steps 4-6): Fusion's last volley (game time); Defense Matrix up, its energy, its ticks up, when it went

@@ -60,6 +60,16 @@ public final class DvaStats {
 	public static final double CALL_GROUND_BELOW = 2;
 	/** Where the mech drops in from (ours: the data spawns it at the spot and its landing clip 0xE5 brings it down, M). */
 	public static final double CALL_DROP_HEIGHT = 4;
+	/**
+	 * Her first-person climb in (pilot 1P clip 3134, alias 0xE5, set 0476; played 2 s from the spawn: D 026A #405), whose
+	 * Camera bone is laid out about the mech's spot (it starts 2.06 m behind it and ends inside it): the view follows it (#133).
+	 * The fade to black and back is ours (no fade node in 026A or 0276; 0276 #175 STU_A90C5991 before the mech's 1P spawn is
+	 * unread, L): black from 1.4 s into the climb (the camera reaching the cockpit) to the link at 1.75 s, held until she's
+	 * the mech, then out over 0.35 s as the mech's own view comes up. Ours, measured from the clip's Camera track.
+	 */
+	public static final double CALL_FADE_START = 1.4, CALL_FADE_OUT = 0.35;
+	/** The mech's first-person spawn (1P clip 3329, alias 0x435, set 019B): its 1 s clip over 1.2 s (D 0276 #176) H. */
+	public static final double MECH_SPAWN_VIEW = 1.2;
 	/** The landing: 250 to enemies within 3 m (D 348C 03BE 250 / 03BF 3, 026A #242; W 250 / 3 m) H. */
 	public static final double CALL_DAMAGE = 250, CALL_RADIUS = 3;
 	/** Its knockback, 15 m/s along and 3 up (D 348C 1B5D 15 / 1B5E 3, 026A #949 / #950) H. */
@@ -162,6 +172,12 @@ public final class DvaStats {
 	public static final double SELF_DESTRUCT_KNOCKBACK_EDGE = 7.8 / Math.hypot(20, 10);
 	/** The mech is gone 0.3 s after the blast (D 0B2F, after #274) M. */
 	public static final double SELF_DESTRUCT_LINGER = 0.3;
+	/**
+	 * Its animation: alias 0x175 (D 0B2F #300), on the mech 3P the additive 3644 (5.03 s, set 0282: its panels and arms open
+	 * by stages, the last at 4.0 s), played over 3.5 s (#300's m_86701C3E = 3.5, the state's own length v215 = the fuse): the
+	 * reading of kit_dva_mech.md, H values, M that 3.5 is the play length (#132).
+	 */
+	public static final double SELF_DESTRUCT_CLIP_TIME = 3.5;
 
 	// ---- the pilot's Light Gun (dva.md "Pilot", 02B8) ----
 	/** 14 a shot, 7 a second, x2 on the head, no falloff, no spread (D 03A2 14 / 03A4 7 at #326 / #327, 03A7 unread: the generic x2) H / M. */
