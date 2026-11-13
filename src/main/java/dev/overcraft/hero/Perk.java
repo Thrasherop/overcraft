@@ -79,7 +79,12 @@ public enum Perk {
 	CASSIDY_BANG_BANG(Hero.CASSIDY, Tier.MINOR, "bang_bang"),
 	CASSIDY_GIDDY_UP(Hero.CASSIDY, Tier.MINOR, "giddy_up"),
 	CASSIDY_ROLLIN_ROUND_UP(Hero.CASSIDY, Tier.MAJOR, "rollin_round_up"),
-	CASSIDY_SILVER_BULLET(Hero.CASSIDY, Tier.MAJOR, "silver_bullet");
+	CASSIDY_SILVER_BULLET(Hero.CASSIDY, Tier.MAJOR, "silver_bullet"),
+	// Junkrat's, the live list's order (D 0055.177: 252C, 26F3; 25C0, 272B; junkrat-map.md)
+	JUNKRAT_NITRO_BOOST(Hero.JUNKRAT, Tier.MINOR, "nitro_boost"),
+	JUNKRAT_BOMB_VOYAGE(Hero.JUNKRAT, Tier.MINOR, "bomb_voyage"),
+	JUNKRAT_FRAG_CANNON(Hero.JUNKRAT, Tier.MAJOR, "frag_cannon"),
+	JUNKRAT_MINE_RECYCLING(Hero.JUNKRAT, Tier.MAJOR, "mine_recycling");
 
 	public enum Tier { MINOR, MAJOR }
 

@@ -70,6 +70,14 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 		});
 	}
 
+	/**
+	 * Junkrat's RIP-Tire (model 118D8, pet 039C): its roll clip looped (tools/clipmaps/junkrat_tire.txt tire_roll_ra0). Ours: the
+	 * same renderer as Lifeweaver's props (a placed model and its clip); drawn turned to his facing.
+	 */
+	public static LifeweaverPropRenderer<dev.overcraft.entity.RipTireEntity> tire(EntityRendererProvider.Context context) {
+		return new LifeweaverPropRenderer<>(context, "junkrat_tire", (e, s) -> clip(s, "tire_roll_ra0", (e.tickCount + s.partialTick) / 20f, true));
+	}
+
 	/** Sow the Seed's seed on the ground: his model 126CC, still. */
 	public static LifeweaverPropRenderer<SeedEntity> seed(EntityRendererProvider.Context context) {
 		return new LifeweaverPropRenderer<>(context, "lifeweaver_seed", (e, s) -> s.clip = null);

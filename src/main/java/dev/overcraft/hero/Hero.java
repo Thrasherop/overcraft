@@ -39,7 +39,9 @@ public enum Hero {
 	// the third Damage hero (#71), Flanker (D tag 1187, 01C7 #2579; BZ 2026-02-10); colour ours (her jacket's orange)
 	TRACER("tracer", "Tracer", Role.DAMAGE, "flanker", dev.overcraft.tracer.TracerStats.HEALTH, true, 0xFFF29A2E),
 	// the fourth Damage hero (#72), Sharpshooter (D tag 1188; BZ 2026-02-10); colour ours (his serape's red)
-	CASSIDY("cassidy", "Cassidy", Role.DAMAGE, "sharpshooter", dev.overcraft.cassidy.CassidyStats.HEALTH, true, 0xFFB8392B);
+	CASSIDY("cassidy", "Cassidy", Role.DAMAGE, "sharpshooter", dev.overcraft.cassidy.CassidyStats.HEALTH, true, 0xFFB8392B),
+	// the fifth Damage hero (#73), Specialist (D tag 116F, 01C7 #2567; BZ 2026-02-10); colour ours (his explosives' yellow)
+	JUNKRAT("junkrat", "Junkrat", Role.DAMAGE, "specialist", dev.overcraft.junkrat.JunkratStats.HEALTH, true, 0xFFE8B51F);
 
 	public enum Role { TANK, DAMAGE, SUPPORT }
 

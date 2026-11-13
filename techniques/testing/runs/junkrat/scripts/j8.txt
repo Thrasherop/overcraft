@@ -1,0 +1,43 @@
+# J8 the fixes played: the mine and trap through death (saved with their chunk, still his after the respawn), the trap's damage read.
+MARK J8a mine and trap out, /kill, read on the server before and after the respawn (expected both there all through; after the respawn the right button sets the mine off)
+cmd /gamerule spawn_monsters false
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /spawnpoint @s 0 -60 0
+sleep 1
+key ability_1 down
+sleep 0.15
+key ability_1 up
+sleep 0.6
+key ability_2 down
+sleep 0.15
+key ability_2 up
+sleep 1
+servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J8_BEFORE_MINE
+servercmd /execute if entity @e[type=overcraft:steel_trap] run say J8_BEFORE_TRAP
+cmd /kill @s
+sleep 2.5
+servercmd /execute if entity @e[type=overcraft:concussion_mine] run say J8_DEAD_2.5_MINE
+servercmd /execute if entity @e[type=overcraft:steel_trap] run say J8_DEAD_2.5_TRAP
+respawn
+sleep 2
+ents Mine
+ents Trap
+state
+key primary_fire down
+sleep 0.1
+key primary_fire up
+sleep 0.5
+ents Mine
+MARK J8b the trap springs on a husk walking at him (expected 100 OW = 8 MC off it and it held 2.5 s)
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /summon husk 0.5 -60 9.5 {Tags:["j8"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100},{id:"minecraft:follow_range",base:32}],Health:100f}
+sleep 3
+hp @e[tag=j8,limit=1] Pos
+hp @e[tag=j8,limit=1]
+sleep 1
+hp @e[tag=j8,limit=1] Pos
+sleep 1.6
+hp @e[tag=j8,limit=1] Pos
+screenshot jr_j8_trap.png
+cmd /kill @e[tag=j8]

@@ -1,0 +1,30 @@
+# F2 Steel Trap on a baby husk (AI on) walking into it
+MARK F2 a trap 3 m ahead, an AI baby husk 7 m off walking in (bug: it keeps 0.115 speed and walks past)
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 3.5 run tp @s ~ ~ ~ ~ ~
+sleep 11
+key ability_2 down
+sleep 0.15
+key ability_2 up
+sleep 1.5
+ents Trap
+cmd /summon husk 0.5 -60 8.5 {Tags:["f2"],IsBaby:1b,attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100},{id:"minecraft:follow_range",base:32}],Health:100f}
+sleep 0.8
+hp @e[tag=f2,limit=1] Pos
+sleep 0.5
+hp @e[tag=f2,limit=1] Pos
+hp @e[tag=f2,limit=1]
+sleep 0.5
+hp @e[tag=f2,limit=1] Pos
+sleep 0.5
+hp @e[tag=f2,limit=1] Pos
+screenshot jr_f2_trap.png
+sleep 0.5
+hp @e[tag=f2,limit=1] Pos
+sleep 0.5
+hp @e[tag=f2,limit=1] Pos
+hp @e[tag=f2,limit=1]
+servercmd /attribute @e[tag=f2,limit=1] minecraft:movement_speed get
+ents Trap
+cmd /kill @e[tag=f2]

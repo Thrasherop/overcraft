@@ -175,6 +175,11 @@ WEAPON_SLOTS = {
     # Cassidy's Peacekeeper, entity 02A6 (model 0915, the classic skin's EECF) in slot 1901 on 000A (research/cassidy/work/
     # ents_cassidy_out.txt: hero entity 02A3's child "2A6.003 hp A.03C var 1901.01C"): cassidy_weapon.txt
     "cassidy": {"1901": ("stow", "revolver", "cassidy_weapon.txt")},
+    # Junkrat's Frag Launcher, entity 0452 (model 1283, the classic skin's 1022D) in slot 193F on 000A (research/junkrat/work/
+    # ents_junkrat_out.txt: hero entity 0380's child "452.003 hp A.03C var 193F.01C"): junkrat_weapon.txt
+    # and his Concussion Mine in the left hand, entity 04E8 (model 1445, the skin's 10095) in slot 1DB2 on 000B (child "4E8.003 hp B.03C
+    # var 1DB2.01C"; put away in 14 controls, never played): junkrat_mine.txt, under "stowLeft" (EmoteData's second-weapon keys)
+    "junkrat": {"193F": ("stow", "launcher", "junkrat_weapon.txt"), "1DB2": ("stowLeft", "mine", "junkrat_mine.txt")},
 }
 # a hero whose weapon geosets follow the stow windows where a clip has no GeoSetFlags: the mask bits that do (Juno's
 # Mediblaster, mask bit 1; her pod has no slot the emotes put away, so it stays where the data says nothing)
@@ -198,7 +203,7 @@ STOWS = {"lucio": True, "mercy": True, "ana": True, "sombra": True, "brigitte": 
 # heroes with no weapon pieces in their body .glb: their geosets are body variants (Pharah: geoset 1 her bare head and visor-up
 # look, geoset 2 her helmet, the submeshes 7-13 all 1.5-1.8 m up), so no mask or stow may hide them; her launcher is its own
 # entity (WEAPON_SLOTS), put away with the stow windows
-NO_PIECES = {"pharah", "tracer", "cassidy"}  # Tracer: her pistols are entities, no submesh of her body .glb sits stowed at the origin; Cassidy's Peacekeeper too
+NO_PIECES = {"pharah", "tracer", "cassidy", "junkrat"}  # Tracer: her pistols are entities, no submesh of her body .glb sits stowed at the origin; Cassidy's Peacekeeper and Junkrat's launcher too
 
 # props that are children of the hero entity itself, by slot (STUChildEntityDefinition of the hero entity: H), shown by an
 # EntityControl that plays a clip on them (action 4) over its window: slot -> (model, hardpoint). Ana's (her hero entity

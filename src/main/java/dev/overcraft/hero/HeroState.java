@@ -220,6 +220,8 @@ public final class HeroState {
 	/** Cassidy (dev.overcraft.cassidy.Cassidy): his kit's state, and the roll direction his client sent with its press. */
 	public final dev.overcraft.cassidy.CassidyState cassidy = new dev.overcraft.cassidy.CassidyState();
 	public int cassidyRollDir;
+	/** Junkrat (dev.overcraft.junkrat.Junkrat): his kit's state. */
+	public final dev.overcraft.junkrat.JunkratState junkrat = new dev.overcraft.junkrat.JunkratState();
 	/** Sojourn: ticks into Power Slide (-1 not sliding), when it last ended (game time), her Railgun's energy (0-100, 150). */
 	public int sojournSlide = -1;
 	public long sojournSlideEndAt = -1000;

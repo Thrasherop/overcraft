@@ -1039,6 +1039,23 @@ public final class HeroHud {
 				(float) dev.overcraft.tracer.TracerStats.RECALL_COOLDOWN, ability2ReadyAt);
 			return;
 		}
+		if (hero == Hero.JUNKRAT) {
+			// Concussion Mine (Shift) with its charges in the corner and the next one's recharge as a band, its time shown only with none left
+			// (Tracer's Blink's way), lit while a mine is out (the right button sets it off), and Steel Trap (E), in Kiriko's two places (ours)
+			int mines = s.secondaryAmmo();
+			ability(g, hero, w, "concussion_mine", w - 641, 903, HeroControls.get(Action.ABILITY_1), mines > 0 ? 0 : s.ability1Cooldown(),
+				(float) dev.overcraft.junkrat.JunkratStats.MINE_RECHARGE, ability1ReadyAt);
+			charges(g, mines, w - 641, 903, w);
+			if (s.secondaryReload() >= 0 && mines > 0) {
+				boxBand(g, s.secondaryReload(), 0xFFE8B51F, w - 641, 903, w);
+			}
+			if ((s.mode() & dev.overcraft.junkrat.Junkrat.MODE_MINE_OUT) != 0) {
+				song(g, true, false, w - 641, 903, w);
+			}
+			ability(g, hero, w, "steel_trap", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.junkrat.JunkratStats.TRAP_COOLDOWN, ability2ReadyAt);
+			return;
+		}
 		if (hero == Hero.CASSIDY) {
 			// Combat Roll (Shift) and Flashbang (E), in Kiriko's two places; with Silver Bullet its box where Lucio's third is, lit while
 			// it's aimed (ours)
@@ -1438,6 +1455,12 @@ public final class HeroHud {
 			}
 			weapon(g, hero, w, "railgun", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
 				dev.overcraft.sojourn.SojournStats.RAILGUN_AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
+		if (hero == Hero.JUNKRAT) {
+			// the Frag Launcher's 5 (the left button) where Kiriko's kunai are
+			weapon(g, hero, w, "frag_launcher", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+				dev.overcraft.junkrat.JunkratStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;
 		}
 		if (hero == Hero.CASSIDY) {

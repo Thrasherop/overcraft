@@ -1,0 +1,18 @@
+# Junkrat's Concussion Mine in his hand (entity 04E8, model 000000010095.00C, base 1445; set 01E2), on his hardpoint 000B (L), var 1DB2
+# (shown by 096A #213 / #456 while !v983, i.e. until it is thrown). The thrown mine is entity 0F9B (model 000000010093.00C, base 2959, no set).
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\junkrat\scripts\clipmaps_junkrat.py from the
+# compacted blend-tree sets (research\junkrat\work\clipmap_junkrat\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+0-36_0000000031FE = base_86_air_sm0_se0   # 0.3 s; set 01E2 alias 86 (weapon / 1P tree 7A (L)); sel[1] @8078802E sm[0] sm[5] @86 df18=cat6 @8078800F sm[0] seq[0]; on 2 paths
+0-36_0000000031FF = base_86_air_sm0_se1   # 0.3667 s; set 01E2 alias 86 (weapon / 1P tree 7A (L)); sel[1] @8078802E sm[0] sm[5] @86 df18=cat6 @8078800F sm[0] seq[1]; on 4 paths
+0-36_000000003205 = base_86_crouch_move   # 0.6 s; set 01E2 alias 86 (weapon / 1P tree 7A (L)); sel[1] @8078802E sm[0] sm[5] @86 df18=cat65; on 4 paths
+0-60_000000001C89 = base_86_crouch   # 0.1667 s; set 01E2 alias 86 (weapon / 1P tree 7A (L)); sel[1] @8078802E sm[0] sm[5] @86 df18=cat66; on 4 paths
+4-36_0000000031FD = add_base_86_sm1_sm0   # 0.6667 s; set 01E2 alias 86 (weapon / 1P tree 7A (L)); sel[1] @8078802E sm[0] sm[5] @86 df18:+add() sm[1] @80788013 sm[0]; on 10 paths
+0-36_00000000325F = mine_detonate_sm0   # 0.6 s; set 01E2 alias 127 (096A #247 / #444 (0.6 s) in #216's 1.5 s wait on the detonate press (SECONDARY #115) (H)); sm[0] @80788024
+0-36_000000003203 = reload_sm0   # 1.5 s; set 01E2 alias 4 (Frag Launcher reload (022B #90, length v581 = 0348 1.5 s) (H)); sm[0] @80788025
+4-36_00000000325A = add_reload_sm1   # 0.3333 s; set 01E2 alias 4 (Frag Launcher reload (022B #90, length v581 = 0348 1.5 s) (H)); sm[1] @8078802F; on 2 paths
+4-36_000000003522 = add_trap_throw_sm0   # 0.3333 s; set 01E2 alias 432 (Steel Trap throw (09BA #453, 0.35 s; 1D blend by aim pitch) (H)); sm[0] @80788035
+# Extracted under this model but in none of its sets (4, not named): 003200 003204 00325B 00395B

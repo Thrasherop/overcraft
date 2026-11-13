@@ -71,7 +71,7 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
   [jetpack_cat](heroes/jetpack_cat.md), hers; [mercy](heroes/mercy.md), hers (her kit read node by node);
   [lifeweaver](heroes/lifeweaver.md), his (the fifth); [ana](heroes/ana.md), hers (the sixth); [sombra](heroes/sombra.md), hers (the seventh); [brigitte](heroes/brigitte.md), hers (the eighth); [juno](heroes/juno.md), hers (the ninth); [sojourn](heroes/sojourn.md), hers (the tenth and the first Damage hero; her Charged Shot on the press, from a key's event, #126,
   being built); [sigma](heroes/sigma.md), his (the first Tank, being built: the Tank role, his body box);
-  [dva](heroes/dva.md), hers (the second Tank, on Sigma's Tank shell; two bodies; being built); [pharah](heroes/pharah.md), hers (the second Damage hero, Recon; a fuelled flight, rocket jumps, a T-posed 1P model); [tracer](heroes/tracer.md), hers (the third Damage hero, Flanker; a client-moved Blink, a server-run Recall, checked against a Workshop recording); [cassidy](heroes/cassidy.md), his (the fourth Damage hero, Sharpshooter; Flashbang, a client-moved roll, Deadeye's per-target locks).
+  [dva](heroes/dva.md), hers (the second Tank, on Sigma's Tank shell; two bodies; being built); [pharah](heroes/pharah.md), hers (the second Damage hero, Recon; a fuelled flight, rocket jumps, a T-posed 1P model); [tracer](heroes/tracer.md), hers (the third Damage hero, Flanker; a client-moved Blink, a server-run Recall, checked against a Workshop recording); [cassidy](heroes/cassidy.md), his (the fourth Damage hero, Sharpshooter; Flashbang, a client-moved roll, Deadeye's per-target locks); [junkrat](heroes/junkrat.md), his (the fifth Damage hero, Specialist; bouncing frags, a mine jump, a root, a server-driven tire with its own view).
 
 ## Reference material (research outputs, not techniques)
 `tools/reference/`:
@@ -82,5 +82,5 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
 - [movement](../tools/reference/movement.md), [perks](../tools/reference/perks.md),
   [fonts](../tools/reference/fonts.md), [comms-reference](../tools/reference/comms-reference.md),
   [lucio](../tools/reference/lucio.md); D.Va's [dva](../tools/reference/dva.md), [dva-map](../tools/reference/dva-map.md),
-  [dva-plan](../tools/reference/dva-plan.md); Pharah's [pharah](../tools/reference/pharah.md), [pharah-map](../tools/reference/pharah-map.md); Tracer's [tracer](../tools/reference/tracer.md), [tracer-map](../tools/reference/tracer-map.md); Cassidy's [cassidy](../tools/reference/cassidy.md), [cassidy-map](../tools/reference/cassidy-map.md).
+  [dva-plan](../tools/reference/dva-plan.md); Pharah's [pharah](../tools/reference/pharah.md), [pharah-map](../tools/reference/pharah-map.md); Tracer's [tracer](../tools/reference/tracer.md), [tracer-map](../tools/reference/tracer-map.md); Cassidy's [cassidy](../tools/reference/cassidy.md), [cassidy-map](../tools/reference/cassidy-map.md); Junkrat's [junkrat](../tools/reference/junkrat.md), [junkrat-map](../tools/reference/junkrat-map.md).
 - The critiques (`critique-*.md`).

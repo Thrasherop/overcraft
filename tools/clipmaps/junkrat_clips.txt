@@ -1,0 +1,5 @@
+# Junkrat, his third-person extra clips (owm_survey.py --clips-only), merged into hero_models/junkrat.glb by bone name (HeroModels).
+# His emotes come with --emotes (emote_<name>_<n>, in path order: techniques/emotes/emote_reproduction.md), on his skin's model
+# 1170A (research\junkrat\extract\Heroes\Junkrat\Skin\Overwatch\Overwatch\Models\00000001170A.00C). Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <1170A.owmdl> <out> --glb --clips-only --only=none
+#     --keep=tools/clipmaps/junkrat_clips.txt --emotes=<research\junkrat\extract\Unlocks\Heroes\Junkrat\Emote>

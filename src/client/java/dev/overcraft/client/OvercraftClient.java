@@ -227,6 +227,14 @@ public class OvercraftClient implements ClientModInitializer {
 		// Cassidy's Flashbang (model 118EB on entity 037D)
 		EntityRendererRegistry.register(OcEntities.FLASHBANG, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"cassidy_flashbang", 0.4f, false, 1, false));
+		// Junkrat's frag and bombs (118EA), mine (10093), trap (100DC; set down 29B2) and tire (118D8)
+		EntityRendererRegistry.register(OcEntities.FRAG, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"junkrat_frag", 0.35f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.CONCUSSION_MINE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"junkrat_mine", 0.4f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.STEEL_TRAP, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"junkrat_trap", 0.5f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.RIP_TIRE, dev.overcraft.client.model.LifeweaverPropRenderer::tire);
 		EntityRendererRegistry.register(OcEntities.PULSE_BOMB, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"tracer_bomb", 0.4f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PHARAH_ROCKET, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
@@ -331,7 +339,11 @@ public class OvercraftClient implements ClientModInitializer {
 		OwMovement.levitating = ClientSigma::levitating;
 		// (and Cassidy in Deadeye: W, no jump while channelling)
 		OwMovement.noJump = entity -> entity == mc.player && (ClientHero.hero() == Hero.SIGMA
-			&& (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_GATHER) != 0 || ClientCassidy.inDeadeye());
+			&& (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_GATHER) != 0 || ClientCassidy.inDeadeye()
+			// Junkrat on his tire: Jump is the tire's (Junkrat.driveTire), not his
+			|| ClientJunkrat.inputsOff(entity)
+			// rooted (Steel Trap: its jump strength taken to nothing, as a creature's, Junkrat.root)
+			|| entity.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.JUMP_STRENGTH) <= 1.0E-4);
 		OwMovement.sigmaFlight = entity -> entity != mc.player || ClientHero.hero() != Hero.SIGMA
 			|| (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_FLUX_FLIGHT) == 0 ? 0
 			: (ClientHero.sync().mode() & dev.overcraft.sigma.Sigma.MODE_FLUX_RISE) != 0 ? 1 : 2;
@@ -348,7 +360,8 @@ public class OvercraftClient implements ClientModInitializer {
 		// Pharah's Hover Jets (and the push her jets turn on)
 		OwMovement.pharahHover = ClientPharah::hover;
 		OwMovement.pharahBarrage = ClientPharah::barrageFlight;
-		// Tracer's Recall holds her still while the server moves her
+		// Tracer's Recall holds her still while the server moves her (Junkrat's tire doesn't: only his inputs are off, gravity still
+		// acts on him: ClientJunkrat.inputsOff, KeyboardInputMixin)
 		OwMovement.held = ClientTracer::held;
 		OwMovement.undamped = ClientMercy::undamped;
 		OwMovement.boosting = entity -> entity == mc.player ? ClientHero.boostTicks() : -1;

@@ -75,11 +75,31 @@ public abstract class CameraMixin {
 		move(-getMaxZoom(EmoteCamera.distance()), 0, 0);
 	}
 
+	/**
+	 * Junkrat's RIP-Tire: the view from behind his tire (ClientJunkrat), turned by his own look, which the server turns the tire by.
+	 * The ability view below leaves it alone while the tire runs.
+	 */
+	@Inject(method = "alignWithEntity", at = @At("TAIL"))
+	private void overcraft$tireView(float partialTicks, CallbackInfo ci) {
+		Minecraft mc = Minecraft.getInstance();
+		if (entity == null || entity != mc.player || EmoteCamera.active()) {
+			return;
+		}
+		dev.overcraft.entity.RipTireEntity tire = dev.overcraft.client.ClientJunkrat.tire();
+		if (tire == null) {
+			return;
+		}
+		setRotation(entity.getViewYRot(partialTicks), entity.getViewXRot(partialTicks));
+		setPosition(Mth.lerp(partialTicks, tire.xo, tire.getX()), Mth.lerp(partialTicks, tire.yo, tire.getY()) + dev.overcraft.client.ClientJunkrat.TIRE_VIEW_UP,
+			Mth.lerp(partialTicks, tire.zo, tire.getZ()));
+		move(-getMaxZoom(dev.overcraft.client.ClientJunkrat.TIRE_VIEW_BACK), 0, 0);
+	}
+
 	@Inject(method = "alignWithEntity", at = @At("TAIL"))
 	private void overcraft$abilityView(float partialTicks, CallbackInfo ci) {
 		Minecraft mc = Minecraft.getInstance();
 		if (!AbilityCamera.active() || EmoteCamera.active() || entity == null || entity != mc.player
-			|| mc.options.getCameraType() != CameraType.THIRD_PERSON_BACK || entity.isPassenger()) {
+			|| mc.options.getCameraType() != CameraType.THIRD_PERSON_BACK || entity.isPassenger() || dev.overcraft.client.ClientJunkrat.tire() != null) {
 			return;
 		}
 		Camera camera = (Camera) (Object) this;

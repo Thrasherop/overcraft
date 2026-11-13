@@ -1,0 +1,34 @@
+# F4 a dimension change during RIP-Tire: does ult charge come back?
+MARK F4 Q, then into the Nether; ult and mode every 2 s (bug: ult stays 0 for ~12 s; mode has the tire bit)
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /overcraft ult
+sleep 0.5
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 1
+state
+cmd /execute in minecraft:the_nether run tp @s 0.5 120 0.5
+sleep 2
+state
+servercmd /execute in minecraft:the_nether run fill -2 119 -2 2 119 2 minecraft:obsidian
+servercmd /execute in minecraft:the_nether run fill -2 120 -2 2 122 2 minecraft:air
+servercmd /execute in minecraft:the_nether run tp @a 0.5 120 0.5
+sleep 2
+state
+MARK F4 a frag at a husk in the Nether: does ult charge rise?
+servercmd /execute in minecraft:the_nether run summon husk 0.5 120 4.5 {Tags:["f4"],NoAI:1b,attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 120.5 4.5 run tp @s ~ ~ ~ ~ ~
+sleep 0.5
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 1.5
+state
+sleep 4
+state
+cmd /kill @e[tag=f4]
+cmd /execute in minecraft:overworld run tp @s 0.5 -60 0.5
+sleep 2
+state

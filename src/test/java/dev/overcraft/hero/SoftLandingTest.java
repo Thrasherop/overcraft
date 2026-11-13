@@ -8,6 +8,14 @@ import org.junit.jupiter.api.Test;
 /** A movement ability's landing (#35): set while moving, kept until down after it. */
 class SoftLandingTest {
 	@Test
+	void aSelfPushOnlyWhenItLeavesThemRising() {
+		// a frag burst 0.4 s into a 20 m fall: -8.5 + 4 m/s is still a fall (the critic's F3b); a mine jump or a rocket jump rises
+		assertFalse(Holds.pushLandsSoft(-5.8 / 20));
+		assertFalse(Holds.pushLandsSoft(0));
+		assertTrue(Holds.pushLandsSoft(0.75));
+	}
+
+	@Test
 	void setWhileTheAbilityMoves() {
 		assertTrue(Holds.softLanding(false, true, true, false));
 	}

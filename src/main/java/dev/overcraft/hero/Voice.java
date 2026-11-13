@@ -214,7 +214,15 @@ public final class Voice {
 		java.util.Map.entry("cassidy.flashbang", new Stimulus(65, 2, 5, false)), // 01D4 (01E9 #116)
 		java.util.Map.entry("cassidy.deadeye_fire", new Stimulus(60, 0.1f, 0.1f, false)), // 020C (022F #473)
 		java.util.Map.entry("cassidy.deadeye_kill", new Stimulus(50, 2, 5, false)), // 01D6 (022F #452)
-		java.util.Map.entry("cassidy.ultimate", new Stimulus(95, 1, 1, false))); // 183B (022F #621, the own key F1AC)
+		java.util.Map.entry("cassidy.ultimate", new Stimulus(95, 1, 1, false)), // 183B (022F #621, the own key F1AC)
+		// Junkrat's (tools/soundmaps/junkrat.txt; his stimuli's .078)
+		java.util.Map.entry("junkrat.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("junkrat.mine_throw", new Stimulus(60, 15, 20, false)), // 03DE (096A #586)
+		java.util.Map.entry("junkrat.mine_jump", new Stimulus(60, 10, 15, false)), // 0454 (096A #550)
+		java.util.Map.entry("junkrat.mine_kill", new Stimulus(60, 10, 10, false)), // 0415
+		java.util.Map.entry("junkrat.trap", new Stimulus(60, 1, 1, false)), // 043D (09BB #791)
+		java.util.Map.entry("junkrat.tire_kill", new Stimulus(75, 5, 5, false)), // 0414
+		java.util.Map.entry("junkrat.ultimate", new Stimulus(95, 1, 1, false))); // 184C (0232 #572, the own key F1AC)
 
 	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
 	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);
@@ -360,6 +368,10 @@ public final class Voice {
 			if (state.hero == Hero.SIGMA) {
 				// his own kill lines (the rock's "Collision!", the slam's "To the void!") first
 				dev.overcraft.sigma.Sigma.killed(killer, source);
+			}
+			if (state.hero == Hero.JUNKRAT) {
+				// Specialist, Mine Recycling and his mine's kill line
+				dev.overcraft.junkrat.Junkrat.killed(killer, state, blow);
 			}
 			if (state.hero == Hero.DVA) {
 				// her own: Call Mech's "Squished!", the pilot's "No mech? No problem!"

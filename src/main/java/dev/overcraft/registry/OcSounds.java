@@ -573,6 +573,21 @@ public final class OcSounds {
 	public static final java.util.List<String> CASSIDY_VOICE = java.util.List.of(
 		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
 		"ping_warning", "ping_enemy", "roll", "flashbang", "deadeye_fire", "deadeye_kill", "ultimate");
+	/**
+	 * Junkrat's sounds by name ("junkrat." + name, played through dev.overcraft.junkrat.JunkratSounds; tools/soundmaps/junkrat_sfx.txt
+	 * says which data event each is) and his voice moments (Voice.say: "junkrat.voice.<moment>", tools/soundmaps/junkrat.txt). The ult
+	 * line is ult.friendly / ult.enemy, his own "ultimate".
+	 */
+	public static final java.util.List<String> JUNKRAT_SOUNDS = java.util.List.of("ult.friendly", "ult.enemy",
+		"frag.fire", "frag.fire_3p", "frag.flight", "frag.flight_3p", "frag.bounce", "frag.explode", "frag.explode_3p", "frag.hit_enemy",
+		"frag.hit_enemy_3p", "frag.explode_world", "frag.fizz", "frag.cannon", "reload", "reload_3p", "mine.throw", "mine.throw_3p",
+		"mine.bounce", "mine.stick", "mine.armed", "mine.armed_3p", "mine.detonate", "mine.detonate_3p", "mine.explode", "mine.explode_3p",
+		"mine.jump", "trap.throw", "trap.throw_3p", "trap.land", "trap.arm", "trap.trigger", "trap.caught", "trap.caught_3p", "trap.release",
+		"tire.cast", "tire.cast_3p", "tire.loop", "tire.loop_3p", "tire.jump", "tire.land", "tire.explode", "tire.explode_3p",
+		"tire.destroyed", "tire.end", "tire.end_3p", "mayhem.drop", "mayhem.bomb", "nitro.boost", "melee", "melee_3p");
+	public static final java.util.List<String> JUNKRAT_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "mine_throw", "mine_jump", "mine_kill", "trap", "tire_kill", "ultimate");
 	public static final java.util.List<String> DVA_VOICE = java.util.List.of(
 		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
 		"ping_warning", "ping_enemy", "boosters", "matrix", "matrix_absorb", "call_mech", "call_mech_kill", "eject", "mech_back",
@@ -622,6 +637,8 @@ public final class OcSounds {
 		TRACER_VOICE.forEach(moment -> register("tracer.voice." + moment));
 		CASSIDY_SOUNDS.forEach(name -> register("cassidy." + name));
 		CASSIDY_VOICE.forEach(moment -> register("cassidy.voice." + moment));
+		JUNKRAT_SOUNDS.forEach(name -> register("junkrat." + name));
+		JUNKRAT_VOICE.forEach(moment -> register("junkrat.voice." + moment));
 	}
 
 	private OcSounds() {

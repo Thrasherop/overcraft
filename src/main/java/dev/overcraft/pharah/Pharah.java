@@ -597,7 +597,8 @@ public final class Pharah implements HeroKit {
 				away = away.lengthSqr() < 1.0E-6 ? Vec3.ZERO : away.normalize();
 				double k = rocketKnockFactor(d) * (me ? ROCKET_KNOCK_SELF : 1);
 				Combat.push(e, away.scale(Ow.speed(ROCKET_KNOCK_AWAY * k)).add(0, Ow.speed(ROCKET_KNOCK_UP * k), 0), owner, blow);
-				if (me && s != null) {
+				// soft only when it leaves her going up (a push that just slows a fall is still a fall: HeroManager.pushLandsSoft)
+				if (me && s != null && HeroManager.pushLandsSoft(owner.getDeltaMovement().y)) {
 					s.softLanding = true;
 				}
 			}
@@ -644,7 +645,7 @@ public final class Pharah implements HeroKit {
 			double out = CONCUSSIVE_AWAY + (onIt ? CONCUSSIVE_DIRECT_AWAY : 0);
 			double up = CONCUSSIVE_UP + (onIt ? CONCUSSIVE_DIRECT_UP : 0);
 			Combat.push(e, away.scale(Ow.speed(out)).add(0, Ow.speed(up), 0), owner, CONCUSSIVE_BLOW);
-			if (me && s != null) {
+			if (me && s != null && HeroManager.pushLandsSoft(owner.getDeltaMovement().y)) {
 				s.softLanding = true;
 			}
 		}

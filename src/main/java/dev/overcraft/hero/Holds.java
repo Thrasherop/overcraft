@@ -71,6 +71,11 @@ final class Holds {
 		return !hold.stun ? Cleansing.WAKES : !hold.slides ? Cleansing.ENDS : Cleansing.STAYS;
 	}
 
+	/** A self-push lands soft only when it leaves them going up (HeroManager.pushLandsSoft). Tested: SoftLandingTest. */
+	static boolean pushLandsSoft(double vy) {
+		return vy > 0;
+	}
+
 	/** A movement ability's landing (HeroManager.softLanding): set while it moves them, kept until they're down after it; grace: the ground just left doesn't count. Tested: SoftLandingTest. */
 	static boolean softLanding(boolean was, boolean moving, boolean onGround, boolean grace) {
 		return moving || was && (!onGround || grace);
