@@ -1450,7 +1450,17 @@ public final class HeroModelRenderer {
 	 */
 	public static void submitModel(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
 		int light, int overlay, Set<Integer> hidden, boolean cull, boolean props) {
+		submitModel(loaded, skin, poseStack, collector, light, overlay, hidden, cull, props, null);
+	}
+
+	/** ... without the pieces {@code skip} names (D.Va's unmanned MEKA leaves out its built-in pilot: DvaMechRenderer). */
+	public static void submitModel(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
+		int light, int overlay, Set<Integer> hidden, boolean cull, boolean props,
+		java.util.function.@org.jspecify.annotations.Nullable Predicate<SkinnedModel.Piece> skip) {
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
+			if (skip != null && skip.test(piece)) {
+				continue;
+			}
 			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
 			if (texture == null && piece.material().endsWith(SIGMA_CORE_MATERIAL)
 				&& (piece.mesh().endsWith(SIGMA_CORE) || piece.mesh().endsWith(SIGMA_CORE_BASE))) {

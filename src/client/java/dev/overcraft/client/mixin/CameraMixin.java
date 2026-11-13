@@ -59,6 +59,19 @@ public abstract class CameraMixin {
 
 	@Shadow private int matrixPropertiesDirty;
 
+	/** D.Va's first-person Call Mech: the view follows her climb into the mech, then the mech's spawn view (DvaCallView, #133). */
+	@Inject(method = "alignWithEntity", at = @At("TAIL"))
+	private void overcraft$dvaCall(float partialTicks, CallbackInfo ci) {
+		if (entity != Minecraft.getInstance().player || EmoteCamera.active()) {
+			return;
+		}
+		double[] view = dev.overcraft.client.DvaCallView.camera(Minecraft.getInstance().player, partialTicks);
+		if (view != null) {
+			setRotation((float) view[3], (float) view[4]);
+			setPosition(view[0], view[1], view[2]);
+		}
+	}
+
 	@Inject(method = "alignWithEntity", at = @At("TAIL"))
 	private void overcraft$emoteOrbit(float partialTicks, CallbackInfo ci) {
 		if (!EmoteCamera.active() || entity == null || entity != Minecraft.getInstance().player) {

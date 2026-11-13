@@ -133,7 +133,7 @@ public final class HeroAnimator {
 	private boolean sigma;
 	/** D.Va's form (dev.overcraft.dva.Dva.MECH .. WRECK, -1 not her), when it last changed, when she last ejected. */
 	private int dvaForm = -1;
-	private float dvaFormSince = -100, dvaEjectAt = -100;
+	private float dvaFormSince = -100, dvaEjectAt = -100, dvaLinkedAt = -100;
 
 	/** D.Va in her mech's body (or its wreck): no Light Gun in her hand, the pilot seated inside (HeroWeapon). */
 	public boolean dvaMech() {
@@ -1102,6 +1102,8 @@ public final class HeroAnimator {
 				// the rise, held at its end until he lands
 				SkinnedModel.Clip start = clip(model, "jump_start");
 				t = Math.clamp(now - airborneSince - (start == null ? 0 : start.duration()), 0, baseClip.duration());
+			} else if (viewBase.equals(DVA_CALL_CAST) || viewBase.equals(DVA_CALL_VIEW) || viewBase.equals(DVA_SPAWN_VIEW)) {
+				t = dvaViewTime(baseClip, viewBase, now);
 			} else if (viewBase.equals("idle") || viewBase.equals("idle_stealth")) {
 				// (Sombra's stealthed stand, 3EBA: two frames held, as her plain one)
 				t = 0;
@@ -1215,6 +1217,10 @@ public final class HeroAnimator {
 			Matrix4f restRotation = new Matrix4f().rotation(Skeleton.world(model, new Skeleton.Pose(model.nodeNames.length).rest(model), camera)
 				.getUnnormalizedRotation(new Quaternionf()).normalize());
 			view.set(Skeleton.world(model, pose, camera)).mul(restRotation.invert()).invert();
+			if (entity instanceof net.minecraft.client.player.LocalPlayer) {
+				// D.Va's call and the mech's spawn: the view follows the clip's camera (#133)
+				dev.overcraft.client.DvaCallView.posed(viewBase, new Matrix4f(view).invert(), now);
+			}
 		} else {
 			view.translation(0, -1.6f, 0);
 		}
@@ -1225,8 +1231,46 @@ public final class HeroAnimator {
 	 * The first-person base clip for what the third person plays: the climb, Lúcio's skating stride (its start first),
 	 * his air (4 ways in first person), his wall ride; else the held idle.
 	 */
+	static final String DVA_CALL_CAST = "call_mech_cast_sm0", DVA_CALL_VIEW = "call_mech_sm0", DVA_SPAWN_VIEW = "mech_spawn_sm0";
+
+	/**
+	 * D.Va's first-person view while she calls her mech and as she takes it (#133): the cast (pilot 1P 3531, alias 0x433, its
+	 * 0.2 s: D 026A #347), her climb in (3134, alias 0xE5, 2 s from the spawn: #405), then the mech's own spawn view (mech 1P
+	 * 3329, alias 0x435, over 1.2 s: 0276 #176). Null otherwise.
+	 */
+	private @Nullable String dvaView(SkinnedModel model, float now) {
+		String want = dvaForm == dev.overcraft.dva.Dva.CALLING
+			? now - dvaFormSince < dev.overcraft.dva.DvaStats.CALL_CAST ? DVA_CALL_CAST : DVA_CALL_VIEW
+			: dvaForm == dev.overcraft.dva.Dva.MECH && now - dvaLinkedAt < dev.overcraft.dva.DvaStats.MECH_SPAWN_VIEW ? DVA_SPAWN_VIEW : null;
+		return want != null && model.clips.containsKey(want) ? want : null;
+	}
+
+	private float dvaViewTime(SkinnedModel.Clip clip, String name, float now) {
+		float t = name.equals(DVA_CALL_CAST) ? now - dvaFormSince
+			: name.equals(DVA_CALL_VIEW) ? now - dvaFormSince - (float) dev.overcraft.dva.DvaStats.CALL_CAST
+			: (now - dvaLinkedAt) * clip.duration() / (float) dev.overcraft.dva.DvaStats.MECH_SPAWN_VIEW;
+		return Math.clamp(t, 0, clip.duration());
+	}
+
+	/** D.Va's form as this animator saw it, when it last changed, and when she last took a called mech (DvaCallView). */
+	public int dvaForm() {
+		return dvaForm;
+	}
+
+	public float dvaFormSince() {
+		return dvaFormSince;
+	}
+
+	public float dvaLinkedAt() {
+		return dvaLinkedAt;
+	}
+
 	private String viewBase(SkinnedModel model, float now) {
 		String want = "idle";
+		String dva = dvaView(model, now);
+		if (dva != null) {
+			return dva;
+		}
 		if (lifeweaver) {
 			// his view model (lifeweaver_1p.txt): idle, walk, the jump's rise and fall; firing, the volley's loop; the
 			// tree's aim loop; each with Thorn Volley's own where it has one
@@ -1786,8 +1830,12 @@ public final class HeroAnimator {
 		int form = entity instanceof net.minecraft.world.entity.player.Player p && dev.overcraft.hero.HeroManager.heroMode(p)
 			? dev.overcraft.dva.Dva.form(p) : -1;
 		if (form != dvaForm) {
-			if (dvaForm == dev.overcraft.dva.Dva.WRECK && form == dev.overcraft.dva.Dva.PILOT) {
+			// the eject (016C: 026A #366's 0x439) after the wreck and on Self-Destruct's cast (0B2F #271), both from the mech (#132)
+			if ((dvaForm == dev.overcraft.dva.Dva.WRECK || dvaForm == dev.overcraft.dva.Dva.MECH) && form == dev.overcraft.dva.Dva.PILOT) {
 				dvaEjectAt = now;
+			}
+			if (dvaForm == dev.overcraft.dva.Dva.CALLING && form == dev.overcraft.dva.Dva.MECH) {
+				dvaLinkedAt = now;
 			}
 			dvaForm = form;
 			dvaFormSince = now;
