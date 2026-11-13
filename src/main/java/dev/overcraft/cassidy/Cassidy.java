@@ -94,6 +94,11 @@ public final class Cassidy implements HeroKit {
 			s.ability2Cooldown = Math.max(0, s.ability2Cooldown - rate);
 		}
 		c.silverCooldown = Math.max(0, c.silverCooldown - rate);
+		// the wait an action's cut put on the empty cylinder's own reload (HeroState.interruptReload): counted down here, as the
+		// other kits do (found playing, T9: a Flashbang mid-reload left him at 0 rounds for the rest of the fight)
+		if (s.reloadHeld > 0) {
+			s.reloadHeld--;
+		}
 		boolean able = controls && player.isAlive() && !Sleep.asleep(player);
 		roll(player, s, c);
 		giddy(player, s, c);
@@ -105,9 +110,26 @@ public final class Cassidy implements HeroKit {
 		}
 		if (c.lineAt >= 0 && now >= c.lineAt) {
 			c.lineAt = -1;
-			// "It's high noon" (022F #621: own 183B, allies 0487, enemies 01D5)
-			HeroSounds.ultLine(player, CassidySounds.of("ult.friendly"), CassidySounds.of("ult.enemy"), 5);
-			Voice.say(player, "ultimate", 1);
+			// "It's high noon" (022F #621: his own key F1AC 183B, allies' F1AB 0487 "Step right up", enemies' F1AA 01D5): he hears
+			// only his own (found playing, T12c: he heard both his and the allies' line)
+			ultLine(player);
+		}
+	}
+
+	/** Deadeye's cast line: his own copy in his head, the allies' and the enemies' from him (HeroSounds.ultLine's way). */
+	private static void ultLine(ServerPlayer hero) {
+		net.minecraft.sounds.SoundEvent own = net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.getValue(Overcraft.id("cassidy.voice.ultimate"));
+		net.minecraft.sounds.SoundEvent friendly = CassidySounds.of("ult.friendly"), enemy = CassidySounds.of("ult.enemy");
+		if (own != null) {
+			HeroSounds.toOwner(hero, own);
+		}
+		for (ServerPlayer listener : hero.level().players()) {
+			net.minecraft.sounds.SoundEvent line = Allies.isSelfOrAlly(hero, listener) ? friendly : enemy;
+			if (listener != hero && line != null) {
+				listener.connection.send(new net.minecraft.network.protocol.game.ClientboundSoundPacket(
+					net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.wrapAsHolder(line), net.minecraft.sounds.SoundSource.PLAYERS,
+					hero.getX(), hero.getEyeY(), hero.getZ(), 5, 1.0f, hero.getRandom().nextLong()));
+			}
 		}
 	}
 
@@ -142,7 +164,8 @@ public final class Cassidy implements HeroKit {
 		if (s.primaryReload >= 0 || s.primaryAmmo <= 0 || s.weaponRecovery > 0) {
 			return;
 		}
-		if (!silverPerk && s.secondaryFresh) {
+		if (!silverPerk && s.secondaryHeld) {
+			// pressed, or held through the shot's recovery or a reload: it fans once it can (ours: the data buffers a press 0.1 s)
 			startFan(player, s, c);
 			return;
 		}
@@ -284,7 +307,8 @@ public final class Cassidy implements HeroKit {
 				Effects.hitMarker(player, target, crit);
 				if (crit) {
 					s.critAt = level.getGameTime();
-					sharpshooter(s, Ow.toOw(dealt));
+					// (Combat.damage answers in Overwatch points)
+					sharpshooter(s, dealt);
 				}
 				if (pierce && target.isAlive()) {
 					bleed(player, target);
@@ -340,8 +364,13 @@ public final class Cassidy implements HeroKit {
 	// ---- Silver Bullet's bleed (5FDA) ----
 
 	private static void bleed(ServerPlayer owner, LivingEntity target) {
-		int steps = (int) Math.round(SILVER_BLEED_TIME / SILVER_BLEED_STEP);
+		int steps = bleedSteps();
 		BLEEDS.put(target.getUUID(), new Bleed(target, owner.getUUID(), new int[] {steps, Ow.ticks(SILVER_BLEED_STEP)}));
+	}
+
+	/** The bleed's steps: 1.5 s in steps of 0.2 s, rounded (8). */
+	public static int bleedSteps() {
+		return (int) Math.round(SILVER_BLEED_TIME / SILVER_BLEED_STEP);
 	}
 
 	/** Every server tick (Overcraft's): the bleeds' steps, 50 over 1.5 s, no crit. */
@@ -355,7 +384,8 @@ public final class Cassidy implements HeroKit {
 			}
 			b.left[1] = Ow.ticks(SILVER_BLEED_STEP);
 			ServerPlayer owner = server.getPlayerList().getPlayer(b.owner);
-			double step = SILVER_BLEED * SILVER_BLEED_STEP / SILVER_BLEED_TIME;
+			// 50 in all, shared by its steps (found playing: 8 steps of a 7.5-step rate gave 53)
+			double step = SILVER_BLEED / bleedSteps();
 			if (owner != null) {
 				float dealt = Combat.damage(b.target, Combat.hitscan(owner), step, BLEED_BLOW);
 				Combat.credit(owner, dealt, b.target);

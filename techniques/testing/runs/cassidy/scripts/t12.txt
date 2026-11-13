@@ -1,0 +1,56 @@
+MARK T12 the fixed build (rejoined cas1), sounds built. T12a the stuck cylinder: empty it (fire held), its reload starts by itself, a Flashbang 0.3 s into it; fire held on (expected the reload again after the throw, rounds back, firing again)
+cmd /kill @e[type=!player]
+cmd /time set noon
+cmd /difficulty easy
+cmd /gamerule minecraft:spawn_monsters false
+cmd /tp @s 0.5 -60 0.5 0 0
+sleep 1
+heard
+key secondary_fire down
+sleep 2.7
+state
+heard
+sleep 0.3
+key ability_2 down
+sleep 0.1
+key ability_2 up
+sleep 0.5
+state
+sleep 1.5
+state
+sleep 1.5
+state
+key secondary_fire up
+heard
+MARK T12b the roll's voice and sound, the fan's
+sleep 5
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 0.6
+heard
+key primary_fire down
+sleep 0.1
+key primary_fire up
+sleep 1
+heard
+MARK T12c Deadeye: its lines, the 1P view without the held clip, a husk
+cmd /summon husk 0.5 -60 12.5 {NoAI:1b,Tags:["h1"],attributes:[{id:"minecraft:max_health",base:20}],Health:20f}
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /overcraft ult @s 100
+sleep 2
+heard
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 1.5
+heard
+screenshot cas_t12_deadeye_1p.png
+sleep 0.5
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 1
+heard
+hp @e[tag=h1,limit=1]
+state

@@ -1,0 +1,77 @@
+cmd /difficulty easy
+MARK T1a Peacekeeper (husks: zombies burn at noon): a 100-health (1250 OW) husk, armor 0, 10 m, aimed at the chest; hold the left button 1.2 s (expected 3 shots at 0, 0.5, 1.0 s: 210 OW = 16.8 MC; ammo 6 -> 3)
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /summon husk 0.5 -60 10.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 10.5 run tp @s ~ ~ ~ ~ ~
+sleep 1
+hp @e[tag=t1,limit=1]
+key secondary_fire down
+sleep 1.2
+key secondary_fire up
+sleep 0.3
+hp @e[tag=t1,limit=1]
+state
+MARK T1b headshot: aimed at the head (expected 140 OW = 11.2 MC)
+cmd /data merge entity @e[tag=t1,limit=1] {Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 -58.3 10.5 run tp @s ~ ~ ~ ~ ~
+sleep 0.8
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 0.4
+hp @e[tag=t1,limit=1]
+MARK T1c falloff 30 m (expected 45.5 = 3.64 MC) and 40 m (21 = 1.68 MC), chest
+cmd /tp @e[tag=t1] 0.5 -60 30.5
+cmd /data merge entity @e[tag=t1,limit=1] {Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 30.5 run tp @s ~ ~ ~ ~ ~
+sleep 1
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 0.6
+hp @e[tag=t1,limit=1]
+cmd /tp @e[tag=t1] 0.5 -60 40.5
+cmd /data merge entity @e[tag=t1,limit=1] {Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 40.5 run tp @s ~ ~ ~ ~ ~
+sleep 1
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 0.6
+hp @e[tag=t1,limit=1]
+state
+MARK T1d R: reload from wherever (expected 1.5 s, the rounds at 0.8 s)
+key reload tap
+sleep 0.5
+state
+sleep 0.5
+state
+sleep 0.7
+state
+MARK T1e Fan the Hammer: 6 rounds, zombie at 10 m, a tap of the right button (expected 6 x 50 = 300 OW = 24 MC if all hit; the 6 deg spread misses some; 0.6 s; then empty -> reload)
+cmd /tp @e[tag=t1] 0.5 -60 10.5
+cmd /data merge entity @e[tag=t1,limit=1] {Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 10.5 run tp @s ~ ~ ~ ~ ~
+sleep 1
+key primary_fire down
+sleep 0.15
+key primary_fire up
+sleep 0.3
+state
+sleep 0.5
+hp @e[tag=t1,limit=1]
+state
+sleep 1.6
+state
+MARK T1f fan at 5 m, 3 times (spread)
+cmd /tp @e[tag=t1] 0.5 -60 5.5
+cmd /data merge entity @e[tag=t1,limit=1] {Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 5.5 run tp @s ~ ~ ~ ~ ~
+sleep 1
+key primary_fire down
+sleep 0.15
+key primary_fire up
+sleep 1.0
+hp @e[tag=t1,limit=1]
+screenshot cas_t1_fan.png

@@ -127,6 +127,8 @@ public final class HeroAnimator {
 	private int pharahLook;
 	/** Sojourn: sliding (the synced flag), when the slide began and when a slide jump left the ground (seconds). */
 	private boolean sojourn, sojournSliding;
+	/** Cassidy (his Deadeye's first-person clips are left out: below). */
+	private boolean cassidy;
 	/** Sigma (his actions' clips: trigger). */
 	private boolean sigma;
 	/** D.Va's form (dev.overcraft.dva.Dva.MECH .. WRECK, -1 not her), when it last changed, when she last ejected. */
@@ -411,6 +413,11 @@ public final class HeroAnimator {
 				default -> {
 				}
 			}
+		}
+		if (a.cassidy && action.startsWith("deadeye")) {
+			// his first-person Deadeye clips (cassidy_1p.txt 1373 / 147A / 14A8) held at their end filled the view with his left arm
+			// and his hat's brim (found playing, cas_t7_deadeye_1p.png): left out until they're checked against Overwatch's view
+			viewClip = "";
 		}
 		if (a.sombra && action.equals("hotfix")) {
 			// Hotfix's channel (alias 0x47D): her 0.5 s cast (cat 0x82, level aim: sombra.txt), the view model's raise
@@ -1774,6 +1781,7 @@ public final class HeroAnimator {
 		pharahLook = pharahNow == null ? 0 : pharahNow;
 		boolean sojourn = "sojourn".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		this.sojourn = sojourn;
+		this.cassidy = "cassidy".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		this.sigma = "sigma".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		int form = entity instanceof net.minecraft.world.entity.player.Player p && dev.overcraft.hero.HeroManager.heroMode(p)
 			? dev.overcraft.dva.Dva.form(p) : -1;

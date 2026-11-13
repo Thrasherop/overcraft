@@ -1,0 +1,69 @@
+MARK T8 terrain. Lanes along +z from z=0.5: a 3-high wall at z=4 (x=40), a 1-block step from z=4 (x=45), a half-slab slope of stairs from z=3 (x=50), a 3-block drop from z=4 (x=55), water 3 deep from z=2 (x=60)
+cmd /kill @e[type=!player]
+cmd /fill 38 -61 -2 62 -56 20 air
+cmd /fill 38 -63 -2 62 -61 20 grass_block
+cmd /fill 39 -60 4 41 -58 4 stone
+cmd /fill 44 -60 4 46 -60 20 stone
+cmd /setblock 50 -60 3 oak_stairs[facing=south]
+cmd /setblock 50 -59 4 oak_stairs[facing=south]
+cmd /fill 50 -60 4 50 -60 20 oak_planks
+cmd /fill 50 -59 5 50 -59 20 oak_planks
+cmd /fill 54 -63 4 56 -61 20 air
+cmd /fill 59 -63 2 61 -61 20 water
+MARK T8a roll into the 3-high wall 3.5 m ahead (expected stopped against it at z ~3.7, not in it)
+cmd /tp @s 40.5 -60 0.5 0 0
+sleep 6
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 0.6
+state
+MARK T8b roll at a 1-block step (expected: stops at it: the roll steps up only Minecraft's 0.6, OW has no stairs rule for it)
+cmd /tp @s 45.5 -60 0.5 0 0
+sleep 5.5
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 0.6
+state
+MARK T8c roll up stairs (expected up them)
+cmd /tp @s 50.5 -60 0.5 0 0
+sleep 5.5
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 0.6
+state
+MARK T8d roll off a 3-block drop (expected over and down, no fall damage from 3 m)
+cmd /tp @s 55.5 -60 0.5 0 0
+sleep 5.5
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 1.2
+state
+MARK T8e roll in water (3 deep, from the bank into it) and a Flashbang under water at a husk
+cmd /tp @s 60.5 -60 0.5 0 0
+cmd /summon husk 60.5 -63 9.5 {NoAI:1b,Tags:["w1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+sleep 5.5
+key ability_1 down
+sleep 0.1
+key ability_1 up
+sleep 1.2
+state
+cmd /execute as @s at @s anchored eyes facing 60.5 -62 9.5 run tp @s ~ ~ ~ ~ ~
+sleep 0.5
+key ability_2 down
+sleep 0.1
+key ability_2 up
+sleep 0.8
+hp @e[tag=w1,limit=1]
+screenshot cas_t8_water.png
+MARK T8f Flashbang at the wall 3 m ahead (expected off at the wall)
+cmd /tp @s 40.5 -60 1 0 0
+sleep 12
+key ability_2 down
+sleep 0.1
+key ability_2 up
+sleep 0.4
+state

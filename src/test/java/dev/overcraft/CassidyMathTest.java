@@ -50,6 +50,14 @@ class CassidyMathTest {
 	}
 
 	@Test
+	void silverBleed() {
+		// 50 in all over its steps (found playing: 8 steps at the 0.2 s rate gave 53.3)
+		int steps = Cassidy.bleedSteps();
+		assertEquals(8, steps);
+		assertEquals(50, CassidyStats.SILVER_BLEED / steps * steps, 1e-9);
+	}
+
+	@Test
 	void roll() {
 		// 15 m/s for 0.4 s = 6 m on the ground, 7.8 m in the air (x1.3)
 		assertEquals(6.0, CassidyStats.ROLL_SPEED * CassidyStats.ROLL_TIME, 1e-9);

@@ -1,0 +1,21 @@
+MARK T13 the final build (ult line fix). T13a Deadeye cast: expected he hears only his own "It's high noon" (voice.ultimate), not the allies' "Step right up"
+state
+cmd /kill @e[type=!player]
+cmd /time set noon
+cmd /difficulty easy
+cmd /gamerule minecraft:spawn_monsters false
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /overcraft ult @s 100
+sleep 1
+heard
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 1.2
+heard
+key primary_fire down
+sleep 0.1
+key primary_fire up
+sleep 1
+heard
+state

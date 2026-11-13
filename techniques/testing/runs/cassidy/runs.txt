@@ -1,0 +1,687 @@
+
+=== T1 2026-11-12 22:26:23
+22:26:23.458 MARK T1a Peacekeeper: a 100-health (1250 OW) zombie, armor 0, 10 m, aimed at the chest; hold the left button 1.2 s (expected 3 shots at 0, 0.5, 1.0 s: 210 OW = 16.8 MC; ammo 6 -> 3)
+22:26:23.625 cmd /kill @e[type=!player] -> {"ok":true}
+22:26:23.695 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:26:24.033 cmd /summon zombie 0.5 -60 10.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:26:24.040 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:26:25.487 hp @e[tag=t1,limit=1] -> No entity was found
+22:26:25.512 key secondary_fire down -> {"key":"key.mouse.left"}
+22:26:26.714 key secondary_fire up -> {"key":"key.mouse.left"}
+22:26:27.456 hp @e[tag=t1,limit=1] -> No entity was found
+22:26:27.490 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 131.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 3, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:26:27.490 MARK T1b headshot: aimed at the head (expected 140 OW = 11.2 MC)
+22:26:27.517 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+22:26:27.551 cmd /execute as @s at @s anchored eyes facing 0.5 -58.3 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:26:28.384 key secondary_fire down -> {"key":"key.mouse.left"}
+22:26:28.485 key secondary_fire up -> {"key":"key.mouse.left"}
+22:26:29.329 hp @e[tag=t1,limit=1] -> No entity was found
+22:26:29.329 MARK T1c falloff 30 m (expected 45.5 = 3.64 MC) and 40 m (21 = 1.68 MC), chest
+22:26:29.354 cmd /tp @e[tag=t1] 0.5 -60 30.5 -> {"ok":true}
+22:26:29.388 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+22:26:29.421 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 30.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:26:30.424 key secondary_fire down -> {"key":"key.mouse.left"}
+22:26:30.559 key secondary_fire up -> {"key":"key.mouse.left"}
+22:26:31.603 hp @e[tag=t1,limit=1] -> No entity was found
+22:26:31.628 cmd /tp @e[tag=t1] 0.5 -60 40.5 -> {"ok":true}
+22:26:31.662 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+22:26:31.695 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 40.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:26:32.697 key secondary_fire down -> {"key":"key.mouse.left"}
+22:26:32.832 key secondary_fire up -> {"key":"key.mouse.left"}
+22:26:33.875 hp @e[tag=t1,limit=1] -> No entity was found
+22:26:33.901 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 163.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": 0.4, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+22:26:33.901 MARK T1d R: reload from wherever (expected 1.5 s, the rounds at 0.8 s)
+22:26:33.933 key reload tap -> {"key":"key.keyboard.r"}
+22:26:34.435 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 166.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": 0.767, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+22:26:34.937 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 169.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+22:26:35.638 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 172.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:26:35.638 MARK T1e Fan the Hammer: 6 rounds, zombie at 10 m, a tap of the right button (expected 6 x 50 = 300 OW = 24 MC if all hit; the 6 deg spread misses some; 0.6 s; then empty -> reload)
+22:26:35.672 cmd /tp @e[tag=t1] 0.5 -60 10.5 -> {"ok":true}
+22:26:35.705 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+22:26:35.738 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:26:36.741 key primary_fire down -> {"key":"key.mouse.right"}
+22:26:36.908 key primary_fire up -> {"key":"key.mouse.right"}
+22:26:37.243 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 180.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 2, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:26:38.186 hp @e[tag=t1,limit=1] -> No entity was found
+22:26:38.211 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 185.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": 0.533, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+22:26:39.816 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 193.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:26:39.816 MARK T1f fan at 5 m, 3 times (spread)
+22:26:39.850 cmd /tp @e[tag=t1] 0.5 -60 5.5 -> {"ok":true}
+22:26:39.883 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+22:26:39.917 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 5.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:26:40.917 key primary_fire down -> {"key":"key.mouse.right"}
+22:26:41.085 key primary_fire up -> {"key":"key.mouse.right"}
+22:26:42.531 hp @e[tag=t1,limit=1] -> No entity was found
+22:26:42.556 screenshot cas_t1_fan.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\cas_t1_fan.png"}
+
+=== T1-rerun 2026-11-12 22:26:48
+22:26:49.010 cmd /difficulty easy -> {"ok":true}
+22:26:49.010 MARK T1a Peacekeeper: a 100-health (1250 OW) zombie, armor 0, 10 m, aimed at the chest; hold the left button 1.2 s (expected 3 shots at 0, 0.5, 1.0 s: 210 OW = 16.8 MC; ammo 6 -> 3)
+22:26:49.044 cmd /kill @e[type=!player] -> {"ok":true}
+22:26:49.078 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:26:49.110 cmd /summon zombie 0.5 -60 10.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:26:49.144 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:26:50.572 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 99.0f
+22:26:50.598 key secondary_fire down -> {"key":"key.mouse.left"}
+22:26:51.801 key secondary_fire up -> {"key":"key.mouse.left"}
+22:26:52.545 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 81.200005f
+22:26:52.578 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 467.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 3, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:26:52.578 MARK T1b headshot: aimed at the head (expected 140 OW = 11.2 MC)
+22:26:52.604 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+22:26:52.638 cmd /execute as @s at @s anchored eyes facing 0.5 -58.3 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:26:53.439 key secondary_fire down -> {"key":"key.mouse.left"}
+22:26:53.573 key secondary_fire up -> {"key":"key.mouse.left"}
+22:26:54.415 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 87.8f
+22:26:54.415 MARK T1c falloff 30 m (expected 45.5 = 3.64 MC) and 40 m (21 = 1.68 MC), chest
+22:26:54.441 cmd /tp @e[tag=t1] 0.5 -60 30.5 -> {"ok":true}
+22:26:54.475 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+22:26:54.508 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 30.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:26:55.511 key secondary_fire down -> {"key":"key.mouse.left"}
+22:26:55.644 key secondary_fire up -> {"key":"key.mouse.left"}
+22:26:56.689 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 94.22919f
+22:26:56.716 cmd /tp @e[tag=t1] 0.5 -60 40.5 -> {"ok":true}
+22:26:56.750 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+22:26:56.783 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 40.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:26:57.786 key secondary_fire down -> {"key":"key.mouse.left"}
+22:26:57.919 key secondary_fire up -> {"key":"key.mouse.left"}
+22:26:58.962 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 95.32f
+22:26:58.988 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 707.385, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": 0.433, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+22:26:58.988 MARK T1d R: reload from wherever (expected 1.5 s, the rounds at 0.8 s)
+22:26:59.022 key reload tap -> {"key":"key.keyboard.r"}
+22:26:59.556 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 710.135, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": 0.8, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+22:27:00.091 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 712.885, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+22:27:00.791 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 716.385, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:27:00.791 MARK T1e Fan the Hammer: 6 rounds, zombie at 10 m, a tap of the right button (expected 6 x 50 = 300 OW = 24 MC if all hit; the 6 deg spread misses some; 0.6 s; then empty -> reload)
+22:27:00.825 cmd /tp @e[tag=t1] 0.5 -60 10.5 -> {"ok":true}
+22:27:00.859 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+22:27:00.892 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:27:01.895 key primary_fire down -> {"key":"key.mouse.right"}
+22:27:02.063 key primary_fire up -> {"key":"key.mouse.right"}
+22:27:02.364 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 924.385, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 2, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:27:03.309 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 78.0f
+22:27:03.332 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 979.135, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": 0.5, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+22:27:04.936 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 987.135, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:27:04.936 MARK T1f fan at 5 m, 3 times (spread)
+22:27:04.968 cmd /tp @e[tag=t1] 0.5 -60 5.5 -> {"ok":true}
+22:27:05.002 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+22:27:05.035 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 5.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:27:06.036 key primary_fire down -> {"key":"key.mouse.right"}
+22:27:06.204 key primary_fire up -> {"key":"key.mouse.right"}
+22:27:07.649 hp @e[tag=t1,limit=1] -> Zombie has the following entity data: 73.0f
+22:27:07.676 screenshot cas_t1_fan.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\cas_t1_fan.png"}
+
+=== T1-husk 2026-11-12 22:27:19
+22:27:19.351 cmd /difficulty easy -> {"ok":true}
+22:27:19.351 MARK T1a Peacekeeper (husks: zombies burn at noon): a 100-health (1250 OW) husk, armor 0, 10 m, aimed at the chest; hold the left button 1.2 s (expected 3 shots at 0, 0.5, 1.0 s: 210 OW = 16.8 MC; ammo 6 -> 3)
+22:27:19.385 cmd /kill @e[type=!player] -> {"ok":true}
+22:27:19.418 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:27:19.452 cmd /summon husk 0.5 -60 10.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:27:19.486 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:27:20.931 hp @e[tag=t1,limit=1] -> Husk has the following entity data: 100.0f
+22:27:20.955 key secondary_fire down -> {"key":"key.mouse.left"}
+22:27:22.158 key secondary_fire up -> {"key":"key.mouse.left"}
+22:27:22.946 hp @e[tag=t1,limit=1] -> Husk has the following entity data: 83.200005f
+22:27:22.966 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1587.135, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 3, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:27:22.966 MARK T1b headshot: aimed at the head (expected 140 OW = 11.2 MC)
+22:27:22.992 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+22:27:23.026 cmd /execute as @s at @s anchored eyes facing 0.5 -58.3 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:27:23.828 key secondary_fire down -> {"key":"key.mouse.left"}
+22:27:23.962 key secondary_fire up -> {"key":"key.mouse.left"}
+22:27:24.805 hp @e[tag=t1,limit=1] -> Husk has the following entity data: 88.8f
+22:27:24.805 MARK T1c falloff 30 m (expected 45.5 = 3.64 MC) and 40 m (21 = 1.68 MC), chest
+22:27:24.831 cmd /tp @e[tag=t1] 0.5 -60 30.5 -> {"ok":true}
+22:27:24.864 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+22:27:24.898 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 30.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:27:25.899 key secondary_fire down -> {"key":"key.mouse.left"}
+22:27:26.033 key secondary_fire up -> {"key":"key.mouse.left"}
+22:27:27.078 hp @e[tag=t1,limit=1] -> Husk has the following entity data: 96.22919f
+22:27:27.102 cmd /tp @e[tag=t1] 0.5 -60 40.5 -> {"ok":true}
+22:27:27.137 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+22:27:27.169 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 40.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:27:28.172 key secondary_fire down -> {"key":"key.mouse.left"}
+22:27:28.305 key secondary_fire up -> {"key":"key.mouse.left"}
+22:27:29.383 hp @e[tag=t1,limit=1] -> Husk has the following entity data: 98.32f
+22:27:29.408 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": 0.433, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+22:27:29.408 MARK T1d R: reload from wherever (expected 1.5 s, the rounds at 0.8 s)
+22:27:29.442 key reload tap -> {"key":"key.keyboard.r"}
+22:27:29.944 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": 0.8, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+22:27:30.445 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+22:27:31.147 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:27:31.147 MARK T1e Fan the Hammer: 6 rounds, zombie at 10 m, a tap of the right button (expected 6 x 50 = 300 OW = 24 MC if all hit; the 6 deg spread misses some; 0.6 s; then empty -> reload)
+22:27:31.180 cmd /tp @e[tag=t1] 0.5 -60 10.5 -> {"ok":true}
+22:27:31.214 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+22:27:31.247 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:27:32.249 key primary_fire down -> {"key":"key.mouse.right"}
+22:27:32.417 key primary_fire up -> {"key":"key.mouse.right"}
+22:27:32.718 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 2, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:27:33.663 hp @e[tag=t1,limit=1] -> Husk has the following entity data: 84.0f
+22:27:33.689 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 0, "primaryReload": 0.5, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+22:27:35.291 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:27:35.291 MARK T1f fan at 5 m, 3 times (spread)
+22:27:35.324 cmd /tp @e[tag=t1] 0.5 -60 5.5 -> {"ok":true}
+22:27:35.358 cmd /data merge entity @e[tag=t1,limit=1] {Health:100f} -> {"ok":true}
+22:27:35.391 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 5.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:27:36.393 key primary_fire down -> {"key":"key.mouse.right"}
+22:27:36.559 key primary_fire up -> {"key":"key.mouse.right"}
+22:27:38.007 hp @e[tag=t1,limit=1] -> Husk has the following entity data: 84.0f
+22:27:38.032 screenshot cas_t1_fan.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\cas_t1_fan.png"}
+
+=== T2 2026-11-12 22:28:01
+22:28:01.220 MARK T2a Combat Roll standing, facing +z, Shift (expected 6.0 m along +z in 0.4 s, ending at <= 5.5 m/s; cooldown 5 s from its end)
+22:28:01.244 cmd /kill @e[type=!player] -> {"ok":true}
+22:28:01.279 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:28:02.098 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:28:02.123 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+22:28:02.292 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+22:28:02.461 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 5.75, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 2, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.0, "vy": 0.0, "vz": 0.75, "anim": "run+roll_s0"}
+22:28:02.993 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.55, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:28:03.527 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:28:03.527 MARK T2b reload in the roll: fire 3, then roll (expected ammo 3 -> 6 at 0.2 s)
+22:28:08.037 key secondary_fire down -> {"key":"key.mouse.left"}
+22:28:09.139 key secondary_fire up -> {"key":"key.mouse.left"}
+22:28:09.373 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 3, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:28:09.406 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+22:28:09.539 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+22:28:09.707 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 11.163, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 2, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.0, "vy": 0.0, "vz": 0.75, "anim": "run+roll_s0"}
+22:28:10.009 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 12.825, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.8, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+22:28:10.009 MARK T2c roll with A held (left): expected 6 m to his left (+x at yaw 0)
+22:28:15.024 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:28:15.524 key left down -> {"key":"key.keyboard.a"}
+22:28:15.725 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+22:28:15.859 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+22:28:16.359 key left up -> {"key":"key.keyboard.a"}
+22:28:16.593 state -> {"screen": "", "x": 9.096, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.55, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:28:16.593 MARK T2d roll in the air: jump, then Shift at the top (expected ~7.8 m, x1.3)
+22:28:21.607 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:28:22.142 key jump down -> {"key":"key.keyboard.space"}
+22:28:22.275 key jump up -> {"key":"key.keyboard.space"}
+22:28:22.476 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+22:28:22.609 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+22:28:23.612 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 8.462, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.25, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:28:23.612 MARK T2e damage cut in the roll: /damage 5 (MC) mid-roll (expected 2.5 taken), then 5 after it (5 taken)
+22:28:28.627 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:28:28.660 cmd /effect clear @s -> {"ok":true}
+22:28:29.195 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+22:28:29.328 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+22:28:29.462 cmd /damage @s 5 minecraft:generic -> {"ok":true}
+22:28:29.965 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 17.5, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.65, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:28:29.998 cmd /damage @s 5 minecraft:generic -> {"ok":true}
+22:28:30.231 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 6.663, "yaw": 0.0, "health": 12.5, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.4, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:28:30.231 MARK T2f Sharpshooter: roll (cooldown 5), then a headshot on a husk at 10 m (140: 1.05 s off)
+22:28:30.264 cmd /summon husk 0.5 -60 10.5 {NoAI:1b,Tags:["t2"],attributes:[{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:28:30.298 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:28:30.799 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+22:28:30.933 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+22:28:31.735 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:28:31.769 cmd /execute as @s at @s anchored eyes facing 0.5 -58.3 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:28:32.303 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 12.5, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 2.35, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:28:32.336 key secondary_fire down -> {"key":"key.mouse.left"}
+22:28:32.470 key secondary_fire up -> {"key":"key.mouse.left"}
+22:28:32.772 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 12.5, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:28:33.214 hp @e[tag=t2,limit=1] -> Husk has the following entity data: 88.9792f
+
+=== T3 2026-11-12 22:29:12
+22:29:12.661 MARK T3a Flashbang at a husk 5 m off (expected 75 = 6 MC, its speed halved for 1.2 s, cooldown 12 s from the cast's end)
+22:29:12.678 cmd /kill @e[type=!player] -> {"ok":true}
+22:29:12.712 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:29:12.745 cmd /summon husk 0.5 -60 5.5 {NoAI:1b,Tags:["f1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:29:12.778 cmd /summon husk 2.5 -60 6.5 {NoAI:1b,Tags:["f2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:29:12.811 cmd /summon husk 4.5 -60 9.5 {NoAI:1b,Tags:["f3"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:29:12.845 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 5.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:29:13.849 key ability_2 down -> {"key":"key.keyboard.e"}
+22:29:13.983 key ability_2 up -> {"key":"key.keyboard.e"}
+22:29:14.317 cmd /attribute @e[tag=f1,limit=1] minecraft:movement_speed get -> {"ok":true}
+22:29:14.760 hp @e[tag=f1,limit=1] -> Husk has the following entity data: 94.0f
+22:29:15.194 hp @e[tag=f2,limit=1] -> Husk has the following entity data: 94.0f
+22:29:15.630 hp @e[tag=f3,limit=1] -> Husk has the following entity data: 100.0f
+22:29:15.662 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 10.7, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:29:15.688 screenshot cas_t3_flash.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\cas_t3_flash.png"}
+22:29:16.989 cmd /attribute @e[tag=f1,limit=1] minecraft:movement_speed get -> {"ok":true}
+22:29:17.023 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 9.3, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:29:17.023 MARK T3b its range: a husk 12 m off, thrown level (expected off at 7 m in the air: the husk untouched)
+22:29:28.051 cmd /kill @e[type=!player] -> {"ok":true}
+22:29:28.087 cmd /summon husk 0.5 -60 12.5 {NoAI:1b,Tags:["f4"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:29:28.119 cmd /execute as @s at @s anchored eyes facing 0.5 -58.4 12.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:29:29.121 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:29:29.154 key ability_2 down -> {"key":"key.keyboard.e"}
+22:29:29.287 key ability_2 up -> {"key":"key.keyboard.e"}
+22:29:30.333 hp @e[tag=f4,limit=1] -> Husk has the following entity data: 100.0f
+22:29:30.358 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 11.3, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== T4 2026-11-12 22:29:50
+22:29:50.502 MARK T4a Deadeye: husks of 20 MC (250 OW) and 40 MC (500 OW) 10 m ahead, a third behind a wall; Q, a /damage 5 at 1 s (expected 3 taken: 40 % less), fire at 2.2 s in (charge 150 x 2 + 300 x 0.2 = 360: the first dead (skull), the second 360 -> 28.8 MC off), the walled one untouched; slowed to 30 %
+22:29:50.518 cmd /kill @e[type=!player] -> {"ok":true}
+22:29:50.553 cmd /fill -4 -60 7 -2 -57 7 stone -> {"ok":true}
+22:29:50.585 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:29:50.619 cmd /summon husk -0.5 -60 10.5 {NoAI:1b,Tags:["d1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:20}],Health:20f} -> {"ok":true}
+22:29:50.652 cmd /summon husk 1.5 -60 10.5 {NoAI:1b,Tags:["d2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:40}],Health:40f} -> {"ok":true}
+22:29:50.686 cmd /summon husk -3 -60 10.5 {NoAI:1b,Tags:["d3"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:40}],Health:40f} -> {"ok":true}
+22:29:50.719 cmd /overcraft ult @s 100 -> {"ok":true}
+22:29:50.754 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+22:29:51.762 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:29:51.789 key ultimate down -> {"key":"key.keyboard.q"}
+22:29:51.923 key ultimate up -> {"key":"key.keyboard.q"}
+22:29:52.927 cmd /damage @s 5 minecraft:generic -> {"ok":true}
+22:29:53.128 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 17.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:29:53.161 screenshot cas_t4_lock1.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\cas_t4_lock1.png"}
+22:29:54.186 screenshot cas_t4_lock2.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\cas_t4_lock2.png"}
+22:29:54.219 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 17.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:29:54.411 key secondary_fire down -> {"key":"key.mouse.left"}
+22:29:54.544 key secondary_fire up -> {"key":"key.mouse.left"}
+22:29:55.785 hp @e[tag=d1,limit=1] -> No entity was found
+22:29:56.221 hp @e[tag=d2,limit=1] -> Husk has the following entity data: 4.0f
+22:29:56.653 hp @e[tag=d3,limit=1] -> Husk has the following entity data: 40.0f
+22:29:56.679 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 17.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 8.25, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:29:56.679 MARK T4b Deadeye cancelled with the right button: charge spent, no shot
+22:29:56.712 cmd /kill @e[type=husk] -> {"ok":true}
+22:29:56.746 cmd /summon husk 0.5 -60 10.5 {NoAI:1b,Tags:["d4"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:20}],Health:20f} -> {"ok":true}
+22:29:56.779 cmd /overcraft ult @s 100 -> {"ok":true}
+22:29:57.311 key ultimate down -> {"key":"key.keyboard.q"}
+22:29:57.445 key ultimate up -> {"key":"key.keyboard.q"}
+22:29:58.950 key primary_fire down -> {"key":"key.mouse.right"}
+22:29:59.084 key primary_fire up -> {"key":"key.mouse.right"}
+22:30:00.029 hp @e[tag=d4,limit=1] -> Husk has the following entity data: 20.0f
+22:30:00.053 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 18.98, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 4.5, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:30:00.053 MARK T4c Deadeye left to time out (7.2 s): no shot
+22:30:00.087 cmd /overcraft ult @s 100 -> {"ok":true}
+22:30:00.388 key ultimate down -> {"key":"key.keyboard.q"}
+22:30:00.522 key ultimate up -> {"key":"key.keyboard.q"}
+22:30:03.550 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:30:08.571 hp @e[tag=d4,limit=1] -> Husk has the following entity data: 20.0f
+22:30:08.597 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 4.75, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== T5 2026-11-12 22:31:08
+22:31:08.092 MARK T5 perks: level 3 by the dev command, LAlt + the right button twice: Giddy Up (minor right), Silver Bullet (major right)
+22:31:08.121 cmd /kill @e[type=!player] -> {"ok":true}
+22:31:08.156 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:31:08.189 cmd /overcraft perks @s 3 -> {"ok":true}
+22:31:08.690 key perk_menu down -> {"key":"key.keyboard.left.alt"}
+22:31:08.993 screenshot cas_t5_menu.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\cas_t5_menu.png"}
+22:31:09.025 key primary_fire down -> {"key":"key.mouse.right"}
+22:31:09.215 key primary_fire up -> {"key":"key.mouse.right"}
+22:31:09.750 key primary_fire down -> {"key":"key.mouse.right"}
+22:31:09.917 key primary_fire up -> {"key":"key.mouse.right"}
+22:31:10.251 key perk_menu up -> {"key":"key.keyboard.left.alt"}
+22:31:10.793 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 315.75, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:31:10.793 MARK T5a Giddy Up: roll forward with W held, then keep walking: expected ~8.8 m/s right after, back to 5.5 over 1.5 s
+22:31:15.799 key forward down -> {"key":"key.keyboard.w"}
+22:31:16.133 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+22:31:16.267 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+22:31:16.736 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 9.538, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 345.5, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.8, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.44, "anim": "run+roll_s0"}
+22:31:17.070 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 12.404, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 347.25, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.45, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.391, "anim": "run"}
+22:31:17.502 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 15.687, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 349.25, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.05, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.341, "anim": "run"}
+22:31:18.305 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 20.483, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 353.25, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 3.25, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.275, "anim": "run"}
+22:31:18.337 key forward up -> {"key":"key.keyboard.w"}
+22:31:18.337 MARK T5b Silver Bullet: two husks in a line at 8 and 10 m; hold the right button, tap the left (expected 70 to both = 5.6 MC, then 50 bleed each over 1.5 s = 4 MC; 8 s cooldown); the right then fans nothing
+22:31:18.371 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:31:18.404 cmd /summon husk 0.5 -60 8.5 {NoAI:1b,Tags:["s1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:31:18.439 cmd /summon husk 0.5 -60 10.5 {NoAI:1b,Tags:["s2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:31:18.472 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 8.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:31:19.474 key primary_fire down -> {"key":"key.mouse.right"}
+22:31:19.774 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 360.75, "shield": 0.0, "mode": 16, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 1.75, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:31:19.807 screenshot cas_t5_silver.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\cas_t5_silver.png"}
+22:31:19.840 key secondary_fire down -> {"key":"key.mouse.left"}
+22:31:20.036 key secondary_fire up -> {"key":"key.mouse.left"}
+22:31:20.614 hp @e[tag=s1,limit=1] -> Husk has the following entity data: 94.4f
+22:31:21.047 hp @e[tag=s2,limit=1] -> Husk has the following entity data: 93.333336f
+22:31:23.087 hp @e[tag=s1,limit=1] -> Husk has the following entity data: 90.13334f
+22:31:23.522 hp @e[tag=s2,limit=1] -> Husk has the following entity data: 90.13334f
+22:31:23.546 key primary_fire up -> {"key":"key.mouse.right"}
+22:31:23.580 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 626.417, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== T6 2026-11-12 22:31:48
+22:31:48.756 MARK T6a G mid-Deadeye: Q, 1 s, G (expected Minecraft mode, normal speed, the markers gone, ult spent); G back: Cassidy, full kit
+22:31:48.780 cmd /kill @e[type=!player] -> {"ok":true}
+22:31:48.814 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:31:48.847 cmd /summon husk 0.5 -60 10.5 {NoAI:1b,Tags:["g1"],attributes:[{id:"minecraft:max_health",base:20}],Health:20f} -> {"ok":true}
+22:31:48.880 cmd /overcraft ult @s 100 -> {"ok":true}
+22:31:49.382 key ultimate down -> {"key":"key.keyboard.q"}
+22:31:49.515 key ultimate up -> {"key":"key.keyboard.q"}
+22:31:50.524 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:31:50.550 cmd /attribute @s minecraft:movement_speed get -> {"ok":true}
+22:31:50.584 key hero_mode down -> {"key":"key.keyboard.g"}
+22:31:50.750 key hero_mode up -> {"key":"key.keyboard.g"}
+22:31:51.252 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": false, "hero": "cassidy", "ult": 3.25, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "idle"}
+22:31:51.285 cmd /attribute @s minecraft:movement_speed get -> {"ok":true}
+22:31:51.318 screenshot cas_t6_g.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\cas_t6_g.png"}
+22:31:51.351 key hero_mode down -> {"key":"key.keyboard.g"}
+22:31:51.542 key hero_mode up -> {"key":"key.keyboard.g"}
+22:31:52.043 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 7.25, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:31:52.043 MARK T6b G mid-roll: Shift then G 0.1 s in (expected the roll ends, cooldown starts)
+22:31:52.577 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+22:31:52.678 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+22:31:52.711 key hero_mode down -> {"key":"key.keyboard.g"}
+22:31:52.812 key hero_mode up -> {"key":"key.keyboard.g"}
+22:31:53.213 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 4.724, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": false, "hero": "cassidy", "ult": 13.25, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.5, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.003, "anim": "idle+roll_s0"}
+22:31:53.246 key hero_mode down -> {"key":"key.keyboard.g"}
+22:31:53.414 key hero_mode up -> {"key":"key.keyboard.g"}
+22:31:53.847 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 8.636, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 16.25, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 3.9, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:31:53.847 MARK T6c hero switch: H near spawn, Tracer, READY; then H, Cassidy, READY
+22:31:53.881 cmd /tp @s ~ ~ ~ -> {"ok":true}
+22:31:53.918 cmd /spawnpoint @s ~ ~ ~ -> {"ok":true}
+22:31:53.950 key hero_select down -> {"key":"key.keyboard.h"}
+22:31:54.117 key hero_select up -> {"key":"key.keyboard.h"}
+22:31:55.120 screenshot cas_t6_h.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\cas_t6_h.png"}
+22:31:55.153 screenclick 170 216 1 -> {"screen":"HeroSelectScreen"}
+22:31:55.663 screenclick 240 244 1 -> {"screen":""}
+22:31:56.665 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 8.636, "yaw": 0.0, "health": 14.0, "onGround": true, "heroMode": true, "hero": "tracer", "ult": 5.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 40, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 3, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:31:56.698 key hero_select down -> {"key":"key.keyboard.h"}
+22:31:56.865 key hero_select up -> {"key":"key.keyboard.h"}
+22:31:57.867 screenclick 190 216 1 -> {"screen":"HeroSelectScreen"}
+22:31:58.369 screenclick 240 244 1 -> {"screen":""}
+22:31:59.402 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 8.636, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 5.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:31:59.402 MARK T6d death: /kill, respawn (expected back as Cassidy, 6 rounds, 250)
+22:31:59.435 cmd /kill @s -> {"ok":true}
+22:32:00.944 screenshot cas_t6_dead.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\cas_t6_dead.png"}
+22:32:00.978 respawn -> {"ok":true}
+22:32:02.994 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 8.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 15.25, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== T7 2026-11-12 22:37:19
+22:37:19.570 MARK T7 after the fixes (rejoined world cas1, READY). T7a Sharpshooter: roll (5 s from its end), 0.5 s later a headshot on an armorless husk 10 m off (140: 1.05 s off) -> expected cooldown ~4.5 before, ~3.4 after
+22:37:19.620 screenclick 240 244 1 -> {"screen":""}
+22:37:20.656 cmd /difficulty easy -> {"ok":true}
+22:37:20.679 cmd /time set noon -> {"ok":true}
+22:37:20.718 cmd /kill @e[type=!player] -> {"ok":true}
+22:37:20.790 cmd /summon husk 0.5 -60 10.5 {NoAI:1b,Tags:["s1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:37:20.798 cmd /tp @s 0.5 -60 -6.5 0 0 -> {"ok":true}
+22:37:26.810 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+22:37:26.943 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+22:37:27.545 cmd /tp @s 0.5 -60 0.5 -> {"ok":true}
+22:37:27.581 cmd /execute as @s at @s anchored eyes facing 0.5 -58.3 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:37:28.021 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 238.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.25, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:37:28.046 key secondary_fire down -> {"key":"key.mouse.left"}
+22:37:28.146 key secondary_fire up -> {"key":"key.mouse.left"}
+22:37:28.380 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 380.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 2.8, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:37:28.822 hp @e[tag=s1,limit=1] -> Husk has the following entity data: 88.8f
+22:37:28.822 MARK T7b Silver Bullet's bleed (the perk kept through the rejoin): two husks in a line; right held, left tap (expected 5.6 + 4.0 = 9.6 off each)
+22:37:28.847 cmd /kill @e[type=!player] -> {"ok":true}
+22:37:28.881 cmd /summon husk 0.5 -60 8.5 {NoAI:1b,Tags:["b1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:37:28.914 cmd /summon husk 0.5 -60 10.5 {NoAI:1b,Tags:["b2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:37:28.948 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 8.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:37:31.954 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 397.75, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:37:31.986 key primary_fire down -> {"key":"key.mouse.right"}
+22:37:32.319 key secondary_fire down -> {"key":"key.mouse.left"}
+22:37:32.421 key secondary_fire up -> {"key":"key.mouse.left"}
+22:37:34.425 key primary_fire up -> {"key":"key.mouse.right"}
+22:37:34.870 hp @e[tag=b1,limit=1] -> Husk has the following entity data: 90.4f
+22:37:35.301 hp @e[tag=b2,limit=1] -> Husk has the following entity data: 90.4f
+22:37:35.301 MARK T7c Deadeye's stance held (3P and 1P), a front view
+22:37:35.325 cmd /overcraft ult @s 100 -> {"ok":true}
+22:37:35.359 perspective front -> {"ok":true}
+22:37:35.861 key ultimate down -> {"key":"key.keyboard.q"}
+22:37:35.996 key ultimate up -> {"key":"key.keyboard.q"}
+22:37:37.200 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+deadeye"}
+22:37:37.233 screenshot cas_t7_deadeye_front.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\cas_t7_deadeye_front.png"}
+22:37:37.266 perspective first -> {"ok":true}
+22:37:37.593 screenshot cas_t7_deadeye_1p.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\cas_t7_deadeye_1p.png"}
+22:37:37.627 heard -> {"heard":""}
+22:37:38.659 key secondary_fire down -> {"key":"key.mouse.left"}
+22:37:38.793 key secondary_fire up -> {"key":"key.mouse.left"}
+22:37:39.796 heard -> {"heard":""}
+22:37:39.829 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 3.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 4, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== T8 2026-11-12 22:38:48
+22:38:48.454 MARK T8 terrain. Lanes along +z from z=0.5: a 3-high wall at z=4 (x=40), a 1-block step from z=4 (x=45), a half-slab slope of stairs from z=3 (x=50), a 3-block drop from z=4 (x=55), water 3 deep from z=2 (x=60)
+22:38:48.470 cmd /kill @e[type=!player] -> {"ok":true}
+22:38:48.522 cmd /fill 38 -61 -2 62 -56 20 air -> {"ok":true}
+22:38:48.537 cmd /fill 38 -63 -2 62 -61 20 grass_block -> {"ok":true}
+22:38:48.574 cmd /fill 39 -60 4 41 -58 4 stone -> {"ok":true}
+22:38:48.604 cmd /fill 44 -60 4 46 -60 20 stone -> {"ok":true}
+22:38:48.638 cmd /setblock 50 -60 3 oak_stairs[facing=south] -> {"ok":true}
+22:38:48.671 cmd /setblock 50 -59 4 oak_stairs[facing=south] -> {"ok":true}
+22:38:48.704 cmd /fill 50 -60 4 50 -60 20 oak_planks -> {"ok":true}
+22:38:48.738 cmd /fill 50 -59 5 50 -59 20 oak_planks -> {"ok":true}
+22:38:48.771 cmd /fill 54 -63 4 56 -61 20 air -> {"ok":true}
+22:38:48.804 cmd /fill 59 -63 2 61 -61 20 water -> {"ok":true}
+22:38:48.804 MARK T8a roll into the 3-high wall 3.5 m ahead (expected stopped against it at z ~3.7, not in it)
+22:38:48.839 cmd /tp @s 40.5 -60 0.5 0 0 -> {"ok":true}
+22:38:54.853 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+22:38:54.986 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+22:38:55.596 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 3.7, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 381.75, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.65, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:38:55.596 MARK T8b roll at a 1-block step (expected: stops at it: the roll steps up only Minecraft's 0.6, OW has no stairs rule for it)
+22:38:55.621 cmd /tp @s 45.5 -60 0.5 0 0 -> {"ok":true}
+22:39:01.136 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+22:39:01.237 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+22:39:01.837 state -> {"screen": "", "x": 45.5, "y": -60.0, "z": 3.7, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 413.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.75, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+22:39:01.837 MARK T8c roll up stairs (expected up them)
+22:39:01.871 cmd /tp @s 50.5 -60 0.5 0 0 -> {"ok":true}
+22:39:07.384 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+22:39:07.518 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+22:39:08.119 state -> {"screen": "", "x": 50.5, "y": -58.0, "z": 6.612, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 444.5, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.7, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+22:39:08.119 MARK T8d roll off a 3-block drop (expected over and down, no fall damage from 3 m)
+22:39:08.153 cmd /tp @s 55.5 -60 0.5 0 0 -> {"ok":true}
+22:39:13.669 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+22:39:13.804 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+22:39:15.007 state -> {"screen": "", "x": 55.5, "y": -63.0, "z": 9.638, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 478.75, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.1, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:39:15.007 MARK T8e roll in water (3 deep, from the bank into it) and a Flashbang under water at a husk
+22:39:15.040 cmd /tp @s 60.5 -60 0.5 0 0 -> {"ok":true}
+22:39:15.074 cmd /summon husk 60.5 -63 9.5 {NoAI:1b,Tags:["w1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:39:20.591 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+22:39:20.724 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+22:39:21.955 state -> {"screen": "", "x": 60.5, "y": -62.508, "z": 8.872, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "cassidy", "ult": 513.5, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.1, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.029, "vz": 0.0, "anim": "fall"}
+22:39:21.987 cmd /execute as @s at @s anchored eyes facing 60.5 -62 9.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:39:22.498 key ability_2 down -> {"key":"key.keyboard.e"}
+22:39:22.632 key ability_2 up -> {"key":"key.keyboard.e"}
+22:39:23.880 hp @e[tag=w1,limit=1] -> Husk has the following entity data: 94.0f
+22:39:23.902 screenshot cas_t8_water.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\cas_t8_water.png"}
+22:39:23.902 MARK T8f Flashbang at the wall 3 m ahead (expected off at the wall)
+22:39:23.935 cmd /tp @s 40.5 -60 1 0 0 -> {"ok":true}
+22:39:35.954 key ability_2 down -> {"key":"key.keyboard.e"}
+22:39:36.087 key ability_2 up -> {"key":"key.keyboard.e"}
+22:39:36.521 state -> {"screen": "", "x": 40.5, "y": -60.0, "z": 1.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 661.5, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 11.85, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+flashbang"}
+
+=== T9 2026-11-12 22:40:02
+22:40:02.387 MARK T9 night fight setup: midnight, normal, monsters on; a wave of 6 zombies, 3 skeletons, a spider and a creeper 15-20 m off; a tamed wolf beside him; ult full
+22:40:02.421 cmd /kill @e[type=!player] -> {"ok":true}
+22:40:02.455 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:40:02.490 cmd /time set midnight -> {"ok":true}
+22:40:02.521 cmd /difficulty normal -> {"ok":true}
+22:40:02.554 cmd /gamerule minecraft:spawn_monsters true -> {"ok":true}
+22:40:02.588 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+22:40:02.625 cmd /summon wolf 1.5 -60 0.5 {Owner:"Kiriko",Tags:["pet"]} -> {"ok":true}
+22:40:02.673 cmd /summon zombie 0.5 -60 18.5 -> {"ok":true}
+22:40:02.707 cmd /summon zombie 3.5 -60 17.5 -> {"ok":true}
+22:40:02.758 cmd /summon zombie -2.5 -60 19.5 -> {"ok":true}
+22:40:02.792 cmd /summon zombie 6.5 -60 15.5 -> {"ok":true}
+22:40:02.825 cmd /summon zombie -5.5 -60 16.5 -> {"ok":true}
+22:40:02.858 cmd /summon zombie 1.5 -60 20.5 -> {"ok":true}
+22:40:02.891 cmd /summon skeleton 10.5 -60 18.5 -> {"ok":true}
+22:40:02.925 cmd /summon skeleton -9.5 -60 18.5 -> {"ok":true}
+22:40:02.958 cmd /summon skeleton 0.5 -60 24.5 -> {"ok":true}
+22:40:02.991 cmd /summon spider 4.5 -60 14.5 -> {"ok":true}
+22:40:03.025 cmd /summon creeper -3.5 -60 14.5 -> {"ok":true}
+22:40:03.059 cmd /overcraft ult @s 100 -> {"ok":true}
+22:40:03.559 screenshot cas_t9_night.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\cas_t9_night.png"}
+
+=== T9-night 2026-11-12 22:40:03
+22:40:06.734 DEADEYE with 11 within 25 m
+22:40:08.588 t 5 hp 20.00 ammo 0 ult 0 rollCd 0.0 flashCd 0.0 | Spider 1.4, Zombie 9.3, Zombie 9.5, Zombie 9.7
+22:40:10.727 t 7 hp 20.00 ammo 6 ult 6 rollCd 0.0 flashCd 0.0 | Zombie 5.9, Zombie 10.9, Zombie 12.1, Zombie 15.8
+22:40:13.533 t 10 hp 15.50 ammo 5 ult 100 rollCd 5.0 flashCd 10.2 | Zombie 2.9, Zombie 8.0, Zombie 11.8, Zombie 12.9
+22:40:15.740 t 12 hp 12.50 ammo 1 ult 313 rollCd 2.4 flashCd 7.8 | Zombie 2.3, Zombie 9.6, Zombie 9.7, Skeleton 12.7
+22:40:17.745 t 14 hp 12.50 ammo 6 ult 323 rollCd 0.4 flashCd 5.8 | Zombie 5.1, Zombie 5.2, Skeleton 11.5, Creeper 24.1
+22:40:20.153 t 17 hp 8.50 ammo 1 ult 609 rollCd 0.0 flashCd 3.5 | Zombie 2.5, Zombie 3.3, Skeleton 21.8, Creeper 27.5
+22:40:22.157 t 19 hp 5.50 ammo 3 ult 733 rollCd 3.7 flashCd 1.4 | Zombie 4.2, Creeper 19.1, Skeleton 22.5, Creeper 33.2
+22:40:24.330 t 21 hp 2.50 ammo 0 ult 856 rollCd 1.2 flashCd 0.0 | Creeper 15.9, Skeleton 25.4, Creeper 29.9, Spider 30.3
+22:40:26.338 t 23 hp 2.50 ammo 0 ult 866 rollCd 0.0 flashCd 10.1 | Creeper 15.9, Spider 28.0, Creeper 29.9, Skeleton 31.5
+22:40:28.342 t 25 hp 2.50 ammo 0 ult 876 rollCd 0.0 flashCd 8.1 | Creeper 15.9, Spider 27.9, Creeper 29.9, Skeleton 35.5
+22:40:30.346 t 27 hp 4.48 ammo 0 ult 886 rollCd 0.0 flashCd 6.0 | Creeper 15.9, Spider 27.9, Creeper 29.9, Skeleton 39.7
+22:40:32.351 t 29 hp 8.08 ammo 0 ult 896 rollCd 0.0 flashCd 4.0 | Creeper 15.9, Spider 27.9, Creeper 29.9, Skeleton 42.7
+22:40:34.355 t 31 hp 11.68 ammo 0 ult 906 rollCd 0.0 flashCd 2.0 | Creeper 15.9, Spider 27.9, Creeper 29.9, Skeleton 47.9
+22:40:36.361 t 33 hp 15.28 ammo 0 ult 916 rollCd 0.0 flashCd 0.1 | Creeper 15.9, Spider 27.9, Creeper 30.8, Zombie 52.9
+22:40:38.371 t 35 hp 18.97 ammo 0 ult 926 rollCd 0.0 flashCd 0.0 | Creeper 15.9, Spider 27.9, Creeper 33.6, Zombie 52.9
+22:40:40.375 t 37 hp 20.00 ammo 0 ult 936 rollCd 0.0 flashCd 0.0 | Creeper 14.8, Spider 27.4, Creeper 33.6, Zombie 52.9
+22:40:42.380 t 39 hp 20.00 ammo 0 ult 946 rollCd 0.0 flashCd 0.0 | Creeper 10.4, Spider 28.8, Creeper 33.6, Zombie 52.9
+22:40:44.551 t 41 hp 20.00 ammo 0 ult 956 rollCd 0.0 flashCd 0.0 | Creeper 5.2, Spider 31.4, Creeper 33.6, Zombie 52.9
+22:40:46.723 t 43 hp 20.00 ammo 0 ult 1043 rollCd 0.0 flashCd 10.6 | Spider 31.2, Creeper 33.6, Zombie 52.9, Skeleton 57.2
+22:40:48.729 t 45 hp 2.51 ammo 0 ult 1053 rollCd 0.0 flashCd 8.6 | Spider 30.5, Creeper 34.9, Zombie 54.3, Spider 58.4
+22:40:50.735 t 47 hp 2.51 ammo 0 ult 1063 rollCd 0.0 flashCd 6.5 | Spider 31.3, Creeper 34.9, Zombie 54.3, Spider 58.4
+22:40:52.741 t 49 hp 2.51 ammo 0 ult 1073 rollCd 0.0 flashCd 4.5 | Spider 33.3, Creeper 34.9, Zombie 54.3, Spider 56.5
+22:40:54.747 t 51 hp 6.02 ammo 0 ult 1083 rollCd 0.0 flashCd 2.5 | Spider 30.1, Creeper 34.9, Zombie 49.7, Zombie 50.0
+22:40:56.753 t 53 hp 9.62 ammo 0 ult 1093 rollCd 0.0 flashCd 0.6 | Spider 28.4, Creeper 34.9, Zombie 49.7, Zombie 50.0
+22:40:58.759 t 55 hp 13.22 ammo 0 ult 1103 rollCd 0.0 flashCd 0.0 | Spider 28.4, Creeper 34.9, Zombie 49.7, Zombie 50.0
+22:41:00.764 t 57 hp 16.82 ammo 0 ult 1113 rollCd 0.0 flashCd 0.0 | Spider 28.4, Creeper 34.9, Skeleton 47.3, Zombie 49.7
+22:41:02.770 t 59 hp 20.00 ammo 0 ult 1123 rollCd 0.0 flashCd 0.0 | Spider 28.4, Creeper 34.9, Skeleton 44.4, Zombie 49.7
+22:41:04.776 t 61 hp 20.00 ammo 0 ult 1133 rollCd 0.0 flashCd 0.0 | Spider 28.4, Creeper 34.9, Skeleton 44.4, Zombie 49.7
+22:41:06.780 t 63 hp 20.00 ammo 0 ult 1143 rollCd 0.0 flashCd 0.0 | Spider 28.4, Creeper 34.9, Skeleton 44.4, Zombie 49.7
+22:41:08.783 t 65 hp 20.00 ammo 0 ult 1153 rollCd 0.0 flashCd 0.0 | Spider 29.4, Creeper 34.9, Skeleton 44.4, Zombie 49.7
+22:41:10.788 t 67 hp 20.00 ammo 0 ult 1163 rollCd 0.0 flashCd 0.0 | Spider 30.3, Creeper 34.9, Skeleton 44.4, Zombie 49.7
+22:41:12.793 t 69 hp 20.00 ammo 0 ult 1173 rollCd 0.0 flashCd 0.0 | Spider 30.3, Creeper 34.9, Skeleton 44.4, Zombie 49.7
+22:41:13.730 END: 0 deaths, 3 rolls, 4 fans, 6 flashbangs, 1 deadeyes
+
+=== T10-old 2026-11-12 22:41:30
+22:41:30.692 MARK T10 reproduce the night fight's stuck cylinder (old build): empty it, the reload starts by itself, a Flashbang 0.3 s into the reload; then wait 4 s with the fire held (expected: reload again after the throw; seen in T9: 0 rounds for 50 s)
+22:41:30.705 cmd /kill @e[type=!player] -> {"ok":true}
+22:41:30.740 cmd /time set noon -> {"ok":true}
+22:41:30.771 cmd /difficulty easy -> {"ok":true}
+22:41:30.805 cmd /gamerule minecraft:spawn_monsters false -> {"ok":true}
+22:41:30.838 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:41:42.870 key secondary_fire down -> {"key":"key.mouse.left"}
+22:41:45.583 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1339.06, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:41:45.909 key ability_2 down -> {"key":"key.keyboard.e"}
+22:41:46.043 key ability_2 up -> {"key":"key.keyboard.e"}
+22:41:50.059 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1361.31, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 8.3, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:41:50.092 key secondary_fire up -> {"key":"key.mouse.left"}
+22:41:51.095 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1366.56, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 7.25, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== T11 2026-11-12 22:43:09
+22:43:09.363 MARK T11 /overcraft reset, perks 3, LAlt + the left button twice: Bang Bang (minor left), Rollin' Round-Up (major left)
+22:43:09.391 cmd /overcraft reset -> {"ok":true}
+22:43:10.393 cmd /overcraft perks @s 3 -> {"ok":true}
+22:43:10.894 key perk_menu down -> {"key":"key.keyboard.left.alt"}
+22:43:11.226 key secondary_fire down -> {"key":"key.mouse.left"}
+22:43:11.396 key secondary_fire up -> {"key":"key.mouse.left"}
+22:43:11.931 key secondary_fire down -> {"key":"key.mouse.left"}
+22:43:12.097 key secondary_fire up -> {"key":"key.mouse.left"}
+22:43:12.399 key perk_menu up -> {"key":"key.keyboard.left.alt"}
+22:43:12.950 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1775.81, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:43:12.950 MARK T11a Bang Bang: husks at 5 m and at 9.5 m (past the first's 7 m, inside the second's 10.25); E (expected two blasts of 45 = 3.6 MC: the near one 3.6 (maybe 7.2 if both reach it), the far one 3.6)
+22:43:12.966 cmd /kill @e[type=!player] -> {"ok":true}
+22:43:13.001 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:43:13.035 cmd /summon husk 0.5 -60 5.5 {NoAI:1b,Tags:["b1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:43:13.068 cmd /summon husk 2.5 -60 10 {NoAI:1b,Tags:["b2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:43:13.101 cmd /execute as @s at @s anchored eyes facing 1.5 -59.5 9 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:43:14.103 key ability_2 down -> {"key":"key.keyboard.e"}
+22:43:14.237 key ability_2 up -> {"key":"key.keyboard.e"}
+22:43:15.681 hp @e[tag=b1,limit=1] -> Husk has the following entity data: 92.8f
+22:43:16.118 hp @e[tag=b2,limit=1] -> Husk has the following entity data: 96.4f
+22:43:16.118 MARK T11b Rollin' Round-Up: /damage 10 (MC), fire 4 rounds (2 left), roll (expected +60 = 4.8 MC healed: 4 rounds x 15)
+22:43:16.141 cmd /damage @s 10 minecraft:generic -> {"ok":true}
+22:43:16.443 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -6.34, "health": 10.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 10.1, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:43:16.477 key secondary_fire down -> {"key":"key.mouse.left"}
+22:43:18.182 key secondary_fire up -> {"key":"key.mouse.left"}
+22:43:18.415 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -6.34, "health": 10.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 2, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 8.15, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:43:18.448 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+22:43:18.582 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+22:43:19.084 state -> {"screen": "", "x": 1.181, "y": -60.0, "z": 6.625, "yaw": -6.34, "health": 14.8, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 4.8, "ability2Cooldown": 7.45, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+roll_s0"}
+
+=== T12 2026-11-12 23:00:05
+23:00:05.110 MARK T12 the fixed build (rejoined cas1), sounds built. T12a the stuck cylinder: empty it (fire held), its reload starts by itself, a Flashbang 0.3 s into it; fire held on (expected the reload again after the throw, rounds back, firing again)
+23:00:05.339 cmd /kill @e[type=!player] -> {"ok":true}
+23:00:05.344 cmd /time set noon -> {"ok":true}
+23:00:05.378 cmd /difficulty easy -> {"ok":true}
+23:00:05.411 cmd /gamerule minecraft:spawn_monsters false -> {"ok":true}
+23:00:05.499 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:00:06.518 heard -> {"heard":""}
+23:00:06.552 key secondary_fire down -> {"key":"key.mouse.left"}
+23:00:09.269 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:00:09.291 heard -> {"heard":"cassidy.peacekeeper.fire -> cassidy/peacekeeper/fire/3 (SimpleSoundInstance, in the head) | cassidy.peacekeeper.fire -> cassidy/peacekeeper/fire/0 (SimpleSoundInstance, in the head) | cassidy.peacekeeper.fire -> cassidy/peacekeeper/fire/6 (SimpleSoundInstance, in the head) | cassidy.peacekeeper.fire -> cassidy/peacekeeper/fire/3 (SimpleSoundInstance, in the head) | cassidy.peacekeeper.fire -> cassidy/peacekeeper/fire/6 (SimpleSoundInstance, in the head) | cassidy.peacekeeper.fire -> cassidy/peacekeeper/fire/5 (SimpleSoundInstance, in the head)"}
+23:00:09.592 key ability_2 down -> {"key":"key.keyboard.e"}
+23:00:09.762 key ability_2 up -> {"key":"key.keyboard.e"}
+23:00:10.263 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 0, "primaryReload": 0.133, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 11.8, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+23:00:11.780 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 10.25, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+23:00:13.284 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 1800.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 2, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 8.75, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:00:13.318 key secondary_fire up -> {"key":"key.mouse.left"}
+23:00:13.351 heard -> {"heard":"cassidy.reload -> cassidy/reload/5 (SimpleSoundInstance, in the head) | cassidy.flashbang.throw -> cassidy/flashbang/throw/0 (SimpleSoundInstance, in the head) | cassidy.voice.flashbang -> cassidy/voice/flashbang/3 (SimpleSoundInstance, in the head) | cassidy.flashbang.explode -> cassidy/flashbang/explode/1 (SimpleSoundInstance, in the head) | cassidy.reload -> cassidy/reload/0 (SimpleSoundInstance, in the head) | cassidy.flashbang.explode -> cassidy/flashbang/explode/2 (SimpleSoundInstance, in the head) | cassidy.peacekeeper.fire -> cassidy/peacekeeper/fire/5 (SimpleSoundInstance, in the head) | cassidy.peacekeeper.fire -> cassidy/peacekeeper/fire/4 (SimpleSoundInstance, in the head) | cassidy.peacekeeper.fire -> cassidy/peacekeeper/fire/1 (SimpleSoundInstance, in the head) | cassidy.peacekeeper.fire -> cassidy/peacekeeper/fire/4 (SimpleSoundInstance, in the head)"}
+23:00:13.351 MARK T12b the roll's voice and sound, the fan's
+23:00:18.368 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:00:18.501 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:00:19.136 heard -> {"heard":"cassidy.roll -> cassidy/roll/1 (SimpleSoundInstance, in the head) | cassidy.voice.roll -> cassidy/voice/roll/3 (SimpleSoundInstance, in the head)"}
+23:00:19.170 key primary_fire down -> {"key":"key.mouse.right"}
+23:00:19.304 key primary_fire up -> {"key":"key.mouse.right"}
+23:00:20.338 heard -> {"heard":"cassidy.fan.fire -> cassidy/fan/fire/0 (SimpleSoundInstance, in the head) | cassidy.fan.fire -> cassidy/fan/fire/2 (SimpleSoundInstance, in the head) | cassidy.fan.fire -> cassidy/fan/fire/5 (SimpleSoundInstance, in the head) | cassidy.fan.fire -> cassidy/fan/fire/5 (SimpleSoundInstance, in the head) | cassidy.peacekeeper.hit_block -> cassidy/peacekeeper/hit_block/7 (SimpleSoundInstance, at 0.1 -60.0 24.6) | cassidy.fan.fire -> cassidy/fan/fire/4 (SimpleSoundInstance, in the head) | cassidy.fan.fire -> cassidy/fan/fire/5 (SimpleSoundInstance, in the head) | cassidy.peacekeeper.hit_block -> cassidy/peacekeeper/hit_block/6 (SimpleSoundInstance, at 0.6 -60.0 29.3) | cassidy.reload -> cassidy/reload/3 (SimpleSoundInstance, in the head)"}
+23:00:20.338 MARK T12c Deadeye: its lines, the 1P view without the held clip, a husk
+23:00:20.421 cmd /summon husk 0.5 -60 12.5 {NoAI:1b,Tags:["h1"],attributes:[{id:"minecraft:max_health",base:20}],Health:20f} -> {"ok":true}
+23:00:20.428 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:00:20.461 cmd /overcraft ult @s 100 -> {"ok":true}
+23:00:22.466 heard -> {"heard":""}
+23:00:22.499 key ultimate down -> {"key":"key.keyboard.q"}
+23:00:22.600 key ultimate up -> {"key":"key.keyboard.q"}
+23:00:24.104 heard -> {"heard":"cassidy.deadeye.start -> cassidy/deadeye/start/0 (SimpleSoundInstance, in the head) | cassidy.deadeye.loop -> cassidy/deadeye/loop/1 (SimpleSoundInstance, in the head) | cassidy.ult.friendly -> cassidy/ult/friendly/0 (SimpleSoundInstance, in the head) | cassidy.voice.ultimate -> cassidy/voice/ultimate/0 (SimpleSoundInstance, in the head)"}
+23:00:24.164 screenshot cas_t12_deadeye_1p.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\cas_t12_deadeye_1p.png"}
+23:00:24.697 key secondary_fire down -> {"key":"key.mouse.left"}
+23:00:24.830 key secondary_fire up -> {"key":"key.mouse.left"}
+23:00:25.853 heard -> {"heard":"cassidy.deadeye.fire -> cassidy/deadeye/fire/2 (SimpleSoundInstance, in the head) | cassidy.deadeye.end -> cassidy/deadeye/end/0 (SimpleSoundInstance, in the head)"}
+23:00:26.304 hp @e[tag=h1,limit=1] -> No entity was found
+23:00:26.322 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 5.5, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== T13 2026-11-12 23:09:05
+23:09:05.311 MARK T13 the final build (ult line fix). T13a Deadeye cast: expected he hears only his own "It's high noon" (voice.ultimate), not the allies' "Step right up"
+23:09:05.349 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 819.5, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:09:05.427 cmd /kill @e[type=!player] -> {"ok":true}
+23:09:05.433 cmd /time set noon -> {"ok":true}
+23:09:05.466 cmd /difficulty easy -> {"ok":true}
+23:09:05.500 cmd /gamerule minecraft:spawn_monsters false -> {"ok":true}
+23:09:05.537 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:09:05.568 cmd /overcraft ult @s 100 -> {"ok":true}
+23:09:06.602 heard -> {"heard":""}
+23:09:06.636 key ultimate down -> {"key":"key.keyboard.q"}
+23:09:06.768 key ultimate up -> {"key":"key.keyboard.q"}
+23:09:07.972 heard -> {"heard":"cassidy.deadeye.start -> cassidy/deadeye/start/0 (SimpleSoundInstance, in the head) | cassidy.deadeye.loop -> cassidy/deadeye/loop/2 (SimpleSoundInstance, in the head) | cassidy.voice.ultimate -> cassidy/voice/ultimate/0 (SimpleSoundInstance, in the head)"}
+23:09:08.004 key primary_fire down -> {"key":"key.mouse.right"}
+23:09:08.137 key primary_fire up -> {"key":"key.mouse.right"}
+23:09:09.140 heard -> {"heard":"cassidy.deadeye.end -> cassidy/deadeye/end/0 (SimpleSoundInstance, in the head)"}
+23:09:09.174 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "cassidy", "ult": 5.0, "shield": 0.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== T14-setup 2026-11-12 23:09:13
+23:09:13.967 MARK T9 night fight setup: midnight, normal, monsters on; a wave of 6 zombies, 3 skeletons, a spider and a creeper 15-20 m off; a tamed wolf beside him; ult full
+23:09:13.988 cmd /kill @e[type=!player] -> {"ok":true}
+23:09:14.022 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:09:14.054 cmd /time set midnight -> {"ok":true}
+23:09:14.088 cmd /difficulty normal -> {"ok":true}
+23:09:14.122 cmd /gamerule minecraft:spawn_monsters true -> {"ok":true}
+23:09:14.155 cmd /effect give @s minecraft:instant_health 1 5 -> {"ok":true}
+23:09:14.241 cmd /summon wolf 1.5 -60 0.5 {Owner:"Kiriko",Tags:["pet"]} -> {"ok":true}
+23:09:14.252 cmd /summon zombie 0.5 -60 18.5 -> {"ok":true}
+23:09:14.313 cmd /summon zombie 3.5 -60 17.5 -> {"ok":true}
+23:09:14.345 cmd /summon zombie -2.5 -60 19.5 -> {"ok":true}
+23:09:14.379 cmd /summon zombie 6.5 -60 15.5 -> {"ok":true}
+23:09:14.412 cmd /summon zombie -5.5 -60 16.5 -> {"ok":true}
+23:09:14.446 cmd /summon zombie 1.5 -60 20.5 -> {"ok":true}
+23:09:14.478 cmd /summon skeleton 10.5 -60 18.5 -> {"ok":true}
+23:09:14.511 cmd /summon skeleton -9.5 -60 18.5 -> {"ok":true}
+23:09:14.544 cmd /summon skeleton 0.5 -60 24.5 -> {"ok":true}
+23:09:14.578 cmd /summon spider 4.5 -60 14.5 -> {"ok":true}
+23:09:14.612 cmd /summon creeper -3.5 -60 14.5 -> {"ok":true}
+23:09:14.646 cmd /overcraft ult @s 100 -> {"ok":true}
+23:09:15.191 screenshot cas_t9_night.png -> {"file":"E:\\claude\\mods\\overcraft_cassidy\\run\\screenshots\\cas_t9_night.png"}
+
+=== T14-night-fixed 2026-11-12 23:09:15
+23:09:18.353 DEADEYE with 12 within 25 m
+23:09:20.228 t 5 hp 20.00 ammo 0 ult 0 rollCd 0.0 flashCd 0.0 | Spider 1.3, Zombie 7.7, Creeper 9.2, Zombie 9.5
+23:09:22.235 t 7 hp 20.00 ammo 0 ult 1 rollCd 0.0 flashCd 0.0 | Zombie 6.6, Creeper 8.9, Zombie 9.2, Zombie 10.8
+23:09:24.744 t 9 hp 20.00 ammo 0 ult 411 rollCd 0.0 flashCd 11.1 | Zombie 2.6, Zombie 3.6, Zombie 5.2, Zombie 8.3
+23:09:27.381 t 12 hp 17.84 ammo 5 ult 526 rollCd 5.0 flashCd 8.6 | Creeper 2.1, Zombie 4.0, Zombie 4.9, Zombie 5.8
+23:09:29.192 DEATH 1 at -3.7 6.7
+23:09:32.229 respawned: {"hero": "cassidy", "heroMode": false}
+23:09:32.666 t 17 hp 20.00 ammo 6 ult 694 rollCd 0.0 flashCd 0.0 | Zombie 8.7, Zombie 9.2, Zombie 11.9, Zombie 12.8
+23:09:34.847 t 20 hp 20.00 ammo 2 ult 807 rollCd 0.0 flashCd 0.0 | Zombie 4.6, Zombie 7.1, Zombie 8.2, Skeleton 14.5
+23:09:37.454 t 22 hp 20.00 ammo 5 ult 977 rollCd 5.0 flashCd 10.3 | Zombie 1.2, Zombie 2.7, Zombie 5.5, Zombie 14.5
+23:09:39.660 t 24 hp 14.00 ammo 6 ult 1038 rollCd 2.8 flashCd 8.1 | Zombie 1.5, Zombie 1.6, Zombie 2.2, Zombie 11.3
+23:09:42.065 t 27 hp 8.00 ammo 0 ult 1188 rollCd 0.1 flashCd 5.5 | Zombie 3.3, Zombie 4.3, Zombie 5.4, Skeleton 7.3
+23:09:44.505 t 29 hp 5.84 ammo 4 ult 1407 rollCd 4.3 flashCd 3.1 | Zombie 6.5, Zombie 7.7, Zombie 11.1, Skeleton 12.8
+23:09:46.512 t 31 hp 1.84 ammo 0 ult 1524 rollCd 2.3 flashCd 1.1 | Zombie 6.1, Zombie 11.2, Skeleton 13.5, Skeleton 23.5
+23:09:48.115 DEATH 2 at -12.2 10.0
+23:09:51.172 respawned: {"hero": "cassidy", "heroMode": false}
+23:09:51.978 t 37 hp 20.00 ammo 6 ult 1538 rollCd 0.0 flashCd 0.0 | Zombie 2.8, Skeleton 19.5, Creeper 23.6, Creeper 24.1
+23:09:54.117 t 39 hp 20.00 ammo 5 ult 1550 rollCd 4.8 flashCd 10.8 | Zombie 2.7, Creeper 21.4, Creeper 24.0, Creeper 24.2
+23:09:56.322 t 41 hp 14.00 ammo 0 ult 1768 rollCd 1.4 flashCd 8.3 | Zombie 0.8, Creeper 20.2, Creeper 23.1, Creeper 24.7
+23:10:01.098 DEADEYE with 2 within 25 m
+23:10:02.536 t 47 hp 8.00 ammo 6 ult 4 rollCd 0.0 flashCd 2.2 | Skeleton 25.3, Creeper 25.4, Skeleton 26.0, Creeper 26.3
+23:10:04.542 t 49 hp 8.90 ammo 2 ult 14 rollCd 0.0 flashCd 0.1 | Creeper 25.4, Skeleton 26.0, Creeper 26.3, Skeleton 27.3
+23:10:06.547 t 51 hp 12.50 ammo 0 ult 24 rollCd 0.0 flashCd 0.0 | Creeper 25.4, Skeleton 26.0, Creeper 26.3, Skeleton 29.1
+23:10:08.555 t 53 hp 16.10 ammo 3 ult 34 rollCd 0.0 flashCd 0.0 | Creeper 25.4, Skeleton 26.0, Creeper 26.3, Skeleton 29.1
+23:10:10.561 t 55 hp 19.79 ammo 0 ult 44 rollCd 0.0 flashCd 0.0 | Creeper 25.4, Skeleton 26.0, Creeper 26.3, Skeleton 29.1
+23:10:12.566 t 57 hp 20.00 ammo 4 ult 54 rollCd 0.0 flashCd 0.0 | Creeper 23.0, Skeleton 26.0, Creeper 26.1, Skeleton 29.1
+23:10:14.572 t 59 hp 20.00 ammo 0 ult 64 rollCd 0.0 flashCd 0.0 | Creeper 20.4, Creeper 25.2, Skeleton 28.6, Skeleton 29.1
+23:10:15.506 END: 2 deaths, 5 rolls, 14 fans, 7 flashbangs, 2 deadeyes

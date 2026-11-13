@@ -1,0 +1,22 @@
+MARK T9 night fight setup: midnight, normal, monsters on; a wave of 6 zombies, 3 skeletons, a spider and a creeper 15-20 m off; a tamed wolf beside him; ult full
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /time set midnight
+cmd /difficulty normal
+cmd /gamerule minecraft:spawn_monsters true
+cmd /effect give @s minecraft:instant_health 1 5
+cmd /summon wolf 1.5 -60 0.5 {Owner:"Kiriko",Tags:["pet"]}
+cmd /summon zombie 0.5 -60 18.5
+cmd /summon zombie 3.5 -60 17.5
+cmd /summon zombie -2.5 -60 19.5
+cmd /summon zombie 6.5 -60 15.5
+cmd /summon zombie -5.5 -60 16.5
+cmd /summon zombie 1.5 -60 20.5
+cmd /summon skeleton 10.5 -60 18.5
+cmd /summon skeleton -9.5 -60 18.5
+cmd /summon skeleton 0.5 -60 24.5
+cmd /summon spider 4.5 -60 14.5
+cmd /summon creeper -3.5 -60 14.5
+cmd /overcraft ult @s 100
+sleep 0.5
+screenshot cas_t9_night.png

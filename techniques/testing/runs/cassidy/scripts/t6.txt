@@ -1,0 +1,68 @@
+MARK T6a G mid-Deadeye: Q, 1 s, G (expected Minecraft mode, normal speed, the markers gone, ult spent); G back: Cassidy, full kit
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /summon husk 0.5 -60 10.5 {NoAI:1b,Tags:["g1"],attributes:[{id:"minecraft:max_health",base:20}],Health:20f}
+cmd /overcraft ult @s 100
+sleep 0.5
+key ultimate down
+sleep 0.1
+key ultimate up
+sleep 1
+state
+cmd /attribute @s minecraft:movement_speed get
+key hero_mode down
+sleep 0.15
+key hero_mode up
+sleep 0.5
+state
+cmd /attribute @s minecraft:movement_speed get
+screenshot cas_t6_g.png
+key hero_mode down
+sleep 0.15
+key hero_mode up
+sleep 0.5
+state
+MARK T6b G mid-roll: Shift then G 0.1 s in (expected the roll ends, cooldown starts)
+sleep 0.5
+key ability_1 down
+sleep 0.1
+key ability_1 up
+key hero_mode down
+sleep 0.1
+key hero_mode up
+sleep 0.4
+state
+key hero_mode down
+sleep 0.15
+key hero_mode up
+sleep 0.4
+state
+MARK T6c hero switch: H near spawn, Tracer, READY; then H, Cassidy, READY
+cmd /tp @s ~ ~ ~
+cmd /spawnpoint @s ~ ~ ~
+key hero_select down
+sleep 0.15
+key hero_select up
+sleep 1
+screenshot cas_t6_h.png
+screenclick 170 216 1
+sleep 0.5
+screenclick 240 244 1
+sleep 1
+state
+key hero_select down
+sleep 0.15
+key hero_select up
+sleep 1
+screenclick 190 216 1
+sleep 0.5
+screenclick 240 244 1
+sleep 1
+state
+MARK T6d death: /kill, respawn (expected back as Cassidy, 6 rounds, 250)
+cmd /kill @s
+sleep 1.5
+screenshot cas_t6_dead.png
+respawn
+sleep 2
+state
