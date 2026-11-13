@@ -54,7 +54,10 @@ public final class Pharah implements HeroKit {
 	public static final int LOOK_HOVER = 1, LOOK_JET = 2, LOOK_BARRAGE = 4;
 	/** Which jet (HeroState.pharahJetKind). */
 	public static final int JUMP_JET = 1, JET_DASH = 2;
-	/** OwMovement.pharahHover's answers: none, fuel's push, no fuel (a slowed fall), a jet with fuel, a jet without. */
+	/**
+	 * OwMovement.pharahHover's answers: none, the fuelled hover (the ease to 4.66), no fuel (a slowed fall), and the same two in
+	 * a jet with Jump held (no fuel spent).
+	 */
 	public static final int HOVER_NONE = 0, HOVER_FUEL = 1, HOVER_EMPTY = 2, HOVER_JET = 3, HOVER_JET_EMPTY = 4;
 
 	static final Blow ROCKET_BLOW = Blow.weapon(false).by(Hero.PHARAH);
@@ -63,15 +66,17 @@ public final class Pharah implements HeroKit {
 	static final Blow SALVO_BLOW = Blow.perk("rocket_salvo").by(Hero.PHARAH);
 	private static final Identifier BARRAGE_SLOWED = Overcraft.id("pharah_barrage_slow");
 
-	/** The hover's push (m/s²) for an OwMovement.pharahHover answer, {@code vy} her vertical speed (blocks a tick). */
-	public static double hoverPush(int hover, double vy) {
-		return switch (hover) {
-			case HOVER_FUEL -> vy < 0 ? HOVER_PUSH_FALLING : HOVER_PUSH;
-			case HOVER_JET -> JET_PUSH;
-			case HOVER_JET_EMPTY -> JET_PUSH_EMPTY;
-			case HOVER_EMPTY -> EMPTY_PUSH;
-			default -> 0;
-		};
+	/**
+	 * One tick of her hover: her new vertical speed (blocks a tick) from {@code vy} before it and {@code fallen}, the plain
+	 * gravity step's. Fuelled, vy eases toward 4.66 m/s at 6 a second, exactly over the tick, and never below the gravity step
+	 * (WS 2026-11-11: PharahStats.HOVER_RISE / HOVER_EASE). With no fuel, the 7.5 m/s² push and the 8 m/s fall (D #655 / 1E54).
+	 */
+	public static double hoverStep(int hover, double vy, double fallen) {
+		if (hoverFast(hover)) {
+			double rise = Ow.speed(HOVER_RISE);
+			return Math.max(fallen, rise + (vy - rise) * Math.exp(-HOVER_EASE * 0.05));
+		}
+		return Math.max(fallen + Ow.accel(EMPTY_PUSH), -Ow.speed(EMPTY_FALL));
 	}
 
 	/** Whether this hover answer is the fuelled one, +30 % speed (D 0025 #160: while she has fuel). */
@@ -334,8 +339,9 @@ public final class Pharah implements HeroKit {
 		}
 		if (++s.pharahConcussive >= Ow.ticks(CONCUSSIVE_CAST)) {
 			s.pharahConcussive = -1;
-			// it leaves 0.167 s in, then 0.5 s before a rocket (D #257 / #61); the cooldown from here (M)
-			s.ability2Cooldown = Ow.ticks(CONCUSSIVE_COOLDOWN);
+			// it leaves 0.167 s in, then 0.5 s before a rocket (D #257 / #61); the cooldown from the recovery's end (WS 2026-11-11:
+			// "in use" 0.66 s, then 8 s: CONCUSSIVE_COOLDOWN)
+			s.ability2Cooldown = Ow.ticks(CONCUSSIVE_RECOVERY + CONCUSSIVE_COOLDOWN);
 			s.pharahRecovery = Math.max(s.pharahRecovery, Ow.ticks(CONCUSSIVE_RECOVERY));
 			Vec3 aim = aimPoint(player, 300);
 			Vec3 from = muzzle(player, -CONCUSSIVE_LEFT, CONCUSSIVE_UP_OFF, CONCUSSIVE_AHEAD);

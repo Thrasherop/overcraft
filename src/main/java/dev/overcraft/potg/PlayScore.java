@@ -150,8 +150,25 @@ public final class PlayScore {
 		return victim instanceof ServerPlayer p && HeroManager.state(p) instanceof HeroState s && s.ultActive > 0;
 	}
 
-	/** ItemEntity.playerTouch: a hero picked up {@code count} of an item; each worth what PotgValues.PICKUP says. */
-	public static void pickup(Player hero, net.minecraft.world.item.Item item, int count) {
+	/**
+	 * Entity.spawnAtLocation: a dying mob dropped an item; tagged when it's the drop PotgValues.PICKUP_FROM names, so
+	 * only that pickup scores (an item a player drops or re-drops is a new, untagged entity).
+	 */
+	public static void dropped(Entity mob, net.minecraft.world.entity.item.ItemEntity drop) {
+		if (mob instanceof net.minecraft.world.entity.LivingEntity living && living.isDeadOrDying()) {
+			String id = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(drop.getItem().getItem()).toString();
+			String from = PotgValues.PICKUP_FROM.get(id);
+			if (from != null && from.equals(net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()).toString())) {
+				drop.addTag(PotgValues.DROP_TAG);
+			}
+		}
+	}
+
+	/** ItemEntity.playerTouch: a hero picked up {@code count} of a mob's drop; each worth what PotgValues.PICKUP says. */
+	public static void pickup(Player hero, net.minecraft.world.entity.item.ItemEntity drop, net.minecraft.world.item.Item item, int count) {
+		if (!drop.entityTags().contains(PotgValues.DROP_TAG)) {
+			return;
+		}
 		String id = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(item).toString();
 		Double worth = PotgValues.PICKUP.get(id);
 		Rows r = worth == null || count <= 0 ? null : rows(hero);

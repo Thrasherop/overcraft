@@ -30,6 +30,7 @@
 		"PotgFreezeMixin",
 		"PotgDragonMixin",
 		"PotgPickupMixin",
+		"PotgDropMixin",
 		"HealOrHarmMixin",
 		"PotgCrystalMixin",
 		"PotgEyeMixin"

@@ -16,8 +16,13 @@ import net.minecraft.world.phys.Vec3;
  * (HeroInputPayload.HELD_HOVER), for the server to spend the fuel.
  */
 public final class ClientPharah {
-	/** Ticks the jump key has been held on the ground (the hover starts there after 0.2 s: D 0025 #22, M). */
+	/** Ticks the jump key has been held since a press on the ground (the hover takes over 0.2 s after it: PharahStats.HOVER_FROM_GROUND). */
 	private static int groundHeld;
+	/** The jump key's press was on the ground (else in the air: the hover at once). */
+	private static boolean groundPress;
+	/** Barrage cast in the air: she flies it (PharahStats.BARRAGE_UP), set on its first tick. */
+	private static boolean barrageFlight;
+	private static boolean barrageWas;
 	/** The hover this tick (Pharah.HOVER_*), worked out once a tick. */
 	private static int hover;
 	private static long hoverTick = Long.MIN_VALUE;
@@ -29,6 +34,9 @@ public final class ClientPharah {
 
 	public static void reset() {
 		groundHeld = 0;
+		groundPress = false;
+		barrageFlight = false;
+		barrageWas = false;
 		hover = 0;
 		hoverTick = Long.MIN_VALUE;
 		jetsWas = 0;
@@ -49,13 +57,25 @@ public final class ClientPharah {
 		if (player == null || ClientHero.hero() != Hero.PHARAH || !live(player)) {
 			jetsWas = 0;
 			groundHeld = 0;
+			groundPress = false;
+			barrageFlight = barrageWas = false;
 			return;
 		}
+		boolean barrage = (ClientHero.sync().mode() & Pharah.MODE_BARRAGE) != 0;
+		if (barrage && !barrageWas) {
+			// Barrage cast in the air: her speed zeroed, then she flies it (WS 2026-11-11: vy -4.81 -> 0 at the cast)
+			barrageFlight = !player.onGround();
+			if (barrageFlight) {
+				player.setDeltaMovement(Vec3.ZERO);
+			}
+		} else if (!barrage) {
+			barrageFlight = false;
+		}
+		barrageWas = barrage;
 		int jets = ClientHero.sync().mode() & (Pharah.MODE_JUMP_JET | Pharah.MODE_JET_DASH);
 		int fresh = jets & ~jetsWas;
 		jetsWas = jets;
 		if (fresh == 0) {
-			groundHeld = dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.JUMP).isDown() && player.onGround() ? groundHeld + 1 : 0;
 			return;
 		}
 		Vec3 v = player.getDeltaMovement();
@@ -66,9 +86,10 @@ public final class ClientPharah {
 			Vec3 add = along == null ? Vec3.ZERO : along.scale(Ow.speed(PharahStats.JUMP_JET_ALONG));
 			player.setDeltaMovement(v.x + add.x, up, v.z + add.z);
 		} else {
-			// 19 m/s along the move input (forward without) and 8 up, in place of what she was doing (D 4B92 #36 / #545)
+			// 19 m/s along the move input (forward without) and 8 up (D 4B92 #36 / #545), plus 0.3 of her horizontal velocity
+			// from before (WS 2026-11-11: PharahStats.JET_DASH_KEEP)
 			Vec3 dir = along != null ? along : forward(player);
-			Vec3 dash = dir.scale(Ow.speed(PharahStats.JET_DASH_ALONG));
+			Vec3 dash = dir.scale(Ow.speed(PharahStats.JET_DASH_ALONG)).add(new Vec3(v.x, 0, v.z).scale(PharahStats.JET_DASH_KEEP));
 			player.setDeltaMovement(dash.x, Ow.speed(PharahStats.JET_DASH_UP), dash.z);
 		}
 		player.resetFallDistance();
@@ -107,10 +128,18 @@ public final class ClientPharah {
 		boolean barrage = (s.mode() & Pharah.MODE_BARRAGE) != 0;
 		boolean jet = (s.mode() & (Pharah.MODE_JUMP_JET | Pharah.MODE_JET_DASH)) != 0;
 		boolean held = dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.JUMP).isDown() && mc.gui.screen() == null;
-		boolean engaged = held && (!entity.onGround() || groundHeld >= Ow.ticks(PharahStats.HOVER_FROM_GROUND));
+		// counted here, the tick's first ask (from travel, before the move): the press tick still sees her on the ground
+		if (!held) {
+			groundHeld = 0;
+			groundPress = false;
+		} else if (groundHeld++ == 0) {
+			groundPress = entity.onGround();
+		}
+		// from a ground press 0.2 s from the press, airborne or not; from an air press at once (WS 2026-11-11: HOVER_FROM_GROUND)
+		boolean engaged = held && (!groundPress || groundHeld > Ow.ticks(PharahStats.HOVER_FROM_GROUND));
 		if (jet) {
-			// the jets turn the hover on, key or not, and spend no fuel (D 0025 #698 / #694 / #29)
-			hover = fuel ? Pharah.HOVER_JET : Pharah.HOVER_JET_EMPTY;
+			// a jet gives the hover only with Jump held, spending no fuel (D 0025 #29; WS 2026-11-11: none without the key)
+			hover = !held ? Pharah.HOVER_NONE : fuel ? Pharah.HOVER_JET : Pharah.HOVER_JET_EMPTY;
 		} else if (engaged && !dev.overcraft.hero.HeroManager.jumpIsNotAirborne(entity)) {
 			// (not where Jump is Minecraft's or the mount's: water, lava, a cobweb, a ladder, powder snow, a boat or a horse:
 			// critic_1 #2 / #3; ours, Overwatch has none of them)
@@ -119,6 +148,11 @@ public final class ClientPharah {
 			hover = Pharah.HOVER_NONE;
 		}
 		return hover;
+	}
+
+	/** OwMovement.pharahBarrage: she flies her Barrage (cast in the air). */
+	public static boolean barrageFlight(LivingEntity entity) {
+		return mine(entity) && barrageFlight;
 	}
 
 	/** Her held input: HELD_HOVER while the hover holds her (its fuel spent on the server). */

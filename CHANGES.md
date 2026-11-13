@@ -4,6 +4,20 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-12: 0.3.39 on next (not on main yet)
+
+- **Every hero (#130), matched to the owner's Workshop recordings:** letting go of the keys stops a hero a little sooner
+  (as Overwatch's), and the jump rises with Overwatch's gravity (same 0.98 m top and 0.67 s in the air).
+- **D.Va:** Boosters throw what they hit away from her (towards it), not along her look; ejecting adds its push to the
+  speed she had.
+- **Pharah:** the hover climbs at 4.66 m/s and eases into it, starting 0.2 s after a press from the ground; her jets give
+  no lift without Space held; Barrage in the air holds her up and drifts her slowly (Space up, Crouch down); Jet Dash
+  keeps some of her speed; Concussive Blast's cooldown starts after its cast.
+- **Play of the Game:** a blaze rod or ender pearl scores only as the blaze's or enderman's drop, on its first pickup
+  (owner, 2026-11-12); calm endermen's kills count (owner's call).
+- Played with real input: `techniques/testing/runs/batch_1112/real_keys.md`. Still open: Pharah's fuel refill and whether
+  Concussive cancels a reload (need a recording); D.Va's 2-health drop after eject (not reproduced).
+
 ## 2026-11-12: 0.3.38 on next (not on main yet)
 
 - **Tracer (#71)**, the whole kit with her game data's numbers and the owner's Workshop recording:
