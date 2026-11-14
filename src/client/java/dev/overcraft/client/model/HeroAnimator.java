@@ -139,6 +139,13 @@ public final class HeroAnimator {
 	public boolean dvaMech() {
 		return dvaForm == dev.overcraft.dva.Dva.MECH || dvaForm == dev.overcraft.dva.Dva.WRECK;
 	}
+
+	/** Junkrat with a Concussion Mine of his out in the world (seen on this client): his hand's mine is away (096A #213: !v983). */
+	private boolean mineOut;
+
+	public boolean mineOut() {
+		return mineOut;
+	}
 	/** Sojourn in Overclock (the synced HeroManager.SOJOURN_GUN): her stance additive add_overclock. */
 	private boolean sojournOverclock;
 	private float slideSince = -100, slideJumpAt = -100;
@@ -1876,7 +1883,18 @@ public final class HeroAnimator {
 			sheetNames = names;
 			aimSheetPicks.clear();
 		}
-		int form =entity instanceof net.minecraft.world.entity.player.Player p && dev.overcraft.hero.HeroManager.heroMode(p)
+		boolean out = false;
+		if ("junkrat".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO))
+			&& entity.level() instanceof net.minecraft.client.multiplayer.ClientLevel level) {
+			for (net.minecraft.world.entity.Entity e : level.entitiesForRendering()) {
+				if (e instanceof dev.overcraft.entity.ConcussionMineEntity mine && mine.isAlive() && mine.getOwner() == entity) {
+					out = true;
+					break;
+				}
+			}
+		}
+		mineOut = out;
+		int form = entity instanceof net.minecraft.world.entity.player.Player p && dev.overcraft.hero.HeroManager.heroMode(p)
 			? dev.overcraft.dva.Dva.form(p) : -1;
 		if (form != dvaForm) {
 			// the eject (016C: 026A #366's 0x439) after the wreck and on Self-Destruct's cast (0B2F #271), both from the mech (#132)

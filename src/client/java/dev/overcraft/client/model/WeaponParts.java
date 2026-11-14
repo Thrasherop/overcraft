@@ -29,10 +29,10 @@ public final class WeaponParts {
 	}
 
 	public record Part(String model, boolean onWeapon, String bone, Vector3f t, Quaternionf q, String views, String action, float from, float until,
-		List<Hide> hidden) {
-		/** Whether it shows in this view now. */
+		List<Hide> hidden, @org.jspecify.annotations.Nullable String unless) {
+		/** Whether it shows in this view now (unless: a state that puts it away, "mine_out" Junkrat's mine in his hand). */
 		boolean shown(HeroAnimator a, boolean firstPerson, float now) {
-			if (!in(views, firstPerson)) {
+			if (!in(views, firstPerson) || "mine_out".equals(unless) && a.mineOut()) {
 				return false;
 			}
 			if (action != null) {
@@ -94,7 +94,8 @@ public final class WeaponParts {
 					String model = o.get("model").getAsString();
 					parts.add(new Part(model, o.get("on").getAsString().equals("weapon"), o.get("bone").getAsString(), vector(o), turn(o),
 						o.get("views").getAsString(), window == null ? null : window.get(0).getAsString(),
-						window == null ? 0 : window.get(1).getAsFloat(), window == null ? 0 : window.get(2).getAsFloat(), hidden));
+						window == null ? 0 : window.get(1).getAsFloat(), window == null ? 0 : window.get(2).getAsFloat(), hidden,
+						o.has("unless") ? o.get("unless").getAsString() : null));
 					if (!names.contains(model)) {
 						names.add(model);
 					}
