@@ -4,7 +4,21 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-13: 0.3.45 on next (not on main yet)
+## 2026-11-13: 0.3.46 on next (not on main yet)
+
+- **Jetpack Cat's Catnapper from the ground (#139):** it ended at once, because the server's onGround was already
+  true. She now dives along the ground to the spot, as her data has it (real keys: 9.2 m to the spot). The path is
+  laid out at the dive's start, she's placed on the spot on arrival, and a wall in the way ends it (ours). A spot
+  picked on a tall wall's face no longer has her climb it.
+- **One sleeper waking no longer stops every bed sound nearby (#123):** the stop goes only to listeners no other
+  sleeper's bed reaches.
+- **Crosshair widgets for the newer heroes (#85):** D.Va's Defense Matrix meter, Boosters' timer and cancel prompt,
+  and her Self-Destruct warning; Tracer's Blink pips; Cassidy's Deadeye timer and prompt; Junkrat's RIP-Tire timer
+  and detonate prompt, and his mine's and trap's icons. Which widget and when come from the data; the look and
+  place are ours. Pharah's fuel arc is ours: her data has nothing at the crosshair.
+- Filed: #141. Clicks from my input tool didn't select Jetpack Cat on the select screen; needs a real-mouse check.
+
+## 2026-11-13: 0.3.45
 
 - **Fixed a server crash (#140):** a player removed without a disconnect, such as a dev bot, left their Play of the Game
   recorder running with nobody behind it, and it crashed the server at its next save (up to 5 minutes later). The
