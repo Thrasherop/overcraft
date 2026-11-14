@@ -402,7 +402,8 @@ public final class Cassidy implements HeroKit {
 			// 50 in all, shared by its steps (found playing: 8 steps of a 7.5-step rate gave 53)
 			double step = SILVER_BLEED / bleedSteps();
 			if (owner != null) {
-				float dealt = Combat.damage(b.target, Combat.hitscan(owner), step, BLEED_BLOW);
+				// already in them: a barrier they then stand behind doesn't stop it (Barriers.pierce)
+				float dealt = dev.overcraft.hero.Barriers.pierce(() -> Combat.damage(b.target, Combat.hitscan(owner), step, BLEED_BLOW));
 				Combat.credit(owner, dealt, b.target);
 			}
 			return --b.left[0] <= 0;
@@ -578,13 +579,17 @@ public final class Cassidy implements HeroKit {
 				b.barrierTake(FLASH_DAMAGE * share, near);
 			}
 		}
+		// an enemy Brigitte's too, once (her barrier is her state, not a Barriers.Shape)
+		dev.overcraft.brigitte.Barrier.burst(level, owner, at, FLASH_BLAST, d -> FLASH_DAMAGE * share);
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(FLASH_BLAST + 2))) {
 			if (!e.isAlive() || e == owner || !Allies.areaHits(owner, e)) {
 				continue;
 			}
 			double d = Math.sqrt(e.getBoundingBox().distanceToSqr(at));
 			if (!flashTakes(d, d <= FLASH_BLAST && Combat.inSight(level, at, e, flash),
-				d <= FLASH_BLAST && dev.overcraft.hero.Barriers.between(level, at, e.getBoundingBox().getCenter(), owner) != null)) {
+				// any enemy barrier between, Brigitte's too (Barrier.shields asks Barriers.between first): behind hers they
+				// were hindered, the damage alone stopped (#104's sweep)
+				d <= FLASH_BLAST && dev.overcraft.brigitte.Barrier.shields(e, owner, at))) {
 				continue;
 			}
 			// a hero's explosion (Combat.blast): not scaled by the difficulty, as Minecraft's own explosion was against players

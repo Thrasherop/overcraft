@@ -1,0 +1,29 @@
+dart: before health 20.00 barrier 300.0 up True asleep False
+dart at her through it: health 20.00 barrier 295.0 up True asleep False
+dart at vic behind: health 20.00 barrier 295.0 up True asleep False | vic health 20.00 hindered False asleep False x 1.10 y -60.00 z 7.30
+dart, barrier down (control): health 20.00 barrier 300.0 up False asleep True
+pistol at her 1.5 s: health 20.00 barrier 105.0 up True asleep False
+pistol at vic behind 1.5 s: health 20.00 barrier 105.0 up True asleep False | vic health 20.00 hindered False asleep False x 1.10 y -60.00 z 7.30
+flash before: vic health 20.00 hindered False asleep False x 1.10 y -60.00 z 7.30
+flashbang on her barrier: health 20.00 barrier 225.0 up True asleep False | vic health 20.00 hindered False asleep False x 1.10 y -60.00 z 7.30
+conc before: vic health 20.00 hindered False asleep False x 1.10 y -60.00 z 7.30
+concussive on her barrier: health 20.00 barrier 270.0 up True asleep False | vic health 20.00 hindered False asleep False x 1.10 y -60.00 z 7.30
+disruptor on her barrier, 4.5 s: health 0.00 barrier 0.0 up False asleep False | vic health 0.00 hindered False asleep False x 1.10 y -60.00 z 7.30
+boost before: health 20.00 barrier 300.0 up True asleep False
+boosters into her barrier: health 18.56 barrier 300.0 up True asleep False
+mine t0: 
+mine t1: 
+mine t2: 
+mine t3: 
+mine t4: 
+mine t5: 
+mine: brig health 18.56 barrier 300.0 up True asleep False
+pistol at an enemy behind an ALLIED barrier: health 20.00 barrier 300.0 up True asleep False | vic health 8.16 hindered False asleep False x 1.10 y -60.00 z 7.30
+disruptor at an ALLIED barrier, 4.5 s: health 20.00 barrier 300.0 up True asleep False | vic health 20.00 hindered False asleep False x 1.10 y -60.00 z 7.30
+mine t0: 604 0.69 -58.60 4.14 v -0.11 -0.01 1.24 t2 | 
+mine t1: 604 0.55 -59.43 5.30 v 0.00 -0.25 0.00 t8 | 
+mine t2: 604 0.55 -59.90 5.30 v 0.00 0.00 0.00 t16 | 
+mine t3: 604 0.55 -59.90 5.30 v 0.00 0.00 0.00 t26 | 
+mine t4: 604 0.55 -59.90 5.30 v 0.00 0.00 0.00 t38 | 
+mine t5: 604 0.55 -59.90 5.30 v 0.00 0.00 0.00 t48 | 
+mine: brig health 20.00 barrier 300.0 up True asleep False

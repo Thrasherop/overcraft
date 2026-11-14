@@ -90,3 +90,27 @@ Brigitte's state-bound one ([brigitte](../heroes/brigitte.md))
 | An arrow with no owner, the same line | not run | barrier -225 (its 18), zombie 200 |
 
 - **What a critic should check, round 2:** a real second client; a Suzu at an enemy barrier: dropped by the rule for the grenade, no source was found for Suzu itself; a sphere's and rock's own push on someone in front of the barrier.
+
+## The shared check, and the sweep of every hero (#104, #83, 2026-11-13)
+Record: [run_2026-11-13](../testing/runs/barrier/run_2026-11-13.md). #104 and #83 held already on next (round 2 above); the sweep found the gaps.
+
+**The shared check, by kind of hit** (all through `LivingEntityMixin` -> `Barrier.absorb` -> `Barriers.absorb` first):
+- **A projectile** (an `OwProjectile`, an arrow): stopped in flight by `Barriers.intercept` (entity barriers) and `Barrier.heroProjectiles` (hers); it does its own there (`hitBarrier`). A point-blank one is stopped at the hurt. Opt out with `OwProjectile.passesBarriers()`.
+- **A hitscan shot** (`Combat.hitscan`, any source with no direct entity, or the hero as it): judged from the shooter's eyes to the victim at the hurt. Tracer, Cassidy, Sombra, Juno's Mediblaster and torpedoes, D.Va's cannons, Ana's scoped shot, the Charged Shot all go this way.
+- **A burst or area** (a hero's own loop over who's near): it must ask `Barrier.shields(victim, attacker, centre)` (both barrier kinds; `Barriers.between` alone misses Brigitte's) for everything it does, status and push too, and charge the barriers once (`Barriers.enemyBarriers` + `Barrier.burst`). Pharah's Concussive Blast and Cassidy's Flashbang asked `between` only: behind Brigitte's barrier the victim was thrown or hindered.
+- **Through on purpose:** melee (`Barrier.meleeDepth`), Gravitic Flux, and `Barriers.pierce(() -> hit)`: what is already on someone (Silver Bullet's bleed, Local Anesthetic's numbing: their hitscan sources were judged from the shooter's eyes each tick, so stepping so a barrier was between stopped the damage) and what pierces (Disruptor's field).
+
+**What passes barriers on purpose, and why** (the wiki's Barrier page rev 406358 unless said):
+| What | Ours | Source |
+|---|---|---|
+| D.Va's Boosters | as melee: passes, doesn't damage the barrier (fixed: the barrier took its 25) | "ignore barriers, as if it was a melee attack. It cannot damage barriers" |
+| Sojourn's Disruptor field | pierces; each enemy barrier in it takes each step (fixed: a barrier hid everyone behind it). Its shot still stops at one and opens there | Sojourn page rev 409400: "the AoE pierces barriers"; Barrier page: "pierces, and damages barriers" (the barrier's number: ours) |
+| Total Mayhem's bombs | fly through (fixed: burst on it); their bursts still stop | "can bounce through barriers, but barriers block their explosions" |
+| Concussion Mine, Steel Trap | stop once at it, then pass (fixed: stopped every tick) | Junkrat page rev 410907: "bounces once ... but can then pass/fall through it" |
+| Translocator, RIP-Tire (an entity, not a projectile) | through; the tire's blast stops | the Barrier page |
+| Juno's Hyper Ring, Orbital Ray; Kiriko's Swift Step, Kitsune Rush; Lifeweaver's Tree of Life, Life Grip, Sow the Seed; Ana's Nano Boost; Sombra's Hotfix, EMP; Mercy's beams | no barrier check (none needed) | the hero pages' `ignores_barrier = 1` / the Barrier page |
+| Melee, Rocket Flail, Shield Bash, Gravitic Flux | through | the Barrier page |
+
+**Stopped, as Overwatch:** every hitscan weapon and Deadeye (Cassidy page rev 409375: "Barriers ... can negate/block the shots"), Juno's torpedoes (Juno page rev 408771: "Barriers will block projectiles"), all hero projectiles incl. Healing Blossom (Lifeweaver page rev 410811) and Sleep Dart, Frag Launcher grenades, Pharah's rockets, D.Va's missiles and Light Gun, Pulse Bomb's and Self-Destruct's blasts, Concussive Blast, Flashbang. Allied barriers stop nothing (`Barriers.stops`, `Barrier.stops`; played: a pistol through an allied one hits).
+
+**Left open:** Juno's torpedoes are judged from her eyes, not their curved path; Local Anesthetic's burst (`partial` on the wiki, unexplained) stays blocked; Lúcio's songs and Brigitte's Inspire on allies behind an enemy barrier ("does not affect allies behind enemy barriers") aren't blocked; Call Mech's landing is judged from D.Va's eyes; EMP doesn't destroy barriers.

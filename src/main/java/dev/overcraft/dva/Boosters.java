@@ -124,7 +124,15 @@ public final class Boosters {
 			s.dvaBoostHit.add(e.getId());
 			Vec3 before = Combat.motion(e);
 			// 25, Extended Boosters' 35, and its +0.5 s (514D #310, 047E #458)
-			float dealt = Combat.damage(e, level.damageSources().playerAttack(player), DvaPerks.boostersDamage(s), BLOW);
+			// through barriers, as a melee blow: "Boosters will ignore barriers, as if it was a melee attack. It cannot damage
+			// barriers however" (the wiki's Barrier page, rev 406358); judged from her eyes, an enemy Brigitte's took it (#104's sweep)
+			dev.overcraft.brigitte.Barrier.meleeDepth++;
+			float dealt;
+			try {
+				dealt = Combat.damage(e, level.damageSources().playerAttack(player), DvaPerks.boostersDamage(s), BLOW);
+			} finally {
+				dev.overcraft.brigitte.Barrier.meleeDepth--;
+			}
 			DvaPerks.boostersHit(s);
 			Combat.credit(player, dealt, e);
 			if (dealt > 0) {
