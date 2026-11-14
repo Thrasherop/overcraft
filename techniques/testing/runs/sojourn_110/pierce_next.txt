@@ -1,0 +1,18 @@
+﻿| case | aim | OW damage per husk, front to back |
+|---|---|---|
+| control: one husk, chest | pitch 4.80 | 120.0 |
+| control: one husk, head | pitch -1.49 | 180.0 |
+| three husks, level at chest (1.2) | pitch 1.46 | 180.0 / 180.0 / 120.0 |
+| three husks, level at head (1.75) | pitch -0.45 | 180.0 / 180.0 / 180.0 |
+| three husks, front's chest on to back's legs (0.3) | pitch 4.57 | 120.0 / 120.0 / 120.0 |
+| three husks, front's legs on up to back's head (1.75) | pitch -0.80 | 180.0 / 180.0 / 180.0 |
+| issue: two husks 12.5 m apart, chest on to legs | pitch 4.23 | 120.0 / 120.0 |
+| two husks 12.5 m apart, back aimed at 0.20 | pitch 4.92 | 120.0 / 120.0 |
+| two husks 12.5 m apart, back aimed at 0.60 | pitch 3.54 | 180.0 / 120.0 |
+| two husks 12.5 m apart, back aimed at 1.00 | pitch 2.15 | 180.0 / 120.0 |
+| two husks 12.5 m apart, back aimed at 1.30 | pitch 1.11 | 180.0 / 120.0 |
+| two husks 12.5 m apart, back aimed at 1.45 | pitch 0.59 | 180.0 / 180.0 |
+| two husks 12.5 m apart, back aimed at 1.55 | pitch 0.24 | 180.0 / 180.0 |
+| two husks 12.5 m apart, back aimed at 1.70 | pitch -0.28 | 180.0 / 180.0 |
+| two husks 12.5 m apart, back aimed at 1.90 | pitch -0.97 | 180.0 / 180.0 |
+### done
