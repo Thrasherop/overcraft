@@ -1,0 +1,7 @@
+﻿| case (eye 4.62 m up) | aim | OW damage, front / back |
+|---|---|---|
+| husks at 4 and 6 m, aimed at the back one's feet (0.2) | pitch 36.38 | 180.0 / 120.0 |
+| husks at 4 and 6 m, aimed at the back one's waist (0.9) | pitch 31.80 | 180.0 / 120.0 |
+| husks at 4 and 6 m, aimed at the front one's waist (0.9) | pitch 42.92 | 120.0 / 0.0 |
+| husks at 4 and 6 m, aimed at the front one's legs (0.4) | pitch 46.53 | 120.0 / 0.0 |
+### done
