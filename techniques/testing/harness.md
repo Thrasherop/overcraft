@@ -117,6 +117,11 @@
   first (pause menu at 854x480: Save and Leave is `screenclick 59 189 1`).
 - **A `/fill` over the player suffocates them:** building a test stair where she stood cost 6 health inside the stone and
   looked like a slide's fall damage (2026-11-02). Move away (`/tp`) before filling, and read health before the test.
+- **Two clients, 2026-11-14 ([run](runs/two_client_2026-11-14/run.md)):** set `pauseOnLostFocus:false` in `run/options.txt` and
+  `run2/options.txt` first (only one window has focus; the other's pause menu filled every screenshot). Drive both from one
+  script holding a socket to each harness, so one client's screenshots land during the other's action. A `connect` left
+  running in the background reconnects later and reopens the select screen. The dev `players` shows each other player's
+  Lúcio ride (`wallSide`, `wallYaw`) and animator clip (`playing`) as this client draws them.
 - **Two clients (2026-10-29):** wait for the second client's title screen before `connect` (connecting while its
   resources load crashed it). After `openworld`, click READY only once the world has loaded: clicked during the loading
   screen it doesn't take, and the hero select stays up (its keys then do nothing: check `"screen"` in `state`). A

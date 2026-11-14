@@ -244,6 +244,12 @@ public final class DevServer {
 					o.addProperty("yBodyRot", other.yBodyRot);
 					o.addProperty("x", other.getX());
 					o.addProperty("z", other.getZ());
+					o.addProperty("y", other.getY());
+					// what this client draws of their Lúcio wall ride (#115): side, ride yaw, and the animator's clip
+					o.addProperty("wallSide", dev.overcraft.hero.OwMovement.wallRiding(other));
+					o.addProperty("wallYaw", dev.overcraft.hero.OwMovement.wallRideYaw(other));
+					var seen = dev.overcraft.client.model.HeroAnimator.existing(other.getId());
+					o.addProperty("playing", seen == null ? "" : String.valueOf(seen.playing()));
 					list.add(o);
 				}
 				out.add("players", list);
