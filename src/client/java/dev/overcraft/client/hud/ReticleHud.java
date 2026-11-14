@@ -90,6 +90,8 @@ public final class ReticleHud {
 	private static float first, promptFloor, midX;
 	/** What last frame's stack held, for the target markers drawn before it: its top and bottom (0 and 0: nothing). */
 	private static float roomTop, roomBottom, roomHalf;
+	/** Dev only (DevServer's "state"): the world widgets drawn last frame, and where. */
+	public static String devWorld = "";
 
 	/** A hero's own widgets, fixed places the stack works round: Kiriko's ofuda counter, Lúcio's song circles. */
 	private static final float KIRIKO_TOP = 118, KIRIKO_BOTTOM = 168, LUCIO_TOP = 160, LUCIO_BOTTOM = 222;
@@ -106,6 +108,11 @@ public final class ReticleHud {
 
 	/** One frame's widgets for this hero. */
 	public static void render(GuiGraphicsExtractor g, LocalPlayer player, Hero hero, HeroSyncPayload s, float w, float h, float partial) {
+		devWorld = "";
+		if (player.isAlive()) {
+			// (on whoever is near, whatever holds their view)
+			selfDestruct(g, player, w, h, partial);
+		}
 		if (!player.isAlive() || dev.overcraft.client.comms.EmoteCamera.active()) {
 			roomTop = roomBottom = roomHalf = 0;
 			return;
@@ -128,6 +135,11 @@ public final class ReticleHud {
 			case LIFEWEAVER -> lifeweaver(g, player, s, cx, cy, w, h, partial, reticle);
 			case LUCIO -> lucio(g, hero, s, cx, cy, reticle);
 			case ANA -> ana(g, player, s, w, h, partial);
+			case DVA -> dva(g, hero, s, cy);
+			case PHARAH -> pharah(g, s, cx, cy, reticle);
+			case TRACER -> tracer(g, s, cx, reticle);
+			case CASSIDY -> cassidy(g, s, cy);
+			case JUNKRAT -> junkrat(g, player, hero, s, cy, w, h, partial);
 			default -> {
 			}
 		}
@@ -490,6 +502,153 @@ public final class ReticleHud {
 	}
 
 	/**
+	 * D.Va in her mech. Defense Matrix's energy, 04F0 (02CC #433: D7 the share v215 / v567, 1D0 / 201 its name and icon) while it's up or
+	 * not full: the data puts it in the ability-bar layer (v40845); the mod's panel already shows its number, and here it's a bar under
+	 * the crosshair, the way she reads it while aiming (ours: place, and the colours, as the panel's: pink up, grey cooling down).
+	 * Boosters' time, 0237 on the centre layer (047E #374: v215 / v567, op109(v215)), and its prompt, 00DB (#373: ABILITY 1, 161D8
+	 * "CANCEL"; Boosters.press ends a flight from 0.4 s, the data's condition for the prompt isn't read: shown the whole flight).
+	 */
+	private static void dva(GuiGraphicsExtractor g, Hero hero, HeroSyncPayload s, float cy) {
+		if ((s.mode() & dev.overcraft.dva.Dva.FORM_BITS) != dev.overcraft.dva.Dva.MECH) {
+			return;
+		}
+		y = Math.max(y, cy + TIMER_BELOW);
+		boolean up = (s.mode() & dev.overcraft.dva.Dva.MODE_MATRIX) != 0;
+		if (up || s.meter() < 0.999f) {
+			int colour = s.secondaryReload() > 0 ? 0xFFA0A0A0 : up ? 0xFFFC79BD : 0xFFFCA8D4;
+			resourceBar(g, HeroArt.ability(hero, "defense_matrix"), s.meter(), String.valueOf(Math.round(s.meter() * 100)), colour);
+		}
+		boolean boosting = (s.mode() & dev.overcraft.dva.Dva.MODE_BOOSTING) != 0;
+		if (boosting) {
+			// (Extended Boosters adds to the flight, to 2 s left at most: DvaPerks.boostersLeft)
+			float total = (float) Math.max(dev.overcraft.dva.DvaStats.BOOSTERS_TIME, s.activeLeft());
+			timedBar(g, HeroArt.ability(hero, "boosters"), s.activeLeft() / total, s.activeLeft(), cy);
+			prompt(g, Action.ABILITY_1, "overcraft.hud.prompt.cancel", null, null);
+		}
+	}
+
+	/**
+	 * Pharah. Her data has no widget at the reticle: fuel is engine-drawn on Hover Jets' box (0025 #316, 0240, the ability bar), and
+	 * Concussive Blast's and Barrage's widgets are boxes there too (007B #113 / #160, 002B #142). Her fuel at the crosshair while it isn't
+	 * full is OURS: an arc on its left filling upward (Sojourn's shape), in her blue, red under 20. A bar under it, as Jetpack Cat's, ran
+	 * into her launcher, which fills the view's lower right (found playing: rt85_pharah_hover). Overfuel past 100 shows full.
+	 */
+	private static void pharah(GuiGraphicsExtractor g, HeroSyncPayload s, float cx, float cy, boolean reticle) {
+		float fuel = Math.clamp(s.meter(), 0, 1);
+		if (!reticle || s.meter() >= 0.999f) {
+			return;
+		}
+		float r = 40;
+		float low = 200;
+		float sweep = 140;
+		HeroHud.arc(g, cx, cy, r + 1, 8, low, low + sweep, 0x66000000);
+		if (fuel > 0) {
+			HeroHud.arc(g, cx, cy, r, 5, low, low + sweep * fuel, fuel < 0.2f ? FUEL_LOW : 0xFF6FB6FF);
+		}
+	}
+
+	/**
+	 * Tracer. Blink's charges, 026F in her reticle container (0024 #410: 000B the count v11, the charges #182 also gives 6650): a row of
+	 * pips under the crosshair (shape ours, in her orange). Recall has no widget but its ability box (001A #160 / #205; #354 is Stadium).
+	 */
+	private static void tracer(GuiGraphicsExtractor g, HeroSyncPayload s, float cx, boolean reticle) {
+		if (reticle) {
+			mark(y);
+			pips(g, Math.max(0, s.secondaryAmmo()), dev.overcraft.tracer.TracerStats.BLINK_CHARGES, cx, y, 16, 5, 0xF2F29A2E);
+			y += 16;
+		}
+	}
+
+	/**
+	 * Cassidy's Deadeye. Its time, 0237 on the centre layer (022F #578: v215 / v567, the 7 s of #377, after the 0.2 s cast), and its
+	 * prompts, 00DB (#577: primary 1619F "FIRE", secondary 161A0 "CANCEL"; the mod's left fires, the right cancels: Cassidy.tick).
+	 * The locks on each target are DeadeyeHud's (01EE #158, 012C, in the world).
+	 */
+	private static void cassidy(GuiGraphicsExtractor g, HeroSyncPayload s, float cy) {
+		int mode = s.mode();
+		if ((mode & dev.overcraft.cassidy.Cassidy.MODE_DEADEYE) == 0 || (mode & dev.overcraft.cassidy.Cassidy.MODE_FIRING) != 0) {
+			return;
+		}
+		float time = (float) dev.overcraft.cassidy.CassidyStats.DEADEYE_TIME;
+		float left = Math.clamp(s.activeLeft(), 0, time);
+		timedBar(g, HeroArt.ultimate(Hero.CASSIDY), left / time, left, cy);
+		prompt(g, Action.SECONDARY_FIRE, "overcraft.hud.prompt.fire", Action.PRIMARY_FIRE, "overcraft.hud.prompt.cancel");
+	}
+
+	/**
+	 * Junkrat. RIP-Tire's time, 0237 on the centre layer (0233 #659, the tire's graph: v215 / v567, v567 its 10 s), and its prompts once
+	 * it's armed, 00DB (#658 / #689: primary and secondary 161A8 "DETONATE"; with Nitro Boost #675: primary "DETONATE", ABILITY 1 232B5
+	 * "Nitro Boost", the perk check #677). The mine's and the trap's markers, 011F in the world on each (096B #464 while the mine lives,
+	 * 09BB #654 to the trap's owner): his own, the ability's icon (look ours). Mine charges are on Concussion Mine's box (096A #355, 0243).
+	 */
+	private static void junkrat(GuiGraphicsExtractor g, LocalPlayer player, Hero hero, HeroSyncPayload s, float cy, float w, float h,
+								float partial) {
+		int mode = s.mode();
+		if ((mode & (dev.overcraft.junkrat.Junkrat.MODE_MINE_OUT | dev.overcraft.junkrat.Junkrat.MODE_TRAP_OUT)) != 0) {
+			for (Entity e : Minecraft.getInstance().level.entitiesForRendering()) {
+				String icon = e instanceof dev.overcraft.entity.ConcussionMineEntity ? "concussion_mine"
+					: e instanceof dev.overcraft.entity.SteelTrapEntity ? "steel_trap" : null;
+				if (icon != null && e.isAlive() && ((net.minecraft.world.entity.projectile.Projectile) e).getOwner() == player) {
+					worldIcon(g, HeroArt.ability(hero, icon), e.getPosition(partial).add(0, 0.5, 0), w, h, ALLY);
+				}
+			}
+		}
+		if ((mode & dev.overcraft.junkrat.Junkrat.MODE_TIRE) == 0) {
+			return;
+		}
+		float time = (float) dev.overcraft.junkrat.JunkratStats.TIRE_TIME;
+		timedBar(g, HeroArt.ultimate(hero), Math.clamp(s.activeLeft(), 0, time) / time, s.activeLeft(), cy);
+		if ((mode & dev.overcraft.junkrat.Junkrat.MODE_TIRE_ARMED) != 0) {
+			if ((mode & dev.overcraft.junkrat.Junkrat.MODE_NITRO_READY) != 0) {
+				prompt(g, Action.SECONDARY_FIRE, "overcraft.hud.prompt.detonate", Action.ABILITY_1, "overcraft.hud.prompt.nitro_boost");
+			} else {
+				prompt(g, Action.SECONDARY_FIRE, "overcraft.hud.prompt.detonate", Action.PRIMARY_FIRE, "overcraft.hud.prompt.detonate");
+			}
+		}
+	}
+
+	/**
+	 * A D.Va's Self-Destruct, 0031 in the world (0B2F #339): at the mech + 2 m (68E9), for anyone within its 21 m (v3132; the data also
+	 * asks for sight or a team-mate), 6378 set inside the inner 6 m (v3133, plus the viewer's radius). The data binds no time, so no
+	 * countdown. Ours: her Self-Destruct icon on a dark disc in a thick ring, orange, red inside the inner radius, pulsing (her bunny
+	 * alone, thin-ringed, read as her mech's own decal: rt85_dva_sd_inner).
+	 */
+	private static void selfDestruct(GuiGraphicsExtractor g, LocalPlayer player, float w, float h, float partial) {
+		for (Entity e : Minecraft.getInstance().level.entitiesForRendering()) {
+			if (!(e instanceof dev.overcraft.entity.DvaMechEntity mech) || mech.kind() != dev.overcraft.entity.DvaMechEntity.SELF_DESTRUCT) {
+				continue;
+			}
+			double d = player.position().distanceTo(mech.position());
+			if (d < dev.overcraft.dva.DvaStats.SELF_DESTRUCT_RADIUS) {
+				boolean inner = d < dev.overcraft.dva.DvaStats.SELF_DESTRUCT_INNER + player.getBbWidth() / 2;
+				float pulse = 0.5f + 0.5f * (float) Math.sin((mech.tickCount + partial) * 0.6f);
+				int alpha = (int) (0xB0 + 0x4F * pulse);
+				worldIcon(g, HeroArt.ultimate(Hero.DVA), mech.getPosition(partial).add(0, 2, 0), w, h,
+					alpha << 24 | ((inner ? 0xFF3B3B : WARN) & 0xFFFFFF), 24, 6);
+			}
+		}
+	}
+
+	/** An icon in the world (011F, 0031), on a dark disc in a ring of {@code edge}: off screen behind, nothing. */
+	private static void worldIcon(GuiGraphicsExtractor g, @Nullable Identifier icon, Vec3 at, float w, float h, int edge) {
+		worldIcon(g, icon, at, w, h, edge, 17, 2);
+	}
+
+	private static void worldIcon(GuiGraphicsExtractor g, @Nullable Identifier icon, Vec3 at, float w, float h, int edge, float r, float ring) {
+		float[] screen = HeroHud.project(at, w, h);
+		devWorld += screen == null ? "behind; " : String.format(Locale.ROOT, "%.0f,%.0f; ", screen[0], screen[1]);
+		if (screen == null) {
+			return;
+		}
+		image(g, HudShapes.DISC, screen[0] - r - ring, screen[1] - r - ring, 2 * (r + ring), 2 * (r + ring), edge);
+		image(g, HudShapes.DISC, screen[0] - r, screen[1] - r, 2 * r, 2 * r, 0xE0000000);
+		if (icon != null) {
+			float s = r * 1.4f;
+			image(g, icon, screen[0] - s / 2, screen[1] - s / 2, s, s, WHITE);
+		}
+	}
+
+	/**
 	 * Being towed by a Jetpack Cat's Lifeline: 2A226 "GRAPPLED" and, 00CF on the towed one's HUD (5A8F #1225: x4F81E1BD jump, 2A472
 	 * "Detach", 2D604 "%1$s Detach"). Letting go is JetpackCat.lifeline's: the jump key, from 0.6 s into the tow, so its prompt from then.
 	 * Catnapper's carry has neither: jump does nothing there (JetpackCatFx.towedFor).
@@ -580,12 +739,16 @@ public final class ReticleHud {
 	}
 
 	private static void pips(GuiGraphicsExtractor g, int have, int max, float cx, float top, float pw, float gap) {
+		pips(g, have, max, cx, top, pw, gap, 0xF2F7C43A);
+	}
+
+	private static void pips(GuiGraphicsExtractor g, int have, int max, float cx, float top, float pw, float gap, int full) {
 		float x = cx - (max * pw + (max - 1) * gap) / 2;
 		for (int i = 0; i < max; i++) {
 			float px = x + i * (pw + gap);
 			fill(g, px - 1, top - 1, pw + 2, 8, 0xA6000000);
 			// (an empty one a touch brighter: at 0x33 they were lost at night, on Sigma's and on Brigitte's)
-			fill(g, px, top, pw, 6, i < have ? 0xF2F7C43A : 0x66FFFFFF);
+			fill(g, px, top, pw, 6, i < have ? full : 0x66FFFFFF);
 		}
 	}
 
@@ -795,6 +958,17 @@ public final class ReticleHud {
 			case SIGMA -> {
 				ring(g, cx, cy, 11);
 				dot(g, cx, cy, 2);
+			}
+			// D.Va: the mech's Fusion Cannons and the pilot's Light Gun have each their own (loadouts CF / E0); ours: the cannons' spread
+			// (050A #444, 3.375 deg across) as a wide ring, the Light Gun the "+"
+			case DVA -> {
+				int form = s.mode() & dev.overcraft.dva.Dva.FORM_BITS;
+				if (form == dev.overcraft.dva.Dva.PILOT || form == dev.overcraft.dva.Dva.CALLING) {
+					plus(g, cx, cy, 3, 6, 2);
+				} else {
+					ring(g, cx, cy, 22);
+					dot(g, cx, cy, 2);
+				}
 			}
 			// Kiriko's 05BF and Sojourn's 044C (142E #418): the "+"
 			default -> plus(g, cx, cy, 4, 7, 2);
