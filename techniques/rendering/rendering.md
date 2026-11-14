@@ -173,6 +173,15 @@ shader has no colour image weren't drawn. A re-export of every hero costs hours;
 
   Sorted against unsorted showed no change in emit (the sort runs at upload, outside this timer). The hero's own emit is 1.9-2.8 ms in 3P for comparison.
 - **Played, then cut back:** shader 0x26's glow layer is often its colour image again; added at its strength over the lit colour, Lúcio's amp visor went flat white where the plain piece had detail (`z1_lucio_1p`): 0.25 now (ours). Juno's gun's glass FBC0 is a flat shell over the screen FB30: drawn solid it hid her face and read white, so it's only a faint added light (`GLASS`).
+- **A mask can sit on another UV layer (Tracer's body, 2026-11-14, #91).** Her 7E12's 0xBCBE747D (20473, 512 px: two bands, two
+  discs, two thin lines) read through TEXCOORD_0 lit her face, arms and chest, so 0.3.47 left her body out. The material's static
+  0xC7526E90 (io_scene_owm `StaticInputs` 3344068240, "UVLayer Emission", 1-based UVMap<n>) says 2: drawing TEXCOORD_1 over the mask
+  puts the accelerator's two discs on the circles and its ring on the bands; the rest of the body sits in a black corner.
+  `glow_maps.transfer` fills each triangle in TEXCOORD_0 and reads the mask through the other layer, so the bake stays on the piece's
+  own UVs (no renderer change): only the accelerator's blue dots, its blue bar and the blue lines on her legs light. **The static
+  alone isn't enough:** the same move darkened D.Va's 98C0/A5D8, Lúcio's 801D, Mercy's staff 7FDB and Pharah's gun A0AA (their UV0
+  bakes were played right), so it's opt-in by material (`MOVED_UV`), after drawing the other layer over the mask. Look before adding
+  one. Run record: [tracer_glow](../testing/runs/tracer/glow_2026-11-14.md).
 - **The light cards were shown as data:** Ana's sight screen, Juno's gun's face, the amp's and pistol's cards. Their flipbooks and scrolling layers (Sombra's bars A5B6, letters 9F80) are one still image.
 - **Played:** next's client against this branch (`z0_*` in the next checkout's run/screenshots, `z1_*` in this one's): seven heroes first person at night and third person looking up; Improved Transparency toggled on with F3+X in play (no crash; `z1_it_juno*`).
 - **A critic should check:** third person at night, front and back, each hero: the parts lit in the shots stay lit; no piece glows that doesn't in Overwatch (the body's strips on Lifeweaver's flower are bright); Improved Transparency on. Not done: X13, a glow *effect* on a first-person gun (Sojourn's hp 007C particle) still hides behind it; the piece glows in the hand pass do show.
