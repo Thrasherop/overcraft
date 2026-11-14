@@ -22,13 +22,6 @@ public final class ClientSojourn {
 	/** What to tell the server with the next input (EXTRA_JUMP / EXTRA_SLIDE_END), and when it happened (game time). */
 	private static int tell;
 	private static long toldAt = -1;
-	/** The art generation her effects were last made ahead for. */
-	private static int artMade = -1;
-	private static int artWait;
-	/** Ticks a pick's own first draw is left alone (ours). */
-	private static final int ART_WAIT_TICKS = 20;
-	/** The art generation her effects were last made ahead for another Sojourn in the world. */
-	private static int othersArtMade = -1;
 
 	private ClientSojourn() {
 	}
@@ -51,25 +44,6 @@ public final class ClientSojourn {
 		}
 		// (KeyMapping.set clears it as the key goes up: this is for a release something else ate, an overlay's)
 		fireDown &= dev.overcraft.client.controls.HeroControls.get(dev.overcraft.client.controls.HeroControls.Action.PRIMARY_FIRE).isDown();
-		int art = dev.overcraft.client.effect.EffectArt.generation();
-		artWait = ClientHero.hero() == Hero.SOJOURN ? artWait + 1 : 0;
-		if (artWait >= ART_WAIT_TICKS && artMade != art) {
-			// her art made just after she's picked, not in the frame of her first shot (EffectArt.prepare), and not on top of the pick's own loading:
-			// started with it, the pick's longest frame went from about 240 ms to about 340
-			artMade = art;
-			dev.overcraft.client.effect.EffectArt.prepare(dev.overcraft.client.effect.SojournFx.ART);
-		}
-		if (othersArtMade != art && mc.level != null && mc.level.getGameTime() % 20 == 0) {
-			// another Sojourn in the world: this client's first sight of her first shot cost 209 ms as an ally, 153 as an enemy
-			for (net.minecraft.client.player.AbstractClientPlayer other : mc.level.players()) {
-				if (other != mc.player && Hero.SOJOURN.id.equals(other.getAttached(dev.overcraft.hero.HeroManager.HERO))) {
-					othersArtMade = art;
-					dev.overcraft.client.effect.EffectArt.prepare(dev.overcraft.client.effect.SojournFx.ART);
-					dev.overcraft.client.effect.EffectArt.prepare(dev.overcraft.client.effect.SojournFx.ART_ENEMY);
-					break;
-				}
-			}
-		}
 		boolean on = mc.player != null && ClientHero.hero() == Hero.SOJOURN && ClientHero.controls()
 			&& (ClientHero.sync().mode() & Sojourn.MODE_SLIDE) != 0;
 		if (!on) {

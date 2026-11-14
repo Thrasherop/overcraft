@@ -31,6 +31,53 @@ import java.util.Map;
  * the barrier's corner motes and the send streaks from each barrier entity.
  */
 public final class SigmaFx {
+	/** Its art, made ahead as the hero is picked (HeroFxArt, #128): what its first uses made (the client log) and what this class names. */
+	public static final java.util.List<EffectArt.Art> ART = java.util.List.of(
+		new EffectArt.Art("ana_puff#4", Palette.SIG_ROCK_SMOKE, true),
+		new EffectArt.Art("brigitte_soft_blob_b", Palette.SIG_BARRIER_RECALL_GLOW, false),
+		new EffectArt.Art("cat_band", Palette.SIG_BURST_SHELL, false),
+		new EffectArt.Art("cat_band", Palette.SIG_FLUX_COLUMN, false),
+		new EffectArt.Art("cat_band", Palette.SIG_FLUX_RETICLE, false),
+		new EffectArt.Art("cat_band", Palette.SIG_ROCK_TRAIL, false),
+		new EffectArt.Art("cat_band", Palette.SIG_SPHERE_TRAIL, false),
+		new EffectArt.Art("cat_band", Palette.SIG_SPHERE_TRAIL_THIN, false),
+		new EffectArt.Art("cat_glow_noise", Palette.SIG_HAND_EMISSION, false),
+		new EffectArt.Art("cat_soft", Palette.SIG_BARRIER_HAND, false),
+		new EffectArt.Art("cat_soft", Palette.SIG_GRASP_HAZE, false),
+		new EffectArt.Art("cat_soft", Palette.SIG_GRASP_SHELL, false),
+		new EffectArt.Art("cat_soft", Palette.SIG_SPHERE_HALO, false),
+		new EffectArt.Art("lucio_glow", Palette.SIG_ROCK_CORE, false),
+		new EffectArt.Art("lucio_glow", Palette.SIG_SPHERE_CORE, false),
+		new EffectArt.Art("lucio_spark", Palette.SIG_BARRIER_RECALL_FLASH, false),
+		new EffectArt.Art("lw_thorn_flame#2", Palette.SIG_LIFTOFF_DUST, true),
+		new EffectArt.Art("lw_thorn_flame#2", Palette.SIG_ROCK_IMPACT_DUST, false),
+		new EffectArt.Art("sigma_barrier_field", Palette.SIG_BARRIER, false),
+		new EffectArt.Art("sigma_burst_flash", Palette.SIG_BURST_FLASH, false),
+		new EffectArt.Art("sigma_crater", Palette.SIG_ROCK_SCORCH, true),
+		new EffectArt.Art("sigma_flux_rings", Palette.SIG_FLUX_RETICLE_DECAL, false),
+		new EffectArt.Art("sigma_flux_vortex", Palette.SIG_FLUX_DECAL, false),
+		new EffectArt.Art("sigma_flux_vortex", Palette.SIG_FLUX_RETICLE_DECAL, false),
+		new EffectArt.Art("sigma_lens", Palette.SIG_BURST_RING, false),
+		new EffectArt.Art("sigma_mote", Palette.SIG_BARRIER_MOTE, false),
+		new EffectArt.Art("sigma_mote", Palette.SIG_ROCK_IMPACT_FLASH, false),
+		new EffectArt.Art("sigma_rock_chunk#4", Palette.SIG_ROCK_SMOKE, true),
+		new EffectArt.Art("sigma_send_streak", Palette.SIG_BARRIER_SEND, false),
+		new EffectArt.Art("sigma_star", Palette.SIG_ROCK_IMPACT_GLOW, false),
+		new EffectArt.Art("sigma_streak", Palette.SIG_BARRIER_FLYBACK, false),
+		new EffectArt.Art("sigma_streak", Palette.SIG_BURST_STREAK, true),
+		new EffectArt.Art("sigma_swirl", Palette.SIG_SPHERE_LAUNCH, false),
+		new EffectArt.Art("sigma_wisp", Palette.SIG_FLUX_COLUMN_OUTER, false),
+		new EffectArt.Art("sigma_wisp_soft", Palette.SIG_GRASP_FIELD, false),
+		new EffectArt.Art("sigma_wisp_soft", Palette.SIG_SPHERE_LAUNCH_RING, false),
+		new EffectArt.Art("spark#4", Palette.SIG_FLUX_SPARK, false),
+		new EffectArt.Art("spark#4", Palette.SIG_SPHERE_MOTE, true));
+	/** And as an enemy sees it, for a client seeing another player play the hero. */
+	public static final java.util.List<EffectArt.Art> ART_ENEMY = java.util.List.of(
+		new EffectArt.Art("cat_band", Palette.SIG_ROCK_TRAIL_ENEMY, false),
+		new EffectArt.Art("cat_band", Palette.SIG_SPHERE_TRAIL_ENEMY, false),
+		new EffectArt.Art("sigma_crater", Palette.SIG_ROCK_SCORCH_ENEMY, true),
+		new EffectArt.Art("sigma_streak", Palette.SIG_BURST_STREAK_ENEMY, false));
+
 	private static final Vec3 UP = new Vec3(0, 1, 0);
 
 	/**

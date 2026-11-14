@@ -23,6 +23,30 @@ import java.util.Map;
  * and anti-heal, Nano Boost) are drawn each client tick from what it sent, until their time is up.
  */
 public final class AnaFx {
+	/** Its art, made ahead as the hero is picked (HeroFxArt, #128): what its first uses made (the client log) and what this class names. */
+	public static final java.util.List<EffectArt.Art> ART = java.util.List.of(
+		new EffectArt.Art("ana_blob#2", Palette.ANA_DROP_GOLD_N, true),
+		new EffectArt.Art("ana_blob#2", Palette.ANA_DROP_PURPLE, true),
+		new EffectArt.Art("ana_dart_band", Palette.ANA_SHOT_TRAIL, false),
+		new EffectArt.Art("ana_dart_band", Palette.ANA_SLEEP_GLOW_N, false),
+		new EffectArt.Art("ana_muzzle_flame", Palette.ANA_MUZZLE_N, false),
+		new EffectArt.Art("ana_nano_core", Palette.ANA_NANO_BEAM_N, false),
+		new EffectArt.Art("ana_splash#10", Palette.ANA_HARM_N, false),
+		new EffectArt.Art("ana_splash#10", Palette.ANA_SPLASH_GOLD_N, false),
+		new EffectArt.Art("ana_splash#10", Palette.ANA_SPLASH_N, false),
+		new EffectArt.Art("ana_splat#3", Palette.ANA_BURST_DECAL, false),
+		new EffectArt.Art("ana_star_burst", Palette.ANA_SLEEP_GLOW_N, false),
+		new EffectArt.Art("ana_tube_line", Palette.ANA_GRENADE_TRAIL, false),
+		new EffectArt.Art("ana_z", Palette.ANA_SLEEP_Z, false),
+		new EffectArt.Art("mercy_glow", Palette.ANA_BURST_DOME, false),
+		new EffectArt.Art("mercy_glow", Palette.ANA_MUZZLE_N, false),
+		new EffectArt.Art("mercy_glow", Palette.ANA_NANO_BLUE, false),
+		new EffectArt.Art("mercy_glow", Palette.ANA_NANO_MUZZLE, false),
+		new EffectArt.Art("mercy_glow", Palette.ANA_SLEEP_GLOW_N, false),
+		new EffectArt.Art("mercy_plus", Palette.ANA_ANTIHEAL, false),
+		new EffectArt.Art("spark#4", Palette.ANA_HARM_BUBBLE, false),
+		new EffectArt.Art("spark#4", Palette.ANA_SLEEP_GLOW_N, false));
+
 	private static final Vec3 UP = new Vec3(0, 1, 0);
 
 	/** A state on an entity: since when, until when (Fx.now() seconds), and whether its giver is an enemy of ours. */

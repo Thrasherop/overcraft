@@ -1275,14 +1275,22 @@ public final class EffectArt {
 
 	private static @Nullable Identifier load(String name, Palette palette, boolean soft, String key) {
 		dev.overcraft.hero.PressTrace.mark("art_miss:" + key);
+		long t0 = System.nanoTime();
 		NativeImage out = coloured(name, palette, soft);
 		if (out == null) {
 			return null;
 		}
 		Identifier id = Overcraft.id("effect/" + key);
 		Minecraft.getInstance().getTextureManager().register(id, new HeroTexture(id, out, MipmapStrategy.MEAN));
+		missNanos += System.nanoTime() - t0;
+		missKeys.add(name + "," + palette + (soft ? ",soft" : ""));
 		return id;
 	}
+
+	/** Art made on the client's thread, in the frame that wanted it (#128): logged by {@link #frame}, with that frame's time. */
+	private static long missNanos;
+	private static final java.util.List<String> missKeys = new java.util.ArrayList<>();
+	private static long lastFrame;
 
 	/** The mask coloured with the palette, not yet a texture: read from the pack and worked out pixel by pixel. */
 	private static @Nullable NativeImage coloured(String name, Palette palette, boolean soft) {
@@ -1473,6 +1481,15 @@ public final class EffectArt {
 
 	/** Each frame, on the client's thread: textures from what the worker has made, within the budget. */
 	public static void frame() {
+		long now = System.nanoTime();
+		if (!missKeys.isEmpty()) {
+			// the frame that paid for it, from the last one's end: a hitch the player sees, and what to make ahead (#128)
+			Overcraft.LOG.info("Effect art made on first use, hero {}: {} in {} ms, frame {} ms: {}", dev.overcraft.client.ClientHero.hero(),
+				missKeys.size(), missNanos / 1_000_000, lastFrame == 0 ? -1 : (now - lastFrame) / 1_000_000, String.join(" ", missKeys));
+			missKeys.clear();
+			missNanos = 0;
+		}
+		lastFrame = now;
 		Made made = MADE.peek();
 		if (made == null) {
 			return;
@@ -1489,8 +1506,13 @@ public final class EffectArt {
 				made.image().close();
 			}
 			if (System.nanoTime() >= end) {
-				return;
+				break;
 			}
+		}
+		long spent = System.nanoTime() - now;
+		if (spent > 10_000_000) {
+			// a texture well over the budget: worth knowing (#128)
+			Overcraft.LOG.info("Effect art made ahead: {} ms of a frame on textures, {} left", spent / 1_000_000, OUTSTANDING.get());
 		}
 	}
 }

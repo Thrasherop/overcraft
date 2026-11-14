@@ -35,6 +35,47 @@ import java.util.Map;
  * Grip's vine each frame, his moments from the server (EffectPayload).
  */
 public final class LifeweaverFx {
+	/** Its art, made ahead as the hero is picked (HeroFxArt, #128): what its first uses made (the client log) and what this class names. */
+	public static final java.util.List<EffectArt.Art> ART = java.util.List.of(
+		new EffectArt.Art("cat_fade", Palette.LW_PINK_N, false),
+		new EffectArt.Art("cat_speed_line#3", Palette.NATURAL, false),
+		new EffectArt.Art("lucio_spark", Palette.LW_THORN_N, false),
+		new EffectArt.Art("lw_burst", Palette.LW_PINK_N, false),
+		new EffectArt.Art("lw_glow", Palette.LW_BLOSSOM_TRAIL, false),
+		new EffectArt.Art("lw_glow", Palette.LW_PETAL_GLOW, false),
+		new EffectArt.Art("lw_glow", Palette.LW_PLATFORM_FLOWER_N, false),
+		new EffectArt.Art("lw_glow", Palette.LW_VINE_COIL_N, false),
+		new EffectArt.Art("lw_hit#4", Palette.LW_THORN_HIT, false),
+		new EffectArt.Art("lw_petal", Palette.LW_PETAL_GLOW, true),
+		new EffectArt.Art("lw_petal", Palette.LW_PETAL_N, false),
+		new EffectArt.Art("lw_ring", Palette.LW_HEAL_RING_N, false),
+		new EffectArt.Art("lw_ring", Palette.LW_PINK_N, false),
+		new EffectArt.Art("lw_ring", Palette.LW_TREE_RING_N, false),
+		new EffectArt.Art("lw_sparkle", Palette.LW_GOLD_N, false),
+		new EffectArt.Art("lw_sparkle", Palette.LW_PINK_N, false),
+		new EffectArt.Art("lw_star", Palette.LW_BLOSSOM_GLOW, false),
+		new EffectArt.Art("lw_star", Palette.LW_GOLD_N, false),
+		new EffectArt.Art("lw_swirl", Palette.LW_PINK_N, false),
+		new EffectArt.Art("lw_thorn_flame#2", Palette.LW_THORN_FLASH, false),
+		new EffectArt.Art("lw_tree_wave", Palette.LW_TREE_WAVE_N, false),
+		new EffectArt.Art("lw_wisp", Palette.LW_BLOSSOM_TRAIL_N, false),
+		new EffectArt.Art("mercy_band", Palette.LW_PLATFORM_TRAIL_N, false),
+		new EffectArt.Art("mercy_glow", Palette.LW_BLOSSOM_AMBER, false),
+		new EffectArt.Art("mercy_glow", Palette.LW_BLOSSOM_GLOW, false));
+	/** And as an enemy sees it, for a client seeing another player play the hero. */
+	public static final java.util.List<EffectArt.Art> ART_ENEMY = java.util.List.of(
+		new EffectArt.Art("lucio_spark", Palette.LW_THORN_ENEMY_N, false),
+		new EffectArt.Art("lw_glow", Palette.ENEMY, false),
+		new EffectArt.Art("lw_glow", Palette.LW_PETAL_CUP_ENEMY, false),
+		new EffectArt.Art("lw_hit#4", Palette.ENEMY, false),
+		new EffectArt.Art("lw_petal", Palette.LW_PETAL_CUP_ENEMY, true),
+		new EffectArt.Art("lw_ring", Palette.ENEMY, false),
+		new EffectArt.Art("lw_ring", Palette.LW_TREE_WAVE_ENEMY_N, false),
+		new EffectArt.Art("lw_sparkle", Palette.LW_PINK_ENEMY_N, false),
+		new EffectArt.Art("lw_thorn_flame#2", Palette.ENEMY, false),
+		new EffectArt.Art("lw_tree_wave", Palette.LW_TREE_WAVE_ENEMY_N, false),
+		new EffectArt.Art("mercy_glow", Palette.ENEMY, false));
+
 	private static final Vec3 UP = new Vec3(0, 1, 0);
 	/**
 	 * The mask for his 8-sided tube ribbons (075D: the thrown egg's, the platform's rise, the dash's), whose own near-white

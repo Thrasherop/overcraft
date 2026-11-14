@@ -24,6 +24,59 @@ import java.util.Map;
  * sphere, the code panels) are drawn with the sprite shapes the mod has (domes, arcs, flat discs): ours.
  */
 public final class SombraFx {
+	/** Its art, made ahead as the hero is picked (HeroFxArt, #128): what its first uses made (the client log) and what this class names. */
+	public static final java.util.List<EffectArt.Art> ART = java.util.List.of(
+		new EffectArt.Art("ana_lens", Palette.SOMBRA_CYBER_BURST_N, false),
+		new EffectArt.Art("ana_ring", Palette.SOMBRA_WEAKENED_N, false),
+		new EffectArt.Art("cat_flare", Palette.SOMBRA_CYBER_GOLD_N, false),
+		new EffectArt.Art("cat_glow_dot", Palette.SOMBRA_PURPLE, false),
+		new EffectArt.Art("glow", Palette.SOMBRA_PURPLE, false),
+		new EffectArt.Art("lucio_soft", Palette.SOMBRA_TELEPORT, false),
+		new EffectArt.Art("lucio_spark", Palette.SOMBRA_CYBER_BURST_N, false),
+		new EffectArt.Art("lucio_spark", Palette.SOMBRA_MUZZLE, false),
+		new EffectArt.Art("lucio_spark", Palette.SOMBRA_TELEPORT, false),
+		new EffectArt.Art("lucio_trail", Palette.SOMBRA_BEACON_TRAIL_N, false),
+		new EffectArt.Art("mercy_glow", Palette.SOMBRA_CYBER_BURST_N, false),
+		new EffectArt.Art("mercy_glow", Palette.SOMBRA_CYBER_SPHERE, false),
+		new EffectArt.Art("mercy_glow", Palette.SOMBRA_PURPLE, false),
+		new EffectArt.Art("mercy_glow", Palette.SOMBRA_TELEPORT_BODY_N, false),
+		new EffectArt.Art("sombra_arrow", Palette.SOMBRA_WEAKENED_N, false),
+		new EffectArt.Art("sombra_chevron_glow", Palette.SOMBRA_WEAKENED_CHEVRON, false),
+		new EffectArt.Art("sombra_circuit", Palette.SOMBRA_CYBER_CIRCUIT_N, false),
+		new EffectArt.Art("sombra_circuit", Palette.SOMBRA_PURPLE, false),
+		new EffectArt.Art("sombra_circuit_disc", Palette.SOMBRA_CYBER_DECAL_N, false),
+		new EffectArt.Art("sombra_code_wall", Palette.SOMBRA_PURPLE, false),
+		new EffectArt.Art("sombra_cube_glow", Palette.SOMBRA_CYBER_CUBE, false),
+		new EffectArt.Art("sombra_emp_band#10", Palette.SOMBRA_PURPLE, false),
+		new EffectArt.Art("sombra_frame", Palette.SOMBRA_CYBER_BURST_N, false),
+		new EffectArt.Art("sombra_impact_burst", Palette.SOMBRA_TRACER, false),
+		new EffectArt.Art("sombra_impact_spark#4", Palette.SOMBRA_TRACER, false),
+		new EffectArt.Art("sombra_muzzle_flame#6", Palette.SOMBRA_MUZZLE, false),
+		new EffectArt.Art("sombra_muzzle_spike#2", Palette.SOMBRA_MUZZLE, false),
+		new EffectArt.Art("sombra_pixel_bars_b#10", Palette.SOMBRA_TELEPORT, false),
+		new EffectArt.Art("sombra_plus", Palette.SOMBRA_CYBER_PLUS_N, false),
+		new EffectArt.Art("sombra_rain_tall", Palette.SOMBRA_CYBER_GOLD_N, false),
+		new EffectArt.Art("sombra_ring_burst", Palette.SOMBRA_CYBER_BURST_N, false),
+		new EffectArt.Art("sombra_ring_burst", Palette.SOMBRA_PURPLE, false),
+		new EffectArt.Art("sombra_skull", Palette.SOMBRA_SKULL, false),
+		new EffectArt.Art("sombra_skull_outline", Palette.SOMBRA_SKULL, false),
+		new EffectArt.Art("sombra_skyline#14", Palette.SOMBRA_PURPLE, false),
+		new EffectArt.Art("sombra_soft_square", Palette.SOMBRA_CYBER_BURST_N, false),
+		new EffectArt.Art("sombra_soft_square", Palette.SOMBRA_CYBER_GOLD_N, false),
+		new EffectArt.Art("sombra_square_band", Palette.SOMBRA_DETECT_RING_N, false),
+		new EffectArt.Art("sombra_tracer", Palette.SOMBRA_TRACER, false),
+		new EffectArt.Art("sombra_trail_band", Palette.SOMBRA_CYBER_TRAIL_N, false));
+	/** And as an enemy sees it, for a client seeing another player play the hero. */
+	public static final java.util.List<EffectArt.Art> ART_ENEMY = java.util.List.of(
+		new EffectArt.Art("mercy_glow", Palette.SOMBRA_TELEPORT_BODY_ENEMY_N, false),
+		new EffectArt.Art("sombra_circuit", Palette.SOMBRA_CYBER_CIRCUIT_ENEMY_N, false),
+		new EffectArt.Art("sombra_cube_glow", Palette.SOMBRA_CYBER_CUBE_ENEMY, false),
+		new EffectArt.Art("sombra_impact_burst", Palette.SOMBRA_ENEMY_RED, false),
+		new EffectArt.Art("sombra_impact_spark#4", Palette.SOMBRA_ENEMY_RED, false),
+		new EffectArt.Art("sombra_skull_outline", Palette.SOMBRA_ENEMY_RED, false),
+		new EffectArt.Art("sombra_soft_square", Palette.SOMBRA_CYBER_BURST_ENEMY_N, false),
+		new EffectArt.Art("sombra_tracer", Palette.SOMBRA_ENEMY_RED, false));
+
 	private static final Vec3 UP = new Vec3(0, 1, 0);
 
 	/** A state on an entity: since when, until when (Fx.now() seconds), and whether its giver is an enemy of ours. */
