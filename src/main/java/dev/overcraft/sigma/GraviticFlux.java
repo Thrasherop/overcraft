@@ -461,6 +461,17 @@ public final class GraviticFlux {
 		e.resetFallDistance();
 	}
 
+	/** Life Grip took it out (#124: W Status effect "gravity effects", W Sigma rev 381123): let go now, no slam, its look ended. */
+	public static boolean free(LivingEntity e) {
+		Lifted l = LIFTED.get(e.getUUID());
+		if (l == null) {
+			return false;
+		}
+		release(l);
+		Effects.play((ServerLevel) e.level(), "sigma_lift_end", e.position(), Vec3.ZERO, e, 0, l.owner);
+		return true;
+	}
+
 	/** Leaving the world: nothing held over. */
 	public static void clearAll() {
 		for (Lifted l : new ArrayList<>(LIFTED.values())) {

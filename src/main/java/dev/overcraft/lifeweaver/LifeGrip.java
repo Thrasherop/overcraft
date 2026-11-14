@@ -75,6 +75,27 @@ public final class LifeGrip {
 		return Lifeweaver.clear(caster, caster.getEyePosition(), up.add(0, 1, 0)) ? up : feet.add(0, 0.1, 0);
 	}
 
+	/** Dev ("bot fix 124 off"): the grip frees no one from what holds them, as before #124. */
+	public static boolean devFreeOff;
+
+	/**
+	 * What the grip takes its ally out of besides the cleanse (#124, the owner's call 2026-11-13). W Status effect rev 380062: Life
+	 * Grip "Removes knockback, tether, hinder and gravity effects"; W Lifeweaver rev 380626 "Lifegripping a friendly Jetpack Cat
+	 * will break their tether (whether they are carrying an ally or an enemy)", and out of Gravitic Flux; W Junkrat rev 380944
+	 * "Lifeweaver can pull the target free" (Steel Trap). D has no reader of 21EE's #605 / #606 in any of these: W followed. The
+	 * hinder (Flashbang) already goes with the cleanse. Not freed: a knock-down (Accretion, Catnapper's own 1.5 s), which none of
+	 * these names, and W Lifeweaver "does not cleanse debuffs applied beforehand".
+	 */
+	static void free(LivingEntity ally) {
+		if (devFreeOff) {
+			return;
+		}
+		dev.overcraft.jetpackcat.JetpackCat.untether(ally);
+		dev.overcraft.sigma.GraviticFlux.free(ally);
+		dev.overcraft.junkrat.Junkrat.free(ally);
+		dev.overcraft.hero.Sleep.unfloat(ally);
+	}
+
 	public static void start(ServerPlayer caster, LivingEntity ally) {
 		Vec3 to = destination(caster, ally);
 		boolean far = ally.position().distanceTo(to) > GRIP_NEAR;
@@ -82,6 +103,7 @@ public final class LifeGrip {
 		CLOSE.remove(ally.getUUID());
 		// (the cleanse first: the heal isn't cut by the healing reduction it takes off; D: 21EE #605 sends the same 1BC5 as Suzu's status, #606 sets the same v8440)
 		Combat.cleanse(ally);
+		free(ally);
 		float healed = Combat.heal(ally, GRIP_HEAL);
 		if (healed > 0) {
 			Combat.credit(caster, healed);

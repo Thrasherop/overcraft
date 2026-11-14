@@ -849,6 +849,30 @@ public final class JetpackCat implements HeroKit {
 		}
 	}
 
+	/**
+	 * Life Grip on {@code ally} (#124): every tether on them breaks, an enemy's Catnapper carry (her ult ends, as her own press
+	 * ends it) and a Lifeline tow, and a gripped cat's own, Lifeline or carry (W Lifeweaver rev 380626: "whether they are
+	 * carrying an ally or an enemy"). The knock-down stays (LifeGrip.free).
+	 */
+	public static void untether(LivingEntity ally) {
+		if (!(ally.level() instanceof ServerLevel level)) {
+			return;
+		}
+		for (ServerPlayer cat : level.players()) {
+			HeroState s = HeroManager.state(cat);
+			if (s == null || s.hero != Hero.JETPACK_CAT) {
+				continue;
+			}
+			boolean self = cat == ally;
+			if (s.lifelineTarget != null && (self || s.lifelineTarget == ally.getId())) {
+				release(cat, s);
+			}
+			if (s.ultPhase == ULT_CARRY && s.carried != null && (self || s.carried == ally.getId())) {
+				endUlt(cat, s);
+			}
+		}
+	}
+
 	private static void endUlt(ServerPlayer player, HeroState s) {
 		if (s.carried != null) {
 			Effects.play(player.level(), "tether_end", player.position(), Vec3.ZERO, null, player.getId(), player);

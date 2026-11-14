@@ -125,6 +125,10 @@ Played (step 5, dev client, survival, flat world `shield1`, every mob killed fir
 - **A stun is Sleep's lock without the sleep:** `Sleep.stun` holds a mob still (NoAI) and locks a player's hero keys for
   0.75 s, damage doesn't end it, and none of the sleep's Zs or sounds play.
 - **Overhealth pieces outlive Rally:** each 15 lasts 30 s (ours: one pool held 30 s from the last piece).
+- **Her bonus is the 100 armor, not the overhealth (#125, settled 2026-11-13):** the owner "Armor iirc"; BZ 2023-04-11 "100
+  restorable armor health pool", "no longer gradually builds temporary health"; no change in BZ since; W rev 381389 "armor =
+  100 (self)". Rally's end took the clamp off her own armor too (250/250 with armor 43 after a 75 hit); now what's left of
+  the bonus goes off the top, past Shields' split (armor 75). [grip_124](../testing/runs/grip_124/record.md).
 
 Played (step 6, dev client, survival, flat world `shield1`, every mob killed first): Q at 100%: ult 2700 -> 0; 1.5 s in her
 health 28 / 28 (350: 100 armor on top), the barrier 750; her overhealth 30 and the villager's 3 m away 45 at 1.5 s, both 100

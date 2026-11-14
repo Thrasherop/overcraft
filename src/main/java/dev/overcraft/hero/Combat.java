@@ -524,7 +524,8 @@ public final class Combat {
 	 * </pre>
 	 * The mod has no Discord or Groggy. A knock-back is kept off by Combat.push's and launch's own phase test. 224E #575 lets type 6BBE through when v530 and v8440 are set:
 	 * what stops a knock-down on the phased is the hit's filter (1EB9 #338, 5B7B; mask 20, M). Every hit passes through the phased, whatever it is: Allies.canHurt and areaHits say no, OwProjectile.canHitEntity for what flies. Flux's lift alone doesn't ask (areaTouches). Sleep, Hack, antiHeal keep their own door for what isn't a hit.
-	 * Not done: W Status effect says Life Grip also removes tether and gravity (#124).
+	 * Life Grip also frees its ally from what no cleanse ends (#124, LifeGrip.free; W Status effect rev 380062 "Removes knockback, tether, hinder and gravity effects"):
+	 * Catnapper's carry and any Lifeline tow, Gravitic Flux's lift (no slam), Steel Trap's root, Hyper Strike's float. A knock-down stays.
 	 * <p>
 	 * Returns whether a status that says so was cleansed: the one thing Kiriko's Suzu line answers (#121, SuzuEntity.burst). The data's senders of
 	 * 1C7D, each gated on v8440: Sleep Dart 224E #418, Rally's stun 224E #416, Hack 0B1F #611, Biotic Grenade 0C72 #275, Claws Out 5BAF #91, Flashbang's hinder 0228 #154: H nodes.

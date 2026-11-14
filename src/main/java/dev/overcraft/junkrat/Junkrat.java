@@ -454,9 +454,22 @@ public final class Junkrat implements HeroKit {
 		return jump != null && jump.getModifier(ROOT_JUMP) != null;
 	}
 
-	public static void trapReleased(ServerPlayer owner, SteelTrapEntity trap, LivingEntity victim) {
+	/** Life Grip pulls them out (#124; W Junkrat rev 380944 "Lifeweaver can pull the target free"): the trap lets go, the root ends. */
+	public static void free(LivingEntity victim) {
+		for (SteelTrapEntity trap : victim.level().getEntitiesOfClass(SteelTrapEntity.class, victim.getBoundingBox().inflate(TRAP_TRIGGER + 2),
+			t -> t.caught() == victim)) {
+			trap.letGo();
+		}
+		unroot(victim);
+	}
+
+	private static void unroot(LivingEntity victim) {
 		Combat.buff(victim, Attributes.MOVEMENT_SPEED, ROOT_SPEED, 0, 0);
 		Combat.buff(victim, Attributes.JUMP_STRENGTH, ROOT_JUMP, 0, 0);
+	}
+
+	public static void trapReleased(ServerPlayer owner, SteelTrapEntity trap, LivingEntity victim) {
+		unroot(victim);
 		if (trap.level() instanceof ServerLevel level) {
 			JunkratSounds.all(level, "trap.release", trap.position(), 30);
 		}

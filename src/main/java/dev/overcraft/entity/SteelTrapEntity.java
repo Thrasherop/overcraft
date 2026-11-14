@@ -65,6 +65,14 @@ public class SteelTrapEntity extends OwProjectile {
 		return caught;
 	}
 
+	/** Its catch pulled out (Life Grip, #124): let go now, as at its time's end. */
+	public void letGo() {
+		if (caught != null && getOwner() instanceof ServerPlayer owner) {
+			Junkrat.trapReleased(owner, this, caught);
+		}
+		caught = null;
+	}
+
 	@Override
 	protected Item getDefaultItem() {
 		return Items.IRON_BARS;

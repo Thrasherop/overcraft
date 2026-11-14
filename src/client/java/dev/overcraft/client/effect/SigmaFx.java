@@ -1052,6 +1052,12 @@ public final class SigmaFx {
 					lift(entity, at, e.variant() == 1, enemy);
 				}
 			}
+			case "sigma_lift_end" -> {
+				// a Life Grip took it out (#124): its lifted look stops
+				if (entity != null) {
+					LIFTED.remove(entity.getId());
+				}
+			}
 			case "sigma_slam" -> slam(at, enemy);
 			case "sigma_strike" -> {
 				if (entity != null) {

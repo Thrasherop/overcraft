@@ -114,6 +114,8 @@ final class DevBot {
 					dev.overcraft.hero.Sleep.devStopAll = !on;
 				} else if (a[1].equals("140")) {
 					dev.overcraft.potg.PotgRecorder.devSweepOff = !on;
+				} else if (a[1].equals("124")) {
+					dev.overcraft.lifeweaver.LifeGrip.devFreeOff = !on;
 				} else if (a[1].equals("wave")) {
 					dev.overcraft.brigitte.Brigitte.devWaveThrough = !on;
 				} else {
