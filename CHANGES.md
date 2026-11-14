@@ -4,7 +4,23 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-13: 0.3.43 on next (not on main yet)
+## 2026-11-13: 0.3.44 on next (not on main yet)
+
+- **A hero's own pushes reach their own screen (#109).** Pushes on other players already did. These used the server's
+  speed or `needsSync`, which a player's own client never hears:
+  - Lúcio's Sound Barrier leap, which dropped him from 5.5 to 0.64 m/s as he left the ground; he now keeps his speed
+    (real keys: 5.3 m/s in the air, rising 1 m);
+  - D.Va's eject, Call Mech's stop and the mech's arrival;
+  - Sigma's Gravitic Flux;
+  - Jetpack Cat's Catnapper landing.
+- **Rally's shockwave (#120, #122):** checked and closed. It skips the target the bash hit (70, not 140), and walls and
+  barriers stop it. The fix came with polish 4; this round gave it one centre for both tests.
+- **Mercy's Guardian Angel from water, lava, ladders, vines, scaffolding and bubble columns (#127):** checked and
+  closed. Polish 4 fixed it.
+- Filed while testing: #139 (Catnapper from the ground doesn't dive) and #140 (a Play of the Game recorder crash after
+  bots join and leave).
+
+## 2026-11-13: 0.3.43
 
 - **D.Va's Call Mech (#134):** her hands now close on the landed mech's cockpit rim. The climb was placed 0.79 m short
   (the data puts her 1.27 m behind the mech; the clip's camera starts 2.06 m behind its own origin). The fade is
