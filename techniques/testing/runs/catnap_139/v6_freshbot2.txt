@@ -1,0 +1,11 @@
+cmd tp @s 10.5 -60 3.5 -> {"ok": true}
+cmd execute as @s at @s anchored eyes facing 10.5 -60 10.5 anchored feet run tp @s ~ ~ ~ ~ ~ -> {"ok": true}
+cmd overcraft ult @s 100 -> {"ok": true}
+key ultimate down -> {"key": "key.keyboard.q"}
+key ultimate up -> {"key": "key.keyboard.q"}
+key secondary_fire down -> {"key": "key.mouse.left"}
+key secondary_fire up -> {"key": "key.mouse.left"}
+cmd data get entity nb3 Health -> {"ok": true}
+cmd data get entity nb3 Health -> {"ok": true}
+cmd data get entity nb3 Health -> {"ok": true}
+cmd data get entity nb3 foodSaturationLevel -> {"ok": true}
