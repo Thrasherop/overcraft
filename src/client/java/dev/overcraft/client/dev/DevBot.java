@@ -127,6 +127,7 @@ final class DevBot {
 				out.addProperty("fallDistance", who.fallDistance);
 				out.addProperty("inWater", who.isInWater());
 				out.addProperty("silenced", dev.overcraft.sombra.Hack.silenced(who));
+				out.addProperty("hindered", dev.overcraft.cassidy.Hinder.hindered(who));
 				out.addProperty("glowing", who.hasEffect(net.minecraft.world.effect.MobEffects.GLOWING));
 				out.addProperty("antiHeal", dev.overcraft.hero.Combat.antiHealed(who));
 				out.addProperty("healCut", dev.overcraft.hero.Combat.healCut(who));

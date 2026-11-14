@@ -161,10 +161,24 @@ public class ConcussionMineEntity extends OwProjectile {
 		}
 	}
 
+	/** It met an enemy barrier once already: from then on it passes them. */
+	private boolean bounced;
+
 	@Override
 	public void hitBarrier(Vec3 at) {
-		// an enemy barrier: it drops there (ours: W says it bounces off once)
+		// an enemy barrier: it drops off it there, its speed gone as off a creature (the data's 0.05), and then falls through
+		// it: "The mine bounces once upon hitting a barrier for the first time, but can then pass through it" (the Junkrat
+		// page rev 410907); the barrier pages: it "will not stick to barriers". Until #104's sweep each tick's crossing stopped
+		// it again, so it could hang in a barrier's plane
+		bounced = true;
+		setPos(at);
 		setDeltaMovement(Vec3.ZERO);
+		needsSync = true;
+	}
+
+	@Override
+	public boolean passesBarriers() {
+		return bounced;
 	}
 
 	/** Stuck, its face and health kept with its chunk. */

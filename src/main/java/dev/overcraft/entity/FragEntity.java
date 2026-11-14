@@ -123,6 +123,16 @@ public class FragEntity extends OwProjectile {
 		burst(at, null);
 	}
 
+	/**
+	 * Total Mayhem's bombs fly through enemy barriers ("can bounce through barriers, but barriers block their explosions": the
+	 * wiki's Barrier page, rev 406358; the Junkrat page rev 410907, "The grenades can penetrate barriers, but their explosions
+	 * cannot"); their burst still stops at one (Junkrat.fragBurst). A Frag Launcher grenade stops and bursts there.
+	 */
+	@Override
+	public boolean passesBarriers() {
+		return bomb;
+	}
+
 	@Override
 	protected void expire() {
 		burst(position(), null);
