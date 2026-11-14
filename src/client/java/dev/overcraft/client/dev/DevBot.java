@@ -108,6 +108,8 @@ final class DevBot {
 				boolean on = a[2].equals("on");
 				if (a[1].equals("119")) {
 					dev.overcraft.hero.Combat.devCleanseOff = !on;
+				} else if (a[1].equals("129")) {
+					dev.overcraft.hero.Voice.devPainEveryHit = !on;
 				} else {
 					dev.overcraft.brigitte.Brigitte.devRallyTwice = !on;
 				}

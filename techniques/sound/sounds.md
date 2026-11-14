@@ -29,6 +29,13 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
   - "Ult ready" is a wheel line (02E7, category 31), not an announcement when the ult fills.
   - Test it with the same script before and after (`heard` polled with timestamps). Run tests at night: zombies
     burning in the sun die before the kunai land, and the kills aren't the hero's.
+- **Effort sounds are voice lines too (#129):** pain is stimulus 0003 (light, 1-2.5 s) / 0004 (heavy, 0.5-1 s), priority
+  40, no interrupt, no chance field; which one a hit raises is an engine-set scripted event (0608 / 0609) with no
+  damage threshold in the data. Minecraft's hurt sound plays on every hit that lands (`getHurtSound` from the server's
+  `playHurtSound` and every client's `handleDamageEvent`), and Overwatch weapons hit many times a second: so a hero's
+  grunt must not be the hurt sound. `PlayerMixin` silences it and says "pain" through `Voice.say` from the server's
+  call. Any sound wired to a Minecraft per-hit or per-tick hook needs its stimulus' cooldown the same way.
+  Run: [pain_129](../testing/runs/pain_129/pain_129.md).
 - **A callout isn't chatter:** a plain ping's line is limited to one a second (ours: its stimulus has no cooldown, and
   a press each tick would talk over itself).
 - <a id="emote-sounds"></a>**Emote sounds (#48):** each emote clip's animation effect lists Sound components (a 02C,

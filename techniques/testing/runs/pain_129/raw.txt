@@ -1,0 +1,51 @@
+  0.02 bot fix 129 off -> {"129": false}
+  0.05 bot set kb 225 0 -> {}
+  0.58 bot read kb -> {"alive": true, "health": 20.0, "barrierUp": false, "barrierHealth": 0.0, "sigmaBarrier": -1, "asleep": false, "x": 0.5, "z": 10.5}
+  0.65 key ability_2 tap -> {"key": "key.keyboard.e"}
+  4.14 dva fix off pain lines heard: 36 [(0.69, 'kiriko/voice/pain/1'), (0.69, 'kiriko/voice/pain/2'), (0.69, 'kiriko/voice/pain/1'), (0.69, 'kiriko/voice/pain/1'), (0.69, 'kiriko/voice/pain/3'), (0.69, 'kiriko/voice/pain/3'), (0.69, 'kiriko/voice/pain/7'), (0.69, 'kiriko/voice/pain/2'), (0.82, 'kiriko/voice/pain/6'), (0.82, 'kiriko/voice/pain/2'), (0.95, 'kiriko/voice/pain/7'), (0.95, 'kiriko/voice/pain/4'), (0.95, 'kiriko/voice/pain/5'), (0.95, 'kiriko/voice/pain/5'), (1.05, 'kiriko/voice/pain/7'), (1.05, 'kiriko/voice/pain/6'), (1.05, 'kiriko/voice/pain/6'), (1.05, 'kiriko/voice/pain/4'), (1.19, 'kiriko/voice/pain/7'), (1.19, 'kiriko/voice/pain/5'), (1.19, 'kiriko/voice/pain/4'), (1.19, 'kiriko/voice/pain/4'), (1.32, 'kiriko/voice/pain/0'), (1.32, 'kiriko/voice/pain/2'), (1.46, 'kiriko/voice/pain/0'), (1.46, 'kiriko/voice/pain/6'), (1.46, 'kiriko/voice/pain/0'), (1.46, 'kiriko/voice/pain/2'), (1.56, 'kiriko/voice/pain/4'), (1.56, 'kiriko/voice/pain/5'), (1.56, 'kiriko/voice/pain/2'), (1.56, 'kiriko/voice/pain/6'), (1.69, 'kiriko/voice/pain/0'), (1.69, 'kiriko/voice/pain/2'), (1.69, 'kiriko/voice/pain/5'), (1.69, 'kiriko/voice/pain/7')]
+  4.18 bot read kb -> {"alive": true, "health": 9.200005, "barrierUp": false, "barrierHealth": 0.0, "sigmaBarrier": -1, "asleep": false, "x": 0.5, "z": 10.5}
+  4.21 key reload tap -> {"key": "key.keyboard.r"}
+ 12.24 bot fix 129 on -> {"129": true}
+ 12.27 bot set kb 225 0 -> {}
+ 12.77 bot read kb -> {"alive": true, "health": 20.0, "barrierUp": false, "barrierHealth": 0.0, "sigmaBarrier": -1, "asleep": false, "x": 0.5, "z": 10.5}
+ 12.84 key ability_2 tap -> {"key": "key.keyboard.e"}
+ 16.37 dva fix on pain lines heard: 1 [(0.5, 'kiriko/voice/pain/2')]
+ 16.39 bot read kb -> {"alive": true, "health": 9.200005, "barrierUp": false, "barrierHealth": 0.0, "sigmaBarrier": -1, "asleep": false, "x": 0.5, "z": 10.5}
+ 16.43 key reload tap -> {"key": "key.keyboard.r"}
+  1.05 hero tracer -> {"ok": true}
+tracer
+  4.12 bot fix 129 off -> {"129": false}
+  4.16 bot set kb 225 0 -> {}
+  4.66 bot read kb -> {"alive": true, "health": 20.0, "barrierUp": false, "barrierHealth": 0.0, "sigmaBarrier": -1, "asleep": false, "x": 0.5, "z": 10.5}
+  8.24 tracer fix off pain lines heard: 19 [(1.37, 'kiriko/voice/pain/0'), (1.37, 'kiriko/voice/pain/5'), (1.37, 'kiriko/voice/pain/0'), (1.37, 'kiriko/voice/pain/1'), (1.37, 'kiriko/voice/pain/4'), (1.37, 'kiriko/voice/pain/1'), (1.37, 'kiriko/voice/pain/0'), (1.37, 'kiriko/voice/pain/2'), (1.37, 'kiriko/voice/pain/4'), (1.37, 'kiriko/voice/pain/0'), (1.37, 'kiriko/voice/pain/4'), (1.37, 'kiriko/voice/pain/2'), (1.37, 'kiriko/voice/pain/0'), (1.37, 'kiriko/voice/pain/2'), (1.37, 'kiriko/voice/pain/3'), (1.37, 'kiriko/voice/pain/6'), (1.37, 'kiriko/voice/pain/0'), (1.37, 'kiriko/voice/pain/0'), (1.37, 'kiriko/voice/pain/4')]
+  8.27 bot read kb -> {"alive": true, "health": 8.04, "barrierUp": false, "barrierHealth": 0.0, "sigmaBarrier": -1, "asleep": false, "x": 0.5, "z": 10.5}
+ 11.32 bot fix 129 on -> {"129": true}
+ 11.35 bot set kb 225 0 -> {}
+ 11.88 bot read kb -> {"alive": true, "health": 20.0, "barrierUp": false, "barrierHealth": 0.0, "sigmaBarrier": -1, "asleep": false, "x": 0.5, "z": 10.5}
+ 15.53 tracer fix on pain lines heard: 1 [(1.37, 'kiriko/voice/pain/0')]
+ 15.56 bot read kb -> {"alive": true, "health": 5.279999, "barrierUp": false, "barrierHealth": 0.0, "sigmaBarrier": -1, "asleep": false, "x": 0.5, "z": 10.5}
+  1.04 hero junkrat -> {"ok": true}
+junkrat
+  4.12 bot fix 129 off -> {"129": false}
+  4.15 bot set kb 225 0 -> {}
+  4.66 bot read kb -> {"alive": true, "health": 20.0, "barrierUp": false, "barrierHealth": 0.0, "sigmaBarrier": -1, "asleep": false, "x": 0.5, "z": 10.5}
+  8.27 junkrat fix off pain lines heard: 4 [(2.67, 'kiriko/voice/pain/6'), (2.67, 'kiriko/voice/pain/0'), (2.67, 'kiriko/voice/pain/7'), (2.67, 'kiriko/voice/pain/0')]
+  8.31 bot read kb -> {"alive": true, "health": 4.7683716e-07, "barrierUp": false, "barrierHealth": 0.0, "sigmaBarrier": -1, "asleep": false, "x": 0.8632253171592694, "z": 13.020377982045765}
+ 11.35 bot fix 129 on -> {"129": true}
+ 11.38 bot set kb 225 0 -> {}
+ 11.91 bot read kb -> {"alive": true, "health": 20.0, "barrierUp": false, "barrierHealth": 0.0, "sigmaBarrier": -1, "asleep": false, "x": 0.8632253171592694, "z": 13.020377982045765}
+ 15.55 junkrat fix on pain lines heard: 0 []
+ 15.59 bot read kb -> {"alive": true, "health": 20.0, "barrierUp": false, "barrierHealth": 0.0, "sigmaBarrier": -1, "asleep": false, "x": 0.8632253171592694, "z": 13.020377982045765}
+  0.02 bot fix 129 on -> {"129": true}
+  5.26 junkrat fix on, held 2.5 s pain lines heard: 1 [(2.67, 'kiriko/voice/pain/2')]
+  5.29 bot read kb -> {"alive": true, "health": 4.7683716e-07, "barrierUp": false, "barrierHealth": 0.0, "sigmaBarrier": -1, "asleep": false, "x": 0.8632253171592694, "z": 13.020377982045765}
+ 11.48 junkrat fix on, single frag 0 pain lines heard: 1 [(0.43, 'kiriko/voice/pain/3')]
+ 11.51 bot read kb -> {"alive": true, "health": 10.0, "barrierUp": false, "barrierHealth": 0.0, "sigmaBarrier": -1, "asleep": false, "x": 0.5087318743626644, "z": 11.787423651584518}
+ 15.76 junkrat fix on, single frag 1 pain lines heard: 1 [(0.43, 'kiriko/voice/pain/4')]
+ 15.79 bot read kb -> {"alive": true, "health": 10.0, "barrierUp": false, "barrierHealth": 0.0, "sigmaBarrier": -1, "asleep": false, "x": 0.5087318743626644, "z": 11.787423651584518}
+ 20.03 junkrat fix on, single frag 2 pain lines heard: 1 [(0.57, 'kiriko/voice/pain/3')]
+ 20.06 bot read kb -> {"alive": true, "health": 10.0, "barrierUp": false, "barrierHealth": 0.0, "sigmaBarrier": -1, "asleep": false, "x": 0.5087318743626644, "z": 11.787423651584518}
+ 20.06 spaced single frags, grunts: 3
+  9.32 self fix off zombie hits: 5 [2.23, 3.7, 4.67, 5.17, 6.84] grunts: 4 [2.26, 3.73, 5.2, 6.71] health now 7.0
+ 18.64 self fix on zombie hits: 8 [1.17, 2.17, 2.67, 3.14, 3.64, 5.02, 6.59, 8.06] grunts: 4 [1.2, 3.04, 5.05, 8.09] health now 1.0
+ 18.68 screenshot p129_self.png -> {"file": "E:\\claude\\mods\\overcraft_pain\\run\\screenshots\\p129_self.png"}
