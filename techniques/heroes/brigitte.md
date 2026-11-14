@@ -132,8 +132,12 @@ at 4 s, a villager 12 m away none; her speed 6.33 m/s (5.5 x 1.15); a bash on a 
 0.75 s, then free); the shockwave: 70 to the nearest of three husks behind it; after the 10 s: max health 20, the barrier
 300, the villager's overhealth kept.
 
-- **Its stun is 224E's default type, 4EB6; the shockwave goes through walls and barriers still (#122).**
+- **Its stun is 224E's default type, 4EB6.**
 - **The bashed target isn't in the shockwave** (#120, 0EE3 #890): 70, one push, 7.9 m on a hero, was 140, 19.7 m; step 6's play above read a husk behind it, not the bashed one. [polish4](../testing/polish4.md).
+- **The shockwave stops at walls and barriers** (#122, 0EE3 #877's LOS filter 002C; #88's rule): `Combat.inSight` and
+  `Barrier.shields(e, player, centre)` from her eyes; damage, push and stun alike, and the barrier takes nothing (ours). Both re-played
+  on 0.3.43 against their switches (`bot fix rally`, `bot fix wave`): [run_2026-11-13](../testing/runs/rally/run_2026-11-13.md).
+  Open: the wave's shape (`op89(2.25, 8)`, perhaps a narrower cone than our half-plane: L).
 
 ## Step 7 (perks)
 Each perk against its control, picked through the perk menu (Alt held, a click), dev client, flat world `perksb`:

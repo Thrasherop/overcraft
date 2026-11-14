@@ -775,7 +775,8 @@ public final class JetpackCat implements HeroKit {
 	private static void land(ServerPlayer player, HeroState s) {
 		ServerLevel level = player.level();
 		player.setDeltaMovement(Vec3.ZERO);
-		player.syncVelocity = true;
+		// to her client at once (Combat.send, #109): on syncVelocity she slid on 2 ticks at 24.6 m/s after landing, now 1 (played)
+		Combat.send(player);
 		Effects.play(level, "catnapper_land", player.position(), Vec3.ZERO, player, player.getId(), player);
 		Combat.animate(player, "ult_land");
 		HeroSounds.toOwner(player, OcSounds.JC_ULT_IMPACT);

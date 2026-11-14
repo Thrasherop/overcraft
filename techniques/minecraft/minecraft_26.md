@@ -60,6 +60,7 @@ Read Minecraft's decompiled 26.3 sources for every API (`gradlew genSources`; th
   to the player at once, clear `syncVelocity`, and keep a lifted player's speed in your own record. Since #93 every hero's
   push goes that way; played on a real client, per blow, in [polish3](../testing/polish3.md). (`LifeGrip` has its own route, `GripPayload`.
   A steady hold each tick is another case: Catnapper's carry lifts a real client on `syncVelocity` alone.)
+- **A hero's own leap is a push too (#109, 2026-11-13):** build it from `Combat.motion` (their client's reported speed) and send it with `Combat.send`, never from `getDeltaMovement` with `syncVelocity`. Lúcio's Sound Barrier leap kept the server's stale x/z: a 5.5 m/s run dropped to 0.64 m/s the tick he left the ground and took 6 ticks to come back; through `Combat.send` 5.50 all the way. `needsSync` alone (D.Va's Call Mech stop) never reaches the player at all. Record: [push_109](../testing/runs/push_109/push_109.md).
 - **NoAI mobs don't move at all** (no `travel` without effective AI): velocity, pulls and knockback do nothing to them.
   Test anything that carries, pulls or pushes on a mob with AI.
 - **Hunger and saturation regeneration** run in hero mode unless turned off (#43); `natural_health_regeneration` is

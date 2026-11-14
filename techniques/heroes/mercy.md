@@ -60,6 +60,14 @@ her statescript graphs rather than taken from the wiki. Up: [Techniques](../READ
 - **Her shots leave her first-person blaster's muzzle** (0.16 m right, 0.11 down, 0.71 ahead of the eyes, measured
   from the posed view model, the same at every pitch): her data launches each volley from the blaster's hp 0006.
 
+## Guardian Angel from water, ladders, vines (#127, 2026-11-13)
+- Fixed by polish 4 (c83ddc3): Minecraft's `LivingEntity.travel` sends a liquid to `travelInFluid` and a ladder made
+  `handles()` false, so her client never moved her. An inject at the head of `travel` (`overcraft$abilityTravel`) now
+  gives the move to `OwMovement.travel` while an ability moves her (`OwMovement.abilityMoving`). Overwatch has no such
+  limit (W, rev 408561), so ours: GA starts wherever she isn't blocked.
+- Played on 0.3.43 from ground, air, shallow and deep water, lava, ladder, vines, scaffolding and both bubble columns:
+  all fly the same 17 m/s curve ([run](../testing/runs/ga_127/record.md)).
+
 ## What Resurrect brings back: nothing twice (#98, 2026-11-04)
 - **Reproduced:** an iron golem killed and resurrected three times dropped 5, 3 and 5 ingots: an iron farm.
 - **The critique's other half was wrong:** a chested donkey does *not* come back with its inventory. `AbstractChestedHorse.dropEquipment`

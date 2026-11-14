@@ -1,0 +1,34 @@
+/difficulty normal ['The difficulty did not change; it is already set to Normal']
+/gamerule spawn_monsters false ['Game rule spawn_monsters is already set to false']
+/gamerule natural_health_regeneration false ['Game rule natural_health_regeneration is already set to false']
+/time set noon ['Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['Set the weather to clear']
+/team add red ['A team already exists by that name']
+/team add blue ['A team already exists by that name']
+/team join red @s ['Added Kiriko to team [red]']
+/overcraft team join red ['You joined team [red]']
+/gamemode survival @s []
+hero brigitte mode True screen  hp 20.0
+  fix on | bashed 14.4 | behind the wall 20.0 | in the open 14.4
+  fix off | bashed 8.799999 | behind the wall 14.4 | in the open 14.4
+  fix on | bashed 14.4 | behind the wall 20.0 | in the open 14.4
+Traceback (most recent call last):
+  File "E:\claude\mods\overcraft_rally\techniques\testing\runs\rally\rally_wave.py", line 188, in <module>
+    bot("fix rally " + fix); bot("fix wave " + fix); case_open_and_wall(fix)
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\claude\mods\overcraft_rally\techniques\testing\runs\rally\rally_wave.py", line 128, in case_open_and_wall
+    rally_bash("rw_%s_wall.png" % fix)
+  File "E:\claude\mods\overcraft_rally\techniques\testing\runs\rally\rally_wave.py", line 94, in rally_bash
+    rally()
+  File "E:\claude\mods\overcraft_rally\techniques\testing\runs\rally\rally_wave.py", line 77, in rally
+    mc("/overcraft reset", 0.4)
+  File "E:\claude\mods\overcraft_rally\techniques\testing\runs\rally\rally_wave.py", line 33, in mc
+    n = loglen(); c("cmd " + cmd); time.sleep(wait); return chat_after(n)
+                  ^^^^^^^^^^^^^^^
+  File "E:\claude\mods\overcraft_rally\techniques\testing\runs\rally\rally_wave.py", line 14, in c
+    return json.loads(f.readline())
+                      ^^^^^^^^^^^^
+  File "C:\Program Files\Python311\Lib\socket.py", line 706, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
