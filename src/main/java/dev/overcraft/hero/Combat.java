@@ -518,14 +518,16 @@ public final class Combat {
 	 * Soundwave's push, lockout yes (Lucio: not hit)                   the lockout goes (Minecraft's Slowness)  W prevented, not removed; the lockout itself is ours (LucioStats)
 	 * Gravitic Flux: the lift   no: its filter, mask 16, has no bit 4  NOT removed                              1E41 #1292's filter, M; W "completely unaffected"; no flag read in his graphs: M
 	 * Gravitic Flux: its slow   no                                     NOT removed: it ends with the slam       part of the Flux W calls unaffected (HEAVY_SLOW, GraviticFlux); W's "slows" not applied: ours
+	 * Flashbang's hinder        yes: the blast's areaHits              at once: no roll, the slow               D 0228 #129 v8440, #153 mask 20; #155 1BC5 -> #154 1C7D -> #125; W "Can be cleansed"
+	 * Steel Trap's root         yes: the trap's areaHits               NOT removed                              D 01F5's graph 09BC reads neither v8440 nor 1BC5; 09BB's tracker mask 20; W Junkrat rev 380944 "will not free a player that is already trapped"
 	 * Minecraft's effects, fire no                                     removed                                  ours
 	 * </pre>
-	 * The mod has no Discord, Hinder or Groggy. A knock-back is kept off by Combat.push's and launch's own phase test. 224E #575 lets type 6BBE through when v530 and v8440 are set:
+	 * The mod has no Discord or Groggy. A knock-back is kept off by Combat.push's and launch's own phase test. 224E #575 lets type 6BBE through when v530 and v8440 are set:
 	 * what stops a knock-down on the phased is the hit's filter (1EB9 #338, 5B7B; mask 20, M). Every hit passes through the phased, whatever it is: Allies.canHurt and areaHits say no, OwProjectile.canHitEntity for what flies. Flux's lift alone doesn't ask (areaTouches). Sleep, Hack, antiHeal keep their own door for what isn't a hit.
 	 * Not done: W Status effect says Life Grip also removes tether and gravity (#124).
 	 * <p>
 	 * Returns whether a status that says so was cleansed: the one thing Kiriko's Suzu line answers (#121, SuzuEntity.burst). The data's senders of
-	 * 1C7D, each gated on v8440: Sleep Dart 224E #418, Rally's stun 224E #416, Hack 0B1F #611, Biotic Grenade 0C72 #275, Claws Out 5BAF #91: H nodes.
+	 * 1C7D, each gated on v8440: Sleep Dart 224E #418, Rally's stun 224E #416, Hack 0B1F #611, Biotic Grenade 0C72 #275, Claws Out 5BAF #91, Flashbang's hinder 0228 #154: H nodes.
 	 * Removed and silent: the healing reduction (01C7 #1186 ends without it), Local Anesthetic (6123 has neither v8440 nor 1C7D), the zones' slows
 	 * (1443, 6102 trackers). Minecraft's effects and fire: no graph, so nothing says so (ours, following the data; the owner's to change).
 	 */
@@ -536,6 +538,7 @@ public final class Combat {
 			told |= dev.overcraft.sombra.Hack.cleanse(target);
 			dev.overcraft.ana.Anesthetic.cleanse(target);
 			told |= dev.overcraft.jetpackcat.JetpackCat.cleanse(target);
+			told |= dev.overcraft.cassidy.Hinder.cleanse(target);
 			dev.overcraft.sojourn.Disruptor.cleanse(target);
 		}
 		List<Holder<net.minecraft.world.effect.MobEffect>> harmful = new ArrayList<>();

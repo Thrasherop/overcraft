@@ -1,0 +1,84 @@
+=== suzu_probe 19:33:44
+=== suzu_probe 19:38:20
+--- trap probe, Suzu first: False
+    trap {'ents': '255 2051.47 -59.99 7.85 v 0.00 0.00 0.00 t72 | '}
+    moved onto it {'pos': '(2051.5, -60.0, 3.5)'}
+    +0.15 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.33 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.48 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.65 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.81 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.98 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.15 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.31 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.48 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.65 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    trap {'ents': '255 2051.47 -59.99 7.85 v 0.00 0.00 0.00 t144 | '}
+--- trap probe, Suzu first: True
+    trap {'ents': '255 2051.47 -59.99 7.85 v 0.00 0.00 0.00 t786 | 272 2101.47 -59.99 7.85 v 0.00 0.00 0.00 t69 | '}
+    moved onto it {'pos': '(2101.5, -60.0, 3.5)'}
+    +0.15 hindered=False rooted=False asleep=False antiHeal=False phased=True speed=0.1 health=18.0
+    +0.32 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.49 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.65 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.82 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.99 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.15 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.32 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.49 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.66 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    trap {'ents': '255 2051.47 -59.99 7.85 v 0.00 0.00 0.00 t878 | 272 2101.47 -59.99 7.85 v 0.00 0.00 0.00 t161 | '}
+=== done
+=== suzu_trap3 19:39:11 the trap lands at Junkrat feet (z 7.85): ally kept 4 m off it until phased
+--- trap: control {'119': True}
+    trap 294 3051.47 -59.99 7.85 v 0.00 0.00 0.00 t70  ; ally before hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    moved onto the trap {'pos': '(3052.0, -60.0, 7.85)'}
+    +0.12 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=10.0
+    +0.25 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=10.0
+    +0.39 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=10.0
+    +0.52 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +0.66 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +0.79 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +0.93 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +1.06 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +1.19 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +1.33 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +1.46 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +1.60 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=12.0
+    her line: []
+--- trap: phased {'119': True}
+    trap 311 3101.47 -59.99 7.85 v 0.00 0.00 0.00 t70  ; ally before hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    phased at +0.03
+    moved onto the trap {'pos': '(3102.0, -60.0, 7.85)'}
+    +0.12 hindered=False rooted=False asleep=False antiHeal=False phased=True speed=0.1 health=18.0
+    +0.25 hindered=False rooted=False asleep=False antiHeal=False phased=True speed=0.1 health=18.0
+    +0.39 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=10.0
+    +0.52 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=10.0
+    +0.65 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +0.79 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +0.92 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +1.06 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +1.19 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +1.32 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +1.46 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +1.59 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    her line: ['kiriko.suzu.throw -> kiriko/suzu/throw/0 (SimpleSoundInstance, in the head)', 'kiriko.suzu.burst -> kiriko/suzu/burst/4 (SimpleSoundInstance, at 3100.5 -60.0 1.8)']
+--- trap: rooted then suzu {'119': True}
+    trap 317 3151.47 -59.99 7.85 v 0.00 0.00 0.00 t70  ; ally before hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    moved onto the trap {'pos': '(3152.0, -60.0, 7.85)'}
+     hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=10.0
+    Suzu thrown
+    +0.12 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +0.25 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +0.39 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +0.52 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +0.66 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +0.79 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +0.92 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +1.06 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    +1.19 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=12.0
+    +1.32 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=12.0
+    +1.46 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=12.0
+    +1.59 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=12.0
+    her line: ['kiriko.suzu.throw -> kiriko/suzu/throw/1 (SimpleSoundInstance, in the head)', 'kiriko.suzu.burst -> kiriko/suzu/burst/2 (SimpleSoundInstance, at 3150.5 -60.0 0.9)']
+=== done
