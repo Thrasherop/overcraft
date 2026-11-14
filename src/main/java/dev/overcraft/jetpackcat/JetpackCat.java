@@ -698,7 +698,12 @@ public final class JetpackCat implements HeroKit {
 		Vec3 eye = player.getEyePosition();
 		Vec3 end = eye.add(player.getViewVector(1.0f).scale(ULT_RANGE));
 		HitResult hit = player.level().clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
-		Vec3 at = hit.getType() == HitResult.Type.MISS ? end : hit.getLocation();
+		// a wall's hit point lies on its face, inside the block for the ray down, which then stopped at once: the dive went to a
+		// spot on the wall 1.6 m up (#139, played). Stepped back off the face by her half width, the floor in front of it.
+		boolean wall = hit instanceof net.minecraft.world.phys.BlockHitResult block && hit.getType() != HitResult.Type.MISS
+			&& block.getDirection().getAxis() != net.minecraft.core.Direction.Axis.Y;
+		Vec3 at = hit.getType() == HitResult.Type.MISS ? end
+			: wall ? hit.getLocation().subtract(player.getViewVector(1.0f).multiply(1, 0, 1).normalize().scale(0.35)) : hit.getLocation();
 		// down to the ground below it
 		HitResult ground = player.level().clip(new ClipContext(at.add(0, 0.5, 0), at.add(0, -ULT_RANGE, 0), ClipContext.Block.COLLIDER,
 			ClipContext.Fluid.NONE, player));
@@ -736,15 +741,34 @@ public final class JetpackCat implements HeroKit {
 				if (--s.ultTimer <= 0) {
 					s.ultPhase = ULT_DIVE;
 					s.ultTimer = Ow.ticks(DIVE_LIMIT);
+					// her data's move (5B7B #95, StateMoveTo): to the target point + 0.25 m up, ending there or at the 1.5 s wait.
+					// Nothing in it reads the ground, so cast from the ground she skims along it to the spot (#139: our onGround
+					// check ended a ground cast the tick it began). Laid out here, where she's held still: her client moves her and
+					// the server's copy of her position lags it, so steering by it each tick overshot the spot by up to 3 ticks
+					// (played)
+					Vec3 to = s.ultTarget.add(0, 0.25, 0).subtract(player.position());
+					s.ultDir = to.lengthSqr() > 1.0E-6 ? to.normalize() : Vec3.ZERO;
+					s.ultLeft = to.length();
 				}
 			}
 			case ULT_DIVE -> {
-				Vec3 to = s.ultTarget.subtract(player.position());
-				double step = Ow.speed(ULT_DIVE_SPEED);
-				if (to.length() <= step || player.onGround() || --s.ultTimer <= 0) {
+				// ours: a wall in the way ends it (her client's horizontalCollision, from the dive's second tick on, so one she cast
+				// beside doesn't)
+				boolean blocked = player.horizontalCollision && s.ultTimer < Ow.ticks(DIVE_LIMIT);
+				if (s.ultLeft <= 1.0E-3 || blocked || --s.ultTimer <= 0) {
+					Vec3 spot = s.ultTarget.add(0, 0.25, 0);
+					if (s.ultLeft <= 1.0E-3 && player.level().noCollision(player, player.getBoundingBox().move(spot.subtract(player.position())))) {
+						// arrived: onto the spot itself, the move's own end (#95). The steps alone came up 1-1.7 m short (played: her
+						// client doesn't take exactly one speed packet a tick)
+						player.connection.teleport(new net.minecraft.world.entity.PositionMoveRotation(spot, Vec3.ZERO, 0, 0),
+							java.util.Set.of(net.minecraft.world.entity.Relative.X_ROT, net.minecraft.world.entity.Relative.Y_ROT));
+					}
 					land(player, s);
 				} else {
-					player.setDeltaMovement(to.normalize().scale(step));
+					// 30 m/s, the last part-step onto the spot, landing the tick after
+					double d = Math.min(Ow.speed(ULT_DIVE_SPEED), s.ultLeft);
+					s.ultLeft -= d;
+					player.setDeltaMovement(s.ultDir.scale(d));
 					player.syncVelocity = true;
 					player.resetFallDistance();
 				}

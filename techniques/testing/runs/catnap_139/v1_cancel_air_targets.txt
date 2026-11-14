@@ -1,0 +1,53 @@
+cmd overcraft ult @s 100 -> {"ok": true}
+key ultimate down -> {"key": "key.keyboard.q"}
+key ultimate up -> {"key": "key.keyboard.q"}
+state: x=-8.651772600402134 y=-58.34230593116335 z=-4.849472970626784 health=16.0 ult=2575.0 mode=1 hero=jetpack_cat
+key ultimate down -> {"key": "key.keyboard.q"}
+key ultimate up -> {"key": "key.keyboard.q"}
+state: x=-8.651772600402134 y=-58.34230593116335 z=-4.849472970626784 health=16.0 ult=2575.0 mode=0 hero=jetpack_cat
+look 0 35 -> {"ok": true}
+key jump down -> {"key": "key.keyboard.space"}
+key jump up -> {"key": "key.keyboard.space"}
+key ultimate down -> {"key": "key.keyboard.q"}
+key ultimate up -> {"key": "key.keyboard.q"}
+trace start -> {"ok": true}
+key secondary_fire down -> {"key": "key.mouse.left"}
+key secondary_fire up -> {"key": "key.mouse.left"}
+screenshot c139_air_targets.png -> {"file": "E:\\claude\\mods\\overcraft_catnap\\run\\screenshots\\c139_air_targets.png"}
+0 0.29 -0.12 1.64 -50.798 - .
+1 0.21 -0.09 1.17 -50.732 - .
+2 0.19 -0.08 1.17 -50.673 - .
+3 0.19 -0.08 1.17 -50.615 - .
+4 0.00 0.00 0.00 -50.615 - .
+5 0.00 0.00 0.00 -50.615 - .
+6 0.00 0.00 0.00 -50.615 - .
+7 0.00 0.00 0.00 -50.615 - .
+8 0.00 0.00 0.00 -50.615 - .
+9 0.00 0.00 0.00 -50.615 - .
+10 0.00 0.00 0.00 -50.615 - .
+11 25.86 0.01 -15.21 -51.375 - .
+12 25.86 0.01 -15.21 -52.136 - .
+13 25.86 0.01 -15.21 -52.896 - .
+14 25.86 0.01 -15.21 -53.656 - .
+15 25.86 0.01 -15.21 -54.417 - .
+16 25.86 0.01 -15.21 -55.177 - .
+17 25.86 0.01 -15.21 -55.937 - .
+18 25.86 0.01 -15.21 -56.698 - .
+19 25.86 0.01 -15.21 -57.458 - .
+20 25.86 0.01 -15.21 -58.218 - .
+21 25.86 0.01 -15.21 -58.979 - .
+22 25.86 0.01 -15.21 -59.739 - .
+23 0.00 0.00 0.00 -59.739 - .
+24 0.00 0.00 0.00 -59.739 - .
+25 0.00 0.00 0.00 -59.739 - .
+26 0.00 0.00 0.00 -59.739 - .
+27 0.00 0.00 0.00 -59.739 - .
+28 0.00 0.00 0.00 -59.739 - .
+29 0.00 0.00 0.00 -59.739 - .
+30 0.00 0.00 0.00 -59.739 - .
+31 0.00 0.00 0.00 -59.739 - .
+32 0.00 0.00 0.00 -59.739 - .
+33 0.00 0.00 0.00 -59.739 - .
+state: x=-9.296348482406367 y=-59.739214705345205 z=12.112815933940958 health=16.0 ult=3.0 mode=0 hero=jetpack_cat
+cmd data get entity @e[type=husk,limit=1] Health -> {"ok": true}
+cmd data get entity @e[type=zombie,limit=1] Health -> {"ok": true}

@@ -254,3 +254,11 @@ A player far off gets no packet: `Effects.play` reaches 96 m and `Combat.animate
 
 ## A float or a lift a player must feel (polish3, 2026-11-05)
 A stun's gravity scale reached mobs only (`Sleep.slide`). What changes how a player falls belongs on their client: Minecraft's `Attributes.GRAVITY` as a transient modifier syncs to it, and hero mode's `OvercraftClient.gravityScale` reads it against the default 0.08. Hyper Strike: top y -59.52 to -56.19. Mind what it does to the landing: a longer float is a longer fall (`Sleep.FLOATED`).
+
+## Steering a player from the server (#139, 2026-11-13)
+Up: [Techniques](../README.md) · from: [catnap_139](../testing/runs/catnap_139/catnap_139.md)
+- A ServerPlayer's position, `onGround` and `horizontalCollision` are what her client last sent: a tick or more behind.
+  Steering a fast move by `player.position()` each tick overshot by up to 3 ticks (Catnapper: 13.5 m for a 9.2 m spot).
+- Speeds sent each tick (`syncVelocity`) don't land one per client tick: summed, they came up 1-1.7 m short.
+- What worked: lay the path out while she's held still (server and client agree), send it step by step, and end it with a
+  `connection.teleport` to the end point (rotation relative) if the box there is free.

@@ -92,6 +92,9 @@ public final class HeroState {
 	public int ultPhase;
 	public int ultTimer;
 	public net.minecraft.world.phys.Vec3 ultTarget = net.minecraft.world.phys.Vec3.ZERO;
+	/** Catnapper's dive: its direction and the metres left to cover (set at the dive's start, #139). */
+	public net.minecraft.world.phys.Vec3 ultDir = net.minecraft.world.phys.Vec3.ZERO;
+	public double ultLeft;
 	public @Nullable Integer carried;
 	/** Ticks on the wall this ride (his line after 2.2 s, the loop's sound). */
 	public int wallRideTicks;
