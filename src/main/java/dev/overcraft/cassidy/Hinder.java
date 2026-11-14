@@ -43,6 +43,19 @@ public final class Hinder {
 		return true;
 	}
 
+	/**
+	 * Protection Suzu's cleanse (Combat.cleanse's table): the hinder and its slow end, and it says so (D 0228 #155 hears 1BC5 -> #154 sends
+	 * 1C7D -> #125 ends: H nodes; W Status effect rev 380062 "Can be cleansed"). Returns whether one was on.
+	 */
+	public static boolean cleanse(LivingEntity target) {
+		if (!hindered(target)) {
+			return false;
+		}
+		UNTIL.remove(target.getUUID());
+		Combat.buff(target, Attributes.MOVEMENT_SPEED, SLOW, 0, 0);
+		return true;
+	}
+
 	public static void clear() {
 		UNTIL.clear();
 	}
