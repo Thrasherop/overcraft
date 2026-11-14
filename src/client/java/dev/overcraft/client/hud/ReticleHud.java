@@ -128,7 +128,7 @@ public final class ReticleHud {
 			case SOJOURN -> sojourn(g, s, cx, cy, reticle);
 			case SIGMA -> sigma(g, hero, s, cx, cy, reticle);
 			case BRIGITTE -> brigitte(g, player, hero, s, cx, cy, w, h, partial, reticle);
-			case MERCY -> mercy(g, player, hero, s, cx, cy, reticle);
+			case MERCY -> mercy(g, player, hero, s, cx, cy, w, h, reticle);
 			case SOMBRA -> sombra(g, player, s, cx, cy, w, h, partial, reticle);
 			case JUNO -> juno(g, player, hero, s, cx, cy, partial);
 			case JETPACK_CAT -> jetpackCat(g, player, hero, s, cx, cy, reticle);
@@ -261,12 +261,15 @@ public final class ReticleHud {
 	 * Brigitte. Repair Pack's charges, 00F3 in her reticle (0EDD #472: v11); Inspire, 0C7A in her reticle (12D8 #479: its icon, 7CCD
 	 * its state stack v31949, 067C the allies it's healing; her hero option Inspire UI, on by default), so its icon with Inspire on
 	 * her alone too; the barrier's health, 0275 on the centre layer (2152 #7) with 00DB (0EE3 #848: primary, 161DC "BASH") while it's
-	 * up; Rally's time, 0237 (12BE #188); Repair Pack's target, 013C (0EDD #469).
+	 * up; Rally's time, 0237 (12BE #188); Repair Pack's target, 013C (0EDD #469); over each ally her packs are healing, 011F in the world
+	 * (0EE1 #611, hers alone: the pack's icon 01A4, at their hardpoint 0E + 0.4 m, 9A the share of the heal to come).
 	 */
 	private static void brigitte(GuiGraphicsExtractor g, LocalPlayer player, Hero hero, HeroSyncPayload s, float cx, float cy, float w,
 								 float h, float partial, boolean reticle) {
 		HeroSyncPayload.Widgets d = s.widgets();
 		marker(g, player, d.preview(), w, h, partial, Action.ABILITY_2);
+		healIcon(g, player, d.target(), d.share(), HeroArt.ability(hero, "repair_pack"), w, h, partial);
+		healIcon(g, player, d.target2(), d.share2(), HeroArt.ability(hero, "repair_pack"), w, h, partial);
 		if (reticle) {
 			mark(y);
 			pips(g, s.secondaryAmmo(), dev.overcraft.brigitte.BrigitteStats.REPAIR_CHARGES, cx, y);
@@ -307,9 +310,13 @@ public final class ReticleHud {
 	 * wing icon 12F3); Valkyrie's time, 0237 (10DA #486). Resurrect's cast has a panel in the data (0693, 00CA #1072) and no fraction: its
 	 * bar's ours.
 	 */
-	private static void mercy(GuiGraphicsExtractor g, LocalPlayer player, Hero hero, HeroSyncPayload s, float cx, float cy, boolean reticle) {
+	private static void mercy(GuiGraphicsExtractor g, LocalPlayer player, Hero hero, HeroSyncPayload s, float cx, float cy, float w, float h,
+							  boolean reticle) {
 		ClientMercy.State m = ClientMercy.state(player);
 		HeroSyncPayload.Widgets d = s.widgets();
+		if (d.at() != null && !d.name().isEmpty()) {
+			soulMarker(g, d, w, h);
+		}
 		if (reticle) {
 			if (m != null && m.beamTarget() >= 0 && player.level().getEntity(m.beamTarget()) instanceof LivingEntity beamed && beamed.isAlive()) {
 				boolean boost = m.beamMode() == dev.overcraft.mercy.Mercy.BEAM_BOOST;
@@ -338,12 +345,15 @@ public final class ReticleHud {
 	 * Sombra. Her stealth, 0277 with its ring 008B (420C #1057: its share v215 / v567): in the layer of her reticle itself (v29677.v1897,
 	 * as 00A3), so it takes her crosshair's place: see crosshair. 0D81 in her reticle, two slots (614C #1798, #1831: v3544 / v11652, each
 	 * Hotfix's ally v77182[n], else what she's hacking v536; the portrait, and its health 019C); the lockout, 00B1 (#2775: v6358 / v45433);
-	 * Hotfix's preview 013C (#593).
+	 * Hotfix's preview 013C (#593); over each ally Hotfix heals, 011F in the world (60FB #371, hers alone: the icon F5E, at their
+	 * hardpoint 0E + 0.4 m, no share bound). Its band on their health bar (0D86, #385) isn't drawn: the mod draws no allies' bars.
 	 */
 	private static void sombra(GuiGraphicsExtractor g, LocalPlayer player, HeroSyncPayload s, float cx, float cy, float w, float h,
 							   float partial, boolean reticle) {
 		HeroSyncPayload.Widgets d = s.widgets();
 		marker(g, player, d.preview(), w, h, partial, Action.PRIMARY_FIRE);
+		healIcon(g, player, d.target(), 0, HeroArt.ability(Hero.SOMBRA, "hotfix"), w, h, partial);
+		healIcon(g, player, d.target2(), 0, HeroArt.ability(Hero.SOMBRA, "hotfix"), w, h, partial);
 		if (reticle) {
 			if (d.left() > 0 && d.total() > 0) {
 				float r = 22;
@@ -646,6 +656,49 @@ public final class ReticleHud {
 			float s = r * 1.4f;
 			image(g, icon, screen[0] - s / 2, screen[1] - s / 2, s, s, WHITE);
 		}
+	}
+
+	/**
+	 * 011F over an ally a heal of ours is on: the ability's icon on a dark disc in the ally cyan (0406, the team's colour), at the top
+	 * of them + 0.4 m (the data's hardpoint 0E + 0.4 m: 0E taken as the head's top, ours); with a share, the ring drains with it.
+	 */
+	private static void healIcon(GuiGraphicsExtractor g, LocalPlayer player, int id, float share, @Nullable Identifier icon, float w, float h,
+								 float partial) {
+		if (id < 0 || !(player.level().getEntity(id) instanceof LivingEntity ally) || !ally.isAlive() || ally == player) {
+			return;
+		}
+		Vec3 at = ally.getPosition(partial).add(0, ally.getBbHeight() + 0.4, 0);
+		if (share <= 0) {
+			worldIcon(g, icon, at, w, h, ALLY);
+			return;
+		}
+		// (the ring dim under the share left, ours)
+		worldIcon(g, icon, at, w, h, 0x59000000 | ALLY & 0xFFFFFF);
+		float[] screen = HeroHud.project(at, w, h);
+		if (screen != null) {
+			// (2.5 thick it read as a hairline at 854 wide: rr_brig_repair2)
+			HeroHud.arc(g, screen[0], screen[1], 18.5f, 4, 0, 360 * Math.clamp(share, 0, 1), ALLY);
+		}
+	}
+
+	/**
+	 * Mercy's mark on the soul Resurrect would take, 08F3 in the world (00CA #1274, hers alone: at the soul + 1 m, holding 0693's
+	 * portrait 67DA, name 67DC and team colour 0406). Ours: the portrait on a disc in the ally cyan, the Resurrect key under it; the
+	 * name is already on her reticle's 052B.
+	 */
+	private static void soulMarker(GuiGraphicsExtractor g, HeroSyncPayload.Widgets d, float w, float h) {
+		Vec3 at = d.at().add(0, 1, 0);
+		float[] screen = HeroHud.project(at, w, h);
+		devWorld += screen == null ? "soul behind; " : String.format(Locale.ROOT, "soul %.0f,%.0f; ", screen[0], screen[1]);
+		if (screen == null) {
+			return;
+		}
+		float r = 17;
+		image(g, HudShapes.DISC, screen[0] - r - 2, screen[1] - r - 2, 2 * (r + 2), 2 * (r + 2), ALLY);
+		image(g, HudShapes.DISC, screen[0] - r, screen[1] - r, 2 * r, 2 * r, 0xE0000000);
+		float size = r * 1.3f;
+		face(g, null, d.face(), d.name(), screen[0] - size / 2, screen[1] - size / 2, size);
+		HeroHud.keyLabel(g, HeroControls.get(Action.ABILITY_2), screen[0], screen[1] + r + 14, ALLY, false);
 	}
 
 	/**

@@ -25,11 +25,14 @@ public final class RepairPack {
 		final ServerPlayer brigitte;
 		final LivingEntity ally;
 		long until;
+		/** Its whole length so far, in ticks: 2 s, and 2 more for each pack that lands on it meanwhile (011F's 9A: v22729 / v69439). */
+		long total;
 
-		Heal(ServerPlayer brigitte, LivingEntity ally, long until) {
+		Heal(ServerPlayer brigitte, LivingEntity ally, long until, long total) {
 			this.brigitte = brigitte;
 			this.ally = ally;
 			this.until = until;
+			this.total = total;
 		}
 	}
 
@@ -60,10 +63,11 @@ public final class RepairPack {
 		for (Heal h : HEALS) {
 			if (h.ally == ally) {
 				h.until += Ow.ticks(REPAIR_EXTEND);
+				h.total += Ow.ticks(REPAIR_EXTEND);
 				return;
 			}
 		}
-		HEALS.add(new Heal(brigitte, ally, now + Ow.ticks(REPAIR_TIME)));
+		HEALS.add(new Heal(brigitte, ally, now + Ow.ticks(REPAIR_TIME), Ow.ticks(REPAIR_TIME)));
 	}
 
 	private static void give(ServerPlayer brigitte, LivingEntity ally, double amount) {
@@ -98,6 +102,22 @@ public final class RepairPack {
 			give(h.brigitte, h.ally, REPAIR_HEAL_RATE / 20);
 			return false;
 		});
+	}
+
+	/**
+	 * The allies her packs are healing now, with the share of each heal still to come, newest first: 0EE1 #611's 011F on each, for her
+	 * alone (v40, the Brigitte, == the local player), its 9A the share v22729 / v69439.
+	 */
+	public static java.util.List<java.util.Map.Entry<LivingEntity, Float>> healing(ServerPlayer brigitte) {
+		java.util.List<java.util.Map.Entry<LivingEntity, Float>> out = new ArrayList<>();
+		for (int i = HEALS.size() - 1; i >= 0; i--) {
+			Heal h = HEALS.get(i);
+			if (h.brigitte == brigitte && h.ally.isAlive()) {
+				long left = h.until - h.ally.level().getGameTime();
+				out.add(java.util.Map.entry(h.ally, Math.clamp(left / (float) Math.max(1, h.total), 0f, 1f)));
+			}
+		}
+		return out;
 	}
 
 	public static void clear() {

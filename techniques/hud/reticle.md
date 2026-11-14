@@ -125,3 +125,12 @@ Juno's lock now says "[LMB] FIRE [RMB] CANCEL" (#1051), the buttons doing what t
 
 ## Soundwave Rider and Hyper Strike, second pass (2026-11-05)
 Rider's bar draws only at the reticle (in third person it crossed his body). A part charge now waits 3 s, then drains: [polish3](../testing/polish3.md). Sigma's pips are narrower than Brigitte's (they touched his spheres at 720p), and empty pips are 0x66 white on a heavier edge, read at night in `sheet_c_pips`, for Brigitte's too (shared; hers not re-shot).
+
+## Round 2026-11-14 (fix/reticle-rest): the world widgets
+011F over the allies Brigitte's packs heal (0EE1 #611, its 9A share as a draining ring) and over Sombra's Hotfixed allies (60FB #371);
+Mercy's 08F3 on the soul Resurrect would take (00CA #1274, the portrait and the Resurrect key). All three are for the caster alone
+(their conditions: v40 / v41 / self == the local player), so they ride the caster's own sync: `Widgets.share`, `share2`, `at` (a soul
+has no client entity, so its place is sent). **Lesson:** a world widget with a share needs the server's numbers (the client's effect
+packets carry no owner, so another Brigitte's packs would show); add fields to `Widgets` behind its old 10-argument constructor and no
+kit changes. Run record: [reticle_rest](../testing/runs/reticle_rest/run.md). Still open: the Cat's seeking icon (others' HUDs, a
+second client), Hotfix's health-bar band 0D86 (no allies' bars in the mod), Sigma's 0241 box.

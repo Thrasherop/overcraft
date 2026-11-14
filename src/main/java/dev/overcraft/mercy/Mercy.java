@@ -799,7 +799,8 @@ public final class Mercy implements HeroKit {
 
 	/**
 	 * Her widgets (#85): the soul Resurrect would take, or is taking, as the data's 052B shows it (00CA #306: 67DC the name, 67DA
-	 * the portrait, 067C the count of souls in reach); the client has no entity for a soul, so its name and type come here.
+	 * the portrait, 067C the count of souls in reach); the client has no entity for a soul, so its name and type come here, and
+	 * where it lies (at: the soul's marker 08F3, 00CA #1274, at v78337[0] + 1 m).
 	 */
 	@Override
 	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
@@ -825,7 +826,7 @@ public final class Mercy implements HeroKit {
 		String face = other != null && other.hero != null ? "hero:" + other.hero.id
 			: net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(soul.body.getType()).toString();
 		return new HeroSyncPayload.Widgets(-1, -1, -1, false, count, s.resSoul != null ? s.castTicks / 20f : 0, (float) RES_CAST, 0,
-			soul.body.getName().getString(), face);
+			soul.body.getName().getString(), face, 0, 0, soul.at);
 	}
 
 	/** Out of play (#100: HeroKit.leavePlay): the beam, Guardian Angel, a Resurrect under way and Valkyrie end; for good, her looks and slow too. */
