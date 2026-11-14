@@ -144,6 +144,7 @@ public final class ReticleHud {
 			}
 		}
 		towed(g, player);
+		seekingCats(g, player, w, h, partial);
 		if (JetpackCatFx.lifelineOffer(player) >= 0) {
 			// a Jetpack Cat's Lifeline in reach: her graph 5A8F, 3A94 #1253: Interact, "Lifeline"; Interact takes it
 			prompt(g, Action.INTERACT, "overcraft.hud.prompt.lifeline", null, null);
@@ -650,6 +651,10 @@ public final class ReticleHud {
 		if (screen == null) {
 			return;
 		}
+		iconAt(g, icon, screen, edge, r, ring);
+	}
+
+	private static void iconAt(GuiGraphicsExtractor g, @Nullable Identifier icon, float[] screen, int edge, float r, float ring) {
 		image(g, HudShapes.DISC, screen[0] - r - ring, screen[1] - r - ring, 2 * (r + ring), 2 * (r + ring), edge);
 		image(g, HudShapes.DISC, screen[0] - r, screen[1] - r, 2 * r, 2 * r, 0xE0000000);
 		if (icon != null) {
@@ -680,6 +685,41 @@ public final class ReticleHud {
 			HeroHud.arc(g, screen[0], screen[1], 18.5f, 4, 0, 360 * Math.clamp(share, 0, 1), ALLY);
 		}
 	}
+
+	/**
+	 * Over each allied Jetpack Cat seeking, an icon for the other players (#85): 5A8F #1067 / #1066, a UX presenter on template 011F at
+	 * her hardpoint 000E + (0, 0.7, 0), its condition the local player not being her (H for the place, M for who). The icon inside
+	 * 011F.116 isn't decoded: Lifeline's own (ours), on the ally disc as healIcon's. 000E taken as her top (as healIcon, ours).
+	 * Kept clear above her ally marker (HeroHud's name and pips, about 52 px over her head on screen): at 10 m the 0.7 m put
+	 * it on her health pips (c85_after, the two-client pass); the clearance is ours.
+	 */
+	private static void seekingCats(GuiGraphicsExtractor g, LocalPlayer player, float w, float h, float partial) {
+		for (int id : JetpackCatFx.alliedSeekers(player)) {
+			if (!(player.level().getEntity(id) instanceof LivingEntity cat) || !cat.isAlive()) {
+				continue;
+			}
+			Vec3 top = cat.getPosition(partial).add(0, cat.getBbHeight(), 0);
+			float[] screen = HeroHud.project(top.add(0, 0.7, 0), w, h);
+			if (screen == null) {
+				devWorld += "cat behind; ";
+				continue;
+			}
+			// her head's top as HeroHud's marker reads it: the highest of her box's top corners on screen (close by, the centre
+			// alone left the icon on her pips: c85_after3m)
+			double half = cat.getBbWidth() / 2;
+			for (int corner = 0; corner < 4; corner++) {
+				float[] c = HeroHud.project(top.add(corner < 2 ? -half : half, 0.05, corner % 2 == 0 ? -half : half), w, h);
+				if (c != null) {
+					screen[1] = Math.min(screen[1], c[1] - CAT_ICON_CLEAR);
+				}
+			}
+			devWorld += String.format(Locale.ROOT, "cat %.0f,%.0f; ", screen[0], screen[1]);
+			iconAt(g, HeroArt.ability(Hero.JETPACK_CAT, "lifeline"), screen, ALLY, 17, 2);
+		}
+	}
+
+	/** How far over her head's top on screen the seeking icon's centre sits at least: her ally marker (52) and the disc (19). Ours. */
+	private static final float CAT_ICON_CLEAR = 52 + 19 + 4;
 
 	/**
 	 * Mercy's mark on the soul Resurrect would take, 08F3 in the world (00CA #1274, hers alone: at the soul + 1 m, holding 0693's

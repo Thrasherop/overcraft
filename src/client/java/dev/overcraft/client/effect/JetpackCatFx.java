@@ -240,6 +240,17 @@ public final class JetpackCatFx {
 		return -1;
 	}
 
+	/** Allied Jetpack Cats seeking now (Lifeline on, towing nobody), not the local player: for the icon over each (ReticleHud). */
+	public static java.util.List<Integer> alliedSeekers(net.minecraft.client.player.LocalPlayer player) {
+		java.util.List<Integer> out = new java.util.ArrayList<>();
+		for (Map.Entry<Integer, Boolean> e : SEEKING.entrySet()) {
+			if (!e.getValue() && !TETHERS.containsKey(e.getKey()) && e.getKey() != player.getId()) {
+				out.add(e.getKey());
+			}
+		}
+		return out;
+	}
+
 	/** Jetpack Cats with Lifeline on and towing nobody (their seeking marker and hook glow: seekers). */
 	public static boolean seeking(int cat) {
 		return SEEKING.containsKey(cat) && !TETHERS.containsKey(cat);

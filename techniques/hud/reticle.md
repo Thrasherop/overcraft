@@ -132,5 +132,11 @@ Mercy's 08F3 on the soul Resurrect would take (00CA #1274, the portrait and the 
 (their conditions: v40 / v41 / self == the local player), so they ride the caster's own sync: `Widgets.share`, `share2`, `at` (a soul
 has no client entity, so its place is sent). **Lesson:** a world widget with a share needs the server's numbers (the client's effect
 packets carry no owner, so another Brigitte's packs would show); add fields to `Widgets` behind its old 10-argument constructor and no
-kit changes. Run record: [reticle_rest](../testing/runs/reticle_rest/run.md). Still open: the Cat's seeking icon (others' HUDs, a
-second client), Hotfix's health-bar band 0D86 (no allies' bars in the mod), Sigma's 0241 box.
+kit changes. Run record: [reticle_rest](../testing/runs/reticle_rest/run.md). Still open: Hotfix's health-bar band 0D86 (no allies'
+bars in the mod), Sigma's 0241 box.
+
+Round 2026-11-14 (fix/two-client): the Cat's seeking icon, 5A8F #1066 (011F at 000E + 0.7 m, for the other players), over each
+allied cat seeking: `seekingCats`, from `JetpackCatFx.alliedSeekers` (the "lifeline_on" effect every client already gets).
+**Lesson:** a world icon over someone who also wears HeroHud's ally marker must clear it in screen space, from the highest of
+their box's top corners (as the marker does): the data's 0.7 m sat on her pips at 10 m, and the box's centre alone at 3 m.
+Played with two clients: [two_client_2026-11-14](../testing/runs/two_client_2026-11-14/run.md).
