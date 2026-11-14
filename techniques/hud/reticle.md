@@ -26,7 +26,7 @@ Layers: `v11821` a hero's reticle container (`v40842` for Kiriko and Jetpack Cat
 | 013C | a target's preview, in the world on them | `68E9` where, `1D1` button, `6181` text |
 | 0258, 052B, 0BA3, 0D81, 0257 | a target's panel | `4447` / `67DA` portrait (a hero's, or the texture 1BDC2 for a non-hero), `2E4B` / `67DC` name, `406` the team colours 0252 |
 
-Logical buttons: `xD128396E` primary, `xB42D90B7` secondary, `x4F81E1BD` jump, `x19C8495B` interact, `x2ADDA7B1` ability 2, `xCBF0F815` the weapon's.
+Logical buttons: `xD128396E` primary, `xB42D90B7` secondary, `x4F81E1BD` jump, `x19C8495B` interact, `xCBF0F815` ability 1 (Tracer's Blink, Junkrat's mine, D.Va's Boosters: their kit maps), `x2ADDA7B1` ability 2, `x2DFEDC52` ultimate.
 
 **Prompt wording is the data's.** DataTool's `dump-strings` works offline on the archived build (`DataTool.exe --online=false "E:\Overwatch Archive\build-154088" dump-strings`, 14 s, Overwatch and Battle.net closed), giving `research\strings\strings-154088.txt`, lines `00000001B3C0.07C: CANCEL`. Used here: 1B3C0 CANCEL (Juno's glide), 177F0 FIRE and 04CC CANCEL (torpedoes), 1701B BUILD and 1701C CANCEL (the tree), 4ED9 and 1DE77 CONFIRM (Flux), 2B2F6 POUNCE and 2B2F7 CANCEL (Catnapper), 161DC BASH, 2A226 GRAPPLED, 2A472 Detach, 1894B "Resurrect %1$s", F7A FUEL, 16195 NANO BOOST and 16196 CANCEL (Ana's confirm flow, not built), 31330 CANCEL (Life Grip's held ally, not built), 5FCE a number format.
 
@@ -57,7 +57,11 @@ To add a widget: read its node, draw it with `timedBar`, `resourceBar`, `panel`,
 | Lúcio (027B, 010C #311) | allies in his song, on a disc between its circles; Amp It Up's bar; Soundwave Rider's charge, gold when full | 0263, 0266 #374; 0237, 0277 #396; 0275, 5162 #450 |
 | Ana (0987, 0C6B #34) | Nano's preview, only over the lens when scoped (ours). No panel: #373, #381 and #384 bind v8070, set by #324 after the press, with the texts NANO BOOST / CANCEL: the confirm option v29052, off by default, not in the mod | 013C, 0B9E #377 |
 | Kiriko (05BF) | nothing new: the "+" is measured from Overwatch, her counter and target were already drawn. The data shows her no bar (30D8 is not decompiled, so unproven) | |
-| D.Va | on her branch: [her list](../heroes/dva.md) | |
+| D.Va (mech CF / pilot E0: shapes ours) | in the mech: Defense Matrix's bar under the crosshair while up or not full (pink up, grey cooling, its number); Boosters' bar and "[Shift] CANCEL" the whole flight; a wide ring crosshair (the cannons' 3.375 deg), the pilot a "+". For anyone within 21 m of a Self-Destruct: her icon at the mech + 2 m in a pulsing ring, red inside 6 m. No countdown: 0031 binds no time | 04F0, 02CC #433 (ability-bar layer: the place is ours); 0237, 047E #374; 00DB, 047E #373 (xCBF0F815, 161D8 CANCEL); 0031, 0B2F #339 (68E9, 6378) |
+| Pharah | fuel as an arc left of the crosshair while not full, blue, red under 20 (ours: her data has no reticle or centre widget; fuel is engine-drawn on Hover Jets' box 0025 #316, 0240; a bar under the crosshair ran into her launcher) | none |
+| Tracer (0235, 003D #232) | Blink's charges as three orange pips under the crosshair, first person only. Recall: no widget but its box (001A #160 / #205; #354 is Stadium) | 026F, 0024 #410 (000B = v11, the count) |
+| Cassidy (0AB8, 01EC #46) | Deadeye's 7 s bar and "[LMB] FIRE [RMB] CANCEL", gone while it fires; the locks were already DeadeyeHud's (01EE #158, 012C). Fan the Hammer: nothing at the reticle in the data (01D2 has only boxes) | 0237, 022F #578; 00DB, 022F #577 (1619F FIRE, 161A0 CANCEL) |
+| Junkrat | RIP-Tire's 10 s bar; once armed (1.6 s) "[LMB] DETONATE [RMB] DETONATE", or with Nitro Boost ready "DETONATE / [Shift] Nitro Boost"; his own mine's and trap's icons in the world. Mine charges stay on the box (096A #355, 0243). The trapped enemy's 0497 (25B4 #381, in v29073) is the victim's HUD | 0237, 0233 #659; 00DB, 0233 #658 / #689 / #675 (161A8 DETONATE, 232B5 Nitro Boost, perk check #677); 011F, 096B #464, 09BB #654 |
 
 ## What a critic should check
 - **Against Overwatch, side by side:** still not done. No frames of the real game for these heroes. Every shape is from memory or invented; Kiriko's crosshair alone is measured.
@@ -90,7 +94,31 @@ Found playing the fixes: the markers' room was cleared before the hero's markers
 **Not tried:** a real tow, a real Catnapper victim, Resurrect on a player's soul (`hero:` face), so a second player; the physical mouse; Overcharged; water, lava, boats, the Nether; GUI scales; a night in survival.
 
 ## Still open
-World widgets, not built: souls' markers (08F3), icons over the Cat for allies (0C3D / 011F), over a repaired or Hotfixed ally (011F), Hotfix's band on their health bar (0D86), Juno's lock marker 0727. Sigma's Barrier as an ability box with its broken icon (0241, 1FC8A). Sombra's 00DB 017B #596, 0237 #528, 0275 0164 #447 and 0064 3692 / 3698: the health pack entity 0216's (kit_pistol_hotfix.md), and the mod has no packs. Lúcio's 0234 #433: a timer, undecoded. **"Accelerando's meter" was a wrong label:** 5162 #450 is Soundwave Rider's ([polish3](../testing/polish3.md)); Accelerando has no widget. Juno's and Life Grip's cancels: in the data (04CC, 31330), not in the mod, so not prompted: worth a mechanics issue. 013C's "Disabled" text (319B2). A mob with no `MobFaces` entry gets a plus: 1BDC2 is in `extracted\154088\UITextures` but not the pack.
+World widgets, not built: souls' markers (08F3), icons over the Cat for allies (0C3D / 011F), over a repaired or Hotfixed ally (011F), Hotfix's band on their health bar (0D86), Juno's lock marker 0727. Sigma's Barrier as an ability box with its broken icon (0241, 1FC8A). Sombra's 00DB 017B #596, 0237 #528, 0275 0164 #447 and 0064 3692 / 3698: the health pack entity 0216's (kit_pistol_hotfix.md), and the mod has no packs. Lúcio's 0234 #433: a timer, undecoded (the same node is in Junkrat's dump as his tire's graph 0234, a 3 / 1.5 / 2 s timer under gates: not drawn). **"Accelerando's meter" was a wrong label:** 5162 #450 is Soundwave Rider's ([polish3](../testing/polish3.md)); Accelerando has no widget. Juno's and Life Grip's cancels: in the data (04CC, 31330), not in the mod, so not prompted: worth a mechanics issue. 013C's "Disabled" text (319B2). A mob with no `MobFaces` entry gets a plus: 1BDC2 is in `extracted\154088\UITextures` but not the pack.
+
+Still open after the 2026-11-13 round (D.Va, Pharah, Tracer, Cassidy, Junkrat): Kiriko's own widgets, Sigma's barrier box, the
+world widgets above. Not in the data, so not drawn: a Recall timer, a Barrage or Concussive Blast indicator, a Self-Destruct countdown,
+Fan the Hammer at the reticle. Pharah's fuel arc is ours and unchecked against the game. Boosters' prompt shows the whole flight (the
+press only ends it from 0.4 s; #373's condition unread). The 0031 warning's sight / team test isn't applied (21 m alone).
+
+## Round 2026-11-13 (fix/reticle-new, from next 5010167)
+`ReticleHud` cases DVA, PHARAH, TRACER, CASSIDY, JUNKRAT, `selfDestruct` (drawn for any hero, before the emote check), `worldIcon`;
+Junkrat's sync sets MODE_TIRE_ARMED / MODE_NITRO_READY (defined, unset before). Nodes listed by a scratch script over every
+`StateUXPresenter` in `research\<hero>\work_kit\decomp_*.txt` (layer, view model, bindings). One dev client, harness keys
+(`dev.py`), flat survival worlds `rt85a` / `rt85b` / `rt85c`, day, resistance on; screenshots in `overcraft_reticle2/run/screenshots`,
+read as mid-screen crop sheets:
+- D.Va: `rt85_dva_ready` (no bar), `_matrix_up` (pink, 60), `_matrix_cooling` (grey, 55), `_matrix_refill` (73), `_boost` (matrix 87,
+  Boosters 1.2, "[LSHIFT] CANCEL"), `_boost_cool` (none); Self-Destruct `rt85_dva_sd2_near` (red), `_mid` / `_far` (orange), `_gone`.
+  **Found playing:** the first warning (`rt85_dva_sd_inner`) was her bunny on a thin ring on the mech's own bunny decal: unreadable;
+  now a thick pulsing ring. Right after the eject she's above the mech, so the icon sits low near the ult meter (`rt85_dva_sd_b`).
+- Pharah: `rt85_pharah_full` (none), `_hover`, `_low`, `_empty`, `_jumpjet`, `_refill` (none). **Found playing:** the first version,
+  a bar under the crosshair, ran into her launcher (the first `rt85_pharah_hover`, overwritten): now the arc.
+- Tracer: `rt85_tracer_3`, `_2`, `_0`, `_recall` (0), `_refill` (1, matching the box's corner), `_3p` (none in third person).
+- Cassidy: `rt85_cass_ready`, `_deadeye1` (6.1), `_deadeye4` (3.0), `_cancelled` (none after RMB), `_firing` (none while firing), `_after`.
+- Junkrat: `rt85_junk_mine_trap` (both icons), `_turned`, `_tire_cast` (9.1, no prompt before the arm), `_tire_armed`, `_tire_late`,
+  `_tire_after` (none). Nitro Boost's prompt not seen (the perk not taken).
+**Not tried:** night, GUI scales, the physical mouse, a second player (another's Self-Destruct), real fights, Nitro Boost, Extended
+Boosters, water / Nether.
 
 ## Cancels (#112, 2026-11-05)
 Juno's lock now says "[LMB] FIRE [RMB] CANCEL" (#1051), the buttons doing what they say; a player held by Life Grip sees "[SPACE] CANCEL" from 0.65 s (21EE #617). This closes the two "not built" lines above: [juno](../heroes/juno.md), [lifeweaver](../heroes/lifeweaver.md).
