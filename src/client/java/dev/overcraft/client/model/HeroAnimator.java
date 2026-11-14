@@ -1750,12 +1750,53 @@ public final class HeroAnimator {
 		names.addAll(List.of("add_aim" + v, "add_aim", blaster ? "add_idle_blaster" : thorns ? "add_idle_thorn" : "add_idle", "add_stand",
 			"add_layer_663"));
 		for (String name : names) {
-			AimSheet sheet = AimSheet.of(model, clip(model, name));
+			AimSheet sheet = AimSheet.of(model, clip(model, sheetName(name)));
 			if (sheet != null) {
 				return sheet;
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * The newer heroes' sheets under the names their clip maps gave them. A clip map names a clip from the first alias that holds it,
+	 * so a sheet the stand shares with the jump came out "add_jump_takeoff". Each is the clip bound to the aim's pose sheet node
+	 * (STU_B391A063 / AnimationPose2d, X mode 6, Y mode 5) under the alias that plays the state, read from research\<hero>\resolved
+	 * (2026-11-13, #95; techniques/animation/aim_sheets.md). A key ending in "_" renames the directions (add_aim_run_left).
+	 */
+	private static final Map<String, Map<String, String>> SHEET_NAMES = Map.of(
+		// set 0002: the stand (alias 1) AB, the crouch (56) 5F; her run (alias 5) shares the crouch-walk tree's sheets E7 ...
+		"tracer", Map.of("add_aim", "add_stand_se0", "add_aim_crouch", "add_crouch_tree_sm0", "add_aim_run", "add_crouch_walk",
+			"add_aim_run_", "add_crouch_walk_"),
+		// set 001B: the stand 44B, the run (5) 3D2 ...
+		"pharah", Map.of("add_aim", "add_stand_se0", "add_aim_run", "add_move", "add_aim_run_", "add_move_"),
+		// set 00FB: his stand (1 > 803EC0B3, the idle's) 12F3; the run (803EC161, the run's) 1425 forward, 1424 ... the others; the
+		// jump (803EC15D, the jump's) 622B forward
+		"cassidy", Map.of("add_aim", "add_jump_still_takeoff", "add_aim_run", "add_move_3", "add_aim_run_", "add_move_",
+			"add_aim_jump", "add_jump_takeoff_2"),
+		// set 0372: the stand, the crouch and the jump all 2C5B; the run (5) 3133 ...
+		"junkrat", Map.of("add_aim", "add_jump_still_takeoff", "add_aim_run", "add_move", "add_aim_run_", "add_move_"),
+		// set 0282, the MEKA: the stand (1 > 80A08045, the idle's) 2375; the run (80A08053, the run's) 3171 on all eight
+		"dva", Map.of("add_aim", "add_jump_takeoff", "add_aim_run", "add_move_2"),
+		// set 048A, the pilot: the stand 322E, the run (96) 321F ..., the jump 3218
+		"dva_pilot", Map.of("add_aim", "add_stand_se0", "add_aim_run", "add_move", "add_aim_run_", "add_move_", "add_aim_jump",
+			"add_jump_takeoff"));
+	private @Nullable Map<String, String> sheetNames;
+
+	private String sheetName(String name) {
+		if (sheetNames == null) {
+			return name;
+		}
+		String exact = sheetNames.get(name);
+		if (exact != null) {
+			return exact;
+		}
+		for (Map.Entry<String, String> e : sheetNames.entrySet()) {
+			if (e.getKey().endsWith("_") && name.startsWith(e.getKey())) {
+				return e.getValue() + name.substring(e.getKey().length());
+			}
+		}
+		return name;
 	}
 
 	/** Dev only ("aimsheets"): the sheet in use now. */
@@ -1827,7 +1868,15 @@ public final class HeroAnimator {
 		this.sojourn = sojourn;
 		this.cassidy = "cassidy".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		this.sigma = "sigma".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
-		int form = entity instanceof net.minecraft.world.entity.player.Player p && dev.overcraft.hero.HeroManager.heroMode(p)
+		String heroId = entity.getAttached(dev.overcraft.hero.HeroManager.HERO);
+		Map<String, String> names = heroId == null ? null : SHEET_NAMES.get("dva".equals(heroId)
+			&& entity instanceof net.minecraft.world.entity.player.Player p && dev.overcraft.dva.Dva.pilotBody(p) ? "dva_pilot" : heroId);
+		if (names != sheetNames) {
+			// another hero (or D.Va's other body): the picks made under the last one's names may have found nothing (Cassidy after Pharah)
+			sheetNames = names;
+			aimSheetPicks.clear();
+		}
+		int form =entity instanceof net.minecraft.world.entity.player.Player p && dev.overcraft.hero.HeroManager.heroMode(p)
 			? dev.overcraft.dva.Dva.form(p) : -1;
 		if (form != dvaForm) {
 			// the eject (016C: 026A #366's 0x439) after the wreck and on Self-Destruct's cast (0B2F #271), both from the mech (#132)
@@ -2330,11 +2379,20 @@ public final class HeroAnimator {
 				boolean[] aim = new boolean[upper.length];
 				for (int i = 0; i < aim.length; i++) {
 					String name = m.nodeNames[i];
-					aim[i] = upper[i] && (!name.startsWith("bone_") || name.equals("bone_0605") || name.equals("bone_0606"));
+					aim[i] = upper[i] && (!name.startsWith("bone_") || name.equals("bone_0605") || name.equals("bone_0606")
+						|| MEKA_PIVOTS.contains(name) && m.parent[i] >= 0 && MEKA_PIVOT_PARENTS.contains(m.nodeNames[m.parent[i]]));
 				}
 				return aim;
 			});
 		}
+
+		/**
+		 * D.Va's MEKA aims its Fusion Cannons on these: bone_0099 / bone_009A under her wrists, bone_08FD under Spine_1. Her stand's
+		 * sheet (2375) turns them 110-121 degrees end to end; without them the cannons stayed level (#95). Only under those parents:
+		 * Sojourn's and Jetpack Cat's bones of the same names are other things.
+		 */
+		private static final java.util.Set<String> MEKA_PIVOTS = java.util.Set.of("bone_0099", "bone_009A", "bone_08FD");
+		private static final java.util.Set<String> MEKA_PIVOT_PARENTS = java.util.Set.of("Wrist_L", "Wrist_R", "Spine_1");
 
 		/**
 		 * Bones off the pelvis that her actions still move: Brigitte's flail-head chain (bone_0605 < Pelvis, bone_0606 = her

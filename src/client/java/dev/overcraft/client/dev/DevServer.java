@@ -663,7 +663,7 @@ public final class DevServer {
 			case "aimcheck" -> {
 				// dev only: the gun as posed now: the barrel's pitch (+ down) from its origin to its muzzle (hp 0006), and how far the origin is from the hand, in her model's space
 				dev.overcraft.hero.Hero hero = dev.overcraft.client.ClientHero.hero();
-				var loaded = hero == null ? null : dev.overcraft.client.model.HeroModels.get(hero);
+				var loaded = hero == null ? null : dev.overcraft.client.model.HeroModels.of(hero, player);
 				dev.overcraft.client.model.HeroAnimator animator = dev.overcraft.client.model.HeroAnimator.of(player);
 				float now = player.level().getGameTime() / 20f;
 				var placed = loaded == null ? null : dev.overcraft.client.model.HeroWeapon.place(hero, animator, loaded.model(), false, now);
@@ -681,7 +681,9 @@ public final class DevServer {
 			case "aimsheets" -> {
 				// dev only: "aimsheets [hero]": the additive clips of a hero's model that measure as aim sheets, and their pitch lines
 				dev.overcraft.hero.Hero hero = arg.isBlank() ? dev.overcraft.client.ClientHero.hero() : dev.overcraft.hero.Hero.byId(arg.trim());
-				var loaded = hero == null ? null : dev.overcraft.client.model.HeroModels.get(hero);
+				// no hero named: the body the player is in now (D.Va's pilot out of her MEKA)
+				var loaded = hero == null ? null : arg.isBlank() ? dev.overcraft.client.model.HeroModels.of(hero, player)
+					: dev.overcraft.client.model.HeroModels.get(hero);
 				com.google.gson.JsonObject list = new com.google.gson.JsonObject();
 				if (loaded != null) {
 					loaded.model().clips.keySet().stream().sorted().filter(n -> n.startsWith("add_")).forEach(n -> {
