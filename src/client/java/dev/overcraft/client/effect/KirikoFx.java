@@ -27,6 +27,46 @@ import org.jspecify.annotations.Nullable;
  * survey's unless marked "ours". Played by EffectPayload from the server, or by renderers (trails, the fox's petals).
  */
 public final class KirikoFx {
+	/**
+	 * Her art, made ahead as she's picked (HeroFxArt, #128): each mask and palette her effects below ask for, from the log's "made on
+	 * first use" lines over every button, and the homing ofuda's gold, the rush's bands and the swift step's dust read off the code.
+	 */
+	public static final java.util.List<EffectArt.Art> ART = java.util.List.of(
+		new EffectArt.Art("band", Palette.TEAL, false),
+		new EffectArt.Art("dome_noise", Palette.SUZU_BLUE, false),
+		new EffectArt.Art("dome_noise", Palette.WHITE, false),
+		new EffectArt.Art("dust", Palette.NATURAL, true),
+		new EffectArt.Art("flower", Palette.GOLD, true),
+		new EffectArt.Art("flower", Palette.TEAL, true),
+		new EffectArt.Art("glint", Palette.CYAN, false),
+		new EffectArt.Art("glow", Palette.CYAN, false),
+		new EffectArt.Art("glow", Palette.CYAN, true),
+		new EffectArt.Art("glow", Palette.GOLD, true),
+		new EffectArt.Art("glow", Palette.TEAL, false),
+		new EffectArt.Art("glow", Palette.TEAL, true),
+		new EffectArt.Art("glow_hot", Palette.SUZU_BLUE, false),
+		new EffectArt.Art("glow_hot", Palette.TEAL, false),
+		new EffectArt.Art("petal", Palette.TEAL, true),
+		new EffectArt.Art("ribbon", Palette.CYAN, false),
+		new EffectArt.Art("ribbon", Palette.CYAN, true),
+		new EffectArt.Art("ribbon", Palette.GOLD, true),
+		new EffectArt.Art("ribbon", Palette.TEAL, false),
+		new EffectArt.Art("ribbon", Palette.TEAL, true),
+		new EffectArt.Art("ring_line", Palette.CYAN, true),
+		new EffectArt.Art("ring_line", Palette.SUZU_BLUE, false),
+		new EffectArt.Art("ring_line", Palette.TEAL, true),
+		new EffectArt.Art("smoke#48", Palette.GOLD, true),
+		new EffectArt.Art("smoke#48", Palette.TEAL, true),
+		new EffectArt.Art("spark#4", Palette.CYAN, false),
+		new EffectArt.Art("spark#4", Palette.TEAL, false),
+		new EffectArt.Art("sparkle_soft", Palette.GOLD, true),
+		new EffectArt.Art("speed_line", Palette.TEAL, true),
+		new EffectArt.Art("talisman", Palette.TEAL, true),
+		new EffectArt.Art("talisman_flight#4", Palette.GOLD, true),
+		new EffectArt.Art("talisman_flight#4", Palette.TEAL, true));
+	/** As an enemy sees her: every colour the enemy red, blended (p, Fx). */
+	public static final java.util.List<EffectArt.Art> ART_ENEMY = ART.stream().filter(a -> a.palette() != Palette.NATURAL
+		&& a.palette() != Palette.WHITE).map(a -> new EffectArt.Art(a.mask(), Palette.ENEMY, true)).distinct().toList();
 	/** Whether the effect being made is an enemy hero's (Overwatch draws an enemy's effects in red). */
 	private static boolean enemy;
 

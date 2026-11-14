@@ -151,6 +151,7 @@ public class OvercraftClient implements ClientModInitializer {
 				dev.overcraft.client.effect.SombraFx.tick(client);
 				ClientJuno.tick(client);
 				ClientSojourn.tick(client);
+				dev.overcraft.client.effect.HeroFxArt.tick(client);
 				ClientPharah.tick(client);
 			ClientSigma.tick(client);
 				dev.overcraft.client.effect.BrigitteFx.tick(client);

@@ -1,0 +1,32 @@
+HERO sigma fps 30 pick settle 8 s: frames 208, max 95.3 ms, over 50: [95.3, 63.4] art left 0 bytes 29676848
+  primary_fire   frames  79  max   49.1 ms  over 50: []                           first-use misses 0
+  secondary_fire frames  79  max   51.7 ms  over 50: [51.7]                       first-use misses 0
+  ability_1      frames  71  max   43.3 ms  over 50: []                           first-use misses 0
+  ability_2      frames  70  max   40.3 ms  over 50: []                           first-use misses 0
+  ultimate       frames  89  max   39.0 ms  over 50: []                           first-use misses 0
+  reload         frames  71  max   35.4 ms  over 50: []                           first-use misses 0
+  quick_melee    frames  71  max   37.5 ms  over 50: []                           first-use misses 0
+HERO juno fps 30 pick settle 8 s: frames 208, max 93.1 ms, over 50: [93.1] art left 0 bytes 26345419
+  primary_fire   frames  79  max   50.3 ms  over 50: [50.3]                       first-use misses 0
+  secondary_fire frames  80  max   37.2 ms  over 50: []                           first-use misses 0
+  ability_1      frames  70  max   36.4 ms  over 50: []                           first-use misses 0
+  ability_2      frames  71  max   51.7 ms  over 50: [51.7]                       first-use misses 0
+  ultimate       frames  89  max   40.4 ms  over 50: []                           first-use misses 0
+  reload         frames  71  max   35.4 ms  over 50: []                           first-use misses 0
+  quick_melee    frames  70  max   35.4 ms  over 50: []                           first-use misses 0
+HERO ana fps 30 pick settle 8 s: frames 202, max 113.7 ms, over 50: [113.7, 60.6] art left 0 bytes 8940162
+  primary_fire   frames  79  max   48.1 ms  over 50: []                           first-use misses 0
+  secondary_fire frames  77  max  106.5 ms  over 50: [106.5]                      first-use misses 0
+  ability_1      frames  71  max   35.7 ms  over 50: []                           first-use misses 0
+  ability_2      frames  71  max   35.8 ms  over 50: []                           first-use misses 0
+  ultimate       frames  90  max   35.6 ms  over 50: []                           first-use misses 0
+  reload         frames  70  max   35.7 ms  over 50: []                           first-use misses 0
+  quick_melee    frames  71  max   39.0 ms  over 50: []                           first-use misses 0
+HERO kiriko fps 30 pick settle 8 s: frames 204, max 64.5 ms, over 50: [64.5] art left 0 bytes 25160296
+  primary_fire   frames  80  max   46.7 ms  over 50: []                           first-use misses 0
+  secondary_fire frames  80  max   56.9 ms  over 50: [56.9]                       first-use misses 0
+  ability_1      frames  69  max   62.9 ms  over 50: [62.9]                       first-use misses 0
+  ability_2      frames  71  max   35.5 ms  over 50: []                           first-use misses 0
+  ultimate       frames  89  max   43.9 ms  over 50: []                           first-use misses 0
+  reload         frames  71  max   36.0 ms  over 50: []                           first-use misses 0
+  quick_melee    frames  71  max   36.4 ms  over 50: []                           first-use misses 0

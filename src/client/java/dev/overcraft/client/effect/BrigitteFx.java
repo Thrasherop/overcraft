@@ -29,6 +29,63 @@ import java.util.Map;
  * in flight and its heal are drawn each client tick from what it sent.
  */
 public final class BrigitteFx {
+	/** Its art, made ahead as the hero is picked (HeroFxArt, #128): what its first uses made (the client log) and what this class names. */
+	public static final java.util.List<EffectArt.Art> ART = java.util.List.of(
+		new EffectArt.Art("brigitte_barrier_flicker#16", Palette.BRIGITTE_ENERGY_BLUE_N, false),
+		new EffectArt.Art("brigitte_barrier_frame", Palette.BRIGITTE_ENERGY_BLUE_N, false),
+		new EffectArt.Art("brigitte_barrier_hex", Palette.BRIGITTE_ENERGY_BLUE_N, false),
+		new EffectArt.Art("brigitte_barrier_sweep", Palette.BRIGITTE_ENERGY_BLUE_N, false),
+		new EffectArt.Art("brigitte_chain_band", Palette.BRIGITTE_CHAIN_N, false),
+		new EffectArt.Art("brigitte_cloud_a", Palette.BRIGITTE_RALLY_DOME_N, true),
+		new EffectArt.Art("brigitte_dust#2", Palette.NATURAL, false),
+		new EffectArt.Art("brigitte_energy_squares", Palette.BRIGITTE_ENERGY_BLUE_N, false),
+		new EffectArt.Art("brigitte_flare_star", Palette.BRIGITTE_RALLY_FLARE_N, false),
+		new EffectArt.Art("brigitte_heal_dot", Palette.NATURAL, false),
+		new EffectArt.Art("brigitte_heal_swirl", Palette.NATURAL, false),
+		new EffectArt.Art("brigitte_hex_pattern", Palette.BRIGITTE_BASH_SHIELD_N, false),
+		new EffectArt.Art("brigitte_inspire_wisps", Palette.BRIGITTE_INSPIRE, false),
+		new EffectArt.Art("brigitte_rally_armor", Palette.BRIGITTE_RALLY_ARMOR, false),
+		new EffectArt.Art("brigitte_rally_decal_ring", Palette.BRIGITTE_RALLY_DECAL_N, false),
+		new EffectArt.Art("brigitte_shield_front", Palette.BRIGITTE_BASH_EDGE_N, false),
+		new EffectArt.Art("brigitte_shield_glow", Palette.BRIGITTE_BREAK_SHIELD_N, false),
+		new EffectArt.Art("brigitte_smoke#32", Palette.BRIGITTE_WHIP_SMOKE_N, true),
+		new EffectArt.Art("brigitte_smoke_puff#4", Palette.NATURAL, false),
+		new EffectArt.Art("brigitte_soft_blob_b", Palette.BRIGITTE_PACK_HEAL_GLOW_N, true),
+		new EffectArt.Art("brigitte_spark_streak#2", Palette.BRIGITTE_WHIP_SPARK, false),
+		new EffectArt.Art("brigitte_stun_halo", Palette.NATURAL, false),
+		new EffectArt.Art("brigitte_stun_star", Palette.NATURAL, false),
+		new EffectArt.Art("brigitte_swing_band", Palette.BRIGITTE_SWING_N, false),
+		new EffectArt.Art("cat_soft", Palette.BRIGITTE_BASH_FLASH, false),
+		new EffectArt.Art("cat_soft", Palette.BRIGITTE_BASH_SPARK, false),
+		new EffectArt.Art("cat_soft", Palette.BRIGITTE_WHIP_SPARK, false),
+		new EffectArt.Art("cat_soft", Palette.BRIGITTE_WHIP_SPARK_ALT, false),
+		new EffectArt.Art("glow", Palette.BRIGITTE_PACK_DOME_N, false),
+		new EffectArt.Art("glow", Palette.BRIGITTE_RALLY_GOLD_N, false),
+		new EffectArt.Art("lw_lens", Palette.BRIGITTE_PACK_ARRIVE, false),
+		new EffectArt.Art("lw_lens", Palette.BRIGITTE_RALLY_LENS, false),
+		new EffectArt.Art("mercy_glow", Palette.BRIGITTE_RALLY_ALLY_N, false),
+		new EffectArt.Art("spark#4", Palette.BRIGITTE_BASH_STREAK, false),
+		new EffectArt.Art("spark#4", Palette.BRIGITTE_RALLY_GOLD_N, false),
+		new EffectArt.Art("spark#4", Palette.BRIGITTE_WHIP_SPARK, false));
+	/** And as an enemy sees it, for a client seeing another player play the hero. */
+	public static final java.util.List<EffectArt.Art> ART_ENEMY = java.util.List.of(
+		new EffectArt.Art("brigitte_chain_band", Palette.BRIGITTE_CHAIN_ENEMY_N, false),
+		new EffectArt.Art("brigitte_cloud_a", Palette.BRIGITTE_RALLY_DOME_ENEMY_N, true),
+		new EffectArt.Art("brigitte_flare_star", Palette.BRIGITTE_RALLY_FLARE_ENEMY_N, false),
+		new EffectArt.Art("brigitte_hex_pattern", Palette.BRIGITTE_BASH_SHIELD_ENEMY_N, false),
+		new EffectArt.Art("brigitte_inspire_wisps", Palette.ENEMY, false),
+		new EffectArt.Art("brigitte_rally_armor", Palette.BRIGITTE_RALLY_ARMOR_ENEMY_N, false),
+		new EffectArt.Art("brigitte_rally_decal_ring", Palette.BRIGITTE_RALLY_DECAL_ENEMY_N, false),
+		new EffectArt.Art("brigitte_shield_front", Palette.BRIGITTE_BASH_EDGE_ENEMY_N, false),
+		new EffectArt.Art("brigitte_shield_glow", Palette.BRIGITTE_BREAK_SHIELD_ENEMY_N, false),
+		new EffectArt.Art("brigitte_soft_blob_b", Palette.ENEMY, true),
+		new EffectArt.Art("brigitte_swing_band", Palette.BRIGITTE_SWING_ENEMY_N, false),
+		new EffectArt.Art("glow", Palette.BRIGITTE_RALLY_GOLD_ENEMY_N, false),
+		new EffectArt.Art("glow", Palette.ENEMY, false),
+		new EffectArt.Art("lw_lens", Palette.BRIGITTE_RALLY_LENS_ENEMY, false),
+		new EffectArt.Art("lw_lens", Palette.ENEMY, false),
+		new EffectArt.Art("spark#4", Palette.BRIGITTE_RALLY_GOLD_ENEMY_N, false));
+
 	private static final Vec3 UP = new Vec3(0, 1, 0);
 
 	/** Whip Shot's head: launched from, along, when; where it turned back, when, for how long (null: still going out). */
