@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  * "bot press <name> <ability1|ability2|ultimate|reload|melee>" (its kit's own press, along the way it faces: /tp it to aim it), "bot charge
  * <name> <ult points>", "bot emote <name> <id>" (Comms' own: what the wheel sends), "bot move <name> x y z", "bot seen <name>" (this client's
  * animator of it: its emote, Catnapper's aim), "bot showstate on|off" (#96's rule, to show what it does), "bot healcut <name>", "bot fx <name> <effect> <ticks>", "bot rays" (Juno's rays this client
- * holds), "bot roll [trace]" (the camera's roll, each frame with trace), "bot fix <119|129|rally|wave> on|off", "bot cc <name|me>" (the statuses on it), "bot held <name|me>", "bot playing [text]" (the sounds running in this client).
+ * holds), "bot roll [trace]" (the camera's roll, each frame with trace), "bot fix <119|129|140|rally|wave> on|off", "bot cc <name|me>" (the statuses on it), "bot held <name|me>", "bot playing [text]" (the sounds running in this client).
  */
 final class DevBot {
 	private static final java.util.List<String> SHOT_TRACE = new java.util.concurrent.CopyOnWriteArrayList<>();
@@ -110,6 +110,8 @@ final class DevBot {
 					dev.overcraft.hero.Combat.devCleanseOff = !on;
 				} else if (a[1].equals("129")) {
 					dev.overcraft.hero.Voice.devPainEveryHit = !on;
+				} else if (a[1].equals("140")) {
+					dev.overcraft.potg.PotgRecorder.devSweepOff = !on;
 				} else if (a[1].equals("wave")) {
 					dev.overcraft.brigitte.Brigitte.devWaveThrough = !on;
 				} else {

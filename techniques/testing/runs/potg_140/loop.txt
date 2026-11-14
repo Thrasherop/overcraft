@@ -1,0 +1,96 @@
+=== phase loop 19:20:05
+world p140b {'screen': 'HeroSelectScreen', 'x': -4.5, 'y': -60.0, 'z': 4.5, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True}
+fix on {'140': True}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+add b2 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+remove b2 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+add b2 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+remove b2 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+add b2 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+remove b2 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+add b2 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+remove b2 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+add b2 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+remove b2 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+add b2 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+remove b2 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+add b2 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+remove b2 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+add b2 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+remove b2 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+add b2 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+remove b2 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+add b2 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+remove b2 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+add b2 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+remove b2 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+add b2 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+remove b2 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+add b2 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+remove b2 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+add b2 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+remove b2 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+add b2 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+remove b2 {}
+disk after 15 cycles: [19:22:16] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 87239 KB; f189a118[seg null raw 0 KB, 0 zips 0 KB, folder 40376 KB, highlights 0] 8e6e2a8c[seg null raw 0 KB, 0 zips 0 KB, folder 36810 KB, highlights 0] c6f66a25[seg seg-1 raw 9608 KB, 0 zips 0 KB, folder 7618 KB, highlights 0]
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+disk after 10 cycles: [19:22:33] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 106474 KB; f189a118[seg null raw 0 KB, 0 zips 0 KB, folder 55870 KB, highlights 0] 8e6e2a8c[seg null raw 0 KB, 0 zips 0 KB, folder 40602 KB, highlights 0] c6f66a25[seg seg-1 raw 10338 KB, 0 zips 0 KB, folder 7618 KB, highlights 0]
+  log [19:23:03] [Server thread/INFO] (Minecraft) System chat: Sprint completed with 412 ticks per second, or 2.43 ms per tick
+  log [19:23:03] [Render thread/INFO] (Minecraft) [System] [CHAT] [Server: Sprint completed with 412 ticks per second, or 2.43 ms per tick]
+after sprint {'screen': 'HeroSelectScreen', 'x': -4.5, 'y': -60.0, 'z': 4.5, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True}
+survived [19:23:06] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 7619 KB; f189a118[seg null raw 0 KB, 0 zips 0 KB, folder 0 KB, highlights 0] 8e6e2a8c[seg null raw 0 KB, 0 zips 0 KB, folder 0 KB, highlights 0] c6f66a25[seg seg-3 raw 8135 KB, 0 zips 0 KB, folder 7618 KB, highlights 0]
+re-add {'ok': True, 'hero': 'KIRIKO'}
+disk with b1 back [19:23:09] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 15237 KB; f189a118[seg seg-26 raw 7866 KB, 0 zips 0 KB, folder 7618 KB, highlights 0] 8e6e2a8c[seg null raw 0 KB, 0 zips 0 KB, folder 0 KB, highlights 0] c6f66a25[seg seg-3 raw 8149 KB, 0 zips 0 KB, folder 7618 KB, highlights 0]
+  log [19:23:23] [Server thread/INFO] (Minecraft) System chat: Sprint completed with 438 ticks per second, or 2.28 ms per tick
+  log [19:23:23] [Render thread/INFO] (Minecraft) [System] [CHAT] [Server: Sprint completed with 438 ticks per second, or 2.28 ms per tick]
+after sprint {'screen': 'HeroSelectScreen', 'x': -4.5, 'y': -60.0, 'z': 4.5, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True}
+b1 kept past a snapshot [19:23:26] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 15237 KB; f189a118[seg seg-27 raw 7898 KB, 0 zips 0 KB, folder 7618 KB, highlights 0] 8e6e2a8c[seg null raw 0 KB, 0 zips 0 KB, folder 0 KB, highlights 0] c6f66a25[seg seg-4 raw 8148 KB, 0 zips 0 KB, folder 7618 KB, highlights 0]
+disk with b1 gone [19:23:27] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 7619 KB; f189a118[seg null raw 0 KB, 0 zips 0 KB, folder 0 KB, highlights 0] 8e6e2a8c[seg null raw 0 KB, 0 zips 0 KB, folder 0 KB, highlights 0] c6f66a25[seg seg-4 raw 8152 KB, 0 zips 0 KB, folder 7618 KB, highlights 0]

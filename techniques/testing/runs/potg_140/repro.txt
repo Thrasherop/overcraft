@@ -1,0 +1,12 @@
+=== phase repro 19:16:42
+world p140a {'screen': 'HeroSelectScreen', 'x': 1.5, 'y': -60.0, 'z': -6.5, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True}
+fix off {'140': False}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+add b1 {'ok': True, 'hero': 'KIRIKO'}
+remove b1 {}
+disk after 3 cycles: [19:18:30] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 15423 KB; f189a118[seg seg-1 raw 8043 KB, 0 zips 0 KB, folder 7775 KB, highlights 0] c6f66a25[seg seg-1 raw 8285 KB, 0 zips 0 KB, folder 7647 KB, highlights 0]
+disk [19:18:30] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 15423 KB; f189a118[seg seg-1 raw 8043 KB, 0 zips 0 KB, folder 7775 KB, highlights 0] c6f66a25[seg seg-1 raw 8294 KB, 0 zips 0 KB, folder 7647 KB, highlights 0]
+CRASH: java.lang.IllegalStateException: Tried to get player before player joined
