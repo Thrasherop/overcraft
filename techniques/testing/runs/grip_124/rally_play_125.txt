@@ -1,0 +1,28 @@
+=== grip124 21:48:37 ONLY ['rally'] MODES ['on']
+##### bot fix 124 on {'124': True}
+--- #125 Rally: real client Brigitte, real Q (harness key), a bot Mercy ally 3 m off
+=== grip124 21:49:11 ONLY ['rally'] MODES ['on']
+##### bot fix 124 on {'124': True}
+--- #125 Rally: real client Brigitte, real Q (harness key), a bot Mercy ally 3 m off
+  before: hp 20.0 / 20.0 shield 75.0 ult 2700.0 see g125_abs_1.png
+  +1.6 s: hp 28.0 / 28.0 shield 175.0 her see g125_abs_2.png ally see g125_abs_3.png
+  +4.6 s: hp 28.0 / 28.0 shield 175.0 her see g125_abs_4.png ally see g125_abs_5.png
+  after 75 damage: hp 22.56 / 28.0 shield 106.99999
+  after Rally: hp 20.0 / 20.0 shield 43.000008 her see g125_abs_6.png ally see g125_abs_7.png
+=== done 21:49:33
+=== grip124 21:58:45 ONLY ['rally'] MODES ['off', 'on']
+##### bot fix 124 off {'124': False}
+--- #125 Rally: real client Brigitte, real Q (harness key), a bot Mercy ally 3 m off; bot fixoff {'fixoff': True}
+  before: hp 20.0 / 20.0 shield 75.0 ult 2700.0 see g125_abs_1.png
+  +1.6 s: hp 28.0 / 28.0 shield 175.0 her see g125_abs_2.png ally see g125_abs_3.png
+  +4.6 s: hp 28.0 / 28.0 shield 175.0 her see g125_abs_4.png ally see g125_abs_5.png
+  after 75 damage: hp 22.56 / 28.0 shield 106.99999
+  after Rally: hp 20.0 / 20.0 shield 43.000008 her see g125_abs_6.png ally see g125_abs_7.png
+##### bot fix 124 on {'124': True}
+--- #125 Rally: real client Brigitte, real Q (harness key), a bot Mercy ally 3 m off; bot fixoff {'fixoff': False}
+  before: hp 20.0 / 20.0 shield 75.0 ult 2700.0 see g125_abs_8.png
+  +1.6 s: hp 28.0 / 28.0 shield 175.0 her see g125_abs_9.png ally see g125_abs_10.png
+  +4.6 s: hp 28.0 / 28.0 shield 175.0 her see g125_abs_11.png ally see g125_abs_12.png
+  after 75 damage: hp 22.56 / 28.0 shield 106.99999
+  after Rally: hp 20.0 / 20.0 shield 75.0 her see g125_abs_13.png ally see g125_abs_14.png
+=== done 21:59:29

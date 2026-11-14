@@ -168,6 +168,24 @@ public final class Sleep {
 		return told;
 	}
 
+	/**
+	 * Life Grip ends Hyper Strike's float (#124: W Status effect "Removes knockback ... and gravity effects"; W Sigma rev 381123
+	 * "Affected targets ignore gravity"). A plain knock-down stays (LifeGrip.free).
+	 */
+	public static boolean unfloat(LivingEntity entity) {
+		Sleeper s = SLEEPERS.get(entity.getUUID());
+		if (s == null || s.gravity == 1) {
+			return false;
+		}
+		wake(s);
+		Combat.buff(entity, net.minecraft.world.entity.ai.attributes.Attributes.GRAVITY, FLOAT, 0, 0);
+		if (entity.level() instanceof net.minecraft.server.level.ServerLevel level) {
+			Effects.play(level, "brigitte_stun_end", entity.position(), Vec3.ZERO, entity, 0, null);
+			Effects.play(level, "sigma_lift_end", entity.position(), Vec3.ZERO, entity, 0, null);
+		}
+		return true;
+	}
+
 	/** Lets a player's client go, unless something else still holds them (a Flux's first 0.4 s, or a hold here). */
 	public static void release(ServerPlayer player) {
 		if (Holds.letsGo(SLEEPERS.containsKey(player.getUUID()), dev.overcraft.sigma.GraviticFlux.holding(player))) {

@@ -303,7 +303,9 @@ public final class Brigitte implements HeroKit {
 		}
 		if ((Ow.ticks(RALLY_TIME) - s.rallyTicks) % Ow.ticks(RALLY_PULSE) == 0) {
 			for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(RALLY_RADIUS),
-				// not herself (#125): BZ 2023-04-11 "Brigitte no longer gradually builds temporary health like her nearby allies", W "(allies)". The data leans the other way (12BE #158's filter 6, M; 12C1 #178 skips looks on the sender, no gate on the pool): not firm enough against that
+				// not herself (#125): her bonus is the 100 armor above, not this. BZ 2023-04-11 "Brigitte now gains 100 restorable armor health pool for the duration of Rally" and
+				// "no longer gradually builds temporary health like her nearby allies", no Rally change in BZ since (read to 2026-11); W Brigitte rev 381389 "armor = 100 (self)",
+				// "Brigitte herself does not gain overhealth over time"; the owner, 2026-11-13: "yes she gets more health. Armor iirc." The data leans to the pool on her too (12BE #158's filter 6, M): not firm enough against all that
 				e -> e.isAlive() && Allies.isAlly(player, e) && e != player && e.distanceTo(player) <= RALLY_RADIUS
 					&& Combat.inSight(player.level(), player.getEyePosition(), e, player))) {
 				// each 15 lasts 30 s (ours: one pool, held 30 s from the last, then gone)
@@ -331,7 +333,15 @@ public final class Brigitte implements HeroKit {
 		}
 		s.rallyTicks = 0;
 		s.rallyCast = -1;
-		if (s.extraArmor > 0) {
+		if (s.extraArmor > 0 && !dev.overcraft.hero.Combat.devFixOff) {
+			// what's left of the 100 goes, off her health's top with it (it sits on top: hits took it first). Set past Shields' split:
+			// clamped through it, the loss came off her own armor too, 75 -> 43, her health past its 175 (#125, played)
+			double bonusLeft = Math.max(0, s.shield - (s.hero == null ? 0 : s.hero.layer()));
+			s.extraArmor = 0;
+			s.shield -= bonusLeft;
+			dev.overcraft.hero.Shields.setRaw(player, (float) Math.max(Ow.hp(1), player.getHealth() - Ow.hp(bonusLeft)));
+		} else if (s.extraArmor > 0) {
+			// (dev "bot fixoff": as before)
 			s.extraArmor = 0;
 			s.shield = Math.min(s.shield, s.hero == null ? 0 : s.hero.layer());
 		}
