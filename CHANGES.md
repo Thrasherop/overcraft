@@ -4,7 +4,19 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-13: 0.3.44 on next (not on main yet)
+## 2026-11-13: 0.3.45 on next (not on main yet)
+
+- **Fixed a server crash (#140):** a player removed without a disconnect, such as a dev bot, left their Play of the Game
+  recorder running with nobody behind it, and it crashed the server at its next save (up to 5 minutes later). The
+  recorder now closes for anyone no longer in the game.
+- **Kiriko's Protection Suzu clears Cassidy's Flashbang hinder** (#119, #117 and #121 were otherwise done in polish 4).
+  Junkrat's Steel Trap root stays, as in the data and the wiki.
+- Triaged every open issue against next: 20 closed with their evidence (13 fixed bugs, 7 hero issues for heroes in
+  the game). #110 (Sojourn's headshots on pierced targets) played again and closed: the rules work fixed it.
+- Played with the harness's keys. The real-key check of Suzu against a Flashbang was inconclusive: the Flashbang never
+  landed.
+
+## 2026-11-13: 0.3.44
 
 - **A hero's own pushes reach their own screen (#109).** Pushes on other players already did. These used the server's
   speed or `needsSync`, which a player's own client never hears:
