@@ -244,9 +244,11 @@ public final class Lucio implements HeroKit {
 			// its look (11BF): a ring out across the ground and bands rising round him
 			Effects.play((ServerLevel) player.level(), "sound_barrier_cast", player.position(), player);
 			HeroSounds.ultLine(player, OcSounds.LUCIO_ULT_FRIENDLY, OcSounds.LUCIO_ULT_ENEMY, 4);
-			// the small leap (ours: the wiki gives none): the client moves him, so it's sent as his motion
-			player.setDeltaMovement(player.getDeltaMovement().x, Ow.speed(BARRIER_LEAP), player.getDeltaMovement().z);
-			player.syncVelocity = true;
+			// the small leap (ours: the wiki gives none): the client moves him, so it's sent as his motion, keeping the run his
+			// client reports (#109: from the server's stale copy a 5.5 m/s run dropped to 0.64 m/s at the leap)
+			Vec3 run = Combat.motion(player);
+			player.setDeltaMovement(run.x, Ow.speed(BARRIER_LEAP), run.z);
+			Combat.send(player);
 		}
 		if ((pressed & HeroInputPayload.PRESS_RELOAD) != 0 && s.primaryAmmo < AMP_AMMO && s.primaryReload < 0 && s.volleyLeft == 0) {
 			startReload(player, s);

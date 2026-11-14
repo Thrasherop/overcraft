@@ -316,7 +316,7 @@ public final class GraviticFlux {
 		lifted.speed = e.getDeltaMovement();
 		// a fall or the void out of the lift is his kill ("To the void!": kill_feed.md "A death the world deals")
 		Combat.pushed(e, owner, BLOW);
-		Accretion.sendSpeed(e);
+		Combat.send(e);
 		if (e instanceof Mob mob) {
 			// its AI held off while lifted (holds)
 			mob.setTarget(null);
@@ -416,10 +416,9 @@ public final class GraviticFlux {
 				}
 				mob.needsSync = true;
 			} else {
-				// a player moves on their own client: their speed sent to it every tick (Accretion.sendSpeed: a lifted player's
+				// a player moves on their own client: their speed sent to it every tick (Combat.send: a lifted player's
 				// own client never rose, found in the release play), and to the others watching
-				e.needsSync = true;
-				Accretion.sendSpeed(e);
+				Combat.send(e);
 			}
 		}
 	}
