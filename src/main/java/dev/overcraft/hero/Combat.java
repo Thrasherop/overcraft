@@ -289,7 +289,8 @@ public final class Combat {
 	 * Sends a speed just set on {@code target}: to the others watching (needsSync), and at once to its own client when it is a
 	 * player, who moves on it. The tracker's syncVelocity isn't enough: played with two clients, it goes a tick later, after
 	 * their next movement packet has reset the server's copy (Accretion's first version: the rock's knockback reached a player as
-	 * nothing; minecraft_26.md). So the packet goes now, and syncVelocity is cleared for it not to undo this.
+	 * nothing; minecraft_26.md). So the packet goes now, and syncVelocity is cleared for it not to undo this. The one route for
+	 * any speed the server sets on a player, a push on another or a hero's own leap (#109); build it from {@link #motion}.
 	 */
 	public static void send(LivingEntity target) {
 		target.needsSync = true;
