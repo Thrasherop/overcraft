@@ -549,9 +549,17 @@ built-in grips 1.38 / 1.24.
 **Played** (one client, harness keys; before on 5ca5da1 `dvagrab1`, after `dvagrab2`; screenshots at 1.0 / 1.2 / 1.4 / 1.6 / 1.75 s):
 before her hands close in the air in front of the mech's legs (`sheet_h0_grab.png`); after they close on the cockpit's lower rim at 1.2 s
 and on its chest plate at 1.4 s, then the view goes in as the fade starts (`sheet_h1_grab.png`). Third person unchanged (she dives in:
-`h1_3p_13.png`); the wreck, Self-Destruct and others' views use no code this touched. **Open:** at 1.6 s the camera is inside the mech's
-shell while the fade is half way (pink inner faces show through the dark): starting the fade at 1.3-1.4 s would hide it (ours either way);
-an Overwatch side by side; real keys.
+`h1_3p_13.png`); the wreck, Self-Destruct and others' views use no code this touched.
+
+**The fade, timed to the shell (same day).** With the new anchor the camera ran into the mech's shell while the fade was half way (pink
+inner faces through the dark). Measured offline by skinning 311F (her body's pieces left out) against 3134's Camera, both from the spawn
+(scratchpad `shell.py`): the nearest shell vertex is 0.50 m at 1.20 s, 0.23 m at 1.30 s, **0.08 m at 1.35 s**, and the camera passes the
+front at 1.45 s. So the fade now runs from **1.2 s** (her hands have closed on the rim) to **fully black at 1.35 s**
+(`DvaStats.CALL_FADE_START` / `CALL_FADE_BLACK`, ours from that measurement), held through the link. Played twice (`dvafade1`, harness keys,
+shots 1.2-1.6 s after the press = 1.0-1.4 s of the clip, `sheet_k1.png`, `sheet_k2.png`): her hands close on the rim and the chest plate,
+then black (k1 at 1.6 fully black; k2 at 1.6 about 90 %, and brightened, `k2_16_bright.png`, only the plate's outside and her hands, no
+inner faces). The harness's shot times wander by about 0.1 s, so the ramp itself was caught only once. **Open:** an Overwatch side by side;
+real keys.
 
 ## Not yet
 Her **visual effects** (111) and the firing / matrix clips; the hologram colours (step 12's open list); real mouse-and-keys play of step 13. Open

@@ -129,7 +129,7 @@ public final class DvaCallView {
 		float now = (player.level().getGameTime() + partialTicks) / 20f;
 		if (a.dvaForm() == Dva.CALLING) {
 			float t = now - a.dvaFormSince() - (float) DvaStats.CALL_CAST;
-			return Math.clamp((t - (float) DvaStats.CALL_FADE_START) / (float) (DvaStats.CALL_LINK - DvaStats.CALL_FADE_START), 0, 1);
+			return Math.clamp((t - (float) DvaStats.CALL_FADE_START) / (float) (DvaStats.CALL_FADE_BLACK - DvaStats.CALL_FADE_START), 0, 1);
 		}
 		if (a.dvaForm() == Dva.MECH) {
 			float since = now - a.dvaLinkedAt();

@@ -64,10 +64,16 @@ public final class DvaStats {
 	 * Her first-person climb in (pilot 1P clip 3134, alias 0xE5, set 0476; played 2 s from the spawn: D 026A #405), whose
 	 * Camera bone is laid out about the mech's spot (it starts 2.06 m behind it and ends inside it): the view follows it (#133).
 	 * The fade to black and back is ours (no fade node in 026A or 0276; 0276 #175 STU_A90C5991 before the mech's 1P spawn is
-	 * unread, L): black from 1.4 s into the climb (the camera reaching the cockpit) to the link at 1.75 s, held until she's
+	 * unread, L): black from 1.2 s into the climb to 1.35 s (CALL_FADE_BLACK), held through the link at 1.75 s until she's
 	 * the mech, then out over 0.35 s as the mech's own view comes up. Ours, measured from the clip's Camera track.
 	 */
-	public static final double CALL_FADE_START = 1.4, CALL_FADE_OUT = 0.35;
+	public static final double CALL_FADE_START = 1.2, CALL_FADE_OUT = 0.35;
+	/**
+	 * Fully black from here (#134): the climb's camera, laid out CALL_VIEW_AHEAD past the spot, comes within 0.08 m of the landed
+	 * mech's shell (311F, her body's pieces left out) at 1.35 s and passes its front at 1.45 s (measured offline by skinning both
+	 * clips, scratchpad shell.py). The fade runs from 1.2 s, once her hands have closed on the rim; ours.
+	 */
+	public static final double CALL_FADE_BLACK = 1.35;
 	/**
 	 * Where her first-person climb (3134) is laid out: 0.79 m past the mech's spot along its facing = the clip camera's start
 	 * 2.06 m (measured from the clip) less the 1.27 m she stands behind the mech (D 026A #434 / #766) (#134) H / M.
