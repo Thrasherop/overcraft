@@ -4,7 +4,22 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-14: 0.3.47 on next (not on main yet)
+## 2026-11-14: 0.3.48 on next (not on main yet)
+
+- **World widgets at the crosshair's level (#85):** Brigitte sees her Repair Pack's icon over each ally it heals, with a
+  ring that empties as the heal runs out (up to two); Sombra sees her Hotfix icon over each ally it heals; Mercy sees
+  the dead one's portrait over the soul her Resurrect would take, with the key under it. Which and when from the data,
+  the look ours. Everything else in #85's list was already drawn. Still missing: Jetpack Cat's icon over her for
+  allies (needs a second player), Hotfix's band on an ally's health bar (we draw no ally health bars).
+- **Tracer's body glow (#91):** her chronal accelerator and boot lines glow; her body's glow mask sits on the
+  model's second UV set, which the glow tool now reads for her (opt-in per material: the other heroes' glows were
+  already right). Her goggle lens glows faintly too. Needs the asset pack's glows rebuilt.
+- Played with real mouse and keys: Tracer picked on the select screen at midnight, front view: the accelerator lit,
+  the rest of her dark; Brigitte's real E on a hurt villager: the icon with a part-full ring over it, gone 2.3 s later
+  with the heal done. Not played by hand: Sombra's and Mercy's widgets (the builder's harness play only), a second
+  player, other skins.
+
+## 2026-11-14: 0.3.47
 
 - **Life Grip pulls allies out of tethers and gravity (#124):** a gripped ally leaves Catnapper's carry, Gravitic Flux's
   lift (no slam), Junkrat's Steel Trap (the trap is removed), and Hyper Strike's float; knock-downs stay. Sources: the
