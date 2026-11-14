@@ -904,6 +904,14 @@ held; harness-driven except the kill; raw rows in [runs_backend](runs_backend/);
 - A mob killing a player for the mob stats (the heroes had resistance): only damage was counted in play.
 - No critique agent has read this step.
 
+**Lesson: a recorder must not outlive its player in the player list (#140, 2026-11-13).** The vendored recorder finds
+its player by UUID each time (`server.playerList.getPlayer`); with nobody there, `level` quietly falls back to the
+overworld but `takeSnapshot` throws, and a snapshot comes every 5 minutes or on a dimension change, so an orphan sits
+silent for up to 5 minutes and then stops the server. Closing it only on `onDisconnect` missed every removal without a
+disconnect (DevBot's `bot remove` is `PlayerList.remove` alone; fake-player mods do the same). So `PotgRecorder.tick`
+first closes any recorder whose player is no longer listed, before the engine ticks. Reproduce such crashes with
+`/tick sprint 6200` instead of waiting 5 minutes. Run: [testing/runs/potg_140](../testing/runs/potg_140/record.md).
+
 ## 5. Risks
 **Performance on the owner's machine** (a hard crash on 2026-11-04 under heavy load):
 - Armed only in a dragon fight, so normal play pays nothing. Bytes bounded per hero: the rolling ring is fixed, the oldest
