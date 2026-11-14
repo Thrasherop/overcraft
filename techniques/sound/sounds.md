@@ -311,6 +311,13 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
   - **Ult picks** 002B #367 (STU_37D754C8, the shared 545C): F1AA 008B enemies, F1AB 048F friends, F1AC 1857 her own (the enemy line's
     text again, as Sojourn's and Sigma's). **Jet Dash has no voice stimulus** (4B92 names none): `pharah.voice.jet_dash` stays empty.
   - Not mapped (direct-hit streak lines 11D4-11D6 on 0023's counter v42868; emote sounds): in the maps' headers.
+- <a id="stops-by-name"></a>**A stop packet stops by name, every copy (#123):** `ClientboundStopSoundPacket` names a sound, so
+  stopping one target's sound for a listener cuts every target's copy that listener hears. When the same event plays on several
+  targets at once (Sleep Dart's bed, Local Anesthetic's dot), send the target's own copy's stop to that target only. Send the others'
+  copy's stop only to listeners that no other live copy reaches, using the range it was sent to (`HeroSounds.at`: its range + 8 m).
+  The cost is that a listener with two copies near hears the ended one out to its file's end. Rules: `Sleep.stopsBed`,
+  `Anesthetic.stops3p`; played: [runs/sleep_sound_123](../testing/runs/sleep_sound_123/record.md). Check with `bot playing` and a
+  `bot fix <n> off` switch, two targets, one ended.
 - **What is still sounding:** the dev `playing` lists the overcraft sounds the engine still plays; a stopped channel stays in
   its map until 1 s after its start, so it asks each channel whether it stopped. Poll it with `heard` to time each loop's end.
 - **Testing sounds finds other bugs:** reading health around his dash's heal showed shields that never took healing

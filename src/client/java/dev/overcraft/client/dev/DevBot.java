@@ -110,6 +110,8 @@ final class DevBot {
 					dev.overcraft.hero.Combat.devCleanseOff = !on;
 				} else if (a[1].equals("129")) {
 					dev.overcraft.hero.Voice.devPainEveryHit = !on;
+				} else if (a[1].equals("123")) {
+					dev.overcraft.hero.Sleep.devStopAll = !on;
 				} else if (a[1].equals("140")) {
 					dev.overcraft.potg.PotgRecorder.devSweepOff = !on;
 				} else if (a[1].equals("wave")) {

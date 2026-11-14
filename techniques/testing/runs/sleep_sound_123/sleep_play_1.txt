@@ -1,0 +1,91 @@
+=== sleep_snd 20:04:43
+--- one sleeper, fix 123 on {'123': True}
+  dart at A (real key ability_1); beds playing: ana.sleep ana.sleep.cast heard: ['ana.sleep.cast -> ana/sleep/cast/0 (SimpleSoundInstance, in the head)', 'ana.sleep.dart.shot -> ana/sleep/dart/shot/5 (SimpleSoundInstance, at 60.0 -58.4 1.0)', 'ana.sleep -> ana/sleep/0 (SimpleSoundInstance, at 57.5 -59.0 8.5)', 'ana.sleep.dart.hit -> ana/sleep/dart/hit/0 (SimpleSoundInstance, in the head)']
+  A damaged (wakes 0.5 s later)
+    +0.25 beds playing: ana.sleep ana.sleep.cast
+    +0.52 beds playing: ana.sleep.cast ana.sleep.wake
+    +0.79 beds playing: ana.sleep.cast ana.sleep.wake
+    +1.05 beds playing: ana.sleep.cast ana.sleep.wake
+    +1.32 beds playing: ana.sleep.wake
+    +1.59 beds playing: -
+    +1.86 beds playing: -
+    +2.12 beds playing: -
+    +2.39 beds playing: -
+    +2.66 beds playing: -
+    +2.93 beds playing: -
+    +3.19 beds playing: -
+    +3.46 beds playing: -
+    +3.73 beds playing: -
+    +4.00 beds playing: -
+    +4.26 beds playing: -
+    +4.53 beds playing: -
+    +4.80 beds playing: -
+    +5.07 beds playing: -
+    +5.33 beds playing: -
+    +5.60 beds playing: -
+    +5.87 beds playing: -
+    +6.14 beds playing: -
+    +6.40 beds playing: -
+    +6.67 beds playing: -
+  heard: ['ana.sleep.wake -> ana/sleep/wake/0 (SimpleSoundInstance, at 57.5 -59.0 8.5)']
+--- two sleepers, fix 123 off {'123': False}
+  dart at A (real key ability_1); beds playing: ana.sleep ana.sleep.cast heard: ['ana.sleep.cast -> ana/sleep/cast/0 (SimpleSoundInstance, in the head)', 'ana.sleep.dart.shot -> ana/sleep/dart/shot/6 (SimpleSoundInstance, at 120.0 -58.4 1.0)', 'ana.sleep -> ana/sleep/0 (SimpleSoundInstance, at 117.5 -59.0 8.5)', 'ana.sleep.dart.hit -> ana/sleep/dart/hit/7 (SimpleSoundInstance, in the head)']
+  dart at B; beds playing: ana.sleep ana.sleep.cast heard: ['ana.sleep.cast -> ana/sleep/cast/0 (SimpleSoundInstance, in the head)', 'ana.sleep.dart.shot -> ana/sleep/dart/shot/3 (SimpleSoundInstance, at 120.5 -58.4 1.1)', 'ana.sleep -> ana/sleep/0 (SimpleSoundInstance, at 123.5 -59.0 8.5)', 'ana.sleep.dart.hit -> ana/sleep/dart/hit/5 (SimpleSoundInstance, in the head)']
+  A damaged (wakes 0.5 s later)
+    +0.25 beds playing: ana.sleep ana.sleep.cast
+    +0.52 beds playing: ana.sleep ana.sleep.cast ana.sleep.wake
+    +0.79 beds playing: ana.sleep.cast ana.sleep.wake
+    +1.05 beds playing: ana.sleep.cast ana.sleep.wake
+    +1.32 beds playing: ana.sleep.wake
+    +1.59 beds playing: -
+    +1.84 beds playing: -
+    +2.10 beds playing: -
+    +2.37 beds playing: -
+    +2.64 beds playing: -
+    +2.90 beds playing: -
+    +3.17 beds playing: -
+    +3.44 beds playing: -
+    +3.71 beds playing: -
+    +3.97 beds playing: -
+    +4.24 beds playing: ana.sleep.wake
+    +4.51 beds playing: ana.sleep.wake
+    +4.77 beds playing: ana.sleep.wake
+    +5.04 beds playing: ana.sleep.wake
+    +5.31 beds playing: -
+    +5.58 beds playing: -
+    +5.84 beds playing: -
+    +6.11 beds playing: -
+    +6.38 beds playing: -
+    +6.65 beds playing: -
+  heard: ['ana.sleep.wake -> ana/sleep/wake/0 (SimpleSoundInstance, at 117.5 -59.0 8.5)', 'ana.sleep.wake -> ana/sleep/wake/0 (SimpleSoundInstance, at 123.5 -59.0 8.5)']
+--- two sleepers, fix 123 on {'123': True}
+  dart at A (real key ability_1); beds playing: ana.sleep ana.sleep.cast heard: ['ana.sleep.cast -> ana/sleep/cast/0 (SimpleSoundInstance, in the head)', 'ana.sleep.dart.shot -> ana/sleep/dart/shot/1 (SimpleSoundInstance, at 180.0 -58.4 1.0)', 'ana.sleep -> ana/sleep/0 (SimpleSoundInstance, at 177.5 -59.0 8.5)', 'ana.sleep.dart.hit -> ana/sleep/dart/hit/2 (SimpleSoundInstance, in the head)']
+  dart at B; beds playing: ana.sleep ana.sleep.cast heard: ['ana.sleep.cast -> ana/sleep/cast/0 (SimpleSoundInstance, in the head)', 'ana.sleep.dart.shot -> ana/sleep/dart/shot/7 (SimpleSoundInstance, at 180.5 -58.4 1.1)', 'ana.sleep -> ana/sleep/0 (SimpleSoundInstance, at 183.5 -59.0 8.5)', 'ana.sleep.dart.hit -> ana/sleep/dart/hit/4 (SimpleSoundInstance, in the head)']
+  A damaged (wakes 0.5 s later)
+    +0.25 beds playing: ana.sleep ana.sleep.cast
+    +0.52 beds playing: ana.sleep ana.sleep.cast ana.sleep.wake
+    +0.79 beds playing: ana.sleep ana.sleep.cast ana.sleep.wake
+    +1.05 beds playing: ana.sleep ana.sleep.cast ana.sleep.wake
+    +1.32 beds playing: ana.sleep ana.sleep.wake
+    +1.59 beds playing: ana.sleep
+    +1.85 beds playing: ana.sleep
+    +2.12 beds playing: ana.sleep
+    +2.39 beds playing: ana.sleep
+    +2.66 beds playing: ana.sleep
+    +2.92 beds playing: ana.sleep
+    +3.19 beds playing: ana.sleep
+    +3.46 beds playing: ana.sleep
+    +3.73 beds playing: ana.sleep
+    +3.99 beds playing: -
+    +4.26 beds playing: ana.sleep.wake
+    +4.53 beds playing: ana.sleep.wake
+    +4.79 beds playing: ana.sleep.wake
+    +5.06 beds playing: ana.sleep.wake
+    +5.33 beds playing: -
+    +5.60 beds playing: -
+    +5.86 beds playing: -
+    +6.13 beds playing: -
+    +6.40 beds playing: -
+    +6.67 beds playing: -
+  heard: ['ana.sleep.wake -> ana/sleep/wake/0 (SimpleSoundInstance, at 177.5 -59.0 8.5)', 'ana.sleep.wake -> ana/sleep/wake/0 (SimpleSoundInstance, at 183.5 -59.0 8.5)']
+=== done 20:05:21
