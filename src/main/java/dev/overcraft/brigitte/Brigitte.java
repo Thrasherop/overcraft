@@ -351,6 +351,8 @@ public final class Brigitte implements HeroKit {
 
 	/** Dev only (DevBot's "fix rally"): the bashed target hit again, as it was. */
 	public static boolean devRallyTwice;
+	/** Dev only (DevBot's "fix wave"): the shockwave through walls and barriers, as it was (#122). */
+	public static boolean devWaveThrough;
 
 	/**
 	 * Her bash's shockwave in Rally, 0.15 s after its hit: up to 10 enemies within 8 m ahead, 70, a push and the stun; not the one the bash hit, which takes one of each:
@@ -362,10 +364,13 @@ public final class Brigitte implements HeroKit {
 			return;
 		}
 		Vec3 ahead = flat(player);
+		// the wave starts at her (#957 v1188 = STU_21A13145(self); her eyes: ours, as the bash's own sight test #501 is from her + up)
+		Vec3 centre = player.getEyePosition();
 		java.util.List<LivingEntity> tracked = new java.util.ArrayList<>();
 		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(RALLY_SHOCKWAVE_RADIUS),
-			// #877's filter: enemies in sight (002C, D), and a barrier in the way takes it whole (#88's rule, any barrier; 002C's "128-type ignore" read as barriers: M; none of the wave's damage goes to the barrier: ours)
-			e -> e.isAlive() && Allies.areaHits(player, e) && e.distanceTo(player) <= RALLY_SHOCKWAVE_RADIUS && Combat.inSight(player.level(), player.getEyePosition(), e, player) && !Barrier.shields(e, player))) {
+			// #877's filter: enemies in sight (002C, D), and a barrier in the way takes it whole (#88's rule, any barrier; 002C's "128-type ignore" read as barriers: M; none of the wave's damage goes to the barrier: ours, no source found)
+			e -> e.isAlive() && Allies.areaHits(player, e) && e.distanceTo(player) <= RALLY_SHOCKWAVE_RADIUS
+				&& (devWaveThrough || Combat.inSight(player.level(), centre, e, player) && !Barrier.shields(e, player, centre)))) {
 			Vec3 to = new Vec3(e.getX() - player.getX(), 0, e.getZ() - player.getZ());
 			if (to.lengthSqr() <= 0.25 || to.normalize().dot(ahead) >= 0) {
 				tracked.add(e);
