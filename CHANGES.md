@@ -4,7 +4,24 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-13: 0.3.42 on next (not on main yet)
+## 2026-11-13: 0.3.43 on next (not on main yet)
+
+- **D.Va's Call Mech (#134):** her hands now close on the landed mech's cockpit rim. The climb was placed 0.79 m short
+  (the data puts her 1.27 m behind the mech; the clip's camera starts 2.06 m behind its own origin). The fade is
+  fully black at 1.35 s, before the camera reaches the mech's shell (measured from the clips; the timing is ours).
+- **Pain lines (#129)** follow the data's rule: a hero's grunt is a voice line with its 1-2.5 s cooldown and one line at
+  a time, not Minecraft's hurt sound on every hit. D.Va's Micro Missiles went from 36 grunts in a second to 1.
+- **Barriers (#104, #83 already held; seven more fixed):**
+  - Pharah's Concussive Blast and Cassidy's Flashbang no longer reach through Brigitte's barrier.
+  - D.Va's Boosters pass as melee, as in Overwatch.
+  - Sojourn's Disruptor field pierces barriers, as in Overwatch.
+  - Local Anesthetic's and Silver Bullet's damage over time keeps ticking behind a barrier.
+  - Total Mayhem bombs fly through barriers, and their blasts are still blocked.
+  - Junkrat's mine and trap stop at a barrier once, then pass.
+- **Respawn health (#111) investigated:** every respawn is at full health. The low readings were mobs on the
+  spawnpoint (Minecraft has no spawn protection). Left open for one decision.
+
+## 2026-11-13: 0.3.42
 
 - **D.Va's Self-Destruct (#132)** plays her own animation from the game data: the mech crouches, opens and curls up
   before the blast. Her eject animation now plays at the cast too.
