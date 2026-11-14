@@ -71,9 +71,31 @@ public final class Barriers {
 
 	private static final Set<Shape> LIVE = Collections.newSetFromMap(new java.util.IdentityHashMap<>());
 
-	/** Damage that goes through every barrier and never hurts one (Gravitic Flux's lift and slam). */
+	/** Hits being dealt inside {@link #pierce} (more than 0). */
+	private static int pierceDepth;
+
+	/**
+	 * Damage that goes through every barrier and never hurts one: Gravitic Flux's lift and slam, and any hit dealt inside
+	 * {@link #pierce} (a damage over time already on its target, a field that pierces barriers).
+	 */
 	public static boolean piercing(DamageSource source) {
-		return source.is(dev.overcraft.sigma.GraviticFlux.LIFT_TYPE) || source.is(dev.overcraft.sigma.GraviticFlux.SLAM_TYPE);
+		return pierceDepth > 0 || source.is(dev.overcraft.sigma.GraviticFlux.LIFT_TYPE) || source.is(dev.overcraft.sigma.GraviticFlux.SLAM_TYPE);
+	}
+
+	/**
+	 * Deals {@code hit} as a hit no barrier stops (#104's sweep, 2026-11-13). For what was already applied when it ticks (Silver
+	 * Bullet's bleed, Local Anesthetic's numbing: a barrier blocks the shot or burst, not its damage over time once it's on
+	 * someone; ours, as no source lists a damage over time a barrier stops) and for what the wiki says pierces barriers
+	 * (Disruptor Shot's field: "the AoE pierces barriers", the Sojourn page rev 409400). Their hitscan-type sources would
+	 * otherwise be judged from the shooter's eyes ({@link #absorb}) and stopped by any barrier between.
+	 */
+	public static <T> T pierce(java.util.function.Supplier<T> hit) {
+		pierceDepth++;
+		try {
+			return hit.get();
+		} finally {
+			pierceDepth--;
+		}
 	}
 
 	private Barriers() {

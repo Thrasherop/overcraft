@@ -169,9 +169,22 @@ public class SteelTrapEntity extends OwProjectile {
 		}
 	}
 
+	/** It met an enemy barrier once already: from then on it passes them. */
+	private boolean bounced;
+
 	@Override
 	public void hitBarrier(Vec3 at) {
+		// "The trap bounces once upon hitting a barrier for the first time, but can then fall through it" (the Junkrat page
+		// rev 410907): it stops there and falls, through the barrier if it's in the way
+		bounced = true;
+		setPos(at);
 		setDeltaMovement(Vec3.ZERO);
+		needsSync = true;
+	}
+
+	@Override
+	public boolean passesBarriers() {
+		return bounced;
 	}
 
 	@Override

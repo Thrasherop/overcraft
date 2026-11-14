@@ -629,7 +629,9 @@ public final class Pharah implements HeroKit {
 				continue;
 			}
 			double d = Math.sqrt(e.getBoundingBox().distanceToSqr(at));
-			if (d > CONCUSSIVE_BLAST || !inSight(level, at, e) || !me && Barriers.between(level, at, e.getBoundingBox().getCenter(), owner) != null) {
+			// any enemy barrier between, Brigitte's too (Barrier.shields asks Barriers.between first): one behind hers was
+			// thrown (#104's sweep); Concussive Blast isn't among what pierces barriers (the wiki's Barrier page, rev 406358)
+			if (d > CONCUSSIVE_BLAST || !inSight(level, at, e) || !me && dev.overcraft.brigitte.Barrier.shields(e, owner, at)) {
 				continue;
 			}
 			if (force && !me) {

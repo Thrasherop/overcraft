@@ -148,6 +148,9 @@
   (`/summon minecraft:oak_boat <x> <surface - 0.3> <z>`) and read its `Pos` before aiming (2026-11-02).
 - **On a fresh select screen, a click on the hero already chosen plays it** ("click again to play"): the READY click after
   it lands in the world (2026-11-02).
+- **`hero <id>` for the hero already picked seems not to turn hero mode back on** (inferred, not read directly): after a script that pressed G, health
+  curves are Minecraft mode's (Minecraft's food healing, +0.83 a half second at full food). Read `heroMode` in `state`
+  before trusting one ([#111's run](runs/respawn_111/record.md), 2026-11-13).
 - **Heap for one client with every hero's models: 3 GB** (2026-11-02, Sigma): `JAVA_TOOL_OPTIONS=-Xmx2G` ran out of memory
   loading the models (Juno's 46 MB glTF) and the client hung on its loading screen. A fresh `run` directory opens on the
   accessibility screen: `close` it before `newworld` / `openworld`.

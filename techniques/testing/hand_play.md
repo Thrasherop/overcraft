@@ -348,6 +348,10 @@ Up: [Techniques](../README.md) · [harness](harness.md). **No bug found in the r
 - **The one way to see 14-16:** mobs left at the spawn. Two zombies and a skeleton beside it: 20 for 3-5 s, then 20 -> 17 -> 14 -> 12 (Normal's zombie 3): the issue's number, and read a few seconds after a respawn it looks like coming back hurt. The same trap is in [harness](harness.md) from 2026-10-28.
 - **Open for the owner:** Overwatch has spawn rooms; Minecraft has only the wait while a client loads. Whether a hero should get a moment of protection on respawn is a design call, not done.
 - **What a critic should check:** the session of the original sighting can't be repeated (its setup isn't recorded). Not tried: a death to another hero's blow (the bot can't fire), Mercy's resurrect, a hero change at the respawn, Save and Leave mid-death, a real second player, easy difficulty.
+- **Again, 2026-11-13 (Tracer at 11, 10, 7):** the same answer. Full at 0.05 s on nine heroes and nine causes of death,
+  mid-Recall, mid-Blink, with her Pulse Bomb at the spawn; three zombies on the spawnpoint give 14 -> 11 -> 8/7/5 in 3 s.
+  And a trap: a health curve read in Minecraft mode shows Minecraft's food healing; check `heroMode` first.
+  [runs/respawn_111](runs/respawn_111/record.md).
 
 ## A survival session (critique_rules 3, 2026-11-05)
 Up: [Techniques](../README.md) · the rules: [allies](../minecraft/allies.md). A new world on normal terrain, survival, the final build. **Input: DevServer's `KeyMapping.set`; aim by `look` or `/execute ... facing`; places reached by `/locate` and `/tp`; mobs added by `/summon` where said. Not a real mouse, and no one's judgement of feel.** The owner still has to play it.
