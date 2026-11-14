@@ -4,7 +4,29 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-13: 0.3.46 on next (not on main yet)
+## 2026-11-14: 0.3.47 on next (not on main yet)
+
+- **Life Grip pulls allies out of tethers and gravity (#124):** a gripped ally leaves Catnapper's carry, Gravitic Flux's
+  lift (no slam), Junkrat's Steel Trap (the trap is removed), and Hyper Strike's float; knock-downs stay. Sources: the
+  owner, and the wiki's status-effect and hero pages.
+- **Rally's armor on Brigitte (#125):** she already had Rally's 100 armor; when Rally ended, the leftover was taken
+  off her own armor too. Now only the bonus goes.
+- **Third-person aim for the newer heroes (#95):** each hero's own aim sheet is used, re-picked on a hero switch, and
+  the MEKA's cannons follow the aim.
+- **Weapon parts (#91):** D.Va's magazine in her reloads; Junkrat's Concussion Mine in his left hand, not while one
+  of his is out. Glow tables for Pharah, Cassidy, Junkrat and Tracer's weapon.
+- **No hitch on an effect's first use (#128):** each hero's effect art is made ahead, a few textures a frame, after the
+  pick (or under the select screen for art drawn the moment a hero is picked). The longest first-use frames dropped
+  from 70–543 ms to 35–127 ms across the eleven heroes with effect art. A few first uses are still slow for other
+  reasons (Mercy's beam, Ana's scope, Brigitte's flail, Jetpack Cat's Lifeline, Sombra's Translocator).
+- Played with real mouse and keys in a fresh flat world: Junkrat picked on the select screen, Shift threw a mine (his
+  hand empty while it was out; count 1), right-click set it off (the mine back in his left hand), F5 views; looking up
+  and down in third person (his body follows the aim); Kiriko from the H menu, her first Ofuda, Kunai and Suzu
+  made no effect art on first use (no first-use log line); Lifeweaver's real E on a blue bot in a red bot's Steel
+  Trap: trap gone, root off, healed 12 -> 20. Not seen: the pull itself (a dev bot has no client to move it; the
+  builder played the pull with the real client as the ally), Rally with real keys, 60+ fps, a second player.
+
+## 2026-11-13: 0.3.46
 
 - **Jetpack Cat's Catnapper from the ground (#139):** it ended at once, because the server's onGround was already
   true. She now dives along the ground to the spot, as her data has it (real keys: 9.2 m to the spot). The path is
