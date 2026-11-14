@@ -25,6 +25,10 @@ def main():
     if args[:1] == ["--wait"]:
         wait = float(args[1])
         args = args[2:]
+    if not args or args[0] in ("-h", "--help") or any(a.startswith("-") for a in args):
+        # a flag is never sent to a running client as a command (agents' "--help" once reached another's game)
+        print(__doc__)
+        sys.exit(0 if args[:1] in (["-h"], ["--help"]) else 2)
     port = int(os.environ.get("OC_DEV_PORT", "25599"))
     with socket.create_connection(("127.0.0.1", port), timeout=40) as sock:
         f = sock.makefile("r", encoding="utf8")
