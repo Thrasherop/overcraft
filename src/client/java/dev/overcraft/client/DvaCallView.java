@@ -64,7 +64,12 @@ public final class DvaCallView {
 				return null;
 			}
 			// the clip's camera is laid out about the mech's spot, facing its way (the call's yaw)
-			Vec3 spot = mech.getPosition(partialTicks);
+			// the clip's origin isn't the mech's spot: its camera starts 2.06 m behind the origin (3134's Camera at frame 0) where
+			// she stands 1.27 m behind the mech (026A #434 / #766's MoveTo), so the origin is 0.79 m past the mech's spot, where
+			// 311F draws the landed mech's body (its pelvis 0.8-1.1 m ahead of its root). Anchored at the spot, her hands closed
+			// 0.8-0.9 m short of the mech's cockpit, on nothing (#134); there they meet it (the built-in pilot's grips at 1.6 s:
+			// hers 1.26 m ahead, 1.18 up; the mech's 1.38 / 1.24)
+			Vec3 spot = mech.getPosition(partialTicks).add(Vec3.directionFromRotation(0, mech.getYRot()).scale(DvaStats.CALL_VIEW_AHEAD));
 			// the clip's camera is laid out on level ground; where the spot is more than a step below or above her (a ledge),
 			// its height stays hers so the view doesn't sink into the block she stands on (the critic of 83b6bfa; ours)
 			feet = Math.abs(spot.y - feet.y) > STEP ? new Vec3(spot.x, feet.y, spot.z) : spot;

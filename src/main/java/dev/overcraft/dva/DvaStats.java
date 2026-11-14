@@ -68,6 +68,11 @@ public final class DvaStats {
 	 * the mech, then out over 0.35 s as the mech's own view comes up. Ours, measured from the clip's Camera track.
 	 */
 	public static final double CALL_FADE_START = 1.4, CALL_FADE_OUT = 0.35;
+	/**
+	 * Where her first-person climb (3134) is laid out: 0.79 m past the mech's spot along its facing = the clip camera's start
+	 * 2.06 m (measured from the clip) less the 1.27 m she stands behind the mech (D 026A #434 / #766) (#134) H / M.
+	 */
+	public static final double CALL_VIEW_AHEAD = 2.06 - 1.27;
 	/** The mech's first-person spawn (1P clip 3329, alias 0x435, set 019B): its 1 s clip over 1.2 s (D 0276 #176) H. */
 	public static final double MECH_SPAWN_VIEW = 1.2;
 	/** The landing: 250 to enemies within 3 m (D 348C 03BE 250 / 03BF 3, 026A #242; W 250 / 3 m) H. */
