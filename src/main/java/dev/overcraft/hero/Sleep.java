@@ -331,6 +331,16 @@ public final class Sleep {
 		SLEEPERS.clear();
 	}
 
+	/** Who was sent the others' bed: its 45 m (3866), and HeroSounds.at sends a point sound out to 8 m past its range. */
+	private static final double BED_SENT = 45 + 8;
+	/** Dev ("bot fix 123 off"): a wake stops every bed in reach again, as before #123. */
+	public static boolean devStopAll;
+
+	/** Whether this listener gets the others' bed's stop. Package-private for SleepSoundRuleTest. */
+	static boolean stopsBed(boolean isSleeper, double toSleeperSqr, boolean anotherBedReaches) {
+		return !isSleeper && toSleeperSqr <= BED_SENT * BED_SENT && !anotherBedReaches;
+	}
+
 	private static void wake(Sleeper s) {
 		SLEEPERS.remove(s.entity.getUUID());
 		if (s.stun) {
@@ -341,13 +351,30 @@ public final class Sleep {
 			return;
 		}
 		if (s.entity.level() instanceof net.minecraft.server.level.ServerLevel level) {
-			// 1A1F stops: its Stop events cut the bed and play the waking
-			for (ServerPlayer listener : level.players()) {
-				if (listener.distanceTo(s.entity) <= 53) {
-					for (var bed : new net.minecraft.sounds.SoundEvent[] {dev.overcraft.registry.OcSounds.ANA_SLEEP,
-						dev.overcraft.registry.OcSounds.ANA_SLEEP_TARGET}) {
-						listener.connection.send(new net.minecraft.network.protocol.game.ClientboundStopSoundPacket(bed.location(),
-							net.minecraft.sounds.SoundSource.PLAYERS));
+			// 1A1F stops: its Stop events cut the bed and play the waking. A stop packet names a sound, not one playing (#123): the
+			// sleeper's own goes to them alone, the others' only to who has no other sleeper's bed reaching them (a listener with
+			// two near hears this one out, to its 4.75 s file's end: ours, as Anesthetic.cleanse)
+			var stopOwn = new net.minecraft.network.protocol.game.ClientboundStopSoundPacket(dev.overcraft.registry.OcSounds.ANA_SLEEP_TARGET.location(),
+				net.minecraft.sounds.SoundSource.PLAYERS);
+			var stopBed = new net.minecraft.network.protocol.game.ClientboundStopSoundPacket(dev.overcraft.registry.OcSounds.ANA_SLEEP.location(),
+				net.minecraft.sounds.SoundSource.PLAYERS);
+			if (devStopAll) {
+				// the old way, for showing the difference (dev: "bot fix 123 off")
+				for (ServerPlayer listener : level.players()) {
+					if (listener.distanceTo(s.entity) <= BED_SENT) {
+						listener.connection.send(stopBed);
+						listener.connection.send(stopOwn);
+					}
+				}
+			} else {
+				if (s.entity instanceof ServerPlayer sleeper) {
+					sleeper.connection.send(stopOwn);
+				}
+				Vec3 at = s.entity.getBoundingBox().getCenter();
+				for (ServerPlayer listener : level.players()) {
+					if (stopsBed(listener == s.entity, listener.distanceToSqr(at), SLEEPERS.values().stream().anyMatch(o -> !o.stun
+						&& o.entity != listener && o.entity.level() == level && listener.distanceToSqr(o.entity.getBoundingBox().getCenter()) <= BED_SENT * BED_SENT))) {
+						listener.connection.send(stopBed);
 					}
 				}
 			}

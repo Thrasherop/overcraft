@@ -955,6 +955,14 @@ public final class Junkrat implements HeroKit {
 		boolean tire = j.tire != null;
 		int mode = (tire ? MODE_TIRE : 0) | (j.mine != null ? MODE_MINE_OUT : 0) | (j.silenced ? MODE_SILENCED : 0)
 			| (j.trap != null ? MODE_TRAP_OUT : 0) | (tire && j.nitroUsed ? MODE_NITRO : 0);
+		// for the tire's prompts (ReticleHud: 0233 #658 / #675): armed from 1.6 s (tireArmed), Nitro Boost's press open from 1.6 s too
+		int age = tire ? Ow.ticks(TIRE_TIME) - j.tireLeft : 0;
+		if (tire && age >= Ow.ticks(TIRE_ARM)) {
+			mode |= MODE_TIRE_ARMED;
+		}
+		if (tire && s.has(Perk.JUNKRAT_NITRO_BOOST) && !j.nitroUsed && age >= Ow.ticks(NITRO_FROM)) {
+			mode |= MODE_NITRO_READY;
+		}
 		float rechargeLeft = j.mineCharges >= MINE_CHARGES ? 0 : (float) ((Ow.ticks(MINE_RECHARGE) - j.mineRecharge) / 20.0);
 		float recharge = j.mineCharges >= MINE_CHARGES ? -1 : (float) (j.mineRecharge / Ow.ticks(MINE_RECHARGE));
 		float trapLeft = j.trapCooldownIn >= 0 ? (float) TRAP_COOLDOWN : (float) (s.ability2Cooldown / 20.0);

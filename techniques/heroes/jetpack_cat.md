@@ -301,3 +301,12 @@ Keys through `KeyMapping.set`, not a real keyboard. **Without Resistance V:**
 
 ## The Nov 3 patch (#116)
 Health 200, fuel back at 20% a second, boost acceleration 25 -> 28. The boost's rates are the 2026-11-01 recording's +3 (23, 13.4), the alternative x 28/25; top speed kept at 17.8 though W now says 17.43: both inferred, **need a new recording** ([polish3](../testing/polish3.md)).
+
+## Catnapper from the ground (#139, 2026-11-13)
+Up: [Techniques](../README.md) · record: [catnap_139](../testing/runs/catnap_139/catnap_139.md) · lesson: [minecraft_26](../minecraft/minecraft_26.md#steering-a-player-from-the-server-139-2026-11-13)
+- **Was:** confirmed standing, the dive ended on its first tick: the server's `onGround` (her client's) was true. Her data's move
+  (5B7B #95, `StateMoveTo` to the spot + 0.25 m at 30 m/s, under the 1.5 s wait) reads no ground, so she now skims along it.
+- **Now:** the dive is laid out when the windup ends (direction, metres left, a last part-step) and she's put on the spot on
+  arrival; a wall ends it (ours, `horizontalCollision`). Aimed at a wall, the spot steps 0.35 m off its face (it lay on the
+  wall, 1.6 m up). Ground 9.19 m and 25.0 m exact, air unchanged in speed, carry, cancel and hits as before.
+- **Open:** she lands 0.25 m up and hovers there; a snap back of up to ~1.3 m on arrival; slopes, water, a second client untried.

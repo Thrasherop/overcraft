@@ -1,0 +1,48 @@
+cmd overcraft ult @s 100 -> {"ok": true}
+look 0 0 -> {"ok": true}
+key jump down -> {"key": "key.keyboard.space"}
+key jump up -> {"key": "key.keyboard.space"}
+cmd execute as @s at @s anchored eyes facing -8 -60 4 anchored feet run tp @s ~ ~ ~ ~ ~ -> {"ok": true}
+key ultimate down -> {"key": "key.keyboard.q"}
+key ultimate up -> {"key": "key.keyboard.q"}
+trace start -> {"ok": true}
+key secondary_fire down -> {"key": "key.mouse.left"}
+key secondary_fire up -> {"key": "key.mouse.left"}
+screenshot c139_air_targets.png -> {"file": "E:\\claude\\mods\\overcraft_catnap\\run\\screenshots\\c139_air_targets.png"}
+0 0.00 0.00 0.00 -52.180 - .
+1 0.00 0.00 0.00 -52.180 - .
+2 0.00 0.00 0.00 -52.180 - .
+3 0.00 0.00 0.00 -52.180 - .
+4 0.00 0.00 0.00 -52.180 - .
+5 0.00 0.00 0.00 -52.180 - .
+6 0.00 0.00 0.00 -52.180 - .
+7 0.00 0.00 0.00 -52.180 - .
+8 0.00 0.00 0.00 -52.180 - .
+9 0.00 0.00 0.00 -52.180 - .
+10 25.80 2.33 -15.30 -52.945 - .
+11 25.80 2.33 -15.30 -53.710 - .
+12 25.80 2.33 -15.30 -54.475 - .
+13 25.80 2.33 -15.30 -55.240 - .
+14 25.80 2.33 -15.30 -56.006 - .
+15 25.80 2.33 -15.30 -56.771 - .
+16 25.80 2.33 -15.30 -57.536 - .
+17 25.80 2.33 -15.30 -58.301 - .
+18 25.80 2.34 -15.30 -59.066 - .
+19 0.00 0.00 0.00 -59.066 - .
+20 0.00 0.00 0.00 -59.066 - .
+21 0.00 0.00 0.00 -59.066 - .
+22 0.00 0.00 0.00 -59.066 - .
+23 0.00 0.00 0.00 -59.066 - .
+24 0.46 0.26 0.00 -59.066 - .
+25 0.64 0.35 0.00 -59.066 - .
+26 0.75 0.42 0.00 -59.066 - .
+27 0.84 0.47 0.00 -59.066 - .
+28 0.91 0.51 0.00 -59.066 - .
+29 0.97 0.54 0.00 -59.066 - .
+30 1.03 0.57 0.00 -59.066 - .
+31 1.09 0.61 0.00 -59.066 - .
+32 1.15 0.64 0.00 -59.066 - .
+33 1.22 0.68 0.00 -59.066 - .
+state: x=-7.1613024853317055 y=-59.06625441323831 z=5.49257911180695 health=16.0 ult=0.0 mode=4 hero=jetpack_cat
+cmd data get entity @e[type=husk,limit=1] Health -> {"ok": true}
+cmd data get entity @e[type=zombie,limit=1] Health -> {"ok": true}

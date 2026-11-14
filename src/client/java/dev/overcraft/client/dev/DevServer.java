@@ -174,6 +174,7 @@ public final class DevServer {
 					out.addProperty("emoteClip", HeroAnimator.of(player).emoteClip());
 					out.addProperty("emoteClipAt", HeroAnimator.of(player).emoteAt());
 					out.addProperty("emoteCamera", dev.overcraft.client.comms.EmoteCamera.active());
+					out.addProperty("worldWidgets", dev.overcraft.client.hud.ReticleHud.devWorld);
 					out.addProperty("emoteFirstPersonFrames", dev.overcraft.client.comms.EmoteCamera.firstPersonFrames);
 					out.addProperty("food", player.getFoodData().getFoodLevel());
 					out.addProperty("saturation", player.getFoodData().getSaturationLevel());

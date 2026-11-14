@@ -707,6 +707,8 @@
 	"overcraft.hud.prompt.detach": "Detach",
 	"overcraft.hud.prompt.lifeline": "LIFELINE",
 	"overcraft.hud.prompt.fuel": "FUEL",
+	"overcraft.hud.prompt.detonate": "DETONATE",
+	"overcraft.hud.prompt.nitro_boost": "Nitro Boost",
 	"overcraft.hud.prompt.resurrect": "Resurrect %s",
 	"subtitles.overcraft.lucio.amp.fire": "Sonic Amplifier fires",
 	"subtitles.overcraft.lucio.amp.fire_3p": "Sonic Amplifier fires",
