@@ -1,0 +1,37 @@
+MARK A6a G with B.O.B. out (expected: Minecraft mode, B.O.B. stays and fights on), then G back
+cmd /kill @e[type=!player]
+cmd /time set noon
+cmd /tp @s 0.5 150 0.5 0 0
+cmd /summon husk 0.5 150 25.5 {NoAI:1b,Tags:["g1"],attributes:[{id:"minecraft:max_health",base:200}],Health:200f}
+ult 100
+sleep 0.5
+key ultimate down
+sleep 0.05
+key ultimate up
+sleep 1.5
+key hero_mode down
+sleep 0.05
+key hero_mode up
+sleep 1
+state
+hp @e[type=overcraft:bob,limit=1] Pos
+sleep 2
+hp @e[tag=g1,limit=1]
+key hero_mode down
+sleep 0.05
+key hero_mode up
+sleep 1
+state
+MARK A6b dynamite and B.O.B. out, switch hero (H, Junkrat via select payload), expected both gone
+key ability_2 down
+sleep 0.05
+key ability_2 up
+sleep 0.3
+hero junkrat
+sleep 1.5
+hp @e[type=overcraft:bob,limit=1]
+hp @e[type=overcraft:dynamite,limit=1]
+state
+hero ashe
+sleep 1.5
+state

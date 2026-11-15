@@ -186,6 +186,8 @@ public class Overcraft implements ModInitializer {
 			Combat.tick(server);
 			// Illari's Sunburns and Sunstruck marks
 			dev.overcraft.illari.Illari.tickAll(server);
+			// Ashe's Dynamite burns and Viper's Stings
+			dev.overcraft.ashe.Ashe.tickAll(server);
 			// Silver Bullet's bleeds
 			dev.overcraft.cassidy.Cassidy.tickBleeds(server);
 			dev.overcraft.hero.Effects.tick(server);

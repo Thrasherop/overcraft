@@ -89,7 +89,12 @@ public enum Perk {
 	ILLARI_RAPID_CONSTRUCTION(Hero.ILLARI, Tier.MINOR, "rapid_construction"),
 	ILLARI_SUMMER_SOLSTICE(Hero.ILLARI, Tier.MINOR, "summer_solstice"),
 	ILLARI_SUNBURN(Hero.ILLARI, Tier.MAJOR, "sunburn"),
-	ILLARI_SOLAR_FLARE(Hero.ILLARI, Tier.MAJOR, "solar_flare");
+	ILLARI_SOLAR_FLARE(Hero.ILLARI, Tier.MAJOR, "solar_flare"),
+	// Ashe's, the live list's order (D loadouts 0CCF, 0E4F; 0B3E, 0B40; ashe-map.md)
+	ASHE_REMOTE_DETONATOR(Hero.ASHE, Tier.MINOR, "remote_detonator"),
+	ASHE_DOUBLE_BARRELED(Hero.ASHE, Tier.MINOR, "double_barreled"),
+	ASHE_VIPERS_STING(Hero.ASHE, Tier.MAJOR, "vipers_sting"),
+	ASHE_AIRBURST(Hero.ASHE, Tier.MAJOR, "airburst");
 
 	public enum Tier { MINOR, MAJOR }
 

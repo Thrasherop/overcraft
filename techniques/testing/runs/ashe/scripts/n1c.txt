@@ -1,0 +1,2 @@
+hp @e[tag=wf,limit=1] Owner
+hp @e[tag=wf,limit=1] Pos

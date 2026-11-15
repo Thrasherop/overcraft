@@ -1081,6 +1081,22 @@ public final class HeroHud {
 				(float) dev.overcraft.junkrat.JunkratStats.TRAP_COOLDOWN, ability2ReadyAt);
 			return;
 		}
+		if (hero == Hero.ASHE) {
+			// Coach Gun (Shift, lit while Double-Barreled's second shot is open) and Dynamite (E, lit while a stick is out with Remote
+			// Detonator: E sets it off), in Kiriko's two places (ours)
+			ability(g, hero, w, "coach_gun", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.ashe.AsheStats.COACH_COOLDOWN, ability1ReadyAt);
+			if ((s.mode() & dev.overcraft.ashe.Ashe.MODE_DOUBLE) != 0) {
+				song(g, true, false, w - 641, 903, w);
+			}
+			ability(g, hero, w, "dynamite", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.ashe.AsheStats.DYNAMITE_COOLDOWN, ability2ReadyAt);
+			if ((s.mode() & dev.overcraft.ashe.Ashe.MODE_DYNAMITE_OUT) != 0
+				&& s.minorPerk() == dev.overcraft.hero.Perk.index(dev.overcraft.hero.Perk.ASHE_REMOTE_DETONATOR)) {
+				song(g, true, false, w - 563, 906, w);
+			}
+			return;
+		}
 		if (hero == Hero.CASSIDY) {
 			// Combat Roll (Shift) and Flashbang (E), in Kiriko's two places; with Silver Bullet its box where Lucio's third is, lit while
 			// it's aimed (ours)
@@ -1496,6 +1512,12 @@ public final class HeroHud {
 			// the Frag Launcher's 5 (the left button) where Kiriko's kunai are
 			weapon(g, hero, w, "frag_launcher", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
 				dev.overcraft.junkrat.JunkratStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
+		if (hero == Hero.ASHE) {
+			// The Viper's 12 (the left button; the right aims it) where Kiriko's kunai are
+			weapon(g, hero, w, "the_viper", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+				dev.overcraft.ashe.AsheStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;
 		}
 		if (hero == Hero.CASSIDY) {

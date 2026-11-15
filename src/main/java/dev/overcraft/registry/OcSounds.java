@@ -606,6 +606,13 @@ public final class OcSounds {
 		"sun.trigger_3p", "sun.trigger_owner");
 	public static final java.util.List<String> ILLARI_VOICE = java.util.List.of(
 		"beam_empty", "beam_hurt_ally", "death", "elimination", "melee", "melee_kill", "multikill", "on_fire", "outburst", "outburst_hit", "pain", "ping", "ping_enemy", "ping_pylon", "ping_warning", "pylon", "pylon_destroyed", "pylon_moved", "respawn", "select", "ult_ready", "ultimate");
+	/**
+	 * Ashe's sounds by name ("ashe." + name, played through dev.overcraft.ashe.AsheSounds; tools/soundmaps/ashe_sfx.txt says which data
+	 * event each is; B.O.B.'s too) and her voice moments (Voice.say: "ashe.voice.<moment>", tools/soundmaps/ashe.txt; her wheel lines
+	 * call_* are every hero's, registered below). The ult line is ult.friendly / ult.enemy, her own "ultimate".
+	 */
+	public static final java.util.List<String> ASHE_SOUNDS = java.util.List.of("ads.in", "ads.in_3p", "ads.out", "ads.out_3p", "bob.cast", "bob.cast_3p", "bob.charge", "bob.charge_stop", "bob.death", "bob.fire", "bob.fire_stop", "bob.hit_enemy", "bob.hit_enemy_3p", "bob.hit_world", "bob.immobilize", "bob.immobilize_3p", "bob.land", "bob.step", "bob.uppercut", "bob.uppercut_3p", "coach_gun.fire", "coach_gun.fire_3p", "coach_gun.hit", "coach_gun.hit_3p", "coach_gun.hit_world", "dynamite.burn", "dynamite.burn_3p", "dynamite.burn_stop", "dynamite.burn_stop_3p", "dynamite.explode", "dynamite.explode_3p", "dynamite.fuse", "dynamite.ignite", "dynamite.ignite_3p", "dynamite.land", "dynamite.remote", "dynamite.throw", "dynamite.throw_3p", "melee", "melee_3p", "reload.end", "reload.end_3p", "reload.shell", "reload.shell_3p", "reload.start", "reload.start_3p", "viper.fire", "viper.fire_3p", "viper.fire_ads", "viper.fire_ads_3p", "viper.hit_enemy", "viper.hit_enemy_3p", "viper.hit_enemy_ads", "viper.hit_enemy_ads_3p", "viper.hit_world", "viper.hit_world_ads", "viper.whiz", "viper.whiz_ads", "ult.friendly", "ult.enemy");
+	public static final java.util.List<String> ASHE_VOICE = java.util.List.of("bob_destroyed", "bob_end_kills", "bob_end_no_kills", "coach_gun", "coach_gun_kill", "death", "dynamite", "dynamite_kill", "dynamite_shot", "elimination", "melee", "melee_kill", "multikill", "on_fire", "pain", "ping", "ping_enemy", "ping_warning", "respawn", "select", "ult_ready", "ultimate");
 	public static final java.util.List<String> DVA_VOICE = java.util.List.of(
 		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
 		"ping_warning", "ping_enemy", "boosters", "matrix", "matrix_absorb", "call_mech", "call_mech_kill", "eject", "mech_back",
@@ -659,6 +666,8 @@ public final class OcSounds {
 		JUNKRAT_VOICE.forEach(moment -> register("junkrat.voice." + moment));
 		ILLARI_SOUNDS.forEach(name -> register("illari." + name));
 		ILLARI_VOICE.forEach(moment -> register("illari.voice." + moment));
+		ASHE_SOUNDS.forEach(name -> register("ashe." + name));
+		ASHE_VOICE.forEach(moment -> register("ashe.voice." + moment));
 	}
 
 	private OcSounds() {

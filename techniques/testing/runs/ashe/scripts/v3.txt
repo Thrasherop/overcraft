@@ -1,0 +1,20 @@
+MARK V3 B.O.B. stopped by a wall at z 13; a villager and her wolf (NoAI) between him and a NoAI husk on the line x 0.5 -> 9.5 at z 11.5
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 150 0.5 0 0
+cmd /fill -3 150 13 3 151 13 stone
+cmd /summon husk 9.5 150 11.5 {NoAI:1b,Tags:["vh"],attributes:[{id:"minecraft:max_health",base:200}],Health:200f}
+cmd /summon villager 4.5 150 11.5 {NoAI:1b,Tags:["vv"]}
+cmd /summon wolf 6.5 150 11.5 {NoAI:1b,Tags:["vw"],Owner:[I; -956929499, 1598895909, -1851285478, -1767186058]}
+ult 100
+sleep 0.5
+key ultimate down
+sleep 0.05
+key ultimate up
+sleep 6
+hp @e[type=overcraft:bob,limit=1] Pos
+hp @e[tag=vh,limit=1]
+hp @e[tag=vv,limit=1]
+hp @e[tag=vw,limit=1]
+hp @e[tag=vw,limit=1] Owner
+screenshot ashe_bob_allies.png
+cmd /fill -3 150 13 3 151 13 air

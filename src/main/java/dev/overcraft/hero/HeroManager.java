@@ -188,6 +188,7 @@ public final class HeroManager {
 		KITS.put(Hero.CASSIDY, new dev.overcraft.cassidy.Cassidy());
 		KITS.put(Hero.JUNKRAT, new dev.overcraft.junkrat.Junkrat());
 		KITS.put(Hero.ILLARI, new dev.overcraft.illari.Illari());
+		KITS.put(Hero.ASHE, new dev.overcraft.ashe.Ashe());
 	}
 
 	private HeroManager() {
@@ -282,7 +283,7 @@ public final class HeroManager {
 		return state != null && ((state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA
 			|| state.hero == Hero.SOJOURN || state.hero == Hero.SIGMA || state.hero == Hero.DVA || state.hero == Hero.LUCIO
 			|| state.hero == Hero.BRIGITTE || state.hero == Hero.KIRIKO || state.hero == Hero.PHARAH || state.hero == Hero.JUNKRAT
-			|| state.hero == Hero.ILLARI)
+			|| state.hero == Hero.ILLARI || state.hero == Hero.ASHE)
 			&& state.softLanding || state.hero == Hero.JUNO);
 	}
 

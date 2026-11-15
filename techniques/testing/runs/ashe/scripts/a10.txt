@@ -1,0 +1,30 @@
+MARK A10 throw, then at 0.9 s hip-shoot the stick where A8c landed (0.75 150.05 5.46); expected blast at once (before the 2 s fuse); husk 2 m past it hurt
+cmd /kill @e[type=!player]
+cmd /fill 0 150 -2 0 152 -2 air
+cmd /overcraft reset
+cmd /tp @s 0.5 150 0.5 0 0
+cmd /summon husk 0.5 150 7.5 {NoAI:1b,Tags:["d1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 150.0 6.5 run tp @s ~ ~ ~ ~ ~
+sleep 0.5
+key ability_2 down
+sleep 0.05
+key ability_2 up
+sleep 0.7
+hp @e[type=overcraft:dynamite,limit=1] Pos
+cmd /execute as @s at @s anchored eyes facing 0.75 150.08 5.46 run tp @s ~ ~ ~ ~ ~
+key secondary_fire down
+sleep 0.05
+key secondary_fire up
+sleep 0.15
+hp @e[type=overcraft:dynamite,limit=1] Pos
+hp @e[tag=d1,limit=1]
+MARK A10b Coach Gun self push, flat aim, nothing behind (x/z every 0.25 s)
+cmd /tp @s 0.5 150 0.5 0 0
+sleep 10
+key ability_1 down
+sleep 0.05
+key ability_1 up
+sleep 0.5
+state
+sleep 0.5
+state

@@ -94,6 +94,24 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 		});
 	}
 
+	/**
+	 * Ashe's B.O.B. (model 10800, set 0966: tools/clipmaps/ashe_bob.txt): his drop (spawn_drop, L), the charge looped (charge, L: one
+	 * of eight unset run clips), the uppercut and its end, the stop on a wall, his firing stance looped, his going (despawn).
+	 */
+	public static LifeweaverPropRenderer<dev.overcraft.entity.BobEntity> bob(EntityRendererProvider.Context context) {
+		return new LifeweaverPropRenderer<>(context, "ashe_bob", (e, s) -> {
+			float t = e.phaseSeconds(s.partialTick);
+			switch (e.phase()) {
+				case dev.overcraft.entity.BobEntity.DROP -> clip(s, "spawn_drop", t, false);
+				case dev.overcraft.entity.BobEntity.CHARGE -> clip(s, "charge", t, true);
+				case dev.overcraft.entity.BobEntity.UPPERCUT -> clip(s, t < 0.5f ? "uppercut" : "uppercut_end", t < 0.5f ? t : t - 0.5f, false);
+				case dev.overcraft.entity.BobEntity.STOP -> clip(s, "charge_stop", t, false);
+				case dev.overcraft.entity.BobEntity.FIRE -> clip(s, "idle_fire", t, true);
+				default -> clip(s, "despawn", t, false);
+			}
+		});
+	}
+
 	/** Sow the Seed's seed on the ground: his model 126CC, still. */
 	public static LifeweaverPropRenderer<SeedEntity> seed(EntityRendererProvider.Context context) {
 		return new LifeweaverPropRenderer<>(context, "lifeweaver_seed", (e, s) -> s.clip = null);

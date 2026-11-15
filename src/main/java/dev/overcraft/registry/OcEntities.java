@@ -186,6 +186,15 @@ public final class OcEntities {
 			.noLootTable().noSave()
 			.sized((float) dev.overcraft.dva.DvaStats.LIGHT_GUN_RADIUS * 2, (float) dev.overcraft.dva.DvaStats.LIGHT_GUN_RADIUS * 2)
 			.clientTrackingRange(8).updateInterval(1));
+	/** Ashe's Dynamite (2533): 0.1 m round (D 28C8), drawn 0.25 m for its model (not saved: 2 s on the ground). */
+	public static final EntityType<dev.overcraft.entity.DynamiteEntity> DYNAMITE = register("dynamite",
+		EntityType.Builder.<dev.overcraft.entity.DynamiteEntity>of(dev.overcraft.entity.DynamiteEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.25f, 0.25f).clientTrackingRange(10).updateInterval(1));
+	/** Her B.O.B. (25C3): 2.3 m tall, 0.7 m round (D mover) as Minecraft's 1.4 x 2.3 box (not saved: 15 s). */
+	public static final EntityType<dev.overcraft.entity.BobEntity> BOB = register("bob",
+		EntityType.Builder.<dev.overcraft.entity.BobEntity>of(dev.overcraft.entity.BobEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized((float) (dev.overcraft.ashe.AsheStats.BOB_RADIUS * 2), (float) dev.overcraft.ashe.AsheStats.BOB_HEIGHT)
+			.clientTrackingRange(10).updateInterval(1));
 	public static final EntityType<KitsuneEntity> KITSUNE = register("kitsune", EntityType.Builder.<KitsuneEntity>of(KitsuneEntity::new, MobCategory.MISC)
 		.noLootTable().noSave().sized(0.8f, 0.8f).clientTrackingRange(8).updateInterval(1));
 
@@ -198,5 +207,6 @@ public final class OcEntities {
 	}
 
 	public static void init() {
+		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(BOB, dev.overcraft.entity.BobEntity.attributes());
 	}
 }

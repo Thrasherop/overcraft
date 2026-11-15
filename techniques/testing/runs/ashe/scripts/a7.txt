@@ -1,0 +1,26 @@
+MARK A7 switch in the spawn area with B.O.B. and dynamite out (expected both gone, Junkrat), then back to Ashe (12 rounds)
+cmd /kill @e[type=!player]
+cmd /tp @s -1.5 -60 -4.5 0 0
+cmd /summon husk -1.5 -60 20.5 {NoAI:1b,Tags:["g1"],attributes:[{id:"minecraft:max_health",base:200}],Health:200f}
+ult 100
+sleep 0.5
+key ultimate down
+sleep 0.05
+key ultimate up
+sleep 0.8
+cmd /execute as @s at @s run tp @s ~ ~ ~ ~ 60
+key ability_2 down
+sleep 0.05
+key ability_2 up
+sleep 0.4
+hp @e[type=overcraft:bob,limit=1]
+hp @e[type=overcraft:dynamite,limit=1] Pos
+state
+hero junkrat
+sleep 1.5
+hp @e[type=overcraft:bob,limit=1]
+hp @e[type=overcraft:dynamite,limit=1] Pos
+state
+hero ashe
+sleep 2
+state
