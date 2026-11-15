@@ -4,7 +4,20 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-14: 0.3.48 on next (not on main yet)
+## 2026-11-14: 0.3.49 on next (not on main yet)
+
+- **Jetpack Cat's Lifeline icon for allies (#85):** while she seeks someone to tow, her allies see the Lifeline icon
+  over her (from the data's 0BA3 widget, the look ours); not shown to her, to enemies, or while she tows. Seen with two
+  clients (the harness's second client as the ally); not played by hand with a second real player.
+- **Two-client checks (#115, #89):** Lúcio's wall ride and Lifeline's rope, seen by a second player, were right; no code
+  change. The rope's leftovers are #142. Run record: `techniques/testing/runs/two_client_2026-11-14/run.md`.
+- **#141 (Jetpack Cat's portrait "doesn't select her") is the clicks, not her card:** with real-cursor clicks and a
+  temporary log in `HeroSelectScreen.mouseClicked`, every click that reached the screen picked the portrait under it,
+  her lower-right corner included (GUI 233,199 → JETPACK_CAT). The clicks that did nothing never reached the screen at
+  all, on Mercy's portrait as much as hers, at a steady 90-119 fps: the desktop-control tool's clicks get lost in this
+  game (as with #131). A click on her portrait from Kiriko's, and from Lúcio's on her left half, picked her each time.
+
+## 2026-11-14: 0.3.48
 
 - **World widgets at the crosshair's level (#85):** Brigitte sees her Repair Pack's icon over each ally it heals, with a
   ring that empties as the heal runs out (up to two); Sombra sees her Hotfix icon over each ally it heals; Mercy sees
