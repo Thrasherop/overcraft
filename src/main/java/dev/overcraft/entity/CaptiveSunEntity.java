@@ -19,12 +19,14 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Captive Sun's ball (entity 4AC0, model 10BAE, graph 3CB1; illari-map.md): 30 m/s in a straight line, 0.45 m, 10 s. It bursts on
- * the first enemy or block it meets, or at an enemy barrier: 5 to an enemy it hit, then 50 to every enemy in 10 m and in sight, each
- * of them marked ({@link Illari#ballBurst}).
+ * Captive Sun's ball (entity 4AC0, model 10BAE, graph 3CB1; illari-map.md): 30 m/s in a straight line, 0.45 m, 10 s. It passes
+ * through enemies (5 to each, {@link Illari#ballDirect}) and bursts on terrain, an enemy barrier or at 10 s (W): 50 to every enemy in
+ * 10 m and in sight, each of them marked ({@link Illari#ballBurst}).
  */
 public class CaptiveSunEntity extends OwProjectile {
 	private boolean done;
+	/** Who it has passed through (each takes its direct hit once). */
+	private final java.util.Set<Integer> passed = new java.util.HashSet<>();
 
 	public CaptiveSunEntity(EntityType<? extends CaptiveSunEntity> type, Level level) {
 		super(type, level);
@@ -68,35 +70,38 @@ public class CaptiveSunEntity extends OwProjectile {
 		}
 	}
 
+	/** It passes through enemies (W: "passes through enemies"), each taking its 5 once; it flies on. */
 	@Override
 	protected void onHitEntity(EntityHitResult hit) {
-		burst(hit.getLocation(), hit.getEntity());
+		if (level() instanceof ServerLevel && passed.add(hit.getEntity().getId()) && getOwner() instanceof ServerPlayer owner) {
+			Illari.ballDirect(owner, this, hit.getEntity());
+		}
 	}
 
 	@Override
 	protected void onHitBlock(BlockHitResult hit) {
 		super.onHitBlock(hit);
 		Vec3 n = new Vec3(hit.getDirection().getStepX(), hit.getDirection().getStepY(), hit.getDirection().getStepZ());
-		burst(hit.getLocation().add(n.scale(0.2)), null);
+		burst(hit.getLocation().add(n.scale(0.2)));
 	}
 
 	@Override
 	public void hitBarrier(Vec3 at) {
-		burst(at, null);
+		burst(at);
 	}
 
 	@Override
 	protected void expire() {
-		burst(position(), null);
+		burst(position());
 	}
 
-	private void burst(Vec3 at, Entity direct) {
+	private void burst(Vec3 at) {
 		if (done || !(level() instanceof ServerLevel)) {
 			return;
 		}
 		done = true;
 		if (getOwner() instanceof ServerPlayer owner) {
-			Illari.ballBurst(owner, this, at, direct);
+			Illari.ballBurst(owner, this, at);
 		}
 		discard();
 	}

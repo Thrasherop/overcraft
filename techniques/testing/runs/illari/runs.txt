@@ -523,3 +523,234 @@
 19:35:56.287 key forward up -> {"key":"key.keyboard.w"}
 19:35:56.470 perspective first -> {"ok":true}
 19:35:59.479 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 23.558, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 11.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== FX-OLD-47bc22f 2026-11-14 20:07:08
+20:07:08.754 MARK FX setup: fresh world, pick Illari (two clicks), peaceful-safe noon
+20:07:08.816 window 1920 1080 -> {"ok":true}
+20:07:15.307 newworld fx_old -> {"ok":true}
+20:08:00.342 cmd /difficulty peaceful -> {"ok":true}
+20:08:00.365 cmd /gamerule spawn_monsters false -> {"ok":true}
+20:08:00.426 cmd /time set noon -> {"ok":true}
+20:08:00.435 cmd /weather clear -> {"ok":true}
+20:08:00.470 screenclick 390 216 1 -> {"screen":"HeroSelectScreen"}
+20:08:02.003 screenclick 390 216 1 -> {"screen":""}
+20:08:05.034 cmd /difficulty easy -> {"ok":true}
+20:08:05.073 cmd /kill @e[type=!player] -> {"ok":true}
+20:08:05.112 state -> {"screen": "", "x": -1.5, "y": -60.0, "z": 5.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 15.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+20:08:05.112 MARK FX4 pylon cooldown: E at the ground 5.5 m ahead; cooldown right after (critic: 0 while out; fix: 7 from the throw)
+20:08:05.138 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+20:08:05.171 cmd /execute as @s at @s anchored eyes facing 0.5 -60 6 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+20:08:05.702 key ability_2 down -> {"key":"key.keyboard.e"}
+20:08:05.854 key ability_2 up -> {"key":"key.keyboard.e"}
+20:08:06.858 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 24.25, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+20:08:06.895 playing -> {"playing":"illari.pylon.build illari.voice.pylon"}
+20:08:06.895 MARK FX1 own pylon in the line of fire: husk 6.5 m ahead behind the pylon; aim low through the pylon (critic: ammo drops, husk unhurt; fix: husk -6 MC)
+20:08:06.945 cmd /summon husk 0.5 -60 7.0 {NoAI:1b,Tags:["p1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+20:08:06.957 ents Pylon -> {"ents":"178 0.25 -59.99 5.03 v 0.00 0.00 0.00 t43 | "}
+20:08:06.991 cmd /execute as @s at @s anchored eyes facing 0.5 -59.7 7.0 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+20:08:08.202 key secondary_fire down -> {"key":"key.mouse.left"}
+20:08:08.336 key secondary_fire up -> {"key":"key.mouse.left"}
+20:08:09.280 hp @e[tag=p1,limit=1] -> Husk has the following entity data: 94.0f
+20:08:09.306 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 111.5, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 13, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+20:08:09.306 MARK FX4b E again at 8 s from the throw (critic: took it back; fix: a new pylon thrown, cooldown 7 again); then the hum after the old one went
+20:08:14.320 key ability_2 down -> {"key":"key.keyboard.e"}
+20:08:14.488 key ability_2 up -> {"key":"key.keyboard.e"}
+20:08:15.491 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 142.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 13, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 5.9, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+20:08:15.525 ents Pylon -> {"ents":""}
+20:08:15.558 playing -> {"playing":"illari.pylon.loop illari.voice.pylon_moved"}
+20:08:15.558 MARK FX7 the pylon gone (killed): its hum should stop
+20:08:15.592 cmd /kill @e[type=overcraft:healing_pylon] -> {"ok":true}
+20:08:16.595 playing -> {"playing":"illari.pylon.loop"}
+20:08:16.596 MARK FX5 Outburst moving (W held): critic vz 0.579 / vy 0.347 b/t; fix expected ~ (11.6+5.5)/20 = 0.85 h, 0.35 v
+20:08:16.629 cmd /kill @e[type=!player] -> {"ok":true}
+20:08:16.664 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+20:08:16.718 key forward down -> {"key":"key.keyboard.w"}
+20:08:17.321 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+20:08:17.488 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+20:08:17.655 state -> {"screen": "", "x": 0.5, "y": -59.675, "z": 5.963, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 153.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 13, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 7.7, "ability2Cooldown": 3.7, "vx": 0.0, "vy": 0.304, "vz": 0.549, "anim": "jump+outburst"}
+20:08:17.789 state -> {"screen": "", "x": 0.5, "y": -58.961, "z": 7.486, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 153.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 13, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 7.6, "ability2Cooldown": 3.6, "vx": 0.0, "vy": 0.172, "vz": 0.477, "anim": "jump+outburst"}
+20:08:17.823 key forward up -> {"key":"key.keyboard.w"}
+20:08:19.823 MARK FX6 Outburst on an AI husk 2.5 m ahead (critic: ~2 m, 0.2 m up)
+20:08:25.850 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+20:08:25.883 cmd /summon husk 0.5 -60 3.0 {Tags:["k1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+20:08:25.918 cmd /effect give @s resistance 30 4 true -> {"ok":true}
+20:08:26.658 hp @e[tag=k1,limit=1] Pos -> Husk has the following entity data: [0.5d, -60.0d, 3.0d]
+20:08:26.685 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+20:08:26.853 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+20:08:27.696 hp @e[tag=k1,limit=1] Pos -> Husk has the following entity data: [0.5d, -60.0d, 6.5182820789940354d]
+20:08:29.138 hp @e[tag=k1,limit=1] Pos -> Husk has the following entity data: [0.5255098513035368d, -60.0d, 5.019675218726172d]
+20:08:29.138 MARK FX3/FX2 Captive Sun: husk u1 8 m ahead, u2 16 m directly behind; the ball aimed at u1 (critic: bursts on u1; fix: passes through, 5 to u1, bursts beyond); then 40 OW (3.2 MC) of /damage on u1: old counts the ball's 55 and sets Sunstruck off (u1 -12.8 MC more), fix doesn't
+20:08:29.163 cmd /kill @e[type=!player] -> {"ok":true}
+20:08:29.212 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+20:08:29.241 cmd /summon husk 0.5 -60 8.5 {NoAI:1b,Tags:["u1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+20:08:29.274 cmd /summon husk 0.5 -60 24.5 {NoAI:1b,Tags:["u2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+20:08:29.308 ult 100 -> {"ok":true}
+20:08:30.310 key ultimate down -> {"key":"key.keyboard.q"}
+20:08:30.476 key ultimate up -> {"key":"key.keyboard.q"}
+20:08:31.781 cmd /execute as @s at @s anchored eyes facing 0.5 -58.8 8.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+20:08:32.015 key secondary_fire down -> {"key":"key.mouse.left"}
+20:08:32.149 key secondary_fire up -> {"key":"key.mouse.left"}
+20:08:34.095 hp @e[tag=u1,limit=1] -> Husk has the following entity data: 95.6f
+20:08:34.527 hp @e[tag=u2,limit=1] -> Husk has the following entity data: 100.0f
+20:08:34.553 cmd /damage @e[tag=u1,limit=1] 3.2 minecraft:generic -> {"ok":true}
+20:08:36.499 hp @e[tag=u1,limit=1] -> Husk has the following entity data: 79.600006f
+20:08:36.525 perspective back -> {"ok":true}
+20:08:36.831 screenshot illari_fx_flight_old.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_fx_flight_old.png"}
+20:08:36.861 perspective first -> {"ok":true}
+20:08:41.889 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 31.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== FX1b-OLD 2026-11-14 20:08:54
+20:08:54.924 MARK FX1b own pylon in the line (geometry fixed: the husk on the pylon's own x, aimed through the pylon's middle)
+20:08:54.937 cmd /kill @e[type=!player] -> {"ok":true}
+20:08:54.972 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+20:09:03.989 cmd /execute as @s at @s anchored eyes facing 0.5 -60 6 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+20:09:04.490 key ability_2 down -> {"key":"key.keyboard.e"}
+20:09:04.657 key ability_2 up -> {"key":"key.keyboard.e"}
+20:09:06.663 ents Pylon -> {"ents":"293 0.25 -59.99 5.03 v 0.00 0.00 0.00 t77 | "}
+20:09:06.696 cmd /execute at @e[type=overcraft:healing_pylon,limit=1] run summon husk ~ ~ ~2 {NoAI:1b,Tags:["p1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+20:09:06.730 cmd /execute as @s at @s anchored eyes facing entity @e[type=overcraft:healing_pylon,limit=1] feet run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+20:09:06.763 cmd /execute as @s at @s run tp @s ~ ~ ~ ~ ~-4 -> {"ok":true}
+20:09:07.973 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 3.158, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 162.0, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+20:09:07.999 key secondary_fire down -> {"key":"key.mouse.left"}
+20:09:08.132 key secondary_fire up -> {"key":"key.mouse.left"}
+20:09:09.079 hp @e[tag=p1,limit=1] -> Husk has the following entity data: 100.0f
+20:09:09.103 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 3.158, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 167.75, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 13, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== FX-NEW 2026-11-14 20:12:41
+20:12:41.729 MARK FX setup: fresh world, pick Illari (two clicks), peaceful-safe noon
+20:12:41.779 window 1920 1080 -> {"ok":true}
+20:12:48.124 newworld fx_new -> {"ok":true}
+20:13:33.169 cmd /difficulty peaceful -> {"ok":true}
+20:13:33.178 cmd /gamerule spawn_monsters false -> {"ok":true}
+20:13:33.211 cmd /time set noon -> {"ok":true}
+20:13:33.244 cmd /weather clear -> {"ok":true}
+20:13:33.313 screenclick 390 216 1 -> {"screen":"HeroSelectScreen"}
+20:13:37.342 screenshot illari_fx_select.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_fx_select.png"}
+20:13:38.359 screenclick 390 216 1 -> {"screen":""}
+20:13:41.395 cmd /difficulty easy -> {"ok":true}
+20:13:41.469 cmd /kill @e[type=!player] -> {"ok":true}
+20:13:41.486 state -> {"screen": "", "x": -7.5, "y": -60.0, "z": 3.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 15.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+20:13:41.486 MARK FX4 pylon cooldown: E at the ground 5.5 m ahead; cooldown right after (critic: 0 while out; fix: 7 from the throw)
+20:13:41.510 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+20:13:41.540 cmd /execute as @s at @s anchored eyes facing 0.5 -60 6 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+20:13:42.041 key ability_2 down -> {"key":"key.keyboard.e"}
+20:13:42.208 key ability_2 up -> {"key":"key.keyboard.e"}
+20:13:43.235 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 24.5, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 5.95, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+20:13:43.272 playing -> {"playing":"illari.pylon.build illari.voice.pylon"}
+20:13:43.272 MARK FX1 own pylon in the line of fire: husk 6.5 m ahead behind the pylon; aim low through the pylon (critic: ammo drops, husk unhurt; fix: husk -6 MC)
+20:13:43.328 cmd /summon husk 0.5 -60 7.0 {NoAI:1b,Tags:["p1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+20:13:43.336 ents Pylon -> {"ents":"178 0.25 -59.99 5.03 v 0.00 0.00 0.00 t41 | "}
+20:13:43.371 cmd /execute as @s at @s anchored eyes facing 0.5 -59.7 7.0 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+20:13:44.573 key secondary_fire down -> {"key":"key.mouse.left"}
+20:13:44.710 key secondary_fire up -> {"key":"key.mouse.left"}
+20:13:45.656 hp @e[tag=p1,limit=1] -> Husk has the following entity data: 94.0f
+20:13:45.680 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 111.75, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 13, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 3.5, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+20:13:45.680 MARK FX4b E again at 8 s from the throw (critic: took it back; fix: a new pylon thrown, cooldown 7 again); then the hum after the old one went
+20:13:50.696 key ability_2 down -> {"key":"key.keyboard.e"}
+20:13:50.863 key ability_2 up -> {"key":"key.keyboard.e"}
+20:13:51.866 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 142.5, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 13, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 5.95, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+20:13:51.899 ents Pylon -> {"ents":"180 0.25 -59.99 5.98 v 0.00 0.00 0.00 t38 | "}
+20:13:51.932 playing -> {"playing":"illari.pylon.build illari.voice.pylon_moved"}
+20:13:51.932 MARK FX7 the pylon gone (killed): its hum should stop
+20:13:51.966 cmd /kill @e[type=overcraft:healing_pylon] -> {"ok":true}
+20:13:52.969 playing -> {"playing":"illari.pylon.build"}
+20:13:52.969 MARK FX5 Outburst moving (W held): critic vz 0.579 / vy 0.347 b/t; fix expected ~ (11.6+5.5)/20 = 0.85 h, 0.35 v
+20:13:53.002 cmd /kill @e[type=!player] -> {"ok":true}
+20:13:53.037 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+20:13:53.095 key forward down -> {"key":"key.keyboard.w"}
+20:13:53.697 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+20:13:53.864 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+20:13:54.031 state -> {"screen": "", "x": 0.5, "y": -59.393, "z": 6.984, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 153.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 13, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 7.65, "ability2Cooldown": 3.75, "vx": 0.0, "vy": 0.26, "vz": 0.747, "anim": "jump+outburst"}
+20:13:54.164 state -> {"screen": "", "x": 0.5, "y": -58.961, "z": 8.374, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 154.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 13, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 7.55, "ability2Cooldown": 3.65, "vx": 0.0, "vy": 0.172, "vz": 0.66, "anim": "jump+outburst"}
+20:13:54.197 key forward up -> {"key":"key.keyboard.w"}
+20:13:56.198 MARK FX6 Outburst on an AI husk 2.5 m ahead (critic: ~2 m, 0.2 m up)
+20:14:02.218 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+20:14:02.252 cmd /summon husk 0.5 -60 3.0 {Tags:["k1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+20:14:02.285 cmd /effect give @s resistance 30 4 true -> {"ok":true}
+20:14:03.027 hp @e[tag=k1,limit=1] Pos -> Husk has the following entity data: [0.5d, -60.0d, 3.0d]
+20:14:03.053 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+20:14:03.221 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+20:14:04.064 hp @e[tag=k1,limit=1] Pos -> Husk has the following entity data: [0.5d, -60.0d, 8.11144120319885d]
+20:14:05.504 hp @e[tag=k1,limit=1] Pos -> Husk has the following entity data: [0.5207604736399903d, -60.0d, 6.839914383485567d]
+20:14:05.504 MARK FX3/FX2 Captive Sun: husk u1 8 m ahead, u2 16 m directly behind; the ball aimed at u1 (critic: bursts on u1; fix: passes through, 5 to u1, bursts beyond); then 40 OW (3.2 MC) of /damage on u1: old counts the ball's 55 and sets Sunstruck off (u1 -12.8 MC more), fix doesn't
+20:14:05.528 cmd /kill @e[type=!player] -> {"ok":true}
+20:14:05.562 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+20:14:05.602 cmd /summon husk 0.5 -60 8.5 {NoAI:1b,Tags:["u1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+20:14:05.648 cmd /summon husk 0.5 -60 24.5 {NoAI:1b,Tags:["u2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+20:14:05.684 ult 100 -> {"ok":true}
+20:14:06.716 key ultimate down -> {"key":"key.keyboard.q"}
+20:14:06.885 key ultimate up -> {"key":"key.keyboard.q"}
+20:14:08.189 cmd /execute as @s at @s anchored eyes facing 0.5 -58.8 8.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+20:14:08.423 key secondary_fire down -> {"key":"key.mouse.left"}
+20:14:08.556 key secondary_fire up -> {"key":"key.mouse.left"}
+20:14:10.504 hp @e[tag=u1,limit=1] -> Husk has the following entity data: 95.6f
+20:14:10.939 hp @e[tag=u2,limit=1] -> Husk has the following entity data: 100.0f
+20:14:10.965 cmd /damage @e[tag=u1,limit=1] 3.2 minecraft:generic -> {"ok":true}
+20:14:12.914 hp @e[tag=u1,limit=1] -> Husk has the following entity data: 79.600006f
+20:14:12.937 perspective back -> {"ok":true}
+20:14:13.258 screenshot illari_fx_flight.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_fx_flight.png"}
+20:14:13.291 perspective first -> {"ok":true}
+20:14:18.314 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 32.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+20:14:18.316 MARK FX1b own pylon in the line (geometry fixed: the husk on the pylon's own x, aimed through the pylon's middle)
+20:14:18.348 cmd /kill @e[type=!player] -> {"ok":true}
+20:14:18.382 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+20:14:27.405 cmd /execute as @s at @s anchored eyes facing 0.5 -60 6 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+20:14:27.907 key ability_2 down -> {"key":"key.keyboard.e"}
+20:14:28.073 key ability_2 up -> {"key":"key.keyboard.e"}
+20:14:30.078 ents Pylon -> {"ents":"258 0.25 -59.99 5.03 v 0.00 0.00 0.00 t79 | "}
+20:14:30.112 cmd /execute at @e[type=overcraft:healing_pylon,limit=1] run summon husk ~ ~ ~2 {NoAI:1b,Tags:["p1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+20:14:30.144 cmd /execute as @s at @s anchored eyes facing entity @e[type=overcraft:healing_pylon,limit=1] feet run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+20:14:30.179 cmd /execute as @s at @s run tp @s ~ ~ ~ ~ ~-4 -> {"ok":true}
+20:14:31.383 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 3.158, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 97.5, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 3.6, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+20:14:31.417 key secondary_fire down -> {"key":"key.mouse.left"}
+20:14:31.549 key secondary_fire up -> {"key":"key.mouse.left"}
+20:14:32.498 hp @e[tag=p1,limit=1] -> Husk has the following entity data: 100.0f
+20:14:32.518 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 3.158, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 103.0, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 13, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 2.5, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== FX2-OLD-47bc22f 2026-11-14 20:18:56
+20:19:53.418 MARK FX1c her own pylon in the shot: husk 1.5 m behind it on its x, aimed at the husk 0.5 m up (the line 0.76 m up at the pylon)
+20:20:04.168 pylon at (0.25, -59.99, 5.03)
+20:20:05.449 state {"y": -60.0, "primaryAmmo": 14, "ability2Cooldown": 0.0, "mode": 2, "ult": 75.5}
+20:20:06.659 hp @e[tag=p1,limit=1] Health -> Husk has the following entity data: 100.0f
+20:20:06.684 state {"y": -60.0, "primaryAmmo": 13, "ability2Cooldown": 0.0, "mode": 2, "ult": 81.75}
+20:20:06.684 MARK FX7b the built pylon hums; killed, its hum stops
+20:20:07.691 playing {"playing":"illari.pylon.destroyed illari.pylon.loop illari.rifle.fire illari.voice.pylon_destroyed"}
+20:20:08.755 playing {"playing":"illari.pylon.loop"}
+20:20:08.755 MARK FX3b the ball through a husk held at her height 10 m ahead (no gravity): pass-through = 5 only; old = burst there, 55
+20:20:11.331 state {"y": -54.30623490995825, "primaryAmmo": 14, "ability2Cooldown": 9.9, "mode": 17, "ult": 0.0}
+20:20:14.027 hp @e[tag=u9,limit=1] Health -> Husk has the following entity data: 95.6f
+20:20:20.029 MARK FX2b marks, then 40 OW of /damage on one: the ball's own 55 doesn't count, no Sunstruck (old: it went off, -12.8)
+20:20:24.969 hp @e[tag=u1,limit=1] Health -> Husk has the following entity data: 95.6f
+20:20:26.940 hp @e[tag=u1,limit=1] Health -> Husk has the following entity data: 79.600006f
+20:20:26.940 MARK FX2c then a full rifle shot (75 more: 115 >= 90): Sunstruck goes off (-12.8)
+20:20:30.548 hp @e[tag=u1,limit=1] Health -> Husk has the following entity data: 79.600006f
+20:20:35.556 state {"y": -60.0, "primaryAmmo": 13, "ability2Cooldown": 0.0, "mode": 0, "ult": 45.75}
+
+=== FX2-NEW 2026-11-14 20:24:25
+20:25:21.295 MARK FX1c her own pylon in the shot: husk 1.5 m behind it on its x, aimed at the husk 0.5 m up (the line 0.76 m up at the pylon)
+20:25:32.034 pylon at (0.25, -59.99, 5.03)
+20:25:33.341 state {"y": -60.0, "primaryAmmo": 14, "ability2Cooldown": 3.65, "mode": 2, "ult": 61.5}
+20:25:34.551 hp @e[tag=p1,limit=1] Health -> Husk has the following entity data: 94.0f
+20:25:34.574 state {"y": -60.0, "primaryAmmo": 13, "ability2Cooldown": 2.4, "mode": 2, "ult": 142.75}
+20:25:34.574 MARK FX7b the built pylon hums; killed, its hum stops
+20:25:35.611 playing {"playing":"illari.pylon.destroyed illari.rifle.fire illari.voice.pylon_destroyed"}
+20:25:36.640 playing {"playing":"illari.pylon.destroyed illari.rifle.fire"}
+20:25:36.640 MARK FX3b the ball through a husk held at her height 10 m ahead (no gravity): pass-through = 5 only; old = burst there, 55
+20:25:39.276 state {"y": -54.2191344012721, "primaryAmmo": 14, "ability2Cooldown": 9.85, "mode": 17, "ult": 0.0}
+20:25:41.956 hp @e[tag=u9,limit=1] Health -> Husk has the following entity data: 99.6f
+20:25:47.958 MARK FX2b marks, then 40 OW of /damage on one: the ball's own 55 doesn't count, no Sunstruck (old: it went off, -12.8)
+20:25:52.855 hp @e[tag=u1,limit=1] Health -> Husk has the following entity data: 95.6f
+20:25:54.826 hp @e[tag=u1,limit=1] Health -> Husk has the following entity data: 92.4f
+20:25:54.826 MARK FX2c then a full rifle shot (75 more: 115 >= 90): Sunstruck goes off (-12.8)
+20:25:58.574 hp @e[tag=u1,limit=1] Health -> Husk has the following entity data: 70.600006f
+20:26:03.580 state {"y": -60.0, "primaryAmmo": 13, "ability2Cooldown": 0.0, "mode": 0, "ult": 318.99994}
+
+=== FXF 2026-11-14 20:26:32
+20:26:32.417 MARK FXF flight pose: Q, 2 s in, the animator state (expected flight)
+20:26:32.432 ult 100 -> {"ok":true}
+20:26:33.437 key ultimate down -> {"key":"key.keyboard.q"}
+20:26:33.604 key ultimate up -> {"key":"key.keyboard.q"}
+20:26:35.617 state -> {"screen": "", "x": 0.5, "y": -53.216, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 0.0, "shield": 0.0, "mode": 17, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.069, "vz": 0.0, "anim": "flight"}
+20:26:35.644 perspective front -> {"ok":true}
+20:26:36.059 screenshot illari_fx_flight_front.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_fx_flight_front.png"}
+20:26:36.373 perspective first -> {"ok":true}

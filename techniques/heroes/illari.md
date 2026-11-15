@@ -25,7 +25,7 @@ Each number in `IllariStats` with its source (D / BZ / W) and H / M / L.
   reload 1.5 s with the ammo back at 1.08 s; 0.15 s between shots, 0.2 s after the beam.
 - **Healing beam** (right): the first ally along her aim in 20 m (0.25 m round), 115 / s; energy 100 draining over 3 s, back at 35 / s
   from 0.6 s after; emptied, back from 1.0 s later and locked until full (D). Drawn as gold dust (ours).
-- **Healing Pylon** (E; E again takes it back): 0.6 s cast, thrown at 0.1 s at 25 m/s; sets on a floor or wall; built 1.25 s; every
+- **Healing Pylon** (E; with one out, E places a new one: fix round 1): 0.6 s cast, thrown at 0.1 s at 25 m/s; sets on a floor or wall; built 1.25 s; every
   0.8 s a heal shot (55 m/s: a delayed heal, drawn as a dust line, ours) of 50 (25 on her) to the ally in 15 m and sight with the lowest
   health share; 75 + 50 shields (shields back 3 s after a hit at 30 / s: ours, L); cooldown 7 s once gone, 14 s if hit in its last 3 s
   or taken back unbuilt. Enemies break it: their hits, their projectiles that strike it, and **ours:** a hostile mob within 1 m of it
@@ -83,6 +83,35 @@ husks 100 MC = 1250 OW, armor 0; a villager as the ally. Expected -> seen:
 - On the select screen she stands side-on with the rifle across her (`select` clip as exported); not compared with Overwatch.
 - No reticle widget (the rifle's charge is synced in `secondaryReload` for one, unused). Effects are vanilla particles, not her data's.
 - Sound events registered and played by name; not checked event by event, nor the long one-shots the map warns of beyond `sun.flight`.
+
+## Fix round 1 (2026-11-14, the critic on 47bc22f): reproduced on 47bc22f, then replayed on the fix
+Same scripts on both builds, fresh worlds `fx_old` / `fx2_old` (47bc22f) and `fx_new` / `fx2_new` (the fix); raw lines under `=== FX-OLD`,
+`FX1b-OLD`, `FX2-OLD`, `FX-NEW`, `FX2-NEW`, `FXF` in [runs.txt](../testing/runs/illari/runs.txt); scripts `fx.txt`, `fx1.txt`, `fx2.py`.
+1. **Her own pylon ate her shots** (FX1c: husk 1.5 m behind it, the line 0.76 m up through its box): old ammo 14 -> 13, husk 100 ->
+   100; fixed 100 -> 94. A pylon stops a shot only when it's an enemy's (`Illari.enemyPylon`); allied heroes' projectiles pass it too
+   (`OwProjectile.canHitEntity`).
+2. **The ball's own damage counted toward Sunstruck** (FX2b: ball 55, then 40 OW of /damage): old went off (95.6 -> 79.6); fixed 92.4,
+   no blast; then a rifle shot (+112.5) set it off (-> 70.6). Marks come after the ball's damage, and none of the ball's damage counts
+   (`ballDamaging`: the splash after a pass-through landed on an already-marked target and counted, found replaying).
+3. **The ball burst on the first enemy** (FX3b: a husk held in the air at her height, 10 m off): old 55 there; fixed 5 (passed through,
+   W "passes through enemies and explodes on a shield, terrain or after 10 s").
+4. **Pylon cooldown frozen while it's out** (FX4): old 0.0 with it out; fixed 5.95 at 1 s (7 from the throw, W "starts at activation").
+   E with one out: old took it back (no pylon); fixed a new one replaced it once the 7 s ran (FX4b, cooldown 7 again), not within 3 s of a
+   hit. 14 s from its destruction stays. Rapid Construction 12 / **5** (BZ 2026-06-16 -2 s; the data's 6 kept out).
+5. **Outburst moving was 13.5 m/s set** (FX5: vz 0.549 / vy 0.304 b/t): D #812 is an impulse; added to her run (5.5) it gives W's 18.4
+   tapped and 16.7 held exactly. Fixed: vz 0.747 / vy 0.26 b/t at 0.15 s (its decay above her air speed already applied).
+6. **Outburst barely moved a mob** (FX6, an AI husk 2.5 m off): old 3.5 m; fixed 5.1 m (the push lifts it off the ground first, so the
+   first tick's ground friction doesn't eat it).
+7. **The pylon's hum outlived it** (FX7b: killed after building): old `illari.pylon.loop` still playing 1 s later; fixed gone. While it
+   stands the hum restarts every 24 s.
+8. A second Captive Sun on a marked target now refreshes the mark's time and keeps its count (code, not played). The HUD's pylon box
+   fills against the cooldown it started with. **Select screen:** her `select` / `select_2` clips as the showcase's intro and hold: she
+   faces the camera (`illari_fx_select.png`). **Flight pose:** the `flight` clip (animator state "flight", `illari_fx_flight_front.png`;
+   `HeroManager.ILLARI_FLIGHT`).
+
+**Still open:** her hair renders white (`illari_fx_select.png`): its material 8210 is shader 0x36 with no colour image in its .owmat
+(only a soft gradient mask, 21C98), so the piece is drawn untextured; the colour must come from the shader, not a texture mapping:
+left for a material pass. Vanilla particles for her effects, no reticle widget. Not replayed: the mark refresh, Rapid Construction.
 
 **Not shown / not tried:**
 - **The real mouse and keys** (owed before the merge): every press went through the harness's key mappings.

@@ -63,12 +63,12 @@ public final class IllariStats {
 	public static final double PYLON_EVERY = 0.8, PYLON_RANGE = 15;
 	/** Its heal shot flies at 55 m/s, homing (D 3DF6 #216; W's 25 m/s is the throw) H. */
 	public static final double PYLON_SHOT_SPEED = 55;
-	/** Cooldown 7 s once it's gone; 14 s if it was hit in its last 3 s (D 11FB / 11FC / 1D36, 3DF4 #345; W 14 / 7 / 3) H/M. */
+	/** Cooldown 7 s from the throw; 14 s from its destruction; no new one within 3 s of a hit (D 11FB / 11FC / 1D36; W 14 / 7 / 3) H/M. */
 	public static final double PYLON_COOLDOWN = 7, PYLON_COOLDOWN_HIT = 14, PYLON_HIT_WINDOW = 3;
 	/** Its shields come back 3 s after a hit (W Hit points: Shields; ours that the pylon's do as a hero's) M. */
 	public static final double PYLON_SHIELD_DELAY = 3, PYLON_SHIELD_REGEN = 30;
-	/** Rapid Construction: built x0.25 as fast, cooldowns 12 / 6 s (D 51F3; W -2 s: 12 / 5) H. */
-	public static final double RAPID_BUILD = 0.25, RAPID_COOLDOWN_HIT = 12, RAPID_COOLDOWN = 6;
+	/** Rapid Construction: built x0.25 as fast (D 51F3), cooldowns 2 s shorter: 12 / 5 s (BZ 2026-06-16 1.5 -> 2 s; W; the data's 6 L) H. */
+	public static final double RAPID_BUILD = 0.25, RAPID_COOLDOWN_HIT = 12, RAPID_COOLDOWN = 5;
 	/** A monster within 1 m of the pylon hits it every 1 s for its attack damage (ours: Minecraft's mobs can't target a non-creature). */
 	public static final double PYLON_MOB_REACH = 1.0, PYLON_MOB_EVERY = 1.0;
 

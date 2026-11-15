@@ -33,6 +33,11 @@ public abstract class OwProjectile extends ThrowableItemProjectile {
 		if (level().isClientSide()) {
 			return false;
 		}
+		if (entity instanceof HealingPylonEntity pylon && getOwner() instanceof LivingEntity owner
+			&& !dev.overcraft.illari.Illari.enemyPylon(owner, pylon)) {
+			// an allied Healing Pylon lets its side's shots through (the critic, 2026-11-14)
+			return false;
+		}
 		return dev.overcraft.hero.Allies.shotRule(super.canHitEntity(entity), entity instanceof LivingEntity living && dev.overcraft.hero.Combat.phaseStops(living),
 			entity instanceof LivingEntity living && getOwner() instanceof LivingEntity owner && dev.overcraft.hero.Allies.isAlly(owner, living));
 	}

@@ -46,6 +46,8 @@ public class HealingPylonEntity extends OwProjectile {
 	private int nextShot;
 	private long hitAt = -1000;
 	private int mobClock;
+	/** Its time down when it was built (its hum's clock). */
+	private int builtAt;
 	/** Heal shots in flight: who, ticks to arrival. */
 	private final List<int[]> shots = new ArrayList<>();
 
@@ -136,7 +138,10 @@ public class HealingPylonEntity extends OwProjectile {
 		if (stage() == 1 && down >= buildTicks) {
 			entityData.set(STAGE, 2);
 			nextShot = 0;
+			builtAt = down;
 			Illari.pylonBuilt(owner, this);
+		} else if (built() && (down - builtAt) % Illari.HUM_EVERY == 0) {
+			Illari.pylonHum(this);
 		}
 		if (!recentlyHit() && shields < IllariStats.PYLON_SHIELDS) {
 			shields = Math.min(IllariStats.PYLON_SHIELDS, shields + IllariStats.PYLON_SHIELD_REGEN / 20.0);
@@ -265,6 +270,14 @@ public class HealingPylonEntity extends OwProjectile {
 			discard();
 		}
 		return true;
+	}
+
+	@Override
+	public void remove(RemovalReason reason) {
+		if (!level().isClientSide()) {
+			Illari.pylonGone(this);
+		}
+		super.remove(reason);
 	}
 
 	@Override

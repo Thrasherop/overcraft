@@ -97,6 +97,10 @@ public final class HeroManager {
 	public static final AttachmentType<Integer> PHARAH_STATE = AttachmentRegistry.create(Overcraft.id("pharah_state"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
 
+	/** Illari in Captive Sun's flight: for every client to draw her flight clip (HeroAnimator). */
+	public static final AttachmentType<Boolean> ILLARI_FLIGHT = AttachmentRegistry.create(Overcraft.id("illari_flight"),
+		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
+
 	/** Sojourn sliding (Power Slide): for every client to animate her slide (HeroAnimator), and her own to move her. */
 	public static final AttachmentType<Boolean> SOJOURN_SLIDE = AttachmentRegistry.create(Overcraft.id("sojourn_slide"),
 		builder -> builder.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
@@ -364,7 +368,7 @@ public final class HeroManager {
 
 	/** The synced states clients draw a hero in play by (not the hero itself, nor sleep, which others put on them). */
 	private static final java.util.List<AttachmentType<?>> HERO_LOOKS = java.util.List.of(SONG, MERCY, LIFEWEAVER, JUNO_GLIDE,
-		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA, DVA_FORM, DVA_STATE, LUCIO_WALL, PHARAH_STATE);
+		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA, DVA_FORM, DVA_STATE, LUCIO_WALL, PHARAH_STATE, ILLARI_FLIGHT);
 
 	/** Dev only (DevServer's "bot showstate off"): the rule off, to show what it does. */
 	public static boolean devNoShowState;

@@ -97,13 +97,11 @@ public final class Illari implements HeroKit {
 		double rate = Combat.cooldownRate(player);
 		s.ability1Cooldown = Math.max(0, s.ability1Cooldown - rate);
 		if (pylon(player, j) == null && j.pylon != null) {
-			// it went without us (unloaded, broken off-screen): its cooldown as if it was broken
+			// it went without us (unloaded, killed off by the game): forgotten, its cooldown runs on
 			j.pylon = null;
-			s.ability2Cooldown = Ow.ticks(pylonCooldown(s, true));
 		}
-		if (j.pylon == null && j.pylonCast < 0) {
-			s.ability2Cooldown = Math.max(0, s.ability2Cooldown - rate);
-		}
+		// the cooldown runs from the throw, pylon out or not (W: "starts at activation"; D 11FB from the throw)
+		s.ability2Cooldown = Math.max(0, s.ability2Cooldown - rate);
 		j.flareCooldown = Math.max(0, j.flareCooldown - rate);
 		if (s.reloadHeld > 0) {
 			s.reloadHeld--;
@@ -112,6 +110,11 @@ public final class Illari implements HeroKit {
 		boolean leftPress = s.primaryHeld && !j.leftWas;
 		j.leftWas = s.primaryHeld;
 		sun(player, s, j, able, leftPress, now);
+		// her flight for every client's animator (HeroAnimator: the flight clip)
+		boolean fly = flying(j);
+		if (!java.util.Objects.equals(player.getAttached(HeroManager.ILLARI_FLIGHT), fly)) {
+			player.setAttached(HeroManager.ILLARI_FLIGHT, fly);
+		}
 		pylonCast(player, s, j, able);
 		outburstCast(player, s, j, able);
 		beam(player, s, j, able, now);
@@ -227,7 +230,12 @@ public final class Illari implements HeroKit {
 		double bestD = Double.MAX_VALUE;
 		for (Entity e : level.getEntities(player, new AABB(eye, block).inflate(1))) {
 			LivingEntity target = e instanceof EnderDragonPart part ? part.parentMob : e instanceof LivingEntity living ? living : null;
-			boolean pylon = e instanceof HealingPylonEntity;
+			// a pylon stops her shot only when it's an enemy's: her own and her side's let it through (the critic, 2026-11-14: her own
+			// pylon ate her shots)
+			boolean pylon = e instanceof HealingPylonEntity p && enemyPylon(player, p);
+			if (e instanceof HealingPylonEntity && !pylon) {
+				continue;
+			}
 			if (!pylon && (target == null || !target.isAlive() || !Allies.canHurt(player, target))) {
 				continue;
 			}
@@ -402,7 +410,10 @@ public final class Illari implements HeroKit {
 
 	// ---- Healing Pylon (3DF4) ----
 
-	/** Her cooldown once the pylon is gone: 7 s, 14 s if it was hit in its last 3 s or never built (D 11FB / 11FC, 3DF4 #345). */
+	/**
+	 * Her cooldown: 7 s from the throw (D 11FB; W "redeploy 7"), 14 s from its destruction by enemies (D 11FC; W 14); Rapid Construction
+	 * 2 s off each, 5 / 12 (BZ 2026-06-16 "reduced by 2 seconds", 1.5 -> 2; the data's 6 kept out: patch notes first).
+	 */
 	static double pylonCooldown(HeroState s, boolean hit) {
 		boolean rapid = s.has(Perk.ILLARI_RAPID_CONSTRUCTION);
 		return hit ? rapid ? RAPID_COOLDOWN_HIT : PYLON_COOLDOWN_HIT : rapid ? RAPID_COOLDOWN : PYLON_COOLDOWN;
@@ -420,8 +431,10 @@ public final class Illari implements HeroKit {
 		if (t == Ow.ticks(PYLON_THROW_AT)) {
 			HealingPylonEntity old = pylon(player, j);
 			if (old != null) {
-				endPylon(player, s, j, old, false);
+				// one at a time: the new one takes the old one's place (W: "a new pylon destroys the old one")
+				endPylon(player, s, j, old, true);
 			}
+			s.ability2Cooldown = Ow.ticks(pylonCooldown(s, false));
 			Vec3 from = offset(player, 0.25, -0.1, 0.4);
 			HealingPylonEntity pylon = new HealingPylonEntity(player, player.level(), s.has(Perk.ILLARI_RAPID_CONSTRUCTION) ? RAPID_BUILD : 1);
 			pylon.launch(from, player.getViewVector(1.0f), Ow.speed(PYLON_SPEED));
@@ -445,7 +458,35 @@ public final class Illari implements HeroKit {
 	}
 
 	public static void pylonBuilt(ServerPlayer owner, HealingPylonEntity pylon) {
+		pylonHum(pylon);
+	}
+
+	/** How often its hum starts again (ticks): the shortest of its one-shot takes, 24 s (illari_sfx.txt pylon.loop; ours the restart). */
+	public static final int HUM_EVERY = 24 * 20;
+
+	/** Its hum: a long one-shot in the data, cut and started again every 24 s while it stands (the critic, 2026-11-14). */
+	public static void pylonHum(HealingPylonEntity pylon) {
+		stopAround(pylon, "pylon.loop");
 		IllariSounds.all((ServerLevel) pylon.level(), "pylon.loop", pylon.position(), 20);
+	}
+
+	/** It's gone (broken, replaced, taken away with her): its hum stops (it played on 24-38 s after it went). */
+	public static void pylonGone(HealingPylonEntity pylon) {
+		stopAround(pylon, "pylon.loop");
+	}
+
+	/** Stops sound "illari." + {@code name} for every player within 48 m of {@code at} (the hum's reach and more). */
+	private static void stopAround(Entity at, String name) {
+		net.minecraft.sounds.SoundEvent sound = IllariSounds.of(name);
+		if (sound == null || !(at.level() instanceof ServerLevel level)) {
+			return;
+		}
+		for (ServerPlayer listener : level.players()) {
+			if (listener.distanceTo(at) < 48) {
+				listener.connection.send(new net.minecraft.network.protocol.game.ClientboundStopSoundPacket(sound.location(),
+					net.minecraft.sounds.SoundSource.PLAYERS));
+			}
+		}
 	}
 
 	/** Its pick: the ally (her included) in 15 m and in its sight with the lowest health share, short of full (D 3DF5, M the ordering). */
@@ -514,13 +555,11 @@ public final class Illari implements HeroKit {
 		}
 	}
 
-	/** She takes it back (E again, or a new one replacing it): its cooldown by whether it was hit lately or never built. */
+	/** A new one replaces it: the old one goes (its cooldown is the new throw's). */
 	private static void endPylon(ServerPlayer player, HeroState s, IllariState j, HealingPylonEntity pylon, boolean voice) {
-		boolean hit = pylon.recentlyHit() || !pylon.built();
 		IllariSounds.split(player, "pylon.removed", pylon.position(), 40);
 		pylon.discard();
 		j.pylon = null;
-		s.ability2Cooldown = Ow.ticks(pylonCooldown(s, hit));
 		if (voice) {
 			Voice.say(player, "pylon_moved", 1);
 		}
@@ -560,7 +599,10 @@ public final class Illari implements HeroKit {
 	private static void outburst(ServerPlayer player, HeroState s, IllariState j, boolean held) {
 		ServerLevel level = player.level();
 		Vec3 v = outburstVelocity(j.outburstX, j.outburstZ, held || j.outburstHeld);
-		Combat.launch(player, v.scale(1 / 20.0), player, OUTBURST_BLOW);
+		// an impulse on top of her own motion (D #812 STU_FF3471E9: an impulse, not a set speed): with her 5.5 m/s run it comes to W's
+		// 18.4 m/s tapped and 16.7 held (the critic, 2026-11-14: set, it was 13.5); a fall's speed it takes away first, as a jump does
+		Vec3 own = Combat.motion(player);
+		Combat.launch(player, new Vec3(own.x, Math.max(0, own.y), own.z).add(v.scale(1 / 20.0)), player, OUTBURST_BLOW);
 		s.softLanding = true;
 		j.launchGrace = LAUNCH_GRACE;
 		// Survivor (01C7 #2564, tag 1173): Outburst starts her regeneration at once (message 26FD)
@@ -579,6 +621,11 @@ public final class Illari implements HeroKit {
 			Vec3 away = new Vec3(e.getX() - at.x, 0, e.getZ() - at.z);
 			away = away.lengthSqr() < 1.0E-6 ? Vec3.ZERO : away.normalize();
 			Combat.push(e, away.scale(Ow.speed(OUTBURST_AWAY * k)).add(0, Ow.speed(OUTBURST_UP * k), 0), player, OUTBURST_BLOW);
+			// off the ground at once: Minecraft takes a creature's ground friction on the tick a push lands while it still stands, and an
+			// 18 m/s shove went ~2 m (the critic, 2026-11-14)
+			if (!(e instanceof net.minecraft.world.entity.player.Player)) {
+				e.setOnGround(false);
+			}
 			if (s.has(Perk.ILLARI_SUNBURN)) {
 				burn(player, e);
 			}
@@ -605,7 +652,7 @@ public final class Illari implements HeroKit {
 
 	private static final class Mark {
 		final UUID owner;
-		final long until;
+		long until;
 		double taken;
 		long goesAt = -1;
 		Vec3 last;
@@ -618,6 +665,8 @@ public final class Illari implements HeroKit {
 	}
 
 	private static final Map<UUID, Burn> BURNS = new HashMap<>();
+	/** The ball's own damage landing now: not counted toward a mark (onDamaged). */
+	private static boolean ballDamaging;
 	private static final Map<UUID, Mark> MARKS = new HashMap<>();
 	private static final Map<UUID, LivingEntity> MARKED = new HashMap<>();
 	private static final Map<UUID, LivingEntity> BURNING = new HashMap<>();
@@ -710,6 +759,11 @@ public final class Illari implements HeroKit {
 
 	/** Damage a marked creature took (Overcraft's AFTER_DAMAGE, Minecraft points): 90 of it sets Sunstruck off 0.8 s later (D 1A34). */
 	public static void onDamaged(LivingEntity e, float damage) {
+		if (ballDamaging) {
+			// the ball's own direct hit and splash don't count (W), even on one its direct hit has just marked (replayed 2026-11-14:
+			// the splash after the pass-through counted 50, and a 40 set it off)
+			return;
+		}
 		Mark m = MARKS.get(e.getUUID());
 		if (m == null || m.goesAt >= 0) {
 			return;
@@ -854,32 +908,73 @@ public final class Illari implements HeroKit {
 		}
 	}
 
-	/** The ball bursts at {@code at}: 5 to what it hit, 50 to every enemy within 10 m in sight, each marked (D 3CB1; BZ 2024-12-10). */
-	public static void ballBurst(ServerPlayer owner, CaptiveSunEntity ball, Vec3 at, @Nullable Entity direct) {
+	/**
+	 * The ball passed through {@code e} (W: it passes through enemies): its 5 direct, once each, and the mark (D 1D38). The ball flies on.
+	 */
+	public static void ballDirect(ServerPlayer owner, CaptiveSunEntity ball, Entity direct) {
 		ServerLevel level = (ServerLevel) ball.level();
 		LivingEntity target = direct instanceof EnderDragonPart part ? part.parentMob : direct instanceof LivingEntity l ? l : null;
-		if (target != null && Allies.canHurt(owner, target)) {
-			float dealt = direct instanceof EnderDragonPart part ? Combat.damagePart(level, part, level.damageSources().thrown(ball, owner), BALL_DIRECT, SUN_BLOW)
-				: Combat.damage(target, level.damageSources().thrown(ball, owner), BALL_DIRECT, SUN_BLOW);
-			dealt(owner, dealt, target, false);
+		if (target == null || !Allies.canHurt(owner, target)) {
+			return;
 		}
-		long now = level.getGameTime();
+		ballDamaging = true;
+		float dealt;
+		try {
+			dealt = direct instanceof EnderDragonPart part ? Combat.damagePart(level, part, level.damageSources().thrown(ball, owner), BALL_DIRECT, SUN_BLOW)
+				: Combat.damage(target, level.damageSources().thrown(ball, owner), BALL_DIRECT, SUN_BLOW);
+		} finally {
+			ballDamaging = false;
+		}
+		dealt(owner, dealt, target, false);
+		mark(owner, target);
+	}
+
+	/**
+	 * The ball bursts at {@code at} (terrain, a barrier, its 10 s): 50 to every enemy within 10 m in sight, each marked (D 3CB1; BZ
+	 * 2024-12-10). Marked after the damage: the ball's own direct hit and splash don't count toward Sunstruck's 90 (W).
+	 */
+	public static void ballBurst(ServerPlayer owner, CaptiveSunEntity ball, Vec3 at) {
+		ServerLevel level = (ServerLevel) ball.level();
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(BALL_RADIUS + 2))) {
 			double d = Math.sqrt(e.getBoundingBox().distanceToSqr(at));
 			if (d > BALL_RADIUS || !e.isAlive() || !Allies.areaHits(owner, e) || !Combat.inSight(level, at, e, owner)
 				|| Barriers.between(level, at, e.getBoundingBox().getCenter(), owner) != null) {
 				continue;
 			}
-			// marked first, so the splash counts toward its 90 (W: the splash applies Sunstruck)
-			MARKS.put(e.getUUID(), new Mark(owner.getUUID(), now + Ow.ticks(MARK_TIME), e.getBoundingBox().getCenter()));
-			MARKED.put(e.getUUID(), e);
-			float dealt = Combat.damage(e, Combat.blast(level, ball, owner), BALL_SPLASH, SUN_BLOW);
+			ballDamaging = true;
+			float dealt;
+			try {
+				dealt = Combat.damage(e, Combat.blast(level, ball, owner), BALL_SPLASH, SUN_BLOW);
+			} finally {
+				ballDamaging = false;
+			}
 			dealt(owner, dealt, e, false);
-			IllariSounds.at(level, "sun.mark", e.getBoundingBox().getCenter(), 30);
+			mark(owner, e);
 		}
 		level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y, at.z, 1, 0, 0, 0, 0);
 		level.sendParticles(ParticleTypes.FLAME, at.x, at.y, at.z, 60, 3, 1.5, 3, 0.1);
 		IllariSounds.all(level, "sun.impact", at, 150);
+	}
+
+	/**
+	 * Marks {@code e} for 6 s: one mark at a time; a second hit refreshes its time and keeps what it has taken; none while one is
+	 * going off (W).
+	 */
+	static void mark(ServerPlayer owner, LivingEntity e) {
+		if (!e.isAlive()) {
+			return;
+		}
+		long now = e.level().getGameTime();
+		Mark old = MARKS.get(e.getUUID());
+		if (old != null) {
+			if (old.goesAt < 0) {
+				old.until = now + Ow.ticks(MARK_TIME);
+			}
+			return;
+		}
+		MARKS.put(e.getUUID(), new Mark(owner.getUUID(), now + Ow.ticks(MARK_TIME), e.getBoundingBox().getCenter()));
+		MARKED.put(e.getUUID(), e);
+		IllariSounds.at((ServerLevel) e.level(), "sun.mark", e.getBoundingBox().getCenter(), 30);
 	}
 
 	/** Captive Sun's line: her own copy in her head, the allies' and the enemies' from her (D 3CAB #1084, as Junkrat's). */
@@ -925,10 +1020,9 @@ public final class Illari implements HeroKit {
 		}
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0 && !j.silenced && !busy) {
 			HealingPylonEntity pylon = pylon(player, j);
-			if (pylon != null) {
-				// again: she takes it back (D: ABILITY 2 / INTERACT remove it)
-				endPylon(player, s, j, pylon, true);
-			} else if (s.ability2Cooldown <= 0) {
+			// with one out, E places a new one once the cooldown allows (W: the hero option "Interact cancels Healing Pylon", on by default),
+			// but not within 3 s of the old one being hit (W; D 1D36)
+			if (s.ability2Cooldown <= 0 && (pylon == null || !pylon.recentlyHit())) {
 				j.pylonCast = 0;
 				Combat.animate(player, "pylon_throw");
 			}
@@ -942,6 +1036,11 @@ public final class Illari implements HeroKit {
 	}
 
 	// ---- her things in the world ----
+
+	/** Whether {@code pylon} is against {@code hero}: its owner is no ally of theirs (one with no owner here: nobody's, so not). */
+	public static boolean enemyPylon(LivingEntity hero, HealingPylonEntity pylon) {
+		return pylon.getOwner() instanceof LivingEntity owner && owner != hero && !Allies.isSelfOrAlly(hero, owner);
+	}
 
 	/** Whether a pylon is still the one she has out (not once she's another hero or has thrown another). Unknown while she's away: kept. */
 	public static boolean stillHis(Entity placed, @Nullable Entity owner) {

@@ -117,6 +117,8 @@ public final class HeroHud {
 	private static float ability1Seen;
 	private static float ability2Seen;
 	private static long ability1ReadyAt = -1;
+	/** Illari's pylon cooldown as it started, and as last seen (its HUD fill's whole). */
+	private static float illariPylonTotal = (float) dev.overcraft.illari.IllariStats.PYLON_COOLDOWN, illariPylonLast;
 	private static long ability2ReadyAt = -1;
 	private static long ability3ReadyAt = -1;
 	private static float ability3Seen;
@@ -1048,8 +1050,15 @@ public final class HeroHud {
 			// Outburst (Shift) and Healing Pylon (E, lit while it's out: E takes it back), in Kiriko's two places (ours)
 			ability(g, hero, w, "outburst", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
 				(float) dev.overcraft.illari.IllariStats.OUTBURST_COOLDOWN, ability1ReadyAt);
-			ability(g, hero, w, "healing_pylon", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
-				(float) dev.overcraft.illari.IllariStats.PYLON_COOLDOWN_HIT, ability2ReadyAt);
+			// its fill against the cooldown it started with: 7 from a throw, 14 from its destruction, 5 / 12 with Rapid Construction (the
+			// critic, 2026-11-14: always out of 14)
+			float pylonCd = s.ability2Cooldown();
+			if (pylonCd > illariPylonLast + 0.05f) {
+				illariPylonTotal = pylonCd;
+			}
+			illariPylonLast = pylonCd;
+			ability(g, hero, w, "healing_pylon", w - 563, 906, HeroControls.get(Action.ABILITY_2), pylonCd,
+				Math.max(pylonCd, illariPylonTotal), ability2ReadyAt);
 			if ((s.mode() & dev.overcraft.illari.Illari.MODE_PYLON_OUT) != 0) {
 				song(g, true, false, w - 563, 906, w);
 			}
