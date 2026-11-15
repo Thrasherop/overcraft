@@ -180,6 +180,10 @@ WEAPON_SLOTS = {
     # and his Concussion Mine in the left hand, entity 04E8 (model 1445, the skin's 10095) in slot 1DB2 on 000B (child "4E8.003 hp B.03C
     # var 1DB2.01C"; put away in 14 controls, never played): junkrat_mine.txt, under "stowLeft" (EmoteData's second-weapon keys)
     "junkrat": {"193F": ("stow", "launcher", "junkrat_weapon.txt"), "1DB2": ("stowLeft", "mine", "junkrat_mine.txt")},
+    # Ashe's The Viper, entity 2523 (model 7B28, the classic skin's 1079F) in slot 4082 on 00C9 (research/ashe/work/ents_ashe_out.txt:
+    # hero entity 251C's child "2523.003 hp C9.03C var 4082.01C"): ashe_viper.txt. Her Coach Gun 2560 (slot 40C1) and the Dynamite in
+    # her hand 2B66 (slot 41F4) are both on 000B: the Coach Gun's windows go under "stowLeft" (EmoteData's second-weapon keys)
+    "ashe": {"4082": ("stow", "viper", "ashe_viper.txt"), "40C1": ("stowLeft", "coach_gun", "ashe_coach_gun.txt")},
 }
 # a hero whose weapon geosets follow the stow windows where a clip has no GeoSetFlags: the mask bits that do (Juno's
 # Mediblaster, mask bit 1; her pod has no slot the emotes put away, so it stays where the data says nothing)
@@ -203,7 +207,7 @@ STOWS = {"lucio": True, "mercy": True, "ana": True, "sombra": True, "brigitte": 
 # heroes with no weapon pieces in their body .glb: their geosets are body variants (Pharah: geoset 1 her bare head and visor-up
 # look, geoset 2 her helmet, the submeshes 7-13 all 1.5-1.8 m up), so no mask or stow may hide them; her launcher is its own
 # entity (WEAPON_SLOTS), put away with the stow windows
-NO_PIECES = {"pharah", "tracer", "cassidy", "junkrat"}  # Tracer: her pistols are entities, no submesh of her body .glb sits stowed at the origin; Cassidy's Peacekeeper and Junkrat's launcher too
+NO_PIECES = {"pharah", "tracer", "cassidy", "junkrat", "ashe"}  # Ashe: The Viper and the Coach Gun are entities; Tracer: her pistols are entities, no submesh of her body .glb sits stowed at the origin; Cassidy's Peacekeeper and Junkrat's launcher too
 
 # props that are children of the hero entity itself, by slot (STUChildEntityDefinition of the hero entity: H), shown by an
 # EntityControl that plays a clip on them (action 4) over its window: slot -> (model, hardpoint). Ana's (her hero entity

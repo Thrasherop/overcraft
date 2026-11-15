@@ -1,0 +1,99 @@
+# Ashe, first person (model 0000000105CE.00C on entity 251D (Gameplay1P), base 7C04; set 08E1; entity fields 45 / 1.445 / 1.0115 /
+# 1.15).
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archiveesearchshe\scripts\clipmaps_ashe.py from the
+# compacted blend-tree sets (researchshe\work\clipmap_ashe\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+0-32_000000005A7B = ads_in   # 0.2 s; set 08E1 alias 85 ((was base_85_sm0: alias 85 sm[0] (L: the scope state machine)) the 1P locomotion tree under alias 2 (M)); @2 sel[4] @85 sm[0]; on 3 paths
+0-32_0000000060FF = ads_hold   # 0.2 s; set 08E1 alias 85 ((was base_85_sm1: alias 85 sm[1] (L)) the 1P locomotion tree under alias 2 (M)); @2 sel[4] @85 sm[1]; on 3 paths
+0-32_000000005A78 = ads_out   # 0.2 s; set 08E1 alias 85 ((was base_85_sm2: alias 85 sm[2] (L)) the 1P locomotion tree under alias 2 (M)); @2 sel[4] @85 sm[2]; on 3 paths
+0-36_000000005F9E = jump_ads   # 0.2333 s; set 08E1 alias 86 ((was a86_air_sm0_se0: alias 86 take-off (scoped)) 1P layer under 2 (L)); @2 sel[4] @85 sm[3] dfE5=cat81 @86 @823840A0 df18=cat6 @823840A1 sm[0] seq[0]; on 4 paths
+0-36_000000005F9F = fall_ads   # 0.4333 s; set 08E1 alias 86 ((was a86_air_sm0_se1: alias 86 fall (scoped)) 1P layer under 2 (L)); @2 sel[4] @85 sm[3] dfE5=cat81 @86 @823840A0 df18=cat6 @823840A1 sm[0] seq[1]; on 8 paths
+0-60_000000005FE2 = a86_crouch_move   # 0.1667 s; set 08E1 alias 86 (1P layer under 2 (L)); @2 sel[4] @85 sm[3] dfE5=cat81 @86 @823840A0 df18=cat65; on 8 paths
+0-60_000000005F47 = run_ads   # 0.1667 s; set 08E1 alias 86 ((was a86_move: alias 86 df18 cat5 (scoped move, M)) 1P layer under 2 (L)); @2 sel[4] @85 sm[3] dfE5=cat81 @86 @823840A0 df18=cat5; on 8 paths
+4-4_000000005F60 = add_a92_sm0   # 0.7667 s; set 08E1 alias 92 (1P (L)); @2 sel[4] @85 sm[3] dfE5=cat81 @86 @823840A0 df18:+add() sm[1] @92 sm[0]; on 5 paths
+4-4_000000005F61 = add_a92_sm2_ra0   # 0.7667 s; set 08E1 alias 92 (1P (L)); @2 sel[4] @85 sm[3] dfE5=cat81 @86 @823840A0 df18:+add() sm[1] @92 sm[2] rand[0]; on 10 paths
+4-4_00000000605C = add_a92_sm2_ra1   # 0.7667 s; set 08E1 alias 92 (1P (L)); @2 sel[4] @85 sm[3] dfE5=cat81 @86 @823840A0 df18:+add() sm[1] @92 sm[2] rand[1]; on 10 paths
+4-28_000000006021 = add_a92   # 0.0333 s; set 08E1 alias 92 (1P (L)); @2 sel[4] @85 sm[3] dfE5=cat81 @86 @823840A0 df18:+add() sm[1] @92 +add(df32); on 5 paths
+4-4_000000005F45 = add_a86_sm2_crouch_move   # 0.6 s; set 08E1 alias 86 (1P layer under 2 (L)); @2 sel[4] @85 sm[3] dfE5=cat81 @86 @823840A0 df18:+add() sm[2] df18=cat65; on 8 paths
+4-28_000000005FE0 = add_a86_sm2_crouch   # 0.2 s; set 08E1 alias 86 (1P layer under 2 (L)); @2 sel[4] @85 sm[3] dfE5=cat81 @86 @823840A0 df18:+add() sm[2] df18=cat66; on 4 paths
+4-4_000000005F46 = add_a86_sm2_stand   # 2.1 s; set 08E1 alias 86 (1P layer under 2 (L)); @2 sel[4] @85 sm[3] dfE5=cat81 @86 @823840A0 df18:+add() sm[2] df18=default[4]; on 4 paths
+4-4_000000005FA0 = add_a86_sm2   # 0.4 s; set 08E1 alias 86 (1P layer under 2 (L)); @2 sel[4] @85 sm[3] dfE5=cat81 @86 @823840A0 df18:+add() sm[2] df18:tr[0>4, 2, 1, 3]; on 4 paths
+4-4_000000005FDE = add_a86_sm2_2   # 0.3 s; set 08E1 alias 86 (1P layer under 2 (L)); @2 sel[4] @85 sm[3] dfE5=cat81 @86 @823840A0 df18:+add() sm[2] df18:tr[4, 3>2, 1]; on 4 paths
+4-4_000000005FDF = add_a86_sm2_3   # 0.3 s; set 08E1 alias 86 (1P layer under 2 (L)); @2 sel[4] @85 sm[3] dfE5=cat81 @86 @823840A0 df18:+add() sm[2] df18:tr[2, 1>4, 3]; on 4 paths
+4-6_000000005FED = add_a86   # 0.1667 s; set 08E1 alias 86 (1P layer under 2 (L)); @2 sel[4] @85 sm[3] dfE5=cat81 @86 +add({'bound': None}) @8238409E; on 4 paths
+4-6_000000005FEA = add_a86_2   # 0.4667 s; set 08E1 alias 86 (1P layer under 2 (L)); @2 sel[4] @85 sm[3] dfE5=cat81 @86 +add({'bound': None}) @8238409E +add(); on 4 paths
+4-4_000000005FEC = add_a86_3   # 1 s; set 08E1 alias 86 (1P layer under 2 (L)); @2 sel[4] @85 sm[3] dfE5=cat81 @86 +add({'bound': None}) @8238409E +add() +add(); on 4 paths
+0-36_000000005E47 = jump   # 0.2333 s; set 08E1 alias 6 ((was jump_takeoff: alias 6 seq[0] take-off) jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] the fall (H tree)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 sm[0] @6 sm[0] seq[0]; on 5 paths
+0-36_000000005E48 = fall   # 0.4333 s; set 08E1 alias 6 ((was jump_fall: alias 6 seq[1] fall) jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] the fall (H tree)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 sm[0] @6 sm[0] seq[1]; on 10 paths
+0-36_000000005E3E = run   # 0.6 s; set 08E1 alias 9 ((was stand_move: alias 9 df18 cat5 (hip move)) 1P stand / move (M)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 sm[1] @9 df18=cat5; on 5 paths
+0-60_000000005E3C = idle   # 0.1667 s; set 08E1 alias 9 ((was stand_stand: alias 9 df18 cat9 (hip stand)) 1P stand / move (M)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 sm[1] @9 df18=cat9; on 5 paths
+4-6_000000005E4E = add_stand   # 0.1667 s; set 08E1 alias 9 (1P stand / move (M)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 sm[1] @9 df18:+add(); on 10 paths
+4-6_000000005E40 = add_stand_2   # 0.4667 s; set 08E1 alias 9 (1P stand / move (M)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 sm[1] @9 df18:+add(); on 10 paths
+4-4_000000005E3F = add_stand_3   # 1 s; set 08E1 alias 9 (1P stand / move (M)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 sm[1] @9 df18:+add() +add(); on 10 paths
+4-4_0000000060ED = add_a87   # 1.8333 s; set 08E1 alias 87 (1P layer (L)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 +add(); on 4 paths
+4-4_000000005E43 = add_a87_tr01   # 0.4 s; set 08E1 alias 87 (1P layer (L)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 +add() tr[0>1]; on 4 paths
+4-12_000000005E45 = add_a87_sm0   # 0.2 s; set 08E1 alias 87 (1P layer (L)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 +add() sm[0]; on 9 paths
+4-4_000000005E44 = add_a87_tr130   # 0.3 s; set 08E1 alias 87 (1P layer (L)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 +add() tr[1, 3>0]; on 9 paths
+4-4_000000005E46 = add_a87_tr021   # 0.3 s; set 08E1 alias 87 (1P layer (L)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 +add() tr[0, 2>1]; on 9 paths
+4-0_000000005E51 = add_a_a_sm0   # 0.4667 s; set 08E1 alias A (1P (L)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 +add() @A sm[0]; on 5 paths
+4-0_000000005E79 = add_a_a_sm2_ra0   # 0.4667 s; set 08E1 alias A (1P (L)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 +add() @A sm[2] rand[0]; on 5 paths
+4-0_000000005E53 = add_a_a_sm2_ra1   # 0.4667 s; set 08E1 alias A (1P (L)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 +add() @A sm[2] rand[1]; on 5 paths
+4-0_000000005E54 = add_a_a_sm2_ra2   # 0.4667 s; set 08E1 alias A (1P (L)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 +add() @A sm[2] rand[2]; on 5 paths
+4-0_000000005E55 = add_a_a_sm2_ra3   # 0.4667 s; set 08E1 alias A (1P (L)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 +add() @A sm[2] rand[3]; on 5 paths
+4-4_000000005FA3 = add_a_a_tr0234   # 1.9667 s; set 08E1 alias A (1P (L)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 +add() @A tr[0, 2, 3>4]; on 5 paths
+4-28_000000005E50 = add_a_a   # 0.0333 s; set 08E1 alias A (1P (L)); @2 sel[4] @85 sm[3] dfE5=default[1] @87 @823840A3 +add() @A +add(df32); on 5 paths
+4-0_0000000060FB = add_base_85_tr02   # 0.4333 s; set 08E1 alias 85 (the 1P locomotion tree under alias 2 (M)); @2 sel[4] @85 +add() tr[0>2]; on 3 paths
+4-4_0000000061A6 = add_base_85_tr12   # 0.3667 s; set 08E1 alias 85 (the 1P locomotion tree under alias 2 (M)); @2 sel[4] @85 +add() tr[1>2]; on 3 paths
+4-20_000000000C63 = add_layer_140_sm0_sm0   # 1.3333 s; set 08E1 alias 140 (1P generic layer (L)); @2 +add(df102) @140 +add(dfBC4) sm[0] sm[0]; on 6 paths
+4-4_000000005687 = add_layer_140_tr041   # 0.6667 s; set 08E1 alias 140 (1P generic layer (L)); @2 +add(df102) @140 +add(dfBC4) tr[0, 4>1]; on 3 paths
+4-4_000000003B47 = add_layer_140_sm0_sm0_2   # 0.5667 s; set 08E1 alias 140 (1P generic layer (L)); @2 +add(df102) @140 +add() sm[0] sm[0]; on 6 paths
+4-20_000000003B43 = add_layer_140_sm1_sm0_se0_sm0   # 0.3333 s; set 08E1 alias 140 (1P generic layer (L)); @2 +add(df102) @140 +add() sm[1] sm[0] seq[0] sm[0]; on 3 paths
+4-20_000000003B44 = add_layer_140_sm1_sm0_se0_sm1   # 0.3333 s; set 08E1 alias 140 (1P generic layer (L)); @2 +add(df102) @140 +add() sm[1] sm[0] seq[0] sm[1]; on 6 paths
+4-20_000000003B45 = add_layer_140_sm1_tr01   # 0.4333 s; set 08E1 alias 140 (1P generic layer (L)); @2 +add(df102) @140 +add() sm[1] tr[0>1]; on 3 paths
+0-36_000000005E5D = hello   # 1.1333 s; set 08E1 alias 1EE (the comms wheel's Hello); -
+4-4_000000005E5E = add_hello_add   # 1.1333 s; set 08E1 alias 2DE (Hello additive); -
+4-4_0000000060E9 = add_a467_se0_ra0   # 3.6 s; set 08E1 alias 467 (1P fidgets, 3 random picks (L)); seq[0] rand[0]
+4-4_000000005E41 = add_a467_se0_ra1   # 2.4333 s; set 08E1 alias 467 (1P fidgets, 3 random picks (L)); seq[0] rand[1]
+4-4_00000000612D = add_a467_se0_ra2   # 2.6667 s; set 08E1 alias 467 (1P fidgets, 3 random picks (L)); seq[0] rand[2]
+0-36_000000005E60 = stun   # 1 s; set 08E1 alias 70 (shared CC); -
+0-36_000000005A09 = reload_start   # 0.5667 s; set 08E1 alias 84 ((was reload: alias 84 df19F cat235 (the first reload's startup, 14FC #682)) The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); @823840D5 df19F=cat235 @823840D4
+0-36_0000000060D8 = reload_start_again   # 0.7667 s; set 08E1 alias 84 ((was reload: df19F cat6E (a reload within 5 s of the last, 14FC #717)) The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); @823840D5 df19F=cat6E @823840D3
+0-36_000000005A0B = reload_end   # 0.2333 s; set 08E1 alias 84 ((was reload: df19F cat82 (14FC #694)) The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); @823840D5 df19F=cat82 @823840E4 @82384079
+4-4_000000005FCD = add_reload_move   # 0.6 s; set 08E1 alias 84 (The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); @823840D5 df19F=cat82 @823840E4 @82384079 +add() df18=cat5; on 6 paths
+0-36_00000000603E = reload_loop   # 0.3333 s; set 08E1 alias 84 ((was reload: df19F cat119 (each shell, 14FC #684)) The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); @823840D5 df19F=default[3] @823840C3 @823840BB df19F=cat119
+0-36_000000006020 = reload_loop_2   # 0.3333 s; set 08E1 alias 84 ((was reload: df19F cat11A (each other shell)) The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); @823840D5 df19F=default[3] @823840C3 @823840BB df19F=cat11A
+0-36_000000005A0A = reload_loop_default   # 0.3333 s; set 08E1 alias 84 ((was reload: df19F default) The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); @823840D5 df19F=default[3] @823840C3 @823840BB df19F=default[2]
+4-4_000000006114 = add_reload_air_sm0_se0   # 0.2333 s; set 08E1 alias 84 (The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); +add({'bound': None}) @823840D0 df18=cat6 @823840EB sm[0] seq[0]; on 5 paths
+4-4_000000006115 = add_reload_air_sm0_se1   # 0.4333 s; set 08E1 alias 84 (The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); +add({'bound': None}) @823840D0 df18=cat6 @823840EB sm[0] seq[1]; on 10 paths
+4-4_000000006116 = add_reload   # 0.4 s; set 08E1 alias 84 (The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); +add({'bound': None}) @823840D0 df18:tr[0>1]; on 5 paths
+0-32_000000005EF6 = dynamite_throw   # 0.5 s; set 08E1 alias 479 ((was dynamite_throw: alias 479) Dynamite throw (14FD #41, 0.66 s; 1D by pitch) (H)); @8238408A
+4-0_000000006197 = add_knockdown_end   # 1 s; set 08E1 alias 66 (shared CC); -
+4-4_000000006196 = add_knockdown   # 0.6667 s; set 08E1 alias 65 (shared CC); -
+4-0_000000006195 = add_knockdown_start   # 1 s; set 08E1 alias 64 (shared CC); -
+0-32_000000005E8C = melee   # 0.7333 s; set 08E1 alias D ((was melee: alias D) quick melee (shared 0043, 1D blend by pitch) (H, as Junkrat's)); @8238407C
+0-32_000000005FEE = ult_cast   # 0.4667 s; set 08E1 alias 175 ((was ult_cast: alias 175) B.O.B. call (1536 #107, 0.5 s; 1D by pitch) (H)); @82384086
+0-32_000000005AA9 = coach_gun   # 0.5 s; set 08E1 alias 1E ((was coach_gun: alias 1E) Coach Gun (1513 #419, 0.55 s; 1D by aim pitch) (H)); @82384057
+4-4_000000008424 = add_a726   # 0.5672 s; set 08E1 alias 726 (L); -
+0-36_000000008B8B = a6d2   # 0.5 s; set 08E1 alias 6D2 (L); -
+0-32_000000008BB5 = a6d1   # 0.4 s; set 08E1 alias 6D1 (L); -
+4-4_000000000C4F = add_sway_sm0_sm0_up   # 1.2333 s; set 08E1 alias C8 (weapon sway / hit reaction (shared)); sm[0] sm[0] blend1d(dfF0) 1d@1.0
+4-4_0000000000F4 = add_sway_sm0_sm1   # 0.5 s; set 08E1 alias C8 (weapon sway / hit reaction (shared)); sm[0] sm[1] blend1d({'bound': '000000000044.013'})
+4-4_0000000000F2 = add_sway_sm0_sm1_up   # 0.5 s; set 08E1 alias C8 (weapon sway / hit reaction (shared)); sm[0] sm[1] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000F5 = add_sway_sm0_sm2   # 0.5 s; set 08E1 alias C8 (weapon sway / hit reaction (shared)); sm[0] sm[2] blend1d({'bound': '000000000044.013'})
+4-4_0000000000F3 = add_sway_sm0_sm2_up   # 0.5 s; set 08E1 alias C8 (weapon sway / hit reaction (shared)); sm[0] sm[2] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000EB = add_sway_sm0_sm3   # 0.5 s; set 08E1 alias C8 (weapon sway / hit reaction (shared)); sm[0] sm[3] blend1d({'bound': '000000000044.013'})
+4-4_000000000074 = add_sway_sm0_sm3_up   # 0.5 s; set 08E1 alias C8 (weapon sway / hit reaction (shared)); sm[0] sm[3] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000E9 = add_sway_sm0_sm4   # 0.5 s; set 08E1 alias C8 (weapon sway / hit reaction (shared)); sm[0] sm[4] blend1d({'bound': '000000000044.013'})
+4-4_000000000076 = add_sway_sm0_sm4_up   # 0.5 s; set 08E1 alias C8 (weapon sway / hit reaction (shared)); sm[0] sm[4] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000EC = add_sway_sm0_sm5   # 0.5 s; set 08E1 alias C8 (weapon sway / hit reaction (shared)); sm[0] sm[5] blend1d({'bound': '000000000044.013'})
+4-4_000000000075 = add_sway_sm0_sm5_up   # 0.5 s; set 08E1 alias C8 (weapon sway / hit reaction (shared)); sm[0] sm[5] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-4_0000000000EA = add_sway_sm0_sm6   # 0.5 s; set 08E1 alias C8 (weapon sway / hit reaction (shared)); sm[0] sm[6] blend1d({'bound': '000000000044.013'})
+4-4_000000000073 = add_sway_sm0_sm6_up   # 0.5 s; set 08E1 alias C8 (weapon sway / hit reaction (shared)); sm[0] sm[6] blend1d({'bound': '000000000044.013'}) 1d@1.0
+4-6_0000000000F6 = add_sway   # 0.1667 s; set 08E1 alias C8 (weapon sway / hit reaction (shared)); +add()
+4-4_000000000957 = add_knockdown_shared   # 1 s; set 08E1 alias 1DE (); -
+4-4_000000000959 = add_knockdown_shared_2   # 0.6667 s; set 08E1 alias 1DF (); -
+4-4_000000000958 = add_knockdown_shared_3   # 1 s; set 08E1 alias 1E0 (); -
+# Extracted under this model but in none of its sets (7, not named): 00395B 005EC2 005F0D 005F8E 005FC0 006128 00617A

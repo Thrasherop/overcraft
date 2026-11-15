@@ -1,0 +1,6 @@
+# Ashe, her third-person extra clips (owm_survey.py --clips-only), merged into hero_models/ashe.glb by bone name (HeroModels).
+# Her emotes come with --emotes (emote_<name>_<n>, in path order: techniques/emotes/emote_reproduction.md), on her skin's model
+# 105D5.00C (research\ashe\extract\Heroes\Ashe\Skin\Overwatch\Overwatch\Models\0000000105D5.00C). The comms wheel's Hello
+# (alias 1EE) is already in ashe.txt (612E). Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <105D5.owmdl> <out> --glb --clips-only --only=none
+#     --keep=tools/clipmaps/ashe_clips.txt --emotes=<research\ashe\extract\Unlocks\Heroes\Ashe\Emote>
