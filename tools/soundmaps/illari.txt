@@ -1,0 +1,269 @@
+# Illari's voice: <sound id> = <file under E:/Overwatch Archive/extracted/154088/> (build 154088). Same format as junkrat.txt;
+# build_asset_pack.py sounds copies / mixes them into the local pack. Read 2026-11-14 offline (Overwatch and Battle.net
+# checked closed before every archive read and TankLib run). Scripts: E:/Overwatch Archive/research/illari/scripts/sounds/
+# (voiceset_illari.py, illari_voice.py, illari_voice_gen.py, which writes this file; Junkrat's voice pipeline retargeted); data:
+# research/illari/work/voiceset_0237.05F.json and stim078.json, research/illari/sounds/voice_lines.json. Her sound effects
+# are in illari_sfx.txt.
+
+# ===== Voice (HeroVoice/Illari): the voice set 0237.05F's lines by moment (225 stimuli, 766 lines; from illari_voice.py:
+# each line's 0B2, stimulus, weight and decoded criteria; files from DataTool's extract-hero-voice --subtitles-with-sounds,
+# in research/illari/extract). w = the line's weight. Lines with criteria are left out, as Junkrat's are (hero interactions,
+# skins, maps, Overwatch Classic, scripted moments: counted per moment), except 'NOT ScriptedEvent 191E', treated as
+# always true (kiriko-voice.md). Stimulus numbers (the .078): priority, radius m, volume dB, interrupt, cooldown s
+# (m_A73F2EBE-m_DD27AC95 read as min-max, M); Voice.java's table takes priority, cooldown and interrupt.
+# Ult lines (Captive Sun): her own copy 1848 is what Illari says for herself (the friendly line's text, 'Face the sunrise!');
+# allies hear 1356, enemies 1355 (3CAB #1084 STU_37D754C8 keys F1AC / F1AB / F1AA, as Junkrat's 0232 #572). Each has a
+# second line ('Put on your sunscreen!' / 'SPF 15 is useless!') behind a celebration / scripted condition: left out.
+# Not mapped: 0019 (UltimateSeenRemark), 0575 (a teammate's ult ready); 13E2 (3DF5 #144 damage-taken message 0011 -> #427 [not
+# identifier 07C9] -> #808: the pylon being hit; her voice set holds no 13E2 lines); 02BF (3DFF #423: the Sunstruck
+# mark makes the *marked target* say its own Discorded line, not hers); no Sunstruck kill, Captive Sun kill, reload, beam
+# start or Solar Flare stimulus in her graphs (3DFF, 3CB1, 3CAB, 3A65, 51F3 searched); 1893 / 1894 ('This should help' / 'I've
+# got it!', behind ScriptedEvent 1AE6, read as the perk-pick lines, L; no graph of hers raises them); 1173 (last one alive);
+# the match / objective / PvE lines.
+# Elimination 0008: 19 files; prio 70, 30 m, +2 dB, interrupt 0, cooldown 15-15 s; left out: 28 a hero interaction
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/0000000669F7.0B2-I'll do what I have to do.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/0000000669F5.0B2-You are not taking this seriously.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/0000000669F3.0B2-(Spanish)_ I won't regret anything.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/0000000669F8.0B2-I can't afford to be sorry.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/000000066A07.0B2-You're just weak.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/000000066A04.0B2-I've done worse, and I'll do worse.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/000000066A01.0B2-You're not worth a second thought.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/000000067029.0B2-(Spanish)_ I'm more capable than you think.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/000000066A02.0B2-No looking back.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/000000066A06.0B2-It's just like training.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/000000066A03.0B2-I'm not here to play around.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/000000067031.0B2-(Spanish)_ I won't ask for forgiveness.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/00000006702D.0B2-(Spanish)_ You're finished.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/000000066B18.0B2-That's how it's done.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/000000067099.0B2-(Spanish)_ You're weak.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/000000066D79.0B2-You underestimated me.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/000000066D83.0B2-I won't hold back.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/000000068C77.0B2-(Quechua)_ I won't apologize.ogg | w=1
+illari.voice.elimination = ../../research/illari/extract/HeroVoice/Illari/Elimination/000000068C78.0B2-(Quechua)_ Hide your weaknesses better.ogg | w=1
+# Multikill 00C9: 3 files; prio 70, 35 m, +2 dB, interrupt 0, cooldown 15-20 s
+illari.voice.multikill = ../../research/illari/extract/HeroVoice/Illari/Multikill/0000000669F2.0B2-You pushed me too far.ogg | w=1
+illari.voice.multikill = ../../research/illari/extract/HeroVoice/Illari/Multikill/0000000669FF.0B2-There's nothing I won't do.ogg | w=1
+illari.voice.multikill = ../../research/illari/extract/HeroVoice/Illari/Multikill/000000066AEF.0B2-I'll take you all down.ogg | w=1
+# MeleeEnemyKilledRemark 0032 (an enemy killed in melee range): 3 files; prio 65, 30 m, +2 dB, interrupt 0, cooldown 10-14 s
+illari.voice.melee_kill = ../../research/illari/extract/HeroVoice/Illari/MeleeEnemyKilledRemark/000000065B4B.0B2-Hands off!.ogg | w=1
+illari.voice.melee_kill = ../../research/illari/extract/HeroVoice/Illari/MeleeEnemyKilledRemark/000000065B48.0B2-Stay back!.ogg | w=1
+illari.voice.melee_kill = ../../research/illari/extract/HeroVoice/Illari/MeleeEnemyKilledRemark/000000065B42.0B2-Get away!.ogg | w=1
+# On Fire 0583: 3 files; prio 60, 35 m, +2 dB, interrupt 0, cooldown 2-5 s
+illari.voice.on_fire = ../../research/illari/extract/HeroVoice/Illari/OnFire/0000000670AF.0B2-(Spanish)_ I burn like the sun!.ogg | w=1
+illari.voice.on_fire = ../../research/illari/extract/HeroVoice/Illari/OnFire/000000066DE4.0B2-I was made for this.ogg | w=1
+illari.voice.on_fire = ../../research/illari/extract/HeroVoice/Illari/OnFire/000000066DE2.0B2-I'm on fire!.ogg | w=1
+# Respawn 002C: 16 files; prio 40, 35 m, +0 dB, interrupt 0, cooldown 15-15 s; left out: 1 a scripted condition
+illari.voice.respawn = ../../research/illari/extract/HeroVoice/Illari/Respawn/0000000670B2.0B2-(Spanish)_ I won't lose my way again.ogg | w=1
+illari.voice.respawn = ../../research/illari/extract/HeroVoice/Illari/Respawn/000000065B3C.0B2-I won't fail again.ogg | w=1
+illari.voice.respawn = ../../research/illari/extract/HeroVoice/Illari/Respawn/000000065B43.0B2-I'll walk a different path this time.ogg | w=1
+illari.voice.respawn = ../../research/illari/extract/HeroVoice/Illari/Respawn/000000066AEC.0B2-They'll pay for that.ogg | w=1
+illari.voice.respawn = ../../research/illari/extract/HeroVoice/Illari/Respawn/000000066AE4.0B2-They won't get the best of me.ogg | w=1
+illari.voice.respawn = ../../research/illari/extract/HeroVoice/Illari/Respawn/00000006698D.0B2-(Spanish)_ How many more times will I fail_.ogg | w=1
+illari.voice.respawn = ../../research/illari/extract/HeroVoice/Illari/Respawn/000000066AF7.0B2-I have to stay focused.ogg | w=1
+illari.voice.respawn = ../../research/illari/extract/HeroVoice/Illari/Respawn/000000066AF6.0B2-What am I missing_.ogg | w=1
+illari.voice.respawn = ../../research/illari/extract/HeroVoice/Illari/Respawn/000000066AF5.0B2-I don't have time to be weak.ogg | w=1
+illari.voice.respawn = ../../research/illari/extract/HeroVoice/Illari/Respawn/000000066AF4.0B2-(Spanish)_ No turning back.ogg | w=1
+illari.voice.respawn = ../../research/illari/extract/HeroVoice/Illari/Respawn/0000000670B0.0B2-(Spanish)_ This isn't the end of my road.ogg | w=1
+illari.voice.respawn = ../../research/illari/extract/HeroVoice/Illari/Respawn/0000000670B1.0B2-(Spanish)_ My journey only gets longer.ogg | w=1
+illari.voice.respawn = ../../research/illari/extract/HeroVoice/Illari/Respawn/000000066A00.0B2-I won't falter.ogg | w=1
+illari.voice.respawn = ../../research/illari/extract/HeroVoice/Illari/Respawn/000000068C9E.0B2-(Quechua)_ I have to keep going.ogg | w=1
+illari.voice.respawn = ../../research/illari/extract/HeroVoice/Illari/Respawn/000000068C9F.0B2-(Quechua)_ I'm back for more.ogg | w=1
+illari.voice.respawn = ../../research/illari/extract/HeroVoice/Illari/Respawn/000000068CA0.0B2-(Quechua)_ I won't make excuses.ogg | w=1
+# Melee shout 0023 (the shared melee VoiceStimulus): 9 files; prio 35, 35 m, +0 dB, interrupt 0, cooldown 0.5-0.5 s
+illari.voice.melee = ../../research/illari/extract/HeroVoice/Illari/Melee/000000066EF7.0B2-(shouts).ogg | w=0.7
+illari.voice.melee = ../../research/illari/extract/HeroVoice/Illari/Melee/000000066EF4.0B2-(shouts).ogg | w=0.7
+illari.voice.melee = ../../research/illari/extract/HeroVoice/Illari/Melee/000000066EF6.0B2-(shouts).ogg | w=0.7
+illari.voice.melee = ../../research/illari/extract/HeroVoice/Illari/Melee/000000066EEF.0B2-(shouts).ogg | w=0.7
+illari.voice.melee = ../../research/illari/extract/HeroVoice/Illari/Melee/000000066EF2.0B2-(shouts).ogg | w=0.7
+illari.voice.melee = ../../research/illari/extract/HeroVoice/Illari/Melee/000000066EF8.0B2-(shouts).ogg | w=0.7
+illari.voice.melee = ../../research/illari/extract/HeroVoice/Illari/Melee/000000066EF1.0B2-(shouts).ogg | w=1
+illari.voice.melee = ../../research/illari/extract/HeroVoice/Illari/Melee/000000066EF3.0B2-(shouts).ogg | w=1
+illari.voice.melee = ../../research/illari/extract/HeroVoice/Illari/Melee/000000066EF5.0B2-(shouts).ogg | w=1
+# Hero select 002B: 1 files; prio 100, 35 m, +0 dB, interrupt 0, cooldown 1-1 s
+illari.voice.select = ../../research/illari/extract/HeroVoice/Illari/HeroSelect/000000066DE7.0B2-I carry my burdens alone.ogg | w=1
+# Death 0001: 6 files; prio 90, 60 m, +2 dB, interrupt 0, cooldown 2-5 s
+illari.voice.death = ../../research/illari/extract/HeroVoice/Illari/Death/000000066ECB.0B2-(dying sounds).ogg | w=1
+illari.voice.death = ../../research/illari/extract/HeroVoice/Illari/Death/000000066ED0.0B2-(dying sounds).ogg | w=1
+illari.voice.death = ../../research/illari/extract/HeroVoice/Illari/Death/000000066ED1.0B2-(dying sounds).ogg | w=1
+illari.voice.death = ../../research/illari/extract/HeroVoice/Illari/Death/000000066ED2.0B2-(dying sounds).ogg | w=1
+illari.voice.death = ../../research/illari/extract/HeroVoice/Illari/Death/000000066ED3.0B2-(dying sounds).ogg | w=1
+illari.voice.death = ../../research/illari/extract/HeroVoice/Illari/Death/000000066ED4.0B2-(dying sounds).ogg | w=1
+# Pain 0003 / 0004: 19 files; prio 40, 35 m, -3 dB, interrupt 0, cooldown 1-2.5 s
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066EFC.0B2-(grunts).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066EF9.0B2-(grunts).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066EFB.0B2-(grunts).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066EFD.0B2-(grunts).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066EFA.0B2-(grunts).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066EFE.0B2-(grunts).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066F00.0B2-(grunts).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066EFF.0B2-(grunts).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066F01.0B2-(grunts).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066F02.0B2-(painful grunt).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066F04.0B2-(painful grunt).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066F03.0B2-(painful grunt).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066F05.0B2-(painful grunt).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066F06.0B2-(painful grunt).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066F0B.0B2-(painful grunt).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066F07.0B2-(painful grunt).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066F08.0B2-(painful grunt).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066F09.0B2-(painful grunt).ogg | w=1
+illari.voice.pain = ../../research/illari/extract/HeroVoice/Illari/Pain/000000066F0A.0B2-(painful grunt).ogg | w=1
+# Resurrected 005A (what she says when a Mercy brings her back): 2 files; prio 75, 35 m, +0 dB, interrupt 0, cooldown 10-10 s
+illari.voice.resurrected = ../../research/illari/extract/HeroVoice/Illari/Resurrected/000000066AF2.0B2-I won't stay down.ogg | w=1
+illari.voice.resurrected = ../../research/illari/extract/HeroVoice/Illari/Resurrected/000000066AEE.0B2-Time to be strong.ogg | w=1
+# Ultimate/Ready 02E7 (the wheel line): 3 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+illari.voice.ult_ready = ../../research/illari/extract/HeroVoice/Illari/Ultimate/Ready/000000066E33.0B2-I am ready to unleash my ultimate.ogg | w=1
+illari.voice.ult_ready = ../../research/illari/extract/HeroVoice/Illari/Ultimate/Ready/0000000669C4.0B2-Captive Sun is ready to burn.ogg | w=1
+illari.voice.ult_ready = ../../research/illari/extract/HeroVoice/Illari/Ultimate/Ready/0000000669C5.0B2-My ultimate is ready!.ogg | w=1
+# Ultimate/Charging 0574: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+illari.voice.call_ult_charging = ../../research/illari/extract/HeroVoice/Illari/Ultimate/Charging/0000000669D1.0B2-My ultimate is charging.ogg | w=1
+# Ultimate/AlmostReady 05A7: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+illari.voice.call_ult_almost = ../../research/illari/extract/HeroVoice/Illari/Ultimate/AlmostReady/0000000669D0.0B2-My ultimate is almost ready.ogg | w=1
+illari.voice.call_ult_almost = ../../research/illari/extract/HeroVoice/Illari/Ultimate/AlmostReady/0000000669C7.0B2-Captive Sun is almost ready.ogg | w=1
+# Hello 01CF: 3 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+illari.voice.call_hello = ../../research/illari/extract/HeroVoice/Illari/Hello/0000000669E1.0B2-Hello.ogg | w=1
+illari.voice.call_hello = ../../research/illari/extract/HeroVoice/Illari/Hello/00000006721F.0B2-(Quechua)_ Hello.ogg | w=1
+illari.voice.call_hello = ../../research/illari/extract/HeroVoice/Illari/Hello/0000000670D3.0B2-(Spanish)_ Hello.ogg | w=1
+# Thanks 01D0: 4 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+illari.voice.call_thanks = ../../research/illari/extract/HeroVoice/Illari/Thanks/0000000669DB.0B2-Thank you.ogg | w=1
+illari.voice.call_thanks = ../../research/illari/extract/HeroVoice/Illari/Thanks/0000000669DC.0B2-Thanks.ogg | w=1
+illari.voice.call_thanks = ../../research/illari/extract/HeroVoice/Illari/Thanks/00000006721D.0B2-(Quechua)_ Thank you.ogg | w=1
+illari.voice.call_thanks = ../../research/illari/extract/HeroVoice/Illari/Thanks/0000000670D6.0B2-(Spanish)_ Thank you.ogg | w=1
+# Sorry 05E1: 4 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+illari.voice.call_sorry = ../../research/illari/extract/HeroVoice/Illari/Sorry/0000000669C8.0B2-I'm sorry.ogg | w=1
+illari.voice.call_sorry = ../../research/illari/extract/HeroVoice/Illari/Sorry/0000000669D8.0B2-Sorry.ogg | w=1
+illari.voice.call_sorry = ../../research/illari/extract/HeroVoice/Illari/Sorry/000000067222.0B2-(Quechua)_ Sorry.ogg | w=1
+illari.voice.call_sorry = ../../research/illari/extract/HeroVoice/Illari/Sorry/0000000670D5.0B2-(Spanish)_ Sorry.ogg | w=1
+# No 01D2: 3 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+illari.voice.call_no = ../../research/illari/extract/HeroVoice/Illari/No/0000000670D4.0B2-(Spanish)_ No.ogg | w=1
+illari.voice.call_no = ../../research/illari/extract/HeroVoice/Illari/No/000000067220.0B2-(Quechua)_ No.ogg | w=1
+illari.voice.call_no = ../../research/illari/extract/HeroVoice/Illari/No/0000000669D5.0B2-No.ogg | w=1
+# GroupUp 02C6: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+illari.voice.call_group_up = ../../research/illari/extract/HeroVoice/Illari/GroupUp/0000000669E3.0B2-Group up here.ogg | w=1
+illari.voice.call_group_up = ../../research/illari/extract/HeroVoice/Illari/GroupUp/0000000669E2.0B2-Group up with me.ogg | w=1
+# AssistanceRequired 0427: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+illari.voice.call_need_help = ../../research/illari/extract/HeroVoice/Illari/AssistanceRequired/000000066E23.0B2-Need help.ogg | w=1
+illari.voice.call_need_help = ../../research/illari/extract/HeroVoice/Illari/AssistanceRequired/000000066E24.0B2-I need assistance.ogg | w=1
+# Healing 0045: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+illari.voice.call_need_healing = ../../research/illari/extract/HeroVoice/Illari/Healing/0000000669E7.0B2-Can someone heal me_.ogg | w=1
+illari.voice.call_need_healing = ../../research/illari/extract/HeroVoice/Illari/Healing/0000000669C9.0B2-I need healing.ogg | w=1
+# ping 11D9: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+illari.voice.ping = ../../research/illari/extract/HeroVoice/Illari/Unknown/11D9.078/000000065B3A.0B2-Over there.ogg | w=1
+# ping warning 11DA: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+illari.voice.ping_warning = ../../research/illari/extract/HeroVoice/Illari/Unknown/11DA.078/000000065B3F.0B2-Watch out.ogg | w=1
+illari.voice.ping_warning = ../../research/illari/extract/HeroVoice/Illari/Unknown/11DA.078/000000065B45.0B2-Stay on guard.ogg | w=1
+illari.voice.ping_warning = ../../research/illari/extract/HeroVoice/Illari/Unknown/11DA.078/000000065B3E.0B2-Careful.ogg | w=1
+# ping enemy 1117: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+illari.voice.ping_enemy = ../../research/illari/extract/HeroVoice/Illari/Unknown/1117.078/000000065B4C.0B2-I see an enemy.ogg | w=1
+illari.voice.ping_enemy = ../../research/illari/extract/HeroVoice/Illari/Unknown/1117.078/000000065B44.0B2-Enemy here.ogg | w=1
+illari.voice.ping_enemy = ../../research/illari/extract/HeroVoice/Illari/Unknown/1117.078/000000065B46.0B2-Enemy over here.ogg | w=1
+# DamageBoosted 00CC (what she says when a Mercy boosts her): 3 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 30-30 s
+illari.voice.damage_boosted = ../../research/illari/extract/HeroVoice/Illari/DamageBoosted/000000066D7F.0B2-I'll show you what I can do.ogg | w=1
+illari.voice.damage_boosted = ../../research/illari/extract/HeroVoice/Illari/DamageBoosted/000000066D7C.0B2-This is real strength.ogg | w=1
+illari.voice.damage_boosted = ../../research/illari/extract/HeroVoice/Illari/DamageBoosted/000000066D7B.0B2-I feel stronger.ogg | w=1
+# NanoBoosted 05E2 (what she says when an Ana nanos her): 6 files; prio 95, 80 m, +3 dB, interrupt 1, cooldown 2-2 s
+illari.voice.nano_boosted = ../../research/illari/extract/HeroVoice/Illari/NanoBoosted/000000065B40.0B2-I am unstoppable!.ogg | w=1
+illari.voice.nano_boosted = ../../research/illari/extract/HeroVoice/Illari/NanoBoosted/000000065B49.0B2-Is this what you wanted_.ogg | w=1
+illari.voice.nano_boosted = ../../research/illari/extract/HeroVoice/Illari/NanoBoosted/000000066A08.0B2-Don't try to stop me!.ogg | w=1
+illari.voice.nano_boosted = ../../research/illari/extract/HeroVoice/Illari/NanoBoosted/0000000670B6.0B2-(Quechua)_ Let disaster strike!.ogg | w=1
+illari.voice.nano_boosted = ../../research/illari/extract/HeroVoice/Illari/NanoBoosted/0000000670B7.0B2-(Spanish)_ Let disaster strike!.ogg | w=1
+illari.voice.nano_boosted = ../../research/illari/extract/HeroVoice/Illari/NanoBoosted/0000000670B8.0B2-(Spanish)_ Face the coming dawn!.ogg | w=1
+# Healing Pylon thrown 13E0 ('Healing pylon out!' / 'Stay near my pylon!'; 3DF4 #116 in the cast StateAbility #84, H): 4 files; prio 95, 35 m, +0 dB, interrupt 0, cooldown 0.1-0.1 s
+illari.voice.pylon = ../../research/illari/extract/HeroVoice/Illari/Unknown/13E0.078/00000006618C.0B2-Healing pylon out!.ogg | w=1
+illari.voice.pylon = ../../research/illari/extract/HeroVoice/Illari/Unknown/13E0.078/00000006618B.0B2-Healing pylon deployed!.ogg | w=1
+illari.voice.pylon = ../../research/illari/extract/HeroVoice/Illari/Unknown/13E0.078/000000066BAE.0B2-Positioning healing pylon!.ogg | w=1
+illari.voice.pylon = ../../research/illari/extract/HeroVoice/Illari/Unknown/13E0.078/000000066BAF.0B2-Stay near my pylon!.ogg | w=1
+# Pylon destroyed 13E1 ('Pylon broken!' / 'They broke my pylon!'; 3DF5 #428 on the pylon's death message (#303) when the killing identifier is not her removal's 07C9 -> #877 Wait 0.6 s -> #805, H): 4 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 2-5 s
+illari.voice.pylon_destroyed = ../../research/illari/extract/HeroVoice/Illari/Unknown/13E1.078/00000006618D.0B2-Pylon broken!.ogg | w=1
+illari.voice.pylon_destroyed = ../../research/illari/extract/HeroVoice/Illari/Unknown/13E1.078/00000006618E.0B2-They broke my pylon!.ogg | w=1
+illari.voice.pylon_destroyed = ../../research/illari/extract/HeroVoice/Illari/Unknown/13E1.078/000000066BB4.0B2-Pylon destroyed!.ogg | w=1
+illari.voice.pylon_destroyed = ../../research/illari/extract/HeroVoice/Illari/Unknown/13E1.078/000000066BB3.0B2-My pylon is down!.ogg | w=1
+# Pylon removed by her 1465 ('Moving the pylon!' / 'Repositioning pylon.'; 3DF5 #428 true branch: killed by identifier 07C9, her removal's 10000 kill #423 -> #815, H): 4 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 10-10 s
+illari.voice.pylon_moved = ../../research/illari/extract/HeroVoice/Illari/Unknown/1465.078/0000000669E9.0B2-Moving the pylon!.ogg | w=1
+illari.voice.pylon_moved = ../../research/illari/extract/HeroVoice/Illari/Unknown/1465.078/000000066BB5.0B2-Repositioning pylon.ogg | w=1
+illari.voice.pylon_moved = ../../research/illari/extract/HeroVoice/Illari/Unknown/1465.078/000000066BB0.0B2-I have to move the pylon.ogg | w=1
+illari.voice.pylon_moved = ../../research/illari/extract/HeroVoice/Illari/Unknown/1465.078/000000066BB1.0B2-Changing my pylon's location!.ogg | w=1
+# Outburst hits someone 1461 ('Out of my way!' / 'Get away from me!'; 3B38 #874 true branch, v375[0] = a target hit, H node, M meaning): 5 files; prio 50, 25 m, +2 dB, interrupt 0, cooldown 20-25 s
+illari.voice.outburst_hit = ../../research/illari/extract/HeroVoice/Illari/Unknown/1461.078/00000006693E.0B2-Out of my way!.ogg | w=1
+illari.voice.outburst_hit = ../../research/illari/extract/HeroVoice/Illari/Unknown/1461.078/00000006693D.0B2-Don't touch me!.ogg | w=1
+illari.voice.outburst_hit = ../../research/illari/extract/HeroVoice/Illari/Unknown/1461.078/00000006693C.0B2-Get away from me!.ogg | w=1
+illari.voice.outburst_hit = ../../research/illari/extract/HeroVoice/Illari/Unknown/1461.078/000000066B01.0B2-Move!.ogg | w=1
+illari.voice.outburst_hit = ../../research/illari/extract/HeroVoice/Illari/Unknown/1461.078/000000066AFC.0B2-Stay away!.ogg | w=1
+# Outburst hits no one 1462 ('(Solar outburst)', an effort sound; 3B38 #874 false -> #905, H node, M meaning): 4 files; prio 45, 20 m, -4 dB, interrupt 0, cooldown 1-1 s
+illari.voice.outburst = ../../research/illari/extract/HeroVoice/Illari/Unknown/1462.078/000000066F1A.0B2-(Solar outburst).ogg | w=1
+illari.voice.outburst = ../../research/illari/extract/HeroVoice/Illari/Unknown/1462.078/000000066F1C.0B2-(Solar outburst).ogg | w=1
+illari.voice.outburst = ../../research/illari/extract/HeroVoice/Illari/Unknown/1462.078/000000066F1E.0B2-(Solar outburst).ogg | w=1
+illari.voice.outburst = ../../research/illari/extract/HeroVoice/Illari/Unknown/1462.078/000000066F1D.0B2-(Solar outburst).ogg | w=1
+# Healing beam on an ally below 40 % health 1463 ('You're hurt. Let me see.'; 3A65 #2804 (health < max x 0.4) -> #2805 message 1DA0 -> #2806, H): 11 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 15-20 s; left out: 6 a scripted condition, 1 a hero interaction
+illari.voice.beam_hurt_ally = ../../research/illari/extract/HeroVoice/Illari/Unknown/1463.078/000000066964.0B2-You're hurt. Let me see.ogg | w=1
+illari.voice.beam_hurt_ally = ../../research/illari/extract/HeroVoice/Illari/Unknown/1463.078/000000066959.0B2-Stay close. I'm trying to help.ogg | w=1
+illari.voice.beam_hurt_ally = ../../research/illari/extract/HeroVoice/Illari/Unknown/1463.078/000000066960.0B2-Stay in range if you want my help.ogg | w=1
+illari.voice.beam_hurt_ally = ../../research/illari/extract/HeroVoice/Illari/Unknown/1463.078/00000006695E.0B2-Show me your wounds.ogg | w=1
+illari.voice.beam_hurt_ally = ../../research/illari/extract/HeroVoice/Illari/Unknown/1463.078/00000006695D.0B2-Fixing that. Don't fuss.ogg | w=1
+illari.voice.beam_hurt_ally = ../../research/illari/extract/HeroVoice/Illari/Unknown/1463.078/00000006695B.0B2-These injuries aren't something to be proud of.ogg | w=1
+illari.voice.beam_hurt_ally = ../../research/illari/extract/HeroVoice/Illari/Unknown/1463.078/00000006702A.0B2-(Spanish)_ Stay in range so I can heal you.ogg | w=1
+illari.voice.beam_hurt_ally = ../../research/illari/extract/HeroVoice/Illari/Unknown/1463.078/00000006702C.0B2-(Spanish)_ Show me where it hurts.ogg | w=1
+illari.voice.beam_hurt_ally = ../../research/illari/extract/HeroVoice/Illari/Unknown/1463.078/000000066957.0B2-Working on your injuries. Keep close.ogg | w=1
+illari.voice.beam_hurt_ally = ../../research/illari/extract/HeroVoice/Illari/Unknown/1463.078/000000066955.0B2-Keep it together.ogg | w=1
+illari.voice.beam_hurt_ally = ../../research/illari/extract/HeroVoice/Illari/Unknown/1463.078/000000066DF4.0B2-I'm healing you.ogg | w=1
+# Healing beam emptied (overheated) 1464 ('I need to recharge.'; 3A65 #2560 v27232 >= v7083 -> #3019, H): 5 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 30-30 s
+illari.voice.beam_empty = ../../research/illari/extract/HeroVoice/Illari/Unknown/1464.078/000000066953.0B2-I need to recharge.ogg | w=1
+illari.voice.beam_empty = ../../research/illari/extract/HeroVoice/Illari/Unknown/1464.078/000000066950.0B2-Can't help you, I'm recharging.ogg | w=1
+illari.voice.beam_empty = ../../research/illari/extract/HeroVoice/Illari/Unknown/1464.078/000000066954.0B2-Recharging. Just tough it out.ogg | w=1
+illari.voice.beam_empty = ../../research/illari/extract/HeroVoice/Illari/Unknown/1464.078/000000066951.0B2-I'm recharging. Don't be reckless.ogg | w=1
+illari.voice.beam_empty = ../../research/illari/extract/HeroVoice/Illari/Unknown/1464.078/000000066952.0B2-Recharging. You're on your own.ogg | w=1
+# Ping on her pylon 1354 ('Healing pylon here.'; category 31 = the wheel / pings, no graph node raises it: M, the ping system's): 3 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+illari.voice.ping_pylon = ../../research/illari/extract/HeroVoice/Illari/Unknown/1354.078/00000006591C.0B2-Healing pylon here.ogg | w=1
+illari.voice.ping_pylon = ../../research/illari/extract/HeroVoice/Illari/Unknown/1354.078/000000066DEE.0B2-My healing pylon is here.ogg | w=1
+illari.voice.ping_pylon = ../../research/illari/extract/HeroVoice/Illari/Unknown/1354.078/000000066DEF.0B2-Stay near my pylon.ogg | w=1
+# Captive Sun, her own copy 1848 ('Face the sunrise!'; 3CAB #780 (everyone within 60 m) -> #1084 STU_37D754C8 (graph 545C) key F1AC, the own key, H): 1 files; prio 95, 80 m, +6 dB, interrupt 0, cooldown 1-1 s; left out: 1 a skin / celebration
+illari.voice.ultimate = ../../research/illari/extract/HeroVoice/Illari/Ultimate/00000006981F.0B2-Face the sunrise!.ogg | w=1
+# Captive Sun line, allies 1356 ('Face the sunrise!'; 3CAB #1084 key F1AB, the friendly key, H): 1 files; prio 95, 80 m, +6 dB, interrupt 0, cooldown 1-1 s; left out: 1 a skin / celebration
+illari.ult.friendly = ../../research/illari/extract/HeroVoice/Illari/Ultimate/00000006678D.0B2-Face the sunrise!.ogg | w=1
+# Captive Sun line, enemies 1355 ('(Quechua) The sun rises!'; 3CAB #1084 key F1AA, the enemy key, H): 1 files; prio 95, 80 m, +8 dB, interrupt 0, cooldown 1-1 s; left out: 1 a skin / celebration
+illari.ult.enemy = ../../research/illari/extract/HeroVoice/Illari/Ultimate/0000000670BA.0B2-(Quechua)_ The sun rises!.ogg | w=1
+# GOOD JOB (the wheel key's tap): as Junkrat's, ours are her Teammate/KillSeen 001B lines (a teammate's kill seen) with
+#  no criteria. Her set also has 11E1 ('Keep it up' / 'Well done', category 31, behind ScriptedEvent 1D36), unmapped as his.
+illari.voice.call_good_job = ../../research/illari/extract/HeroVoice/Illari/Teammate/KillSeen/000000066DA2.0B2-Keep that up.ogg | w=1
+illari.voice.call_good_job = ../../research/illari/extract/HeroVoice/Illari/Teammate/KillSeen/000000066DA4.0B2-You're a strong ally.ogg | w=1
+illari.voice.call_good_job = ../../research/illari/extract/HeroVoice/Illari/Teammate/KillSeen/000000066DA3.0B2-Good. You took them down.ogg | w=1
+illari.voice.call_good_job = ../../research/illari/extract/HeroVoice/Illari/Teammate/KillSeen/000000066DAA.0B2-Not bad.ogg | w=1
+illari.voice.call_good_job = ../../research/illari/extract/HeroVoice/Illari/Teammate/KillSeen/000000066DA6.0B2-You're ruthless. Good.ogg | w=1
+# Voice subtitles: one per event (its lines vary); ours describe the moment, quoting a line where the pool says one thing.
+$illari.voice.elimination = Illari remarks on a takedown
+$illari.voice.multikill = Illari remarks on a multikill
+$illari.voice.melee_kill = Illari remarks on a melee kill
+$illari.voice.on_fire = Illari is on fire
+$illari.voice.respawn = Illari is back
+$illari.voice.melee = Illari shouts
+$illari.voice.select = Illari: I carry my burdens alone
+$illari.voice.death = Illari dies
+$illari.voice.pain = Illari grunts
+$illari.voice.resurrected = Illari: I won't stay down
+$illari.voice.ult_ready = Illari: I am ready to unleash my ultimate
+$illari.voice.call_ult_charging = Illari: My ultimate is charging
+$illari.voice.call_ult_almost = Illari: My ultimate is almost ready
+$illari.voice.call_hello = Illari: Hello
+$illari.voice.call_thanks = Illari: Thank you
+$illari.voice.call_sorry = Illari: I'm sorry
+$illari.voice.call_no = Illari: No
+$illari.voice.call_group_up = Illari: Group up here
+$illari.voice.call_need_help = Illari: Need help
+$illari.voice.call_need_healing = Illari: Can someone heal me?
+$illari.voice.ping = Illari: Over there
+$illari.voice.ping_warning = Illari: Watch out
+$illari.voice.ping_enemy = Illari: I see an enemy
+$illari.voice.damage_boosted = Illari is damage boosted
+$illari.voice.nano_boosted = Illari is nano boosted
+$illari.voice.pylon = Illari: Healing pylon out!
+$illari.voice.pylon_destroyed = Illari: Pylon broken!
+$illari.voice.pylon_moved = Illari: Moving the pylon!
+$illari.voice.outburst_hit = Illari: Out of my way!
+$illari.voice.outburst = Illari: Solar outburst
+$illari.voice.beam_hurt_ally = Illari: You're hurt. Let me see.
+$illari.voice.beam_empty = Illari: I need to recharge
+$illari.voice.ping_pylon = Illari: Healing pylon here
+$illari.voice.ultimate = Illari: Face the sunrise!
+$illari.voice.call_good_job = Illari compliments a teammate
+$illari.ult.friendly = Illari: Face the sunrise!
+$illari.ult.enemy = Illari (Quechua): The sun rises!

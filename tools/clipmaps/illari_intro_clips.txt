@@ -1,0 +1,15 @@
+# Illari's Play of the Game highlight intro: the clips only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/illari.glb by bone name (HeroModels, from hero_models/illari_intro_clips.glb), as Junkrat's (junkrat_intro_clips.txt).
+# From DataTool's extract-unlocks "Illari|highlightintro=*" (build 154088, archived: research\illari\extract\Unlocks\Heroes\Illari\
+# HighlightIntro). The default Overwatch plays "Heroic" (her other base intros: Captive Sun, Flaring Up). Heroic holds four body clips
+# (research\illari\work\intro_clips_out.txt): D2D8 6.233 s (animation effect 5541), DEAF 7.6 s (effect 5858), DED5 5.667 s, DED6 5.5 s.
+# Her intro set 430F's alias B33 is a SEQUENCE (work\clipmap_illari\compact_430F.txt, H tree): seq[0] 6.233 -> seq[1] 7.6 -> seq[2]
+# 5.5 -> seq[3] 7.6 -> seq[4] 5.5 or a random pick of 5.5 / 7.6 / 5.667; the set's own ids (19F81-19F85, 1A189) are not extracted
+# under 117.118. So D2D8 is the opening, DEAF the 7.6 s steps, DED6 the 5.5 s steps, DED5 the 5.667 s random pick (M, by length).
+# Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <117.118.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/illari_intro_clips.txt --clips-from=<...>\Heroes\Illari\HighlightIntro\Overwatch\Heroic
+emote_00000000D2D8 = potg_intro
+emote_00000000DEAF = potg_intro_2
+emote_00000000DED6 = potg_intro_3
+emote_00000000DED5 = potg_intro_4b
