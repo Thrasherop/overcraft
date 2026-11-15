@@ -318,3 +318,155 @@
 22:20:59.231 hp @e[type=overcraft:turret,limit=1] -> No entity was found
 22:20:59.320 hero torbjorn -> {"ok":true}
 22:21:00.821 state -> {"screen": "", "x": -9.5, "y": -60.0, "z": 7.5, "yaw": 0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 7.5, "shield": 75.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 18, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== R1-before 2026-11-14 22:45:07
+22:45:08.199 cmd /gamerule spawn_monsters false -> {"ok":true}
+22:45:08.236 cmd /difficulty easy -> {"ok":true}
+22:45:08.270 cmd /time set noon -> {"ok":true}
+22:45:08.374 cmd /kill @e[type=!player] -> {"ok":true}
+22:45:08.424 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:45:08.424 MARK R1a Molten Core on one husk (500 MC): ult charge from 0 over 6.5 s (expected none from the ult's own damage)
+22:45:08.505 cmd /summon husk 0.5 -60 6.5 {NoAI:1b,Tags:["r"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:500}],Health:500f} -> {"ok":true}
+22:45:08.512 cmd /execute as @s at @s anchored eyes facing 0.5 -60 6.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:45:08.546 cmd /overcraft ult @s -> {"ok":true}
+22:45:09.069 key ultimate tap -> {"key":"key.keyboard.q"}
+22:45:10.082 key secondary_fire down -> {"key":"key.mouse.left"}
+22:45:12.116 key secondary_fire up -> {"key":"key.mouse.left"}
+22:45:12.159 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 109.0, "shield": 75.0, "mode": 2, "perkLevel": 3, "primaryAmmo": 17, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:45:15.693 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 772.752, "shield": 75.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 17, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:45:15.693 MARK R1b rivet to the head at 8 m (expected 140 OW = 11.2 MC)
+22:45:15.727 cmd /kill @e[type=!player] -> {"ok":true}
+22:45:15.761 cmd /summon husk 0.5 -60 8.5 {NoAI:1b,Tags:["h"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:45:15.793 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:45:15.827 cmd /execute as @s at @s anchored eyes facing 0.5 -58.35 8.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:45:16.843 key secondary_fire down -> {"key":"key.mouse.left"}
+22:45:16.977 key secondary_fire up -> {"key":"key.mouse.left"}
+22:45:18.425 hp @e[tag=h,limit=1] -> Husk has the following entity data: 88.8f
+22:45:18.425 MARK R1c the hammer out 3 s with 5 rivets: reloaded? (W: after 2 s); hammer held 3 s on a husk 1.8 m ahead: swings
+22:45:18.448 cmd /kill @e[type=!player] -> {"ok":true}
+22:45:18.482 ammo 5 -> {"error":"unknown command ammo"}
+22:45:18.515 cmd /summon husk 0.5 -60 2.3 {NoAI:1b,Tags:["m"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:400}],Health:400f} -> {"ok":true}
+22:45:18.549 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 2.3 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:45:18.582 key weapon_2 tap -> {"key":"key.keyboard.2"}
+22:45:21.590 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 980.252, "shield": 75.0, "mode": 4, "perkLevel": 3, "primaryAmmo": 16, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:45:21.623 key secondary_fire down -> {"key":"key.mouse.left"}
+22:45:24.624 MARK R1d key 1 while the left is still held (a swap during held swings)
+22:45:24.628 key weapon_1 tap -> {"key":"key.keyboard.1"}
+22:45:25.231 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 1418.503, "shield": 75.0, "mode": 4, "perkLevel": 3, "primaryAmmo": 16, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+hammer_swing"}
+22:45:25.263 key secondary_fire up -> {"key":"key.mouse.left"}
+22:45:25.705 hp @e[tag=m,limit=1] -> Husk has the following entity data: 366.39996f
+22:45:25.732 key weapon_1 tap -> {"key":"key.keyboard.1"}
+22:45:25.732 MARK R1e Overload, then G: overhealth after G (expected 0)
+22:45:25.765 key ability_2 tap -> {"key":"key.keyboard.e"}
+22:45:27.177 hp @s AbsorptionAmount -> Kiriko has the following entity data: 8.0f
+22:45:27.203 key minecraft_mode tap -> {"key":"key.keyboard.g"}
+22:45:28.624 hp @s AbsorptionAmount -> Kiriko has the following entity data: 0.0f
+22:45:28.651 key minecraft_mode tap -> {"key":"key.keyboard.g"}
+22:45:36.652 MARK R1f a turret shooting a husk, then Shift again at once after its 6 s (in combat: expected refused, W / D #495)
+22:45:36.663 cmd /kill @e[type=!player] -> {"ok":true}
+22:45:36.699 cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 4.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:45:36.729 key ability_1 tap -> {"key":"key.keyboard.left.shift"}
+22:45:39.762 cmd /summon husk 0.5 -60 14.5 {NoAI:1b,Tags:["t"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:400}],Health:400f} -> {"ok":true}
+22:45:43.774 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 1749.251, "shield": 75.0, "mode": 1, "perkLevel": 3, "primaryAmmo": 18, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:45:43.807 key ability_1 tap -> {"key":"key.keyboard.left.shift"}
+22:45:44.346 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 1752.001, "shield": 75.0, "mode": 1, "perkLevel": 3, "primaryAmmo": 18, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 11.5, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+turret_throw"}
+22:45:44.346 MARK R1g Overloaded Turret, then death during Overload: turret health after the respawn (expected back to 18 when he's dead, D #444)
+22:45:44.390 cmd /kill @e[tag=t] -> {"ok":true}
+22:45:57.411 key ability_1 tap -> {"key":"key.keyboard.left.shift"}
+22:46:00.919 key ability_2 tap -> {"key":"key.keyboard.e"}
+22:46:03.868 hp @e[type=overcraft:turret,limit=1] -> Turret has the following entity data: 30.0f
+22:46:03.895 cmd /kill @s -> {"ok":true}
+22:46:12.340 hp @e[type=overcraft:turret,limit=1] -> No entity was found
+22:46:12.367 respawn -> {"ok":true}
+
+=== R2-after 2026-11-14 22:51:52
+22:51:53.000 cmd /gamerule spawn_monsters false -> {"ok":true}
+22:51:53.051 cmd /overcraft perks @s 3 -> {"ok":true}
+22:51:53.577 key perk_menu down -> {"key":"key.keyboard.left.alt"}
+22:51:53.911 key primary_fire down -> {"key":"key.mouse.right"}
+22:51:54.078 key primary_fire up -> {"key":"key.mouse.right"}
+22:51:54.879 key secondary_fire down -> {"key":"key.mouse.left"}
+22:51:55.047 key secondary_fire up -> {"key":"key.mouse.left"}
+22:51:55.347 key perk_menu up -> {"key":"key.keyboard.left.alt"}
+22:51:55.882 cmd /difficulty easy -> {"ok":true}
+22:51:55.916 cmd /time set noon -> {"ok":true}
+22:51:55.951 cmd /kill @e[type=!player] -> {"ok":true}
+22:51:56.003 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:51:56.003 MARK R2a Molten Core on one husk (500 MC): ult charge from 0 over 6.5 s (expected none from the ult's own damage)
+22:51:56.056 cmd /summon husk 0.5 -60 6.5 {NoAI:1b,Tags:["r"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:500}],Health:500f} -> {"ok":true}
+22:51:56.065 cmd /execute as @s at @s anchored eyes facing 0.5 -60 6.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:51:56.101 cmd /overcraft ult @s -> {"ok":true}
+22:51:56.620 key ultimate tap -> {"key":"key.keyboard.q"}
+22:51:57.623 key secondary_fire down -> {"key":"key.mouse.left"}
+22:51:59.637 key secondary_fire up -> {"key":"key.mouse.left"}
+22:51:59.680 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 81.25, "shield": 75.0, "mode": 2, "perkLevel": 3, "primaryAmmo": 17, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:52:03.212 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 99.0, "shield": 75.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 17, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:52:03.212 MARK R2b rivet to the head at 8 m (expected 140 OW = 11.2 MC)
+22:52:03.247 cmd /kill @e[type=!player] -> {"ok":true}
+22:52:03.281 cmd /summon husk 0.5 -60 8.5 {NoAI:1b,Tags:["h"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+22:52:03.313 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:52:03.347 cmd /execute as @s at @s anchored eyes facing 0.5 -58.35 8.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:52:04.351 key secondary_fire down -> {"key":"key.mouse.left"}
+22:52:04.485 key secondary_fire up -> {"key":"key.mouse.left"}
+22:52:05.929 hp @e[tag=h,limit=1] -> Husk has the following entity data: 88.8f
+22:52:05.929 MARK R2c the hammer out 3 s with 5 rivets: reloaded? (W: after 2 s); hammer held 3 s on a husk 1.8 m ahead: swings
+22:52:05.955 cmd /kill @e[type=!player] -> {"ok":true}
+22:52:05.989 key secondary_fire down -> {"key":"key.mouse.left"}
+22:52:07.592 key secondary_fire up -> {"key":"key.mouse.left"}
+22:52:08.197 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 264.0, "shield": 75.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 13, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:52:08.227 cmd /summon husk 0.5 -60 2.3 {NoAI:1b,Tags:["m"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:400}],Health:400f} -> {"ok":true}
+22:52:08.260 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 2.3 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:52:08.293 key weapon_2 tap -> {"key":"key.keyboard.2"}
+22:52:09.797 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 272.0, "shield": 75.0, "mode": 4, "perkLevel": 3, "primaryAmmo": 13, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:52:10.599 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 276.0, "shield": 75.0, "mode": 4, "perkLevel": 3, "primaryAmmo": 18, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:52:10.633 key secondary_fire down -> {"key":"key.mouse.left"}
+22:52:13.634 MARK R2d key 1 while the left is still held (a swap during held swings)
+22:52:13.643 key weapon_1 tap -> {"key":"key.keyboard.1"}
+22:52:14.278 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 714.5, "shield": 75.0, "mode": 0, "perkLevel": 3, "primaryAmmo": 17, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+draw"}
+22:52:14.312 key secondary_fire up -> {"key":"key.mouse.left"}
+22:52:14.754 hp @e[tag=m,limit=1] -> Husk has the following entity data: 366.39996f
+22:52:14.778 key weapon_1 tap -> {"key":"key.keyboard.1"}
+22:52:14.778 MARK R2e Overload, then G: overhealth after G (expected 0)
+22:52:14.812 key ability_2 tap -> {"key":"key.keyboard.e"}
+22:52:16.222 hp @s AbsorptionAmount -> Kiriko has the following entity data: 8.0f
+22:52:16.250 key minecraft_mode tap -> {"key":"key.keyboard.g"}
+22:52:17.662 hp @s AbsorptionAmount -> Kiriko has the following entity data: 0.0f
+22:52:17.685 key minecraft_mode tap -> {"key":"key.keyboard.g"}
+22:52:25.687 MARK R2f a turret shooting a husk, then Shift again at once after its 6 s (in combat: expected refused, W / D #495)
+22:52:25.708 cmd /kill @e[type=!player] -> {"ok":true}
+22:52:25.742 cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 4.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:52:25.774 key ability_1 tap -> {"key":"key.keyboard.left.shift"}
+22:52:28.781 cmd /summon husk 0.5 -60 14.5 {NoAI:1b,Tags:["t"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:400}],Health:400f} -> {"ok":true}
+22:52:32.791 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 974.999, "shield": 75.0, "mode": 1, "perkLevel": 3, "primaryAmmo": 18, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:52:32.824 key ability_1 tap -> {"key":"key.keyboard.left.shift"}
+22:52:33.326 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 1001.749, "shield": 75.0, "mode": 1, "perkLevel": 3, "primaryAmmo": 18, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:52:33.326 MARK R2g Overloaded Turret, then death during Overload: turret health after the respawn (expected back to 18 when he's dead, D #444)
+22:52:33.360 cmd /kill @e[tag=t] -> {"ok":true}
+22:52:46.366 key ability_1 tap -> {"key":"key.keyboard.left.shift"}
+22:52:49.872 key ability_2 tap -> {"key":"key.keyboard.e"}
+22:52:52.378 servercmd data get entity @e[type=overcraft:turret,limit=1] Health -> {"ok":true}
+22:52:52.880 cmd /kill @s -> {"ok":true}
+22:53:00.909 servercmd data get entity @e[type=overcraft:turret,limit=1] Health -> {"ok":true}
+22:53:01.411 respawn -> {"ok":true}
+
+=== R3 2026-11-14 22:53:20
+22:53:20.380 respawn -> {"ok":true}
+22:53:23.796 hp @e[type=overcraft:turret,limit=1] -> Turret has the following entity data: 18.0f
+22:53:23.823 cmd /kill @e[type=!player] -> {"ok":true}
+22:53:23.858 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+22:53:23.892 cmd /summon husk 0.5 -60 6.5 {NoAI:1b,Tags:["p"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:500}],Health:500f} -> {"ok":true}
+22:53:23.924 cmd /execute as @s at @s anchored eyes facing 0.5 -60 6.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:53:23.958 cmd /overcraft ult @s -> {"ok":true}
+22:53:24.460 key ultimate tap -> {"key":"key.keyboard.q"}
+22:53:25.462 key secondary_fire down -> {"key":"key.mouse.left"}
+22:53:27.468 key secondary_fire up -> {"key":"key.mouse.left"}
+22:53:27.508 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 81.5, "shield": 75.0, "mode": 2, "perkLevel": 3, "primaryAmmo": 17, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 2.35, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:53:27.942 hp @e[tag=p,limit=1] -> Husk has the following entity data: 473.11993f
+22:53:30.388 hp @e[tag=p,limit=1] -> Husk has the following entity data: 436.63983f
+22:53:30.414 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 96.0, "shield": 75.0, "mode": 2, "perkLevel": 3, "primaryAmmo": 17, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+22:53:30.414 MARK R3b a throw onto open ground, the ring 1 s in (expected ~5/6 full of a 6 s cooldown)
+22:53:42.444 cmd /kill @e[type=!player] -> {"ok":true}
+22:53:42.478 cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 4.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+22:53:42.511 key ability_1 tap -> {"key":"key.keyboard.left.shift"}
+22:53:43.514 screenshot r_ring.png -> {"file":"E:\\claude\\mods\\overcraft_torb\\run\\screenshots\\r_ring.png"}
+22:53:43.548 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 24.0, "onGround": true, "heroMode": true, "hero": "torbjorn", "ult": 161.75, "shield": 75.0, "mode": 1, "perkLevel": 3, "primaryAmmo": 17, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 5.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}

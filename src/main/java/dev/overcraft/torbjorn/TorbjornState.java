@@ -16,6 +16,10 @@ public final class TorbjornState {
 	public boolean swingHit;
 	/** Ticks of his attack rate into the swing. */
 	public double swingAt;
+	/** Ticks the hammer has been out (its reload of the Rivet Gun at 2 s). */
+	public int hammerTicks;
+	/** The turret cooldown running now, its whole length (s: 6 or 12), for the HUD's ring. */
+	public double turretCooldownTotal = 6;
 	/** His turret (the entity's id), the world it's in. */
 	public @Nullable UUID turret;
 	public @Nullable ResourceKey<Level> level;

@@ -1,0 +1,28 @@
+# R3 after the fixes: the turret back after the respawn; pools still burn (no charge); the HUD's turret ring on a 6 s cooldown
+respawn
+sleep 3
+hp @e[type=overcraft:turret,limit=1]
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /summon husk 0.5 -60 6.5 {NoAI:1b,Tags:["p"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:500}],Health:500f}
+cmd /execute as @s at @s anchored eyes facing 0.5 -60 6.5 run tp @s ~ ~ ~ ~ ~
+cmd /overcraft ult @s
+sleep 0.5
+key ultimate tap
+sleep 1.0
+key secondary_fire down
+sleep 2.0
+key secondary_fire up
+state
+hp @e[tag=p,limit=1]
+sleep 2.0
+hp @e[tag=p,limit=1]
+state
+MARK R3b a throw onto open ground, the ring 1 s in (expected ~5/6 full of a 6 s cooldown)
+sleep 12
+cmd /kill @e[type=!player]
+cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 4.5 run tp @s ~ ~ ~ ~ ~
+key ability_1 tap
+sleep 1.0
+screenshot r_ring.png
+state

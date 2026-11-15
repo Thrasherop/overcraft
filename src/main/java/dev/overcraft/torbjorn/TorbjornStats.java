@@ -51,8 +51,15 @@ public final class TorbjornStats {
 	// ---- Forge Hammer (168C; the 1 / 2 keys or the wheel) ----
 	/** 70 a swing (D 1AB6; BZ 2024-12-10 55 -> 70; W) H, no crit (W) H. */
 	public static final double HAMMER_DAMAGE = 70;
-	/** A swing every 0.6 s (D #374 v215; W 0.6 s recovery) H; it lands 0.2 s in (D #345 -> #350, M; W 0.352 s, L between them). */
-	public static final double HAMMER_INTERVAL = 0.6, HAMMER_HIT_AT = 0.2;
+	/**
+	 * A swing every 0.6 s (D 168C #374 v215 = 0.6, the StateWait #325 that holds the whole swing) H; its hit volumes from 0.32 s (D #345's
+	 * delay 0.32 / attack speed, then #350's 0.2 s window) H. W says 1.43 a second (0.352 s in + ~0.1 + 0.6 s) and 0.6 s in Overload: D's
+	 * 0.6 / 1.43 = 0.42 s there and its 0.32 / 1.43 = 0.224 s match W's "initial swing time 0.11 s shorter"; W's extra 0.1 s isn't in the
+	 * graph (a press's own latency, L). D kept.
+	 */
+	public static final double HAMMER_INTERVAL = 0.6, HAMMER_HIT_AT = 0.32;
+	/** The Rivet Gun reloads itself after 2 s with the hammer out (W) M. */
+	public static final double HAMMER_RELOAD = 2;
 	/** Its reach: a 1 m sphere 1.5 m ahead of him, 1.2 m up (D #256: 2040 x (0, 1.2, 1.5)) H/M; W 2.5 m, the quick melee's. */
 	public static final double HAMMER_AHEAD = 1.5, HAMMER_UP = 1.2, HAMMER_RADIUS = 1.0;
 	/** A hit on his built, hurt turret repairs 50 (D 08F8; W) H. */

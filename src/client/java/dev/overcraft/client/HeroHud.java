@@ -1083,8 +1083,10 @@ public final class HeroHud {
 		}
 		if (hero == Hero.TORBJORN) {
 			// Deploy Turret (Shift: lit while his turret is out) and Overload (E: lit while it runs), in Kiriko's two places (ours)
+			// (the ring over the cooldown running now: 6 s from a throw, 12 s after a turret lost in combat; ability3Cooldown carries it)
 			ability(g, hero, w, "deploy_turret", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
-				(float) dev.overcraft.torbjorn.TorbjornStats.TURRET_COOLDOWN, ability1ReadyAt);
+				s.ability3Cooldown() > 0 ? s.ability3Cooldown() : (float) dev.overcraft.torbjorn.TorbjornStats.TURRET_COOLDOWN_CALM,
+				ability1ReadyAt);
 			if ((s.mode() & dev.overcraft.torbjorn.Torbjorn.MODE_TURRET_OUT) != 0) {
 				song(g, true, false, w - 641, 903, w);
 			}

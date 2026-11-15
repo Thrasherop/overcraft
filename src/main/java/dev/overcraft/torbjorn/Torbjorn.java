@@ -119,6 +119,13 @@ public final class Torbjorn implements HeroKit {
 			}
 		}
 		// Hammer Time: +20 % with the hammer out, not in Molten Core (D 51F6 #422)
+		// the Rivet Gun reloads itself with the hammer out 2 s (W: "Automatically reloaded if Torbjörn has his Forge Hammer equipped
+		// for 2 seconds"; M: D 1683 not read for it)
+		t.hammerTicks = t.hammer ? t.hammerTicks + 1 : 0;
+		if (t.hammerTicks >= Ow.ticks(HAMMER_RELOAD) && s.primaryAmmo < AMMO) {
+			s.primaryAmmo = AMMO;
+			s.primaryReload = -1;
+		}
 		if (t.hammer && !molten && s.has(Perk.TORBJORN_HAMMER_TIME)) {
 			Combat.buff(player, Attributes.MOVEMENT_SPEED, HAMMER_TIME_ID, HAMMER_TIME_SPEED, 0.15);
 		}
@@ -275,7 +282,7 @@ public final class Torbjorn implements HeroKit {
 	/** The 1 / 2 keys or the wheel (HeroInputPayload.EXTRA_STAFF / BLASTER / SWAP: the weapon keys every hero with two shares). */
 	public static void extra(ServerPlayer player, HeroState s, int extra) {
 		TorbjornState t = s.torbjorn;
-		if (!HeroManager.controls(player) || t.ultCast >= 0 || t.ultLeft > 0 || t.swing >= 0) {
+		if (!HeroManager.controls(player) || t.ultCast >= 0 || t.ultLeft > 0) {
 			return;
 		}
 		boolean want = t.hammer;
@@ -287,6 +294,8 @@ public final class Torbjorn implements HeroKit {
 			want = !t.hammer;
 		}
 		if (want != t.hammer) {
+			// (a swing under way is cut: holding the left button with the hammer out blocked the swap back to the gun, the critic of
+			// 385d464; W gives the swap no wait on a swing, ours)
 			swap(player, s, t, want);
 		}
 	}
@@ -405,6 +414,15 @@ public final class Torbjorn implements HeroKit {
 		}
 	}
 
+	/**
+	 * Whether Shift may throw now: no turret out, or one not in combat (D 16C5 #495's condition: with v10467 "in combat" set, only while
+	 * fewer than the one turret are out; W "cannot be redeployed while it is in combat"). In combat is the data's (#509): it fired in the
+	 * last 1 s or was hit in the last 3 s (W says dealt or took damage in 3 s: D kept).
+	 */
+	public static boolean canRedeploy(@Nullable TurretEntity out) {
+		return out == null || !out.inCombat();
+	}
+
 	/** It leaves his hand at 17 m/s (x1.25 with Anchor Bolts); one out: the old one goes (D #615 / #614), and the cooldown's 6 s start. */
 	private static void throwTurret(ServerPlayer player, HeroState s, TorbjornState t) {
 		TurretEntity old = turret(player, t);
@@ -423,6 +441,7 @@ public final class Torbjorn implements HeroKit {
 		t.turret = turret.getUUID();
 		// 6 s from the cast (D #466: 12 / 2); the turret's going sets it again (turretGone)
 		s.ability1Cooldown = Math.max(s.ability1Cooldown, Ow.ticks(TURRET_COOLDOWN_CALM));
+		t.turretCooldownTotal = TURRET_COOLDOWN_CALM;
 	}
 
 	/**
@@ -445,7 +464,10 @@ public final class Torbjorn implements HeroKit {
 			s.torbjorn.turret = null;
 		}
 		double cooldown = Ow.ticks(turret.inCombat() ? TURRET_COOLDOWN : TURRET_COOLDOWN_CALM);
-		s.ability1Cooldown = Math.max(s.ability1Cooldown, cooldown);
+		if (cooldown >= s.ability1Cooldown) {
+			s.ability1Cooldown = cooldown;
+			s.torbjorn.turretCooldownTotal = cooldown / 20;
+		}
 		if (broken) {
 			Voice.say(owner, "turret_destroyed", 1);
 		}
@@ -537,7 +559,8 @@ public final class Torbjorn implements HeroKit {
 		}
 		t.swing = -1;
 		t.ultCast = 0;
-		s.ultActive = Ow.ticks(ULT_CAST + ULT_TIME);
+		// (no charge while it's cast; after, his turret and rivets charge him again, while the ult's own damage never does: ultDealt)
+		s.ultActive = Ow.ticks(ULT_CAST);
 		// the Rivet Gun full at the cast (W, M)
 		s.primaryAmmo = AMMO;
 		s.primaryReload = -1;
@@ -616,7 +639,7 @@ public final class Torbjorn implements HeroKit {
 		LivingEntity target = hit instanceof EnderDragonPart p ? p.parentMob : hit instanceof LivingEntity living ? living : null;
 		if (target != null && Allies.canHurt(owner, target)) {
 			float dealt = Combat.damage(target, level.damageSources().thrown(slag, owner), SLAG_DAMAGE, SLAG_BLOW);
-			dealt(owner, dealt, target, false);
+			ultDealt(owner, dealt, target);
 			TorbjornSounds.split(owner, "molten.hit", slag.position(), 60);
 		}
 		Vec3 at = slag.position();
@@ -684,8 +707,11 @@ public final class Torbjorn implements HeroKit {
 				HeroState hs = e instanceof ServerPlayer hit ? HeroManager.state(hit) : null;
 				boolean armored = hs != null && hs.hero != null && dev.overcraft.hero.Shields.armorLeft((ServerPlayer) e, hs) > 0;
 				double damage = (POOL_DPS + (armored ? POOL_ARMOR_DPS : 0)) * step;
-				float dealt = Combat.damage(e, Combat.blast(p.level, null, owner), damage, SLAG_BLOW);
-				dealt(owner, dealt, e, false);
+				// a damage over time: no damage boost raises it (W Molten Core: "the damage over time cannot" be amplified): the boost
+				// the hurt would add is taken off first (Boosts.amplify, LivingEntityMixin)
+				float boost = dev.overcraft.mercy.Boosts.amplify(owner, 1f, e);
+				float dealt = Combat.damage(e, Combat.blast(p.level, null, owner), damage / (boost > 0 ? boost : 1), SLAG_BLOW);
+				ultDealt(owner, dealt, e);
 			}
 		}
 	}
@@ -700,7 +726,7 @@ public final class Torbjorn implements HeroKit {
 		}
 		boolean silenced = dev.overcraft.sombra.Hack.silenced(player);
 		boolean busy = t.ultCast >= 0 || t.turretCast >= 0 || t.overloadCast > 0;
-		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0 && !silenced && !busy && s.ability1Cooldown <= 0) {
+		if ((pressed & HeroInputPayload.PRESS_ABILITY_1) != 0 && !silenced && !busy && s.ability1Cooldown <= 0 && canRedeploy(turret(player, t))) {
 			startTurret(player, s, t);
 		}
 		if ((pressed & HeroInputPayload.PRESS_ABILITY_2) != 0 && !silenced && !busy && s.ability2Cooldown <= 0 && t.overload <= 0) {
@@ -722,6 +748,17 @@ public final class Torbjorn implements HeroKit {
 		s.torbjorn.specialistUntil = player.level().getGameTime() + Ow.ticks(SPECIALIST_TIME);
 		if (blow == HAMMER_BLOW) {
 			Voice.say(player, "hammer_kill", 1);
+		}
+	}
+
+	/**
+	 * Molten Core's damage: the hit marker and On Fire, but no ult charge (W Ultimate ability: an ult's damage charges no ult; the
+	 * critic of 385d464 saw 108 -> 1357 in 6.5 s from his pools) nor perk progress.
+	 */
+	private static void ultDealt(ServerPlayer owner, float dealt, LivingEntity e) {
+		Combat.addFireForDamage(owner, dealt, e);
+		if (dealt > 0) {
+			Effects.hitMarker(owner, e, false);
 		}
 	}
 
@@ -779,7 +816,7 @@ public final class Torbjorn implements HeroKit {
 		return new HeroSyncPayload(s.hero == null ? "" : s.hero.id, (float) s.ultCharge, (int) ULT_COST, molten,
 			s.primaryAmmo, s.primaryReload >= 0 ? (float) Math.min(1, s.primaryReload / reloadTicks(t.reloadFast)) : -1,
 			t.slag, -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0), s.rushed, s.canChangeHero, s.onFire,
-			Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk), Perk.index(s.majorPerk), 0, mode, active,
+			Perks.level(s), Perks.progress(s), Perks.ready(s), Perk.index(s.minorPerk), Perk.index(s.majorPerk), (float) t.turretCooldownTotal, mode, active,
 			molten ? t.ultLeft / (float) Ow.ticks(ULT_TIME) : 0);
 	}
 
@@ -792,6 +829,12 @@ public final class Torbjorn implements HeroKit {
 		TorbjornState t = s.torbjorn;
 		t.turretCast = -1;
 		t.swing = -1;
+		TurretEntity turret = turret(player, t);
+		if (turret != null) {
+			// Overloaded Turret's level 3 ends with Overload (D 1688 #444): his kit doesn't tick while he's dead, so it's said here (the
+			// critic of 385d464: level 3 held through his death)
+			turret.overloaded(false);
+		}
 		if (t.overload > 0) {
 			endOverload(player, s, t);
 		}

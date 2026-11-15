@@ -73,5 +73,33 @@ Raw stamped output: [runs/torbjorn/runs.txt](../testing/runs/torbjorn/runs.txt),
 - The turret's missiles (Overloaded Turret) are hitscan hits of 30, not projectiles (ours).
 - Lifeweaver's weapon keys look dead (ClientMercy.input returns 0 for a hero not Mercy; Torbjörn's now pass): not checked in play, not touched.
 
+## Fix round 1 (2026-11-14, the critic of 385d464; merged next 0.3.51 first)
+Reproduced on the merged build first (R1 in [runs/torbjorn/scripts](../testing/runs/torbjorn/scripts/), harness keys), then fixed and played
+again (R2, R3). Before -> after:
+- **Molten Core charged his ult** (R1a: 109 -> 773 over ~6.5 s on one husk). Its slag and pools give no charge now (`ultDealt`;
+  W Ultimate ability), and `ultActive` covers only the 0.75 s cast so his turret and rivets charge him during it. R2a: 81 -> 99
+  (the passive 5/s only); R3: pools still burn 15.2 MC/s (190).
+- **The hammer didn't reload the Rivet Gun** (R1c: 16 rivets after 3 s with it out). W: "Automatically reloaded ... Forge Hammer equipped
+  for 2 seconds". R2c: 13 at 1.5 s, 18 at 2.3 s.
+- **Holding the left button with the hammer out blocked the swap** (R1d: key 1, still the hammer). A swap now cuts the swing. R2d: the
+  gun out at once, a rivet fired.
+- **A redeploy while the turret fought was allowed** (R1f: thrown, cooldown 11.5). D 16C5 #495's condition (read here): with
+  "in combat" (v10467, #509: fired in 1 s or hit in 3 s) set, a throw needs fewer than the one turret out. W agrees ("cannot be redeployed
+  while it is in combat"). R2f: refused, cooldown 0, the same turret out. W's 5 s redeploy vs D's 6: D kept.
+- **Overloaded Turret's level 3 through his death:** `leavePlay` ends it (his kit doesn't tick while he's dead). A dead player's turret is
+  unloaded with his chunk anyway (the servercmd found none), and back at level 2 after the respawn.
+- **Hammer cadence:** D 168C #374 sets the swing's StateWait #325 to 0.6 s, with the hit from #345's 0.32 s for 0.2 s (#350): kept 0.6 s,
+  the hit moved 0.2 -> 0.32 s. W's 1.43 / s (0.7 s) holds an extra 0.1 s the graph doesn't; its Overload numbers match D's 0.32 / 1.43.
+  R2: 6 swings in ~3.6 s held.
+- **Pools and damage boosts:** the burn is divided by the boost the hurt would add (W: the damage over time can't be amplified).
+- **HUD:** the turret ring is over the cooldown actually running (6 or 12 s, carried in ability3Cooldown).
+- **Select screen:** drawn at 0.6, not 0.72 (`r_select_torb2.png`: his whole head in frame).
+- Played again, the round-1 fixes: a head rivet 11.2 MC (140) ✓; Overload's overhealth gone on G (8 -> 0 MC) ✓; the cadence above ✓.
+
+Kept, with the source: Anchor Bolts scales the throw's **speed** x1.25 (D 38D0 #69: 10FA x (1 + v60624)), as the data writes it; the
+ult's 0.75 s cast (D #370; W 0.592) and 6.5 slag a second (D #382; W 0.144 s held). Not done: the Interact key's recall (no press of
+it reaches the server's kit). Seen, not his: after Save and Leave and Open world, the select screen came up with Kiriko chosen and
+Torbjörn only underlined; READY played Kiriko.
+
 **Not shown / not tried:** a critic; an Overwatch side by side; Hammer Time and Anchor Bolts in play (coded); slopes, water, ladders, the
 Nether; a second player; the dragon; emotes and the Heroic intro.
