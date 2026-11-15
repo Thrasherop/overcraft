@@ -53,6 +53,7 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
   - [critique_rules](testing/critique_rules.md): the critique of the ally, barrier, Catnapper and headshot rules (fix/rules, 2026-11-04).
   - [polish_method](testing/polish_method.md): **how the polish runs work**: builder, a fresh critic each round, reproduce first, stamped raw evidence, mutations, real keys. The owner's pick; start here for any QA run.
   - [polish3](testing/polish3.md): the Nov 3 patch, Suzu on anti-heal, the wall ride for others, every push on a real client, Hyper Strike's and Rider's widgets (fix/polish-3).
+  - [side_by_side_2026-11-05](testing/side_by_side_2026-11-05.md): the owner's frames of Sombra, Ana and Juno against ours: the findings, what was fixed, what still differs.
   - [polish4](testing/polish4.md): Protection Suzu's whole list off and on, Rally's double hit, Kiriko's Suzu line from the graph (#121), Whip Shot's 8 m, what removing each fix does to the tests (fix/polish-4).
 - **HUD**: [reticle](hud/reticle.md): every hero's widgets at the crosshair, what the data binds and what's ours (#85). [kill_feed](hud/kill_feed.md). The kill feed's icons from the wiki's rule, what dealt each hero's
   damage (`Blow`), the kill marker from the death itself, the flashes and markers around a kill.

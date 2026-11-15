@@ -362,6 +362,8 @@ public final class HeroState {
 	public double junoFireClock;
 	/** Juno: each target whose lock tick is sounding, and when its file was started (game time; Torpedoes.ticking). */
 	public final java.util.Map<Integer, Long> junoLockTicking = new java.util.HashMap<>();
+	/** What her client was last told is filling (Torpedoes.marks). */
+	public final java.util.Set<Integer> junoLockFilling = new java.util.HashSet<>();
 	/** Juno: Locked On's cooldown taken off for this firing (ticks, at most 5 s). */
 	public double junoLockedOn;
 	/** Juno: ticks into Hyper Ring's cast and Orbital Ray's (-1 none). */

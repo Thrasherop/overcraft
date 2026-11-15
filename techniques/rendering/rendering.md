@@ -257,7 +257,9 @@ fitting each by its own outline (width, top of the hair) moved heroes whose outl
   `simulate` ages it by the frame's time; at 10 fps a short life (the barrier's 0.2 s) ran out between feeds and the
   field showed in half the frames. A particle fed in the last 0.1 s now stays lit (`Particle.fedAt`).
 
-## Things in the hand pass (2026-11-05, #113, #114, #105)
+## Things in the hand pass (2026-11-05, #113, #114, #105, #86)
+- **Juno's pods** are done this way too (`JunoFx.viewPods`): a world particle was painted over by the pod it sat on. Quads placed by screen share (the pass's fixed vertical field of view, 70), along the camera's axes, mapped back through the pose's inverse: the pass's pose ends in the world's axes, not the view's. Looked at.
+- **Held pieces aren't props:** a small model on its own origin passes `isProp`, and `emit` drops triangles near the origin as parked. `EmoteProps.submit` says `props` false; `submitStealth` didn't, and Sombra's pistol vanished in both views (`cull` param, [side_by_side](../testing/side_by_side_2026-11-05.md#the-verification-run-2026-11-05-later)). Any new path that draws a held model must say so too. Looked at.
 - **What must meet the first-person model goes in the hand pass, not the world:** a world particle fed from `submitArms` is a frame late, drawn under the other pass's projection and behind the depth that pass clears. `BrigitteFx.viewChain` submits a ribbon with `collector.submitCustomGeometry(poseStack, FxRender.additive(tex), ...)`: the same pose as the model, facing the eye (the pose's inverse at the origin). Sojourn's open case above can go the same way.
 - **Read a mask's falloff before calling it soft** (`lucio_soft`, 4F3: 255 to a third of its radius, then an edge; `mercy_soft` falls smoothly, but at 1.5 m added over the sky it's a sun). Sample a row across the middle.
 - **A black colour image with a shader that colours it:** `HeroModels.colourHair` takes `hero_models/colour/<material>.png` (`tools/glow_maps.py --colours`). glTF can't carry it, and a re-export isn't needed.

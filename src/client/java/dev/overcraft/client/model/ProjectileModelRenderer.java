@@ -34,6 +34,8 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		HeroModels.@Nullable Loaded loaded;
 		/** Its flight effect is its look (Lúcio's round: no model, all glow and rings). */
 		boolean drawnByEffect;
+		/** Seconds since it was thrown, for its tumble. */
+		float age;
 	}
 
 	/** Per model: its rest skin and the turn that lays its longest side along +Z. */
@@ -46,6 +48,9 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 	private final boolean flip;
 	private final float modelScale;
 	private final boolean effectOnly;
+	/** Its tumble in degrees a second, about its own side axis; and whether it keeps its own up instead of its longest side along its flight. */
+	private float tumble;
+	private boolean upright;
 
 	/** {@code flip}: the model's tip points the other way along its long side. */
 	public ProjectileModelRenderer(EntityRendererProvider.Context context, String model, float spriteScale, boolean flip) {
@@ -66,6 +71,21 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		this.effectOnly = effectOnly;
 	}
 
+	/**
+	 * A tumble in degrees a second. D: STUProjectileVisualComponent's {@code m_CC568D8C} on the thrown entities only (beacon 1575 -720,
+	 * Ana's 1426 -720, Suzu 3FD3 200, Sigma's 18B7 500): its role M from what holds it; which axis isn't in the field, ours.
+	 */
+	public ProjectileModelRenderer<T> tumbling(float degreesPerSecond) {
+		tumble = degreesPerSecond;
+		return this;
+	}
+
+	/** Keeps the model's own up and front (round things: the owner's frame 2 shows the beacon's eye on top, its legs below) (measured from the owner's frame). */
+	public ProjectileModelRenderer<T> upright() {
+		upright = true;
+		return this;
+	}
+
 	@Override
 	public ThrownItemRenderState createRenderState() {
 		return new State();
@@ -77,6 +97,7 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		State s = (State) state;
 		s.yRot = entity.getYRot(partialTicks);
 		s.xRot = entity.getXRot(partialTicks);
+		s.age = (entity.tickCount + partialTicks) / 20f;
 		// "=name": a hero model by its own name (Sigma's rock, sigma_rock), else projectile_<name>
 		s.loaded = HeroModels.get(model.startsWith("=") ? model.substring(1) : "projectile_" + model);
 		// the flight effects (trail, glow, sparkles), fed with where it is this frame
@@ -108,6 +129,9 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 				sphere.getId(), at, sphere.getDeltaMovement(), dt, sphere.getOwner());
 			case dev.overcraft.entity.AccretionEntity rock -> dev.overcraft.client.effect.SigmaFx.rockFlight(rock.getId(), at, dt,
 				rock.getOwner());
+			// Cyberspace's 7763 has no model (sombra-effects): the cube is its effect (SombraFx.tick), and no shard with it (it fell back to the item)
+			case dev.overcraft.entity.CyberspaceEntity cube -> s.drawnByEffect = dev.overcraft.client.effect.EffectArt.get("sombra_cube_glow",
+				dev.overcraft.client.effect.EffectArt.Palette.SOMBRA_CYBER_CUBE, false) != null;
 			default -> {
 			}
 		}
@@ -138,7 +162,12 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		if (flip) {
 			poseStack.rotateDegrees(Axis.YP, 180);
 		}
-		poseStack.mulPose(new Matrix4f().rotation(p.align()));
+		if (tumble != 0) {
+			poseStack.rotateDegrees(Axis.XP, tumble * s.age);
+		}
+		if (!upright) {
+			poseStack.mulPose(new Matrix4f().rotation(p.align()));
+		}
 		// no back-face culling (a talisman is a thin card seen from either side), and not a hero's stowed prop
 		HeroModelRenderer.submitModel(loaded, p.skin(), poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY,
 			java.util.Set.of(), false, false);

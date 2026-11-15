@@ -4,7 +4,20 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-14: 0.3.52 on next (not on main yet)
+## 2026-11-15: 0.3.53 on next (not on main yet)
+
+- **The 0.3.32 playtest's side-by-side work, merged at last (#149):** `fix/side-by-side` (24 commits, 2026-11-05) went into the
+  0.3.32 playtest build but never into `next`, so every build since lacked it. The owner noticed Ana's scope: "0.3.32 used that
+  right asset". Back now: Ana's scope art (the blue wash and the frame's line art, `AnaScopeArt`), Sombra's stealth (the
+  screen's tint, the INVISIBLE timer bar, her stealthed arms and pistol), Juno's lock HUD (marks, chevrons, arc timer, prompts)
+  and her pods' glass, a blocked ability box as a general state, and Sombra's beacon and Ana's darts and grenade as their own
+  models. One doc conflict (techniques/hud/reticle.md), both sides kept.
+- Seen with real keys on a fresh world: Ana scoped (`ana_scope_sbs2.png`), Sombra's stealth after Translocator, Juno's
+  torpedo lock on a husk (`juno_lock_sbs.png`). Not replayed: the rest of the 24 commits one by one.
+- **The asset zip refuses a pack with missing sounds:** 0.3.50's zip had only Ana's and Brigitte's sounds (680 of 9421), so
+  no other hero had voice lines; the zip step now stops when sounds.json names a file the pack lacks.
+
+## 2026-11-14: 0.3.52
 
 - **Torbjörn (#136), his whole kit:** Rivet Gun (rivets and the close-range alt fire), Forge Hammer (weapon 2: 70 a
   swing, repairs his turret, reloads the gun after 2 s out), Deploy Turret (Shift; level 2, enemies only, never

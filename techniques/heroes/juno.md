@@ -134,7 +134,7 @@ both; the ring thrown, hanging, walked through (1P and 3P lines), its end; the r
 - **Flat discs need their mesh:** the disc flash's band is a stripe in V (the radius); on a quad it drew a bar. 5E5E.
 - **Mesh-only masks:** the chevron masks 27D0D / 27D0A are a frame and a ramp for DFDC; on quads they were squares.
 - **Jets spawned per tick trail behind a rising body:** held on the foot (`Fx.attach`) they stay on her boots.
-- Not done (ours / left): the lock marker is a world ring (the data's is HUD 0727.116); no 1P glide screen hex; no body
+- Not done (ours / left): the lock marker was a world ring (HUD now, 2026-11-05: [side_by_side](../testing/side_by_side_2026-11-05.md)); no 1P glide screen hex; no body
   material tint (a glow instead); the ray's ground circle is one flat at its point (floats on slopes); the reload's gun
   piece swap; enemies' red rows unseen (no second player).
 

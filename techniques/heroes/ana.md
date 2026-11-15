@@ -46,7 +46,7 @@ Tactician built from her data and the first with a scope. Up: [Techniques](../RE
   120 degrees away. The animator holds `idle_scoped` / `crouch_idle_scoped` at frame 0 as it does `idle`.
 - **Zoom and sensitivity live on the client:** `ClientAna` scales the FOV toward 30 degrees with the synced scope and the
   mouse turn to 30% fully scoped (`HeroFovMixin`, `MouseHandlerMixin`), in first person only.
-- **No scope overlay yet:** its texture isn't extracted (her effects step). Built since: [#90](#90-her-scope-2026-11-04).
+- **No scope overlay yet:** its texture isn't extracted (her effects step). Built since: [#90](#90-her-scope-2026-11-04), then redrawn from the live game: [side_by_side](../testing/side_by_side_2026-11-05.md).
 
 ## Building her (2026-10-29: step 4, Biotic Grenade)
 - **Healing modifiers live in `Combat.heal`,** so every hero's healing is boosted or blocked (Ana's grenade affects all
@@ -115,6 +115,8 @@ Tactician built from her data and the first with a scope. Up: [Techniques](../RE
 - Emotes: [ana_emotes](../emotes/ana_emotes.md).
 
 ## #90: her scope (2026-11-04)
+**Replaced 2026-11-05:** the black surround and clear lens below were wrong. The owner's frame has no surround: the whole view under a blue wash, line art over it. Redrawn as ours from that frame; the art isn't in the data as far as searched: [side_by_side](../testing/side_by_side_2026-11-05.md#ana-s-scope-what-was-searched).
+
 The owner's playtest: "still no scoped in UI". Reproduced on `next` (`hp_a_scoped`, worktree `run/screenshots`): zoomed, the generic
 "+", nothing else.
 - **The overlay (`HeroHud.anaScope`, `HudShapes.SCOPE` / `SCOPE_RIM`):** the data shows UX view model 0613.116 on the HUD root from

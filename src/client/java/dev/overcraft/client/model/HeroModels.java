@@ -56,6 +56,8 @@ public final class HeroModels {
 		"lw_flower_ring", "lw_bud", "lw_flower",
 		// Sombra's Translocator beacon (model 10518)
 		"sombra_beacon",
+		// Ana's unscoped dart (model 11741) and Biotic Grenade (model 11763)
+		"projectile_ana_dart", "projectile_biotic_grenade",
 		// Brigitte's effects' meshes (BrigitteFx): the swing arcs, the shield's outline, the half dome, the band, Inspire's
 		// ring, the shard, the whip head's ring, Rally's ground ring
 		"brigitte_swing_arc", "brigitte_swing_arc_back", "brigitte_shield_plate", "brigitte_dome", "brigitte_band", "brigitte_ring",

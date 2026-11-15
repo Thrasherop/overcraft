@@ -509,8 +509,12 @@ public final class HeroModelRenderer {
 		return white == null ? 0 : white;
 	}
 
-	/** How much of a stealthed hero shows to those who see her, and to her own eyes, fully phased out (ours). */
-	private static final float SEE_THROUGH = 0.38f, SEE_THROUGH_OWN = 0.6f;
+	/**
+	 * How much of a stealthed hero shows to those who see her, and to her own eyes: both OURS, no measurement exists. The owner's frames show a hooded skin (purple hood, navy glove, coloured nails, a cream
+	 * and purple gun) and ours is the default, so frames can't set her colour or opacity. The data's look (420C #29: 48AC on her first-person self, material 35C4; #30 48F0 on her weapon) only names compiled
+	 * .127 shader variants per material effect, no colour or opacity: 144 bytes each, a shader group (2C, D9, 32 .088), a slot (.03A) and a hash; nothing read says which of its 40-odd effect ids stealth uses.
+	 */
+	private static final float SEE_THROUGH = 0.38f, SEE_THROUGH_OWN = 0.8f;
 	/** Her phased-out tint (lilac, over her own colours), and her stealth's purple over it (A06C: M). */
 	private static final int STEALTH_TINT = 0xC8B4FF, STEALTH_GLOW = 0x9A55FF;
 	/** 1AD9's wipe edge row, by the fade (sombra-effects: #6D0000 #CE0000 #F6502B #00DFB6; read by age: M). */
@@ -566,30 +570,47 @@ public final class HeroModelRenderer {
 	 * Sombra stealthed (#87), as she shows to those who still see her and in her own view. The fades are the data's: 1AD9 / 1AD8
 	 * wipe her solid self away along A7BF's diagonal frames, with its edge row's colours lit on the frame reached (phase 0 solid, 1
 	 * phased out). What's held has no art in the data (16EA is empty, the invisibility a renderer state, STU_33A46033: M): ours, one
-	 * see-through lilac for all of her, a slow pulse, and A7BF's frames turning over her as faint digital glints.
+	 * see-through lilac for all of her, a slow pulse, and A7BF's frames turning over her as faint digital glints. In her own first person
+	 * ({@code own}), her real textures lit as usual and near solid, no lilac: the screen's multiply (HeroHud.stealthWash, 420C #851) tints them,
+	 * as the owner's frames show.
 	 */
 	static void submitStealth(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
 		Set<Integer> hidden, float phase, float time, int light, int overlay, boolean own) {
+		submitStealth(loaded, skin, poseStack, collector, hidden, phase, time, light, overlay, own, true);
+	}
+
+	/**
+	 * {@code cull}: false for what's held, as EmoteProps.submit draws it: no back-face culling, and not a hero's stowed prop. A small model on its own origin passes
+	 * isProp, so emit parked its triangles near the origin: her pistol came out as a few shards or nothing, in first and third person (sbsf_day_cycle*, sbsf_vday_3p_back),
+	 * and that read as "the clips put it away" from the first pass on.
+	 */
+	static void submitStealth(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
+		Set<Integer> hidden, float phase, float time, int light, int overlay, boolean own, boolean cull) {
 		phase = Math.clamp(phase, 0, 1);
 		boolean wipe = wipeMask();
 		float pulse = 0.5f + 0.5f * (float) Math.sin(time * Mth.TWO_PI * 0.7f);
-		float opacity = (own ? SEE_THROUGH_OWN : SEE_THROUGH) * (0.92f + 0.16f * pulse) * phase;
-		int phased = Math.clamp(Math.round(opacity * 255), 0, 255) << 24 | STEALTH_TINT;
+		float opacity = own ? SEE_THROUGH_OWN * phase : SEE_THROUGH * (0.92f + 0.16f * pulse) * phase;
+		int phased = Math.clamp(Math.round(opacity * 255), 0, 255) << 24 | (own ? 0xFFFFFF : STEALTH_TINT);
 		// what's left of her solid self, as vertex alpha against the wipe's mask (or plainly fading without the pack)
 		int solid = Math.clamp(Math.round((1 - phase) * 255), 0, 255) << 24 | 0xFFFFFF;
 		float fading = phase;
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
 			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
-			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
+			boolean prop = cull && PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
 			if (texture == null || isEyeShadow(loaded, piece) || hiddenNow(loaded.model(), piece, hidden, prop)) {
 				continue;
 			}
 			if (fading < 1) {
 				collector.submitCustomGeometry(poseStack, wipe ? RenderTypes.entityCutoutDissolve(texture, WIPE_MASK) : RenderTypes.entityTranslucent(texture),
-					(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay, prop, solid, true, false));
+					(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay, prop, solid, cull, false));
 			}
-			collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(texture),
-				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, phased, true, false));
+			if (own) {
+				collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucent(texture),
+					(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay, prop, phased, cull, false));
+			} else {
+				collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(texture),
+					(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, phased, cull, false));
+			}
 		}
 		if (wipe) {
 			// mid-fade the edge: the frame reached, lit in the row's colour by the fade; held, the frames turning slowly as glints
@@ -598,12 +619,15 @@ public final class HeroModelRenderer {
 			float along = phase * 3;
 			int from = Math.clamp((int) along, 0, 2);
 			int rgb = phase < 1 ? net.minecraft.util.ARGB.srgbLerp(along - from, WIPE_EDGE[from], WIPE_EDGE[from + 1]) & 0xFFFFFF : STEALTH_GLOW;
-			float strength = phase < 1 ? 0.85f * mid : 0.1f;
+			// (her own view's edge fainter, ours: at 0.85 it lit the whole pistol salmon, then cyan, 0.75 s long and half a screen wide: sbsf_vday_cycle03-06)
+			float strength = phase < 1 ? (own ? 0.3f : 0.85f) * mid : own ? 0 : 0.1f;
 			if (strength > 0.01f) {
 				submitField(loaded, skin, poseStack, collector, Math.round(strength * 255) << 24 | rgb, dev.overcraft.Overcraft.id("textures/effect/sombra_dissolve_" + frame + ".png"));
 			}
 		}
-		submitGlow(loaded, skin, poseStack, collector, hidden, 0.12f * phase, true, STEALTH_GLOW);
+		if (!own) {
+			submitGlow(loaded, skin, poseStack, collector, hidden, 0.12f * phase, true, STEALTH_GLOW, cull);
+		}
 	}
 
 	/** In place of LivingEntityRenderer.submit: false when there's nothing of ours to draw. */
@@ -670,7 +694,7 @@ public final class HeroModelRenderer {
 			if (held != null) {
 				poseStack.pushPose();
 				poseStack.mulPose(held.at());
-				submitStealth(held.loaded(), held.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false);
+				submitStealth(held.loaded(), held.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false, false);
 				poseStack.popPose();
 			}
 			// her magazine goes with the gun (critique_parts C9)
@@ -679,7 +703,7 @@ public final class HeroModelRenderer {
 				for (EmoteProps.Placed part : heldParts.props()) {
 					poseStack.pushPose();
 					poseStack.mulPose(part.at());
-					submitStealth(part.loaded(), part.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false);
+					submitStealth(part.loaded(), part.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false, false);
 					poseStack.popPose();
 				}
 			}
@@ -1099,6 +1123,7 @@ public final class HeroModelRenderer {
 				}
 			}
 			viewPodsAt = Util.getMillis();
+			dev.overcraft.client.effect.JunoFx.viewPods(poseStack, collector, player, now);
 		}
 		// her own arms flash white when her Suzu cleanses her
 		float white = Cleansed.white(player.getId());
@@ -1128,7 +1153,7 @@ public final class HeroModelRenderer {
 				for (EmoteProps.Placed part : viewParts) {
 					poseStack.pushPose();
 					poseStack.mulPose(part.at());
-					submitStealth(part.loaded(), part.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay, true);
+					submitStealth(part.loaded(), part.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay, true, false);
 					poseStack.popPose();
 				}
 			} else {
@@ -1142,7 +1167,7 @@ public final class HeroModelRenderer {
 			if (stealth > 0) {
 				poseStack.pushPose();
 				poseStack.mulPose(weapon.at());
-				submitStealth(weapon.loaded(), weapon.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay, true);
+				submitStealth(weapon.loaded(), weapon.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay, true, false);
 				poseStack.popPose();
 			} else {
 				EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, lit, overlay);
@@ -1646,6 +1671,12 @@ public final class HeroModelRenderer {
 	/** The same in this colour. */
 	public static void submitGlow(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
 		Set<Integer> hidden, float strength, boolean cull, int rgb) {
+		submitGlow(loaded, skin, poseStack, collector, hidden, strength, cull, rgb, true);
+	}
+
+	/** The same; {@code props} false for what's held, whose triangles near its origin aren't parked (submitStealth). */
+	public static void submitGlow(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
+		Set<Integer> hidden, float strength, boolean cull, int rgb, boolean props) {
 		if (strength <= 0) {
 			return;
 		}
@@ -1656,7 +1687,7 @@ public final class HeroModelRenderer {
 			if (piece.image() < 0 || loaded.textures()[piece.image()] == null || isEyeShadow(loaded, piece)) {
 				continue;
 			}
-			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
+			boolean prop = props && PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
 			if (hiddenNow(loaded.model(), piece, hidden, prop)) {
 				continue;
 			}
