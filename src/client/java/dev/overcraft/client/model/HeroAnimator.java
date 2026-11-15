@@ -1083,6 +1083,7 @@ public final class HeroAnimator {
 	public static final float[] SWING = {-0.4f, 1, 0, 30, 0};
 
 	public Matrix4f[] poseFirstPerson(SkinnedModel model, LivingEntity entity, float now, Matrix4f view) {
+		torbjornLook(entity);
 		lastSeen = now;
 		long tick = entity.level().getGameTime();
 		if (tick != lastTick) {
@@ -1435,6 +1436,7 @@ public final class HeroAnimator {
 
 	/** Skin matrices for the entity this frame. {@code now} in seconds (game time + partial tick). */
 	public Matrix4f[] pose(SkinnedModel model, LivingEntity entity, float now, float netHeadYaw, float headPitch) {
+		torbjornLook(entity);
 		lastSeen = now;
 		long tick = entity.level().getGameTime();
 		if (tick != lastTick) {
@@ -2321,7 +2323,47 @@ public final class HeroAnimator {
 	}
 
 	private static SkinnedModel.@Nullable Clip clip(SkinnedModel model, String name) {
+		if (clipPrefix != null) {
+			SkinnedModel.Clip own = model.clips.get(prefixed(clipPrefix, name));
+			if (own != null) {
+				return own;
+			}
+		}
 		return model.clips.get(name);
+	}
+
+	/**
+	 * Torbjörn's weapon branch while he's posed ("hammer_" with the Forge Hammer out, "molten_" in Molten Core: his clip maps' names for
+	 * the data's weapon branches, tools/clipmaps/torbjorn.txt), or null: a clip of that branch plays where the model has one.
+	 */
+	private static @Nullable String clipPrefix;
+	private boolean torbjornHammer;
+
+	/** The Forge Hammer is in his hand (HeroWeapon draws it in the Rivet Gun's place). */
+	public boolean torbjornHammer() {
+		return torbjornHammer;
+	}
+
+	/** {@code name} in the branch {@code prefix}: its additive form keeps "add_" first; the hammer's moves are "move_<way>". */
+	static String prefixed(String prefix, String name) {
+		if (name.startsWith("add_")) {
+			return "add_" + prefix + name.substring(4);
+		}
+		if (prefix.equals("hammer_") && name.startsWith("run_")) {
+			return prefix + "move_" + name.substring(4);
+		}
+		if (prefix.equals("hammer_") && name.startsWith("strafe_")) {
+			return prefix + "move_" + name.substring(7);
+		}
+		return prefix + name;
+	}
+
+	private void torbjornLook(LivingEntity entity) {
+		Integer look = "torbjorn".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO))
+			? entity.getAttached(dev.overcraft.hero.HeroManager.TORBJORN_LOOK) : null;
+		int bits = look == null ? 0 : look;
+		torbjornHammer = (bits & dev.overcraft.torbjorn.Torbjorn.LOOK_HAMMER) != 0;
+		clipPrefix = (bits & dev.overcraft.torbjorn.Torbjorn.LOOK_MOLTEN) != 0 ? "molten_" : torbjornHammer ? "hammer_" : null;
 	}
 
 	/** The clip to play for a state the model may not have. */

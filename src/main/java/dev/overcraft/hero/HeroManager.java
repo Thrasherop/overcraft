@@ -93,6 +93,10 @@ public final class HeroManager {
 	public static final AttachmentType<Integer> LUCIO_WALL = AttachmentRegistry.create(Overcraft.id("lucio_wall"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
 
+	/** Torbjörn's look (dev.overcraft.torbjorn.Torbjorn.LOOK_*: the hammer out, Molten Core, Overload), for every client to draw him. */
+	public static final AttachmentType<Integer> TORBJORN_LOOK = AttachmentRegistry.create(Overcraft.id("torbjorn_look"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
 	/** Pharah's look (dev.overcraft.pharah.Pharah.LOOK_*: hovering, a jet, Barrage), for every client to animate her. */
 	public static final AttachmentType<Integer> PHARAH_STATE = AttachmentRegistry.create(Overcraft.id("pharah_state"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
@@ -183,6 +187,7 @@ public final class HeroManager {
 		KITS.put(Hero.TRACER, new dev.overcraft.tracer.Tracer());
 		KITS.put(Hero.CASSIDY, new dev.overcraft.cassidy.Cassidy());
 		KITS.put(Hero.JUNKRAT, new dev.overcraft.junkrat.Junkrat());
+		KITS.put(Hero.TORBJORN, new dev.overcraft.torbjorn.Torbjorn());
 	}
 
 	private HeroManager() {
@@ -362,7 +367,7 @@ public final class HeroManager {
 
 	/** The synced states clients draw a hero in play by (not the hero itself, nor sleep, which others put on them). */
 	private static final java.util.List<AttachmentType<?>> HERO_LOOKS = java.util.List.of(SONG, MERCY, LIFEWEAVER, JUNO_GLIDE,
-		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA, DVA_FORM, DVA_STATE, LUCIO_WALL, PHARAH_STATE);
+		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA, DVA_FORM, DVA_STATE, LUCIO_WALL, PHARAH_STATE, TORBJORN_LOOK);
 
 	/** Dev only (DevServer's "bot showstate off"): the rule off, to show what it does. */
 	public static boolean devNoShowState;
@@ -665,6 +670,9 @@ public final class HeroManager {
 			} else if (state.hero == Hero.BRIGITTE) {
 				// her quick melee is the flail's swing (1248 #267)
 				dev.overcraft.brigitte.Brigitte.melee(player, state);
+			} else if (state.hero == Hero.TORBJORN && state.torbjorn.hammer) {
+				// with the hammer out his quick melee is its swing (W: "Attempting to will swing the hammer normally instead")
+				dev.overcraft.torbjorn.Torbjorn.startSwing(player, state, state.torbjorn);
 			} else {
 				QuickMelee.use(player, state);
 				if (state.hero == Hero.SOMBRA) {
@@ -697,6 +705,9 @@ public final class HeroManager {
 		if (state.hero == Hero.SIGMA && input.extra() != 0) {
 			dev.overcraft.sigma.Sigma.extra(player, state, input.extra());
 		}
+		if (state.hero == Hero.TORBJORN && input.extra() != 0) {
+			dev.overcraft.torbjorn.Torbjorn.extra(player, state, input.extra());
+		}
 		if (state.hero == Hero.LIFEWEAVER && input.extra() != 0) {
 			dev.overcraft.lifeweaver.Lifeweaver.extra(player, state, input.extra());
 		}
@@ -708,6 +719,7 @@ public final class HeroManager {
 		dev.overcraft.ana.Ana.tickDoses(server);
 		Sleep.tick(server);
 		dev.overcraft.sigma.GraviticFlux.tickAll(server);
+		dev.overcraft.torbjorn.Torbjorn.tickPools(server);
 		dev.overcraft.lifeweaver.LifeGrip.tick(server);
 		dev.overcraft.entity.PetalPlatformEntity.tickLanding();
 		dev.overcraft.comms.Comms.tick();

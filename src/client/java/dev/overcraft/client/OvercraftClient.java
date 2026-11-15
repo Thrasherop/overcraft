@@ -236,6 +236,14 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.STEEL_TRAP, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"junkrat_trap", 0.5f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.RIP_TIRE, dev.overcraft.client.model.LifeweaverPropRenderer::tire);
+		// Torbjörn's rivets, pellets and slag: no models in his data (effects only), the items stand in; his turret (1000C)
+		EntityRendererRegistry.register(OcEntities.RIVET, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"torbjorn_rivet", 0.25f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.TORBJORN_PELLET, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"torbjorn_pellet", 0.12f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.SLAG, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"torbjorn_slag", 0.4f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.TURRET, dev.overcraft.client.model.LifeweaverPropRenderer::turret);
 		EntityRendererRegistry.register(OcEntities.PULSE_BOMB, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"tracer_bomb", 0.4f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PHARAH_ROCKET, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,

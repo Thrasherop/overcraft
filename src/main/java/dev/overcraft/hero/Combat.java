@@ -390,6 +390,10 @@ public final class Combat {
 	 * full amount (W Global Passive Abilities; ours: the owner's open question, ana-plan.md).
 	 */
 	public static float heal(LivingEntity target, double owHeal) {
+		if (target instanceof dev.overcraft.entity.TurretEntity) {
+			// nobody heals Torbjörn's turret but his hammer (W: repaired by the Forge Hammer; ours that heals pass it by)
+			return 0;
+		}
 		double scale = healScale(antiHealed(target), healBoosted(target), healCut(target), healCutTank(target));
 		if (scale <= 0) {
 			return 0;
@@ -788,6 +792,7 @@ public final class Combat {
 			case TRACER -> (int) dev.overcraft.tracer.TracerStats.ULT_COST;
 			case CASSIDY -> (int) dev.overcraft.cassidy.CassidyStats.ULT_COST;
 			case JUNKRAT -> (int) dev.overcraft.junkrat.JunkratStats.ULT_COST;
+			case TORBJORN -> (int) dev.overcraft.torbjorn.TorbjornStats.ULT_COST;
 			case DVA -> (int) dev.overcraft.dva.DvaStats.MECH_ULT_COST;
 			default -> 1;
 		};
@@ -841,6 +846,11 @@ public final class Combat {
 		double perTick = Ow.hp(decay) / 20;
 		overhealth.put(entity.getUUID(), new Overhealth(entity, perTick, holdUntil + (long) Math.ceil(amount / perTick) + 1, holdUntil));
 		overhealthLeft.put(entity.getUUID(), amount);
+	}
+
+	/** What's left of an entity's overhealth, gone now (Torbjörn's Overload's at its end or his leaving play). */
+	public static void endOverhealth(LivingEntity entity) {
+		clearOverhealth(entity);
 	}
 
 	private static void clearOverhealth(LivingEntity entity) {

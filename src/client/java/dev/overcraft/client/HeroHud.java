@@ -1061,6 +1061,20 @@ public final class HeroHud {
 				(float) dev.overcraft.junkrat.JunkratStats.TRAP_COOLDOWN, ability2ReadyAt);
 			return;
 		}
+		if (hero == Hero.TORBJORN) {
+			// Deploy Turret (Shift: lit while his turret is out) and Overload (E: lit while it runs), in Kiriko's two places (ours)
+			ability(g, hero, w, "deploy_turret", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.torbjorn.TorbjornStats.TURRET_COOLDOWN, ability1ReadyAt);
+			if ((s.mode() & dev.overcraft.torbjorn.Torbjorn.MODE_TURRET_OUT) != 0) {
+				song(g, true, false, w - 641, 903, w);
+			}
+			ability(g, hero, w, "overload", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.torbjorn.TorbjornStats.OVERLOAD_COOLDOWN, ability2ReadyAt);
+			if ((s.mode() & dev.overcraft.torbjorn.Torbjorn.MODE_OVERLOAD) != 0) {
+				song(g, true, false, w - 563, 906, w);
+			}
+			return;
+		}
 		if (hero == Hero.CASSIDY) {
 			// Combat Roll (Shift) and Flashbang (E), in Kiriko's two places; with Silver Bullet its box where Lucio's third is, lit while
 			// it's aimed (ours)
@@ -1460,6 +1474,22 @@ public final class HeroHud {
 			}
 			weapon(g, hero, w, "railgun", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
 				dev.overcraft.sojourn.SojournStats.RAILGUN_AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
+		if (hero == Hero.TORBJORN) {
+			// the Rivet Gun's 18 (the left button) where Kiriko's kunai are; with the hammer out, the hammer (no ammo); in Molten Core his
+			// slag left
+			int mode = s.mode();
+			if ((mode & dev.overcraft.torbjorn.Torbjorn.MODE_MOLTEN) != 0) {
+				weapon(g, hero, w, "molten_core", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.secondaryAmmo(),
+					dev.overcraft.torbjorn.TorbjornStats.SLAG_SHOTS, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			} else if ((mode & dev.overcraft.torbjorn.Torbjorn.MODE_HAMMER) != 0) {
+				weapon(g, hero, w, "forge_hammer", w - 307, 938.5f, 251, 65, 40, 40, w - 81, -1, 0,
+					HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			} else {
+				weapon(g, hero, w, "rivet_gun", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+					dev.overcraft.torbjorn.TorbjornStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			}
 			return;
 		}
 		if (hero == Hero.JUNKRAT) {

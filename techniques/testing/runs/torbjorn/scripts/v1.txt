@@ -1,0 +1,14 @@
+# V1 look: the turret firing at a husk, Torbjörn from the front and back (third person), the 1P gun
+cmd /kill @e[type=!player,type=!overcraft:turret]
+cmd /summon husk 0.5 -60 14.5 {NoAI:1b,Tags:["v1"]}
+cmd /tp @s -3.5 -59 -1.5 -25 12
+sleep 1.5
+screenshot tb_turret_fire.png
+perspective front
+cmd /tp @s 0.5 -60 0.5 180 0
+sleep 0.8
+screenshot tb_front.png
+perspective back
+sleep 0.5
+screenshot tb_back.png
+perspective first

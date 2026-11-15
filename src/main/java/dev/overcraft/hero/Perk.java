@@ -84,7 +84,12 @@ public enum Perk {
 	JUNKRAT_NITRO_BOOST(Hero.JUNKRAT, Tier.MINOR, "nitro_boost"),
 	JUNKRAT_BOMB_VOYAGE(Hero.JUNKRAT, Tier.MINOR, "bomb_voyage"),
 	JUNKRAT_FRAG_CANNON(Hero.JUNKRAT, Tier.MAJOR, "frag_cannon"),
-	JUNKRAT_MINE_RECYCLING(Hero.JUNKRAT, Tier.MAJOR, "mine_recycling");
+	JUNKRAT_MINE_RECYCLING(Hero.JUNKRAT, Tier.MAJOR, "mine_recycling"),
+	// Torbjörn's, the live list's order (D 005D.177: 265C, 28BC; 2501, 2502; torbjorn-map.md)
+	TORBJORN_HAMMER_TIME(Hero.TORBJORN, Tier.MINOR, "hammer_time"),
+	TORBJORN_PRE_HEATED(Hero.TORBJORN, Tier.MINOR, "pre_heated"),
+	TORBJORN_OVERLOADED_TURRET(Hero.TORBJORN, Tier.MAJOR, "overloaded_turret"),
+	TORBJORN_ANCHOR_BOLTS(Hero.TORBJORN, Tier.MAJOR, "anchor_bolts");
 
 	public enum Tier { MINOR, MAJOR }
 

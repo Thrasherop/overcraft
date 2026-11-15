@@ -78,6 +78,28 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 		return new LifeweaverPropRenderer<>(context, "junkrat_tire", (e, s) -> clip(s, "tire_roll_ra0", (e.tickCount + s.partialTick) / 20f, true));
 	}
 
+	/**
+	 * Torbjörn's turret (model 1000C, set 0996: tools/clipmaps/torbjorn_turret.txt): in flight its rest pose, building its build clip
+	 * (00DC, 2.5 s), built its level 2 idle with a fire layer on each shot, its upgrade (00DE) then the level 3 idle; turned to its aim.
+	 */
+	public static LifeweaverPropRenderer<dev.overcraft.entity.TurretEntity> turret(EntityRendererProvider.Context context) {
+		return new LifeweaverPropRenderer<>(context, "torbjorn_turret", (e, s) -> {
+			float t = e.stateTime(s.partialTick);
+			switch (e.state()) {
+				case dev.overcraft.entity.TurretEntity.FLYING -> s.clip = null;
+				case dev.overcraft.entity.TurretEntity.BUILDING -> clip(s, "build", t, false);
+				case dev.overcraft.entity.TurretEntity.UPGRADING -> clip(s, "upgrade", t, false);
+				case dev.overcraft.entity.TurretEntity.LEVEL3 -> clip(s, "l3_idle", t, true);
+				default -> clip(s, "l2_idle", t, true);
+			}
+			float shot = (e.tickCount - e.shotAt() + s.partialTick) / 20f;
+			if (e.built() && shot >= 0 && shot < 0.3f) {
+				s.add = e.state() == dev.overcraft.entity.TurretEntity.LEVEL3 ? "add_l3_fire" : "add_l2_fire";
+				s.addTime = shot;
+			}
+		});
+	}
+
 	/** Sow the Seed's seed on the ground: his model 126CC, still. */
 	public static LifeweaverPropRenderer<SeedEntity> seed(EntityRendererProvider.Context context) {
 		return new LifeweaverPropRenderer<>(context, "lifeweaver_seed", (e, s) -> s.clip = null);

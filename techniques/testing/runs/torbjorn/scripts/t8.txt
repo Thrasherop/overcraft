@@ -1,0 +1,9 @@
+# T8 a switch: to Junkrat (the select payload) and back: the turret goes, his kit fresh
+hp @e[type=overcraft:turret,limit=1]
+hero junkrat
+sleep 1.5
+state
+hp @e[type=overcraft:turret,limit=1]
+hero torbjorn
+sleep 1.5
+state

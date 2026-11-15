@@ -297,6 +297,7 @@ public class Overcraft implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			HeroManager.clear();
 			Combat.clear();
+			dev.overcraft.torbjorn.Torbjorn.clear();
 			dev.overcraft.hero.Effects.clear();
 			Comms.clearEmotes();
 			dev.overcraft.sigma.GraviticFlux.clearAll();
