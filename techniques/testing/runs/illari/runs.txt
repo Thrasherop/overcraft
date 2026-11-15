@@ -754,3 +754,108 @@
 20:26:35.644 perspective front -> {"ok":true}
 20:26:36.059 screenshot illari_fx_flight_front.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_fx_flight_front.png"}
 20:26:36.373 perspective first -> {"ok":true}
+
+=== FX3-OLD-dbcc4e7 2026-11-14 20:46:43
+20:47:39.130 MARK S1 a left click 0.5 s into the launch (report: a rifle shot, ammo 14 -> 13); husks at 0.5 -60 12 and 2.5 -60 13, her at 0.5 -60 -1
+20:47:40.457 state {"y": -60.0, "z": -0.5, "health": 20.0, "primaryAmmo": 14, "mode": 0, "hero": "illari"}
+20:47:41.526 state {"y": -55.061, "z": -0.5, "health": 20.0, "primaryAmmo": 14, "mode": 1, "hero": "illari"}
+20:47:41.923 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 20.0f
+20:47:41.923 MARK S2 the ball at 1.5 -60 12.5 (between them), then two body shots on a1 within ~2 s (Sunstruck expected 0.8 s after the second)
+20:47:43.923 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 16.064f
+20:47:44.291 hp @e[tag=a2,limit=1] -> Husk has the following entity data: 16.064f
+20:47:45.731 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 16.064f
+20:47:47.173 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 16.064f
+20:47:49.042 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 16.064f
+20:47:49.408 hp @e[tag=a2,limit=1] -> Husk has the following entity data: 16.064f
+20:47:54.410 MARK K1 a walking husk (normal) hits Illari: her z every 0.25 s (report: ~2.7 m a hit)
+20:47:56.082 state {"z": 0.5, "y": -60.0, "health": 19.94, "hero": "illari"}
+20:47:56.348 state {"z": 0.5, "y": -60.0, "health": 20.0, "hero": "illari"}
+20:47:56.615 state {"z": 0.5, "y": -60.0, "health": 20.0, "hero": "illari"}
+20:47:56.882 state {"z": 0.5, "y": -60.0, "health": 20.0, "hero": "illari"}
+20:47:57.150 state {"z": 0.5, "y": -60.0, "health": 20.0, "hero": "illari"}
+20:47:57.417 state {"z": 0.5, "y": -60.0, "health": 20.0, "hero": "illari"}
+20:47:57.685 state {"z": 0.5, "y": -60.0, "health": 20.0, "hero": "illari"}
+20:47:57.956 state {"z": -0.155, "y": -59.256, "health": 20.0, "hero": "illari"}
+20:47:58.219 state {"z": -1.246, "y": -58.891, "health": 20.0, "hero": "illari"}
+20:47:58.486 state {"z": -2.338, "y": -59.617, "health": 20.0, "hero": "illari"}
+20:47:58.753 state {"z": -2.855, "y": -60.0, "health": 20.0, "hero": "illari"}
+20:47:59.020 state {"z": -2.855, "y": -60.0, "health": 20.0, "hero": "illari"}
+20:47:59.289 state {"z": -2.855, "y": -60.0, "health": 20.0, "hero": "illari"}
+20:47:59.557 state {"z": -3.725, "y": -59.096, "health": 20.0, "hero": "illari"}
+20:47:59.824 state {"z": -4.812, "y": -58.949, "health": 20.0, "hero": "illari"}
+20:48:00.091 state {"z": -5.899, "y": -59.892, "health": 20.0, "hero": "illari"}
+20:48:00.358 state {"z": -6.197, "y": -60.0, "health": 20.0, "hero": "illari"}
+20:48:00.625 state {"z": -6.197, "y": -60.0, "health": 20.0, "hero": "illari"}
+20:48:00.892 state {"z": -6.406, "y": -59.708, "health": 20.0, "hero": "illari"}
+20:48:01.159 state {"z": -7.659, "y": -58.877, "health": 20.0, "hero": "illari"}
+20:48:01.426 state {"z": -8.703, "y": -59.385, "health": 20.0, "hero": "illari"}
+20:48:01.693 state {"z": -9.407, "y": -60.0, "health": 20.0, "hero": "illari"}
+20:48:01.960 state {"z": -9.407, "y": -60.0, "health": 20.0, "hero": "illari"}
+20:48:02.294 MARK K2 the same on Kiriko (report: ~0.5 m a hit)
+20:48:05.489 state {"z": 0.5, "y": -60.0, "health": 20.0, "hero": "kiriko"}
+20:48:05.755 state {"z": 0.5, "y": -60.0, "health": 20.0, "hero": "kiriko"}
+20:48:06.022 state {"z": 0.5, "y": -60.0, "health": 20.0, "hero": "kiriko"}
+20:48:06.288 state {"z": 0.5, "y": -60.0, "health": 20.0, "hero": "kiriko"}
+20:48:06.556 state {"z": 0.5, "y": -60.0, "health": 20.0, "hero": "kiriko"}
+20:48:06.823 state {"z": 0.5, "y": -60.0, "health": 20.0, "hero": "kiriko"}
+20:48:07.090 state {"z": 0.5, "y": -60.0, "health": 20.0, "hero": "kiriko"}
+20:48:07.359 state {"z": -0.155, "y": -59.256, "health": 20.0, "hero": "kiriko"}
+20:48:07.626 state {"z": -1.246, "y": -58.891, "health": 20.0, "hero": "kiriko"}
+20:48:07.893 state {"z": -2.338, "y": -59.617, "health": 20.0, "hero": "kiriko"}
+20:48:08.161 state {"z": -2.855, "y": -60.0, "health": 20.0, "hero": "kiriko"}
+20:48:08.429 state {"z": -2.855, "y": -60.0, "health": 20.0, "hero": "kiriko"}
+20:48:08.696 state {"z": -2.855, "y": -60.0, "health": 20.0, "hero": "kiriko"}
+20:48:08.963 state {"z": -4.16, "y": -58.906, "health": 20.0, "hero": "kiriko"}
+20:48:09.230 state {"z": -5.247, "y": -59.197, "health": 20.0, "hero": "kiriko"}
+20:48:09.497 state {"z": -6.197, "y": -60.0, "health": 20.0, "hero": "kiriko"}
+20:48:09.763 state {"z": -6.197, "y": -60.0, "health": 20.0, "hero": "kiriko"}
+20:48:10.030 state {"z": -6.197, "y": -60.0, "health": 20.0, "hero": "kiriko"}
+20:48:10.298 state {"z": -7.032, "y": -59.096, "health": 20.0, "hero": "kiriko"}
+20:48:10.565 state {"z": -8.285, "y": -59.051, "health": 20.0, "hero": "kiriko"}
+20:48:10.833 state {"z": -9.329, "y": -60.0, "health": 20.0, "hero": "kiriko"}
+20:48:11.100 state {"z": -9.406, "y": -60.0, "health": 20.0, "hero": "kiriko"}
+20:48:11.369 state {"z": -9.406, "y": -60.0, "health": 20.0, "hero": "kiriko"}
+20:48:13.238 state {"y": -60.0, "z": -12.591, "health": 20.0, "primaryAmmo": 14, "mode": 0, "hero": "illari"}
+
+=== FX3b-OLD-dbcc4e7 2026-11-14 20:48:38
+20:48:38.542 MARK S1 a left click 0.5 s into the launch (report: a rifle shot, ammo 14 -> 13); husks at 0.5 -60 12 and 2.5 -60 13, her at 0.5 -60 -1
+20:48:39.713 state {"y": -60.0, "z": -0.5, "health": 20.0, "primaryAmmo": 14, "mode": 0, "hero": "illari"}
+20:48:40.783 state {"y": -54.838, "z": -0.5, "health": 20.0, "primaryAmmo": 14, "mode": 1, "hero": "illari"}
+20:48:41.176 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 20.0f
+20:48:41.176 MARK S2 the ball at 1.5 -60 12.5 (between them), then two body shots on a1 within ~2 s (Sunstruck expected 0.8 s after the second)
+20:48:43.178 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 16.064f
+20:48:43.547 hp @e[tag=a2,limit=1] -> Husk has the following entity data: 16.064f
+20:48:44.950 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 16.064f
+20:48:46.387 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 16.064f
+20:48:48.262 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 16.064f
+20:48:48.628 hp @e[tag=a2,limit=1] -> Husk has the following entity data: 16.064f
+20:48:53.629 MARK S3 Q and the left button in the same moment (left held from before Q)
+20:49:00.964 state {"y": -60.0, "z": -0.5, "health": 20.0, "primaryAmmo": 12, "mode": 0, "hero": "illari"}
+20:49:01.866 state {"y": -55.265, "z": -0.5, "health": 20.0, "primaryAmmo": 14, "mode": 1, "hero": "illari"}
+20:49:02.259 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 20.0f
+
+=== FX3c-dbcc4e7 2026-11-14 20:49:30
+20:49:30.673 MARK S4a no ult: a body shot on a fresh husk 12 m off from the ground (control)
+20:49:32.941 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 11.144f
+20:49:32.948 state {"y": -60.0, "z": -0.5, "health": 20.0, "primaryAmmo": 13, "mode": 0, "hero": "illari"}
+20:49:32.948 MARK S4b ult, the ball between them, wait out the flight on the ground, then shots on a1
+20:49:36.380 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 16.064f
+20:49:38.017 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 16.064f
+20:49:38.027 state {"y": -49.303, "z": -0.5, "health": 20.0, "primaryAmmo": 13, "mode": 1, "hero": "illari"}
+20:49:39.689 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 7.207999f
+20:49:39.698 state {"y": -55.043, "z": -0.5, "health": 20.0, "primaryAmmo": 12, "mode": 0, "hero": "illari"}
+20:49:41.359 hp @e[tag=a1,limit=1] -> No entity was found
+20:49:41.369 state {"y": -60.0, "z": -0.5, "health": 19.0, "primaryAmmo": 11, "mode": 0, "hero": "illari"}
+20:49:42.931 hp @e[tag=a1,limit=1] -> No entity was found
+20:49:43.300 hp @e[tag=a2,limit=1] -> No entity was found
+
+=== FX3d-old 2026-11-14 20:50:03
+20:50:03.128 MARK S5 the report exactly: ball between the husks in flight, tp to the ground, two body shots on a1 ~0.9 s apart
+20:50:06.929 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 16.064f
+20:50:07.296 hp @e[tag=a2,limit=1] -> Husk has the following entity data: 16.064f
+20:50:08.799 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 10.159999f
+20:50:08.807 state {"y": -60.0, "z": -0.5, "health": 20.0, "primaryAmmo": 13, "mode": 1, "hero": "illari"}
+20:50:10.303 hp @e[tag=a1,limit=1] -> Husk has the following entity data: 4.2559986f
+20:50:10.309 state {"y": -60.0, "z": -0.5, "health": 20.0, "primaryAmmo": 12, "mode": 0, "hero": "illari"}
+20:50:12.006 hp @e[tag=a1,limit=1] -> No entity was found
+20:50:12.373 hp @e[tag=a2,limit=1] -> No entity was found

@@ -113,6 +113,21 @@ Same scripts on both builds, fresh worlds `fx_old` / `fx2_old` (47bc22f) and `fx
 (only a soft gradient mask, 21C98), so the piece is drawn untextured; the colour must come from the shader, not a texture mapping:
 left for a material pass. Vanilla particles for her effects, no reticle widget. Not replayed: the mark refresh, Rapid Construction.
 
+## Fix round 2 (2026-11-14, the coordinator's real-key report on dbcc4e7): none reproduced with the harness
+Raw lines under `=== FX3-OLD-dbcc4e7`, `FX3b-OLD-dbcc4e7`, `FX3c-dbcc4e7`, `FX3d-old` in [runs.txt](../testing/runs/illari/runs.txt);
+scripts `fx3.py`, `fx3b.py`, `fx3c.py`, `fx3d.py`. No code changed.
+1. **"Sunstruck never detonates":** the report's own sequence (FX3d: husks at 0.5 -60 12 and 2.5 -60 13, the ball between them in flight
+   20 -> 16.064 each, tp to the ground, two body shots 0.9 s apart 16.064 -> 10.16 -> 4.256) set it off: both husks dead 1.3 s later.
+   Also FX3c (a head shot after the splash). The report's log has its splash read at 20:40:56 and the shots' at 20:41:06 (and 14-24 s
+   after the splash in its first run): past the 6 s mark, which would explain it. Not changed.
+2. **"Mob hits shove Illari far":** a walking husk on normal hit Illari and Kiriko alike (FX3 K1 / K2, same build, same spot): 0.5 ->
+   -2.86 -> -6.20 -> -9.41 for both, the same z to the hundredth. Not hers: every hero's knockback goes through
+   `LivingEntityMixin` x `Combat.knockbackTaken` (1 on the ground for both). Left for a general look at Minecraft's mob knockback
+   under Overwatch movement, if 3 m a hit is wrong.
+3. **"A rifle shot during the launch":** a click 0.4 s into the launch (FX3 S1) and the button held across Q (FX3b S3) fired nothing
+   (ammo 14 -> 14). The rifle already refuses during the 1.2 s launch (`sunLaunching`; W: the launch is 1.2 s of recovery). A click
+   landing before the server took Q would fire before the cast; not reproduced.
+
 **Not shown / not tried:**
 - **The real mouse and keys** (owed before the merge): every press went through the harness's key mappings.
 - The four perks in play; the 40 % minimum shot; the push on a moving mob; slopes, water, lava, ladders, the Nether (dimension change:
