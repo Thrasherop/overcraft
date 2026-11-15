@@ -1,0 +1,14 @@
+MARK N1 night fight: normal, midnight, monsters on; 3 zombies, 2 skeletons, a spider, a creeper, a villager beside her; 90 s of fight.py
+cmd /kill @e[type=!player]
+cmd /difficulty normal
+cmd /time set midnight
+cmd /gamerule spawn_monsters true
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /summon villager 1.5 -60 0.5 {NoAI:1b,Tags:["vf"]}
+cmd /summon zombie 0.5 -60 14.5
+cmd /summon zombie 6.5 -60 12.5
+cmd /summon zombie -6.5 -60 13.5
+cmd /summon skeleton 10.5 -60 18.5
+cmd /summon skeleton -10.5 -60 18.5
+cmd /summon spider 0.5 -60 -14.5
+cmd /summon creeper 14.5 -60 0.5

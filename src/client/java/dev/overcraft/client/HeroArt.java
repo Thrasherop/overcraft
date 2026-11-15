@@ -52,7 +52,7 @@ public final class HeroArt {
 	/** An ability's icon, by its in-game name's slug ("kunai", "swift_step", ...). */
 	public static @Nullable Identifier ability(Hero hero, String ability) {
 		// Mercy's staff has one icon for both its beams (her data's loadouts)
-		Identifier icon = art(hero, "abilities/" + (ability.equals("damage_boost") ? "caduceus_staff" : ability));
+		Identifier icon = art(hero, "abilities/" + (ability.equals("damage_boost") ? "caduceus_staff" : ability.equals("healing_beam") ? "secondary_fire" : ability));
 		// a perk that is an ability (D.Va's Precision Fusion) has only its perk icon
 		return icon != null ? icon : perk(hero, ability);
 	}

@@ -224,6 +224,10 @@ CARRIER_TREE = "58F"
 # Mediblaster: Cheer Routine sets it 0.1 s in and from 0.37 s she holds a pom-pom on 000A, the hand the gun's bone (37DC)
 # stays at, 0.13 m from Wrist_R (techniques/emotes/juno_emotes.md). The masks only ever read 0, 1, 3, 7, nested as
 # Kiriko's 1 -> 3 -> 7 are; 2 is taken as the pod, 4 as geoset 8 (her first-person arms, not drawn in third person): M
+# Illari (open, 2026-11-14): her Solar Rifle is in her body model 117.118 too (submeshes 7 / 8 / 15 / 16, the ones her 3P and 1P looks
+# both draw: 9704 + 125 + 32 + 6 vertices, 1.3 m along the weapon bone at the origin, so not a parked piece), and her masks read 0, 1, 3,
+# 7 as Juno's do; but the model's first-LOD descriptors list only two submeshes (both geoset 4), so the rifle's bit isn't matched here
+# and she has no entry yet: pieceGeosets stays empty until it is read (model_data.md geosets)
 BODY_WEAPON_GEOSETS = {"juno": {4: 1, 2: 2}}
 
 CHILD_PROPS = {"ana": {"1F90": ("372A", "00C9"), "1F8F": ("373A", "000B"), "1F66": ("3730", "00A5")}}

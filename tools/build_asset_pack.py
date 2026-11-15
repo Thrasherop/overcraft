@@ -344,7 +344,7 @@ def add_sounds(source):
 
 # heroes whose collectible voice lines go in the pack: our id -> DataTool's hero folder name
 VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio", "mercy": "Mercy", "juno": "Juno", "ana": "Ana", "sombra": "Sombra",
-                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn", "sigma": "Sigma", "dva": "D.Va", "pharah": "Pharah", "tracer": "Tracer", "cassidy": "Cassidy", "junkrat": "Junkrat"}
+                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn", "sigma": "Sigma", "dva": "D.Va", "pharah": "Pharah", "tracer": "Tracer", "cassidy": "Cassidy", "junkrat": "Junkrat", "illari": "Illari"}
 # a hero whose extraction (Unlocks/ and HeroVoice/) isn't under the build root: its folder relative to it, as the hero's
 # soundmap reads her voice (Juno's DataTool extract-unlocks "Juno|voiceline=*" went to research\juno\extract, 27 unlocks)
 VOICELINE_ROOTS = {"juno": "../../research/juno/extract", "ana": "../../research/ana/extract",
@@ -356,7 +356,8 @@ VOICELINE_ROOTS = {"juno": "../../research/juno/extract", "ana": "../../research
                    "pharah": "../../research/pharah/extract",
                    "tracer": "../../research/tracer/extract",
                    "cassidy": "../../research/cassidy/extract",
-                   "junkrat": "../../research/junkrat/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
+                   "junkrat": "../../research/junkrat/extract",
+                   "illari": "../../research/illari/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
 # Heroes whose voice-line unlocks DataTool doesn't export (Jetpack Cat's: each is an effect with one voice stimulus that
 # names one meow), listed from the data instead (E:\Overwatch Archive\research\jetpack_cat\gaps.md 1c, H): unlock name
 # -> (group, the meow under HeroVoice/<folder>/Voicelines/(cat sounds), our subtitle: DataTool names them only "(cat

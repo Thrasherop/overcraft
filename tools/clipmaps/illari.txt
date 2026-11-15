@@ -1,0 +1,206 @@
+# Illari, third person (skin model 000000000117.118 with look 80A.119, on her hero entity 481D (Gameplay3P); set 0F5E and the
+# hero file's / showcase entities' sets: 1162 (m_419D3CA5), showcase 11B0 (m_CFC554DC), 430F, 10B2, 111D. Her Solar Rifle is a
+# child entity (53DA, var 1BA5) with no model of its own: its meshes are in the body model (no weapon map). Mover 2.0 m tall,
+# 0.5 m radius, crouch 1.25.
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\illari\scripts\clipmaps_illari.py from the
+# compacted blend-tree sets (research\illari\work\clipmap_illari\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+0-32_00000000DE14 = a8   # 4.8667 s; set 0F5E alias 8 (L (a whole-body override)); @2 df8A=cat4 @8; on 3 paths
+0-32_00000000DAB0 = jump_forward   # 0.2 s; set 0F5E alias 85 ((was base_85_se1_air_se0_sm0_se0: the 8-way take-off F) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[0] 8way:F; on 4 paths
+4-6_00000000D58B = add_base_85_se1_air_se0_sm0_se0   # 0.3333 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[0] 8way:F +add(); on 46 paths
+0-32_00000000DAFA = base_85_se1_air_se0_sm0_se0_forward_right   # 0.2 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[0] 8way:FR; on 4 paths
+0-32_00000000DB01 = base_85_se1_air_se0_sm0_se0_right   # 0.2 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[0] 8way:R; on 4 paths
+0-32_00000000DDBD = base_85_se1_air_se0_sm0_se0_back_right   # 0.2 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[0] 8way:BR; on 4 paths
+0-32_00000000DDC1 = base_85_se1_air_se0_sm0_se0_back   # 0.2 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[0] 8way:B; on 4 paths
+0-32_00000000DDC5 = base_85_se1_air_se0_sm0_se0_back_left   # 0.2 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[0] 8way:BL; on 4 paths
+0-32_00000000DDC9 = base_85_se1_air_se0_sm0_se0_left   # 0.2 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[0] 8way:L; on 4 paths
+0-32_00000000DDCD = base_85_se1_air_se0_sm0_se0_forward_left   # 0.2 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[0] 8way:FL; on 4 paths
+0-32_00000000DAB2 = base_85_se1_air_se0_sm0_se1_sm0   # 0.1 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[1] sm[0] 8way:F; on 4 paths
+0-32_00000000DAFC = base_85_se1_air_se0_sm0_se1_sm0_forward_right   # 0.1 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[1] sm[0] 8way:FR; on 4 paths
+0-32_00000000DB03 = base_85_se1_air_se0_sm0_se1_sm0_right   # 0.1 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[1] sm[0] 8way:R; on 4 paths
+0-32_00000000DDBF = base_85_se1_air_se0_sm0_se1_sm0_back_right   # 0.1 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[1] sm[0] 8way:BR; on 4 paths
+0-32_00000000DDC3 = base_85_se1_air_se0_sm0_se1_sm0_back   # 0.1 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[1] sm[0] 8way:B; on 4 paths
+0-32_00000000DDC7 = base_85_se1_air_se0_sm0_se1_sm0_back_left   # 0.1 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[1] sm[0] 8way:BL; on 4 paths
+0-32_00000000DDCB = base_85_se1_air_se0_sm0_se1_sm0_left   # 0.1 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[1] sm[0] 8way:L; on 4 paths
+0-32_00000000DDCF = base_85_se1_air_se0_sm0_se1_sm0_forward_left   # 0.1 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[1] sm[0] 8way:FL; on 4 paths
+0-32_00000000DAB1 = fall_forward   # 0.3667 s; set 0F5E alias 85 ((was base_85_se1_air_se0_sm0_se1_sm1: the 8-way fall F) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[1] sm[1] 8way:F; on 8 paths
+0-32_00000000DAFB = base_85_se1_air_se0_sm0_se1_sm1_forward_right   # 0.3667 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[1] sm[1] 8way:FR; on 8 paths
+0-32_00000000DB02 = base_85_se1_air_se0_sm0_se1_sm1_right   # 0.3667 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[1] sm[1] 8way:R; on 8 paths
+0-32_00000000DDBE = base_85_se1_air_se0_sm0_se1_sm1_back_right   # 0.3667 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[1] sm[1] 8way:BR; on 8 paths
+0-32_00000000DDC2 = base_85_se1_air_se0_sm0_se1_sm1_back   # 0.3667 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[1] sm[1] 8way:B; on 8 paths
+0-32_00000000DDC6 = base_85_se1_air_se0_sm0_se1_sm1_back_left   # 0.3667 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[1] sm[1] 8way:BL; on 8 paths
+0-32_00000000DDCA = base_85_se1_air_se0_sm0_se1_sm1_left   # 0.3667 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[1] sm[1] 8way:L; on 8 paths
+0-32_00000000DDCE = base_85_se1_air_se0_sm0_se1_sm1_forward_left   # 0.3667 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[0] sm[0] seq[1] sm[1] 8way:FL; on 8 paths
+0-32_00000000D246 = jump   # 0.2 s; set 0F5E alias 85 ((was base_85_se1_air_se1_sm0_se0: the still take-off (df18 cat6 sel[1] seq[0])) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[1] sm[0] seq[0]; on 4 paths
+0-32_00000000D265 = jump_apex_still   # 0.1 s; set 0F5E alias 85 ((was base_85_se1_air_se1_sm0_se1_sm0: the still apex) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[1] sm[0] seq[1] sm[0]; on 4 paths
+0-32_00000000D264 = fall   # 0.3667 s; set 0F5E alias 85 ((was base_85_se1_air_se1_sm0_se1_sm1: the still fall loop) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat6 @83D78274 sel[1] sm[0] seq[1] sm[1]; on 9 paths
+0-36_00000000DC29 = crouch_walk   # 0.5333 s; set 0F5E alias 85 ((was base_85_se1_crouch_move: 8-way F of the crouch walk) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat65 @83D78350 8way:F; on 6 paths
+4-6_00000000D020 = add_base_85_se1_crouch_move   # 1.7 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat65 @83D78350 8way:F +add(); on 58 paths
+0-36_00000000DC35 = base_85_se1_crouch_move_forward_right   # 0.5333 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat65 @83D78350 8way:FR; on 6 paths
+0-36_00000000DC34 = base_85_se1_crouch_move_right   # 0.5333 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat65 @83D78350 8way:R; on 6 paths
+0-36_00000000DC37 = base_85_se1_crouch_move_back_right   # 0.5333 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat65 @83D78350 8way:BR; on 6 paths
+0-36_00000000DC2F = base_85_se1_crouch_move_back   # 0.5333 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat65 @83D78350 8way:B; on 6 paths
+0-36_00000000DC36 = base_85_se1_crouch_move_back_left   # 0.5333 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat65 @83D78350 8way:BL; on 6 paths
+0-36_00000000DC33 = base_85_se1_crouch_move_left   # 0.5333 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat65 @83D78350 8way:L; on 6 paths
+0-36_00000000DC38 = base_85_se1_crouch_move_forward_left   # 0.5333 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat65 @83D78350 8way:FL; on 6 paths
+0-36_00000000DC24 = crouch_cat68   # 0.8333 s; set 0F5E alias 85 ((was base_85_se1_crouch_sm0: dfB7 cat68) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat66 @83D78263 dfB7=cat68 sm[0]; on 6 paths
+0-36_00000000DC25 = crouch   # 0.8333 s; set 0F5E alias 85 ((was base_85_se1_crouch_sm0: the crouch, dfB7 default) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat66 @83D78263 dfB7=default[1] sm[0]; on 6 paths
+4-6_00000000D9FE = add_base_85_se1_crouch_se1_up   # 1.7 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat66 @83D78263 dfB7:+add[0003,0004,0005](dfB5) sel[1] blend1d(STU_7FD53556) 1d@1.0; on 3 paths
+4-4_00000000D499 = add_base_85_se1_crouch_sm0   # 2.6333 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat66 @83D78263 +add() sm[0]; on 8 paths
+0-32_00000000CFC2 = run   # 0.5333 s; set 0F5E alias 85 ((was base_85_se1_move: 8-way F of the move (df18 cat5)) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat5 @83D7834F @83D78354 @83D781EE @83D78273 8way:F; on 6 paths
+4-2_00000000D526 = add_base_85_se1_move   # 0.3333 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat5 @83D7834F @83D78354 @83D781EE @83D78273 8way:F +add(); on 4 paths
+0-32_00000000D4D2 = run_forward_right   # 0.5333 s; set 0F5E alias 85 ((was base_85_se1_move_forward_right) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat5 @83D7834F @83D78354 @83D781EE @83D78273 8way:FR; on 6 paths
+4-6_00000000D527 = add_base_85_se1_move_forward_right   # 0.3333 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat5 @83D7834F @83D78354 @83D781EE @83D78273 8way:FR +add(); on 3 paths
+0-32_00000000D4D3 = strafe_right   # 0.5333 s; set 0F5E alias 85 ((was base_85_se1_move_right) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat5 @83D7834F @83D78354 @83D781EE @83D78273 8way:R; on 6 paths
+4-2_00000000D528 = add_base_85_se1_move_right   # 0.3333 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat5 @83D7834F @83D78354 @83D781EE @83D78273 8way:R +add(); on 3 paths
+0-36_00000000D4D5 = run_back_right   # 0.5333 s; set 0F5E alias 85 ((was base_85_se1_move_back_right) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat5 @83D7834F @83D78354 @83D781EE @83D78273 8way:BR; on 6 paths
+4-6_00000000D529 = add_base_85_se1_move_back_right   # 0.3333 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat5 @83D7834F @83D78354 @83D781EE @83D78273 8way:BR +add(); on 3 paths
+0-36_00000000D4D6 = run_back   # 0.5333 s; set 0F5E alias 85 ((was base_85_se1_move_back) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat5 @83D7834F @83D78354 @83D781EE @83D78273 8way:B; on 6 paths
+4-2_00000000D52A = add_base_85_se1_move_back   # 0.3333 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat5 @83D7834F @83D78354 @83D781EE @83D78273 8way:B +add(); on 3 paths
+0-36_00000000D4D7 = run_back_left   # 0.5333 s; set 0F5E alias 85 ((was base_85_se1_move_back_left) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat5 @83D7834F @83D78354 @83D781EE @83D78273 8way:BL; on 6 paths
+4-6_00000000D52B = add_base_85_se1_move_back_left   # 0.3333 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat5 @83D7834F @83D78354 @83D781EE @83D78273 8way:BL +add(); on 3 paths
+0-36_00000000D4D8 = strafe_left   # 0.5333 s; set 0F5E alias 85 ((was base_85_se1_move_left) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat5 @83D7834F @83D78354 @83D781EE @83D78273 8way:L; on 6 paths
+4-6_00000000D52C = add_base_85_se1_move_left   # 0.3333 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat5 @83D7834F @83D78354 @83D781EE @83D78273 8way:L +add(); on 3 paths
+0-32_00000000D4D9 = run_forward_left   # 0.5333 s; set 0F5E alias 85 ((was base_85_se1_move_forward_left) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat5 @83D7834F @83D78354 @83D781EE @83D78273 8way:FL; on 6 paths
+4-6_00000000D52D = add_base_85_se1_move_forward_left   # 0.3333 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat5 @83D7834F @83D78354 @83D781EE @83D78273 8way:FL +add(); on 3 paths
+4-14_00000000DA93 = add_base_85_se1_move_2   # 1 s; set 0F5E alias 85 (the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=cat5 @83D7834F @83D78354 @83D781EE +add({'bound': None}) @83D781F1; on 3 paths
+0-32_00000000D01E = idle_cat68   # 0.8333 s; set 0F5E alias 85 ((was base_85_se1_stand_sm0: dfB7 cat68) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=default[4] @83D7814A dfB7=cat68 sm[0]; on 8 paths
+0-32_00000000D01F = idle   # 0.8333 s; set 0F5E alias 85 ((was base_85_se1_stand_sm0: the stand, df18 default[4] dfB7 default (sub-alias 83D7814A)) the locomotion tree under alias 2 (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18=default[4] @83D7814A dfB7=default[1] sm[0]; on 6 paths
+0-32_00000000D5F3 = turn   # 0.6667 s; set 0F5E alias 1B (the in-place turn / strafe step, 4-slot (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18:tr[3>4] @1B ik strafe 4slot:s0; on 4 paths
+0-36_00000000D9CF = turn_2   # 0.6667 s; set 0F5E alias 1B (the in-place turn / strafe step, 4-slot (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18:tr[3>4] @1B ik strafe 4slot:s1; on 4 paths
+0-36_00000000D9CE = turn_3   # 0.6667 s; set 0F5E alias 1B (the in-place turn / strafe step, 4-slot (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18:tr[3>4] @1B ik strafe 4slot:s2; on 4 paths
+0-32_00000000D9CD = turn_4   # 0.6667 s; set 0F5E alias 1B (the in-place turn / strafe step, 4-slot (M)); @2 df8A=default[1] sel[1] sel[1] @83D78355 @85 sel[1] df18:tr[3>4] @1B ik strafe 4slot:s3; on 4 paths
+4-6_00000001ABC2 = add_base_se1_se1_sm0   # 0.3333 s; set 0F5E alias 2 (the base tree (locomotion + layers)); @2 df8A=default[1] sel[1] sel[1] @83D78355 +add({'bound': '000000000BC4.013'}) @83D78358 sm[0] +add({'bound': None}); on 4 paths
+4-28_00000000DFCE = add_base_tr01   # 1.9667 s; set 0F5E alias 2 (the base tree (locomotion + layers)); @2 df8A=default[1] +add(df102) @83D7832A tr[0>1]; on 2 paths
+0-28_00000000DC74 = base_sm0   # 0.0333 s; set 0F5E alias 2 (the base tree (locomotion + layers)); @2 df8A=default[1] +ovr(dfFA) @83D78298 sm[0]; on 2 paths
+0-0_00000000DF6B = base_sm1   # 6.6667 s; set 0F5E alias 2 (the base tree (locomotion + layers)); @2 df8A=default[1] +ovr(dfFA) @83D78298 sm[1]; on 2 paths
+0-28_00000000DC55 = base_sm2   # 0.0333 s; set 0F5E alias 2 (the base tree (locomotion + layers)); @2 df8A=default[1] +ovr(dfFA) @83D78298 sm[2]; on 2 paths
+0-0_00000000DC54 = base_sm3   # 4.9667 s; set 0F5E alias 2 (the base tree (locomotion + layers)); @2 df8A=default[1] +ovr(dfFA) @83D78298 sm[3]; on 4 paths
+0-0_00000000E10A = base_tr23   # 0.4667 s; set 0F5E alias 2 (the base tree (locomotion + layers)); @2 df8A=default[1] +ovr(dfFA) @83D78298 tr[2>3]; on 2 paths
+0-0_00000000E119 = base_tr13   # 0.4 s; set 0F5E alias 2 (the base tree (locomotion + layers)); @2 df8A=default[1] +ovr(dfFA) @83D78298 tr[1>3]; on 2 paths
+0-0_00000000E04C = base   # 0.7 s; set 0F5E alias 2 (the base tree (locomotion + layers)); @2 df8A=default[1] +ovr(dfFA) @83D78298 +ovr(df16F); on 2 paths
+4-4_0000000027AD = add_base_sm0_sm0   # 0.0333 s; set 0F5E alias 2 (the base tree (locomotion + layers)); @2 df8A=default[1] +add() sm[0] sm[0]; on 2 paths
+4-4_0000000027AE = add_base_tr01_2   # 0.0333 s; set 0F5E alias 2 (the base tree (locomotion + layers)); @2 df8A=default[1] +add() tr[0>1]; on 2 paths
+0-60_00000000DE0C = pulled_loop_b   # 0.3333 s; set 0F5E alias 1C8 (pulled loop (shared)); @83D780E3 blend2d(df235,df236) 2d(+0.00,-1.00); on 2 paths
+0-60_00000000DE0D = pulled_loop_r   # 0.3333 s; set 0F5E alias 1C8 (pulled loop (shared)); @83D780E3 blend2d(df235,df236) 2d(+1.00,+0.00); on 2 paths
+0-60_00000000DE0E = pulled_loop_f   # 0.3333 s; set 0F5E alias 1C8 (pulled loop (shared)); @83D780E3 blend2d(df235,df236) 2d(+0.00,+1.00); on 2 paths
+0-60_00000000DE0F = pulled_loop_l   # 0.3333 s; set 0F5E alias 1C8 (pulled loop (shared)); @83D780E3 blend2d(df235,df236) 2d(-1.00,+0.00); on 2 paths
+0-60_00000000DE10 = pulled_loop   # 0.3333 s; set 0F5E alias 1C8 (pulled loop (shared)); @83D780E3 blend2d(df235,df236) 2d(+0.00,+0.00); on 2 paths
+4-4_00000000DE19 = add_pulled_loop   # 1.2 s; set 0F5E alias 1C8 (pulled loop (shared)); +add({'bound': None}) @83D780E4
+0-60_00000000DDE1 = knockdown_sm0   # 0.3333 s; set 0F5E alias 65 (shared CC); ik ik sm[0]; on 2 paths
+0-36_00000000DDE0 = knockdown_start_sm0   # 0.9667 s; set 0F5E alias 64 (shared CC); ik ik sm[0]; on 2 paths
+0-36_00000000DDE3 = knockdown_end_sm0   # 1.3333 s; set 0F5E alias 66 (shared CC); ik ik sm[0]; on 2 paths
+0-32_00000000D302 = pylon_throw_down   # 0.4667 s; set 0F5E alias 479 (Healing Pylon throw (3DF4 #89; 1D blend by aim pitch) (H)); blend1d({'bound': None}) 1d@-1.0
+0-32_00000000D300 = pylon_throw   # 0.4667 s; set 0F5E alias 479 ((was pylon_throw: alias 479 1D centre) Healing Pylon throw (3DF4 #89; 1D blend by aim pitch) (H)); blend1d({'bound': None})
+0-32_00000000D301 = pylon_throw_up   # 0.4667 s; set 0F5E alias 479 (Healing Pylon throw (3DF4 #89; 1D blend by aim pitch) (H)); blend1d({'bound': None}) 1d@1.0
+0-36_00000000D5F9 = stun_sm0   # 0.7 s; set 0F5E alias 70 (shared CC); ik ik sm[0]; on 2 paths
+0-32_00000000D35B = hello   # 1.1667 s; set 0F5E alias 1EE (the comms wheel's Hello); -
+4-0_00000000D35D = add_hello_add   # 1.1667 s; set 0F5E alias 2DE (Hello additive); -
+0-36_00000000DDF5 = a13b   # 0.2 s; set 0F5E alias 13B (L); -
+0-32_00000000D0E4 = outburst   # 0.8 s; set 0F5E alias 677 ((was outburst_sm0: alias 677) Outburst (3B38 #635, 0.8 s) (H)); ik ik sm[0]; on 2 paths
+0-32_00000000D092 = melee_down   # 0.8333 s; set 0F5E alias D (quick melee (shared 0043, 1D blend by pitch) (H, as Junkrat's)); blend1d({'bound': None}) 1d@-1.0
+128-32_00000000D089 = melee   # 0.7333 s; set 0F5E alias D ((was melee: alias D 1D centre) quick melee (shared 0043, 1D blend by pitch) (H, as Junkrat's)); blend1d({'bound': None})
+0-32_00000000D091 = melee_up   # 0.8333 s; set 0F5E alias D (quick melee (shared 0043, 1D blend by pitch) (H, as Junkrat's)); blend1d({'bound': None}) 1d@1.0
+0-32_00000000DF28 = ball_fire_down   # 1.0333 s; set 0F5E alias 691 (Captive Sun ball shot (3CAB #753, 0.6 s; 1D by pitch) (H)); blend1d({'bound': None}) 1d@-1.0
+0-32_00000000DEEB = ball_fire   # 0.8667 s; set 0F5E alias 691 ((was ball_fire: alias 691 1D centre) Captive Sun ball shot (3CAB #753, 0.6 s; 1D by pitch) (H)); blend1d({'bound': None})
+0-32_00000000DF2F = ball_fire_up   # 1.0333 s; set 0F5E alias 691 (Captive Sun ball shot (3CAB #753, 0.6 s; 1D by pitch) (H)); blend1d({'bound': None}) 1d@1.0
+128-32_00000000D48B = ult_launch   # 1 s; set 0F5E alias 1B8 ((was ult_launch: alias 1B8) Captive Sun launch (3CAB #822, 1.2 s) (H)); -
+0-36_00000000D482 = flight   # 1.3333 s; set 0F5E alias 60F ((was flight: alias 60F 2D centre (hovering still)) Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(+0.00,+0.00)
+4-6_00000000D660 = add_flight   # 0.5 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(+0.00,+0.00) +add()
+0-36_00000000D484 = flight_f   # 1.3333 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(+0.00,+1.00)
+4-6_00000000D667 = add_flight_f   # 0.6667 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(+0.00,+1.00) +add()
+0-36_00000000D48F = flight_rf   # 1.3333 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(+0.71,+0.71)
+4-38_00000000D66F = add_flight_rf   # 0.6667 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(+0.71,+0.71) +add()
+0-36_00000000D487 = flight_r   # 1.3333 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(+1.00,+0.00)
+4-38_00000000D669 = add_flight_r   # 0.6667 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(+1.00,+0.00) +add()
+0-36_00000000D48E = flight_rb   # 1.3333 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(+0.71,-0.71)
+4-38_00000000D66A = add_flight_rb   # 0.6667 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(+0.71,-0.71) +add()
+0-36_00000000D485 = flight_b   # 1.3333 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(+0.00,-1.00)
+4-38_00000000D668 = add_flight_b   # 0.6667 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(+0.00,-1.00) +add()
+0-36_00000000D48D = flight_lb   # 1.3333 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(-0.71,-0.71)
+4-38_00000000D672 = add_flight_lb   # 0.6667 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(-0.71,-0.71) +add()
+0-36_00000000D486 = flight_l   # 1.3333 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(-1.00,+0.00)
+4-38_00000000D670 = add_flight_l   # 0.6667 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(-1.00,+0.00) +add()
+0-36_00000000D48C = flight_lf   # 1.3333 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(-0.71,+0.71)
+4-38_00000000D671 = add_flight_lf   # 0.6667 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 @83D782FB blend2d(df8F,df8E) 2d(-0.71,+0.71) +add()
+4-28_00000000DC56 = add_flight_2   # 0.3333 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); @83D78302 +add({'bound': None}) @83D78303
+4-0_00000000DC11 = add_flight_3   # 2.6667 s; set 0F5E alias 60F (Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); +add({'bound': None}) @83D782FC
+0-36_00000000DE97 = flight_after   # 1.3333 s; set 0F5E alias 2F ((was flight_after: alias 2F 2D centre) Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(+0.00,+0.00)
+4-6_00000000DC3E = add_flight_after   # 0.5 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(+0.00,+0.00) +add()
+0-36_00000000DE98 = flight_after_f   # 1.3333 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(+0.00,+1.00)
+4-6_00000000DEA4 = add_flight_after_f   # 0.6667 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(+0.00,+1.00) +add()
+0-36_00000000DE99 = flight_after_rf   # 1.3333 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(+0.71,+0.71)
+4-38_00000000DEA5 = add_flight_after_rf   # 0.6667 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(+0.71,+0.71) +add()
+0-36_00000000DE9A = flight_after_r   # 1.3333 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(+1.00,+0.00)
+4-38_00000000DEA6 = add_flight_after_r   # 0.6667 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(+1.00,+0.00) +add()
+0-36_00000000DE9B = flight_after_rb   # 1.3333 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(+0.71,-0.71)
+4-38_00000000DEA7 = add_flight_after_rb   # 0.6667 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(+0.71,-0.71) +add()
+0-36_00000000DE9C = flight_after_b   # 1.3333 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(+0.00,-1.00)
+4-38_00000000DEA8 = add_flight_after_b   # 0.6667 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(+0.00,-1.00) +add()
+0-36_00000000DE9D = flight_after_lb   # 1.3333 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(-0.71,-0.71)
+4-38_00000000DEA9 = add_flight_after_lb   # 0.6667 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(-0.71,-0.71) +add()
+0-36_00000000DE9E = flight_after_l   # 1.3333 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(-1.00,+0.00)
+4-38_00000000DEAA = add_flight_after_l   # 0.6667 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(-1.00,+0.00) +add()
+0-36_00000000DE9F = flight_after_lf   # 1.3333 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(-0.71,+0.71)
+4-38_00000000DEAB = add_flight_after_lf   # 0.6667 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); @83D78300 blend2d(df8F,df8E) 2d(-0.71,+0.71) +add()
+4-4_00000000DEA2 = add_flight_after_2   # 2.6667 s; set 0F5E alias 2F (Captive Sun flight after the ball (3CAB #952; 2D by move direction) (H)); +add({'bound': None}) @83D78301
+4-4_00000000DEF7 = add_charge   # 0.3333 s; set 0F5E alias 16E (Solar Rifle charge layer (3A65 #2932 / #2927 / #2926; dfC5 cat6E charging, cat82 just fired) (H)); @83D782DB dfC5=cat6E @83D782D6 df583=cat192 @83D782ED; on 3 paths
+4-0_00000000DEFA = add_charge_stand   # 0.5333 s; set 0F5E alias 16E (Solar Rifle charge layer (3A65 #2932 / #2927 / #2926; dfC5 cat6E charging, cat82 just fired) (H)); @83D782DB dfC5=cat6E @83D782D6 df583=cat1A5 @83D78313 df18=cat9 @83D782DE
+4-0_00000000DF5F = add_charge_stand_2   # 0.5333 s; set 0F5E alias 16E (Solar Rifle charge layer (3A65 #2932 / #2927 / #2926; dfC5 cat6E charging, cat82 just fired) (H)); @83D782DB dfC5=cat6E @83D782D6 df583=cat1A5 @83D78313 df18=default[1] @83D78314
+4-0_00000000D26B = add_fire   # 0.3 s; set 0F5E alias 4A8 ((was add_fire: alias 4A8 under 16E dfC5 cat82 (the shot)) Solar Rifle shot: under alias 16E dfC5 cat82 (the shot's recoil; M: no StateAnim names it, as Cassidy's fire)); @83D782DB dfC5=cat82 @83D78311 df18=cat9 @4A8; on 2 paths
+4-0_00000000DD7C = add_charge_stand_3   # 0.3 s; set 0F5E alias 16E (Solar Rifle charge layer (3A65 #2932 / #2927 / #2926; dfC5 cat6E charging, cat82 just fired) (H)); @83D782DB dfC5=cat82 @83D78311 df18=default[1] @83D78312
+4-28_00000000DEF9 = add_charge_2   # 0.8333 s; set 0F5E alias 16E (Solar Rifle charge layer (3A65 #2932 / #2927 / #2926; dfC5 cat6E charging, cat82 just fired) (H)); @83D782DB dfC5=default[2] @83D782EE; on 2 paths
+4-4_00000000DEFD = add_beam   # 0.3333 s; set 0F5E alias 16F (secondary healing beam (3A65 #2936 / #2937 / #2957) (H)); @83D782EB dfC5=cat6E @83D782DD df583=cat192 @83D782E0
+4-4_00000000DEF8 = add_beam_2   # 0.8 s; set 0F5E alias 16F (secondary healing beam (3A65 #2936 / #2937 / #2957) (H)); @83D782EB dfC5=cat6E @83D782DD df583=cat1A5 @83D782EA
+4-4_00000000DA03 = add_beam_3   # 0.8333 s; set 0F5E alias 16F (secondary healing beam (3A65 #2936 / #2937 / #2957) (H)); @83D782EB dfC5=cat6E @83D782DD df583=default[2] @83D782DC
+4-4_00000000DA04 = add_beam_hold   # 0.8333 s; set 0F5E alias 16F ((was add_beam: alias 16F dfC5 default (the beam held)) secondary healing beam (3A65 #2936 / #2937 / #2957) (H)); @83D782EB dfC5=default[2] @83D782E9; on 2 paths
+4-20_00000000DF20 = add_beam_4   # 0.3 s; set 0F5E alias 16F (secondary healing beam (3A65 #2936 / #2937 / #2957) (H)); +add({'bound': None}) @83D782F1 +add({'bound': '0000000000E8.013'}) @83D782E4
+4-4_00000000DEFB = add_beam_end   # 0.4667 s; set 0F5E alias 40A (after heavy beam use (3A65 #3005, 0.6 s) (H)); df583=cat192 @83D782D7
+4-4_00000000DEFC = add_beam_end_2   # 0.3333 s; set 0F5E alias 40A (after heavy beam use (3A65 #3005, 0.6 s) (H)); df583=default[1] @83D782D9
+0-32_00000000D23F = reload   # 1.6667 s; set 0F5E alias 4 ((was reload: alias 4 (1.67 s)) Solar Rifle reload (3A65 #2152, 1.5 s) (H)); -
+0-36_00000000DD43 = a43c   # 2.6667 s; set 0F5E alias 43C (L (2.67 s, an override with the reload's additive beside it)); -
+4-0_0000000174B4 = add_solar_flare   # 0.8 s; set 0F5E alias ACC ((was add_solar_flare: alias ACC) Solar Flare perk (51F3 #482, 0.8 s) (H)); -
+0-32_000000000998 = crouch_tree   # 0.7 s; set 0F5E alias 56 (the shared crouch tree); -
+0-32_00000000187D = a14e   # 0.7667 s; set 0F5E alias 14E (L); -
+0-36_000000000847 = knockdown_shared_sm0   # 1 s; set 0F5E alias 1DE (); ik ik sm[0]; on 2 paths
+0-60_000000000848 = knockdown_shared_2_sm0   # 1 s; set 0F5E alias 1DF (); ik ik sm[0]; on 2 paths
+0-36_000000000849 = knockdown_shared_3_sm0   # 1.2667 s; set 0F5E alias 1E0 (); ik ik sm[0]; on 2 paths
+0-32_00000000DB91 = select   # 2.5333 s; set 1162 alias 477 (the hero file's select alias 0x477 (H: STUHero m_06FAEF85)); dfC3=cat6E @8458800C
+16-32_00000000DB92 = select_2   # 11.3333 s; set 1162 alias 477 (the hero file's select alias 0x477 (H: STUHero m_06FAEF85)); dfC3=default[1] @8458800F
+0-36_00000000DFD4 = a687_sm0   # 0.6667 s; set 11B0 alias 687 (L); ik ik sm[0]; on 2 paths
+0-36_00000000DFDC = a688_se1_air_sm0_se0   # 0.1 s; set 11B0 alias 688 (L); @846C0013 @846C0015 sel[1] df18=cat6 @846C0005 sm[0] seq[0]
+0-36_00000000DFDE = a688_se1_air_sm0_se1_sm0   # 0.0333 s; set 11B0 alias 688 (L); @846C0013 @846C0015 sel[1] df18=cat6 @846C0005 sm[0] seq[1] sm[0]
+0-36_00000000DFDD = a688_se1_air_sm0_se1_sm1   # 0.4667 s; set 11B0 alias 688 (L); @846C0013 @846C0015 sel[1] df18=cat6 @846C0005 sm[0] seq[1] sm[1]; on 2 paths
+0-36_00000000DFF3 = a688_se1_move   # 0.7667 s; set 11B0 alias 688 (L); @846C0013 @846C0015 sel[1] df18=cat5 @846C000B 8way:F; on 2 paths
+4-6_00000000DFD9 = add_a688_se1_move   # 0.6667 s; set 11B0 alias 688 (L); @846C0013 @846C0015 sel[1] df18=cat5 @846C000B 8way:F +add(); on 9 paths
+0-36_00000000DFF1 = a688_se1_move_forward_right   # 0.7667 s; set 11B0 alias 688 (L); @846C0013 @846C0015 sel[1] df18=cat5 @846C000B 8way:FR; on 2 paths
+0-36_00000000DFF0 = a688_se1_move_right   # 0.7667 s; set 11B0 alias 688 (L); @846C0013 @846C0015 sel[1] df18=cat5 @846C000B 8way:R; on 2 paths
+0-36_00000000DFF4 = a688_se1_move_back_right   # 0.7667 s; set 11B0 alias 688 (L); @846C0013 @846C0015 sel[1] df18=cat5 @846C000B 8way:BR; on 2 paths
+0-36_00000000DFF6 = a688_se1_move_back   # 0.7667 s; set 11B0 alias 688 (L); @846C0013 @846C0015 sel[1] df18=cat5 @846C000B 8way:B; on 2 paths
+0-36_00000000DFF5 = a688_se1_move_back_left   # 0.7667 s; set 11B0 alias 688 (L); @846C0013 @846C0015 sel[1] df18=cat5 @846C000B 8way:BL; on 2 paths
+0-36_00000000DFEF = a688_se1_move_left   # 0.7667 s; set 11B0 alias 688 (L); @846C0013 @846C0015 sel[1] df18=cat5 @846C000B 8way:L; on 2 paths
+0-36_00000000DFF2 = a688_se1_move_forward_left   # 0.7667 s; set 11B0 alias 688 (L); @846C0013 @846C0015 sel[1] df18=cat5 @846C000B 8way:FL; on 2 paths
+0-36_00000000DFDB = a688_se1_stand_sm0   # 0.7 s; set 11B0 alias 688 (L); @846C0013 @846C0015 sel[1] df18=default[2] @846C0006 dfB7=cat68 sm[0]; on 2 paths
+0-36_00000000DFDA = a688_se1_stand_sm0_2   # 0.7 s; set 11B0 alias 688 (L); @846C0013 @846C0015 sel[1] df18=default[2] @846C0006 dfB7=default[1] sm[0]; on 2 paths
+4-0_000000000037 = add_a688_se1_stand_sm0   # 3 s; set 11B0 alias 688 (L); @846C0013 @846C0015 sel[1] df18=default[2] @846C0006 +add() sm[0]
+4-28_00000000DFFC = add_a688   # 0.0333 s; set 11B0 alias 688 (L); @846C0013 +add({'bound': None}) @846C0014
+0-32_00000000DFD6 = a68c_sm0   # 1 s; set 11B0 alias 68C (L); ik ik sm[0]; on 2 paths
+0-32_00000000DFCF = a4ce   # 1 s; set 11B0 alias 4CE (L); dfC3=cat6E @846C000D
+0-32_00000000DFD0 = a4ce_2   # 4 s; set 11B0 alias 4CE (L); dfC3=default[1] @846C000E
+0-32_00000000DFD2 = a982   # 0.3333 s; set 11B0 alias 982 (L); -
+# not extracted: 000000019F81 = ab33_sm1_se0   # 6.2333 s; set 430F alias B33 (L); sm[1] seq[0]
+# not extracted: 00000001A189 = ab33_sm1_se1   # 7.6 s; set 430F alias B33 (L); sm[1] seq[1]; on 3 paths
+# not extracted: 000000019F83 = ab33_sm1_se2   # 5.5 s; set 430F alias B33 (L); sm[1] seq[2]; on 3 paths
+# not extracted: 000000019F84 = ab33_sm1_se4_sm1_ra2   # 5.6667 s; set 430F alias B33 (L); sm[1] seq[4] sm[1] rand[2]
+# not extracted: 000000019F85 = ab1e_sm1_se0   # 2.4667 s; set 430F alias B1E (L); sm[1] seq[0]
+# not extracted: 00000001A0B2 = ab1e_sm1_se1   # 2.6333 s; set 430F alias B1E (L); sm[1] seq[1]
+# not extracted: 00000001A129 = add_ab1d   # 0.4333 s; set 430F alias B1D (L); -
+0-32_00000000D2D8 = base_sm1_sm1_se0   # 6.2333 s; set 10B2 alias 2 (the base tree (locomotion + layers)); sm[1] sm[1] seq[0]; on 3 paths
+0-32_00000000DED5 = base_sm1_sm1_se1   # 5.6667 s; set 10B2 alias 2 (the base tree (locomotion + layers)); sm[1] sm[1] seq[1]; on 4 paths
+0-32_00000000DED6 = base_sm1_sm1_se2   # 5.5 s; set 10B2 alias 2 (the base tree (locomotion + layers)); sm[1] sm[1] seq[2]; on 3 paths
+0-32_00000000DEAF = base_sm1_sm1_se3   # 7.6 s; set 10B2 alias 2 (the base tree (locomotion + layers)); sm[1] sm[1] seq[3]; on 3 paths
+0-32_00000000DB7D = base_se1   # 4.3667 s; set 111D alias A0E (the set's base tree); @4A0 sel[1] @45C; on 7 paths
+# Extracted under this model but in none of its sets (114, not named): 000073 000074 000075 000076 0000E9 0000EA 0000EB 0000EC 0000F2 0000F3 0000F4 0000F5 0000F6 0008CD 000957 000958 000959 000999 00099A 00099B 00099C 00099D 00099E 00099F 0009A0 000C4F 000C63 000FCF 000FD0 00395B 003B43 003B44 003B45 003B47 005687 005E41 0060E9 00612D 006195 006196 006197 008424 008539 008B8B 008BB5 00CF5E 00D006 00D010 00D015 00D04E 00D069 00D095 00D096 00D13D 00D1B3 00D1B4 00D266 00D306 00D307 00D478 00D495 00D496 00D4A2 00D4A3 00D4E8 00D4E9 00D4EA 00D4EB 00D4EF 00D538 00D53B 00D547 00D592 00D595 00D597 00D598 00D89F 00DAAE 00DAB4 00DAFD 00DB04 00DB14 00DB63 00DB77 00DD5F 00DD60 00DD70 00DD71 00DD72 00DDC0 00DDC4 00DDC8 00DDCC 00DDD0 00DDD2 00DE5C 00DECA 00DED9 00DF2B 00DF35 00DF73 00DF74 00DF75 00DF76 00DF77 00DF78 00DF79 00DF7A 00DFDF 00E1AE 00F44A 015E02 0174AB 01A390

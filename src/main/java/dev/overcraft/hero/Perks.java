@@ -67,6 +67,7 @@ public final class Perks {
 			case TRACER -> dev.overcraft.tracer.TracerStats.PERK_MINOR_XP;
 			case CASSIDY -> dev.overcraft.cassidy.CassidyStats.PERK_MINOR_XP;
 			case JUNKRAT -> dev.overcraft.junkrat.JunkratStats.PERK_MINOR_XP;
+			case ILLARI -> dev.overcraft.illari.IllariStats.PERK_MINOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}
@@ -90,6 +91,7 @@ public final class Perks {
 			case TRACER -> dev.overcraft.tracer.TracerStats.PERK_MAJOR_XP;
 			case CASSIDY -> dev.overcraft.cassidy.CassidyStats.PERK_MAJOR_XP;
 			case JUNKRAT -> dev.overcraft.junkrat.JunkratStats.PERK_MAJOR_XP;
+			case ILLARI -> dev.overcraft.illari.IllariStats.PERK_MAJOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}

@@ -172,6 +172,14 @@ public final class OcEntities {
 		EntityType.Builder.<dev.overcraft.entity.RipTireEntity>of(dev.overcraft.entity.RipTireEntity::new, MobCategory.MISC)
 			.noLootTable().noSave().sized((float) dev.overcraft.junkrat.JunkratStats.TIRE_WIDTH, (float) dev.overcraft.junkrat.JunkratStats.TIRE_HEIGHT)
 			.clientTrackingRange(10).updateInterval(1));
+	/** Illari's Healing Pylon (thrown 4B4A, set 4BCA): 0.4 m round, 0.8 m tall (ours, by its model; not saved). */
+	public static final EntityType<dev.overcraft.entity.HealingPylonEntity> HEALING_PYLON = register("healing_pylon",
+		EntityType.Builder.<dev.overcraft.entity.HealingPylonEntity>of(dev.overcraft.entity.HealingPylonEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.4f, 0.8f).clientTrackingRange(8).updateInterval(1));
+	/** Her Captive Sun ball (4AC0): 0.45 m (D 293D; not saved: 10 s). */
+	public static final EntityType<dev.overcraft.entity.CaptiveSunEntity> CAPTIVE_SUN = register("captive_sun",
+		EntityType.Builder.<dev.overcraft.entity.CaptiveSunEntity>of(dev.overcraft.entity.CaptiveSunEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.45f, 0.45f).clientTrackingRange(10).updateInterval(1));
 	/** The pilot's Light Gun rounds (1000): 0.275 m (not saved: 5 s of flight). */
 	public static final EntityType<dev.overcraft.entity.LightGunShotEntity> LIGHT_GUN_SHOT = register("light_gun_shot",
 		EntityType.Builder.<dev.overcraft.entity.LightGunShotEntity>of(dev.overcraft.entity.LightGunShotEntity::new, MobCategory.MISC)
