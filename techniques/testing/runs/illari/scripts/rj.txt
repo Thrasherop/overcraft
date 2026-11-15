@@ -1,0 +1,8 @@
+MARK RJ rejoin after the crash: open il1 again (expected the select screen with Illari kept, or straight into her)
+window 1920 1080
+sleep 3
+openworld il1
+sleep 45
+state
+screenshot illari_rejoin.png
+sleep 1

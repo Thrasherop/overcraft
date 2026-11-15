@@ -73,7 +73,9 @@ public final class HeroModels {
 		"projectile_cassidy_flashbang",
 		// Junkrat's frag (118EA; the Total Mayhem bombs the same), mine (10093), trap (100DC: in flight, and the set trap's jaws 103B;
 		// the set trap's own 29B2 exports empty) and tire (118D8)
-		"projectile_junkrat_frag", "projectile_junkrat_mine", "projectile_junkrat_trap", "junkrat_tire");
+		"projectile_junkrat_frag", "projectile_junkrat_mine", "projectile_junkrat_trap", "junkrat_tire",
+		// Illari's Healing Pylon (134D8) and Captive Sun's ball (10BAE)
+		"illari_pylon", "projectile_illari_sun");
 	private static final Map<String, Loaded> EXTRA_MODELS = new HashMap<>();
 	private static final List<Identifier> REGISTERED = new ArrayList<>();
 	/** Bigger images are halved until they fit: a 4096 texture per material is a lot of video memory for a player. */

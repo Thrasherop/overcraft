@@ -184,6 +184,8 @@ public class Overcraft implements ModInitializer {
 			}
 			KitsuneRush.tickAll(server);
 			Combat.tick(server);
+			// Illari's Sunburns and Sunstruck marks
+			dev.overcraft.illari.Illari.tickAll(server);
 			// Silver Bullet's bleeds
 			dev.overcraft.cassidy.Cassidy.tickBleeds(server);
 			dev.overcraft.hero.Effects.tick(server);
@@ -270,6 +272,8 @@ public class Overcraft implements ModInitializer {
 			}
 			if (damage > 0) {
 				Combat.onHurt(entity, source);
+				// Captive Sun's mark counts it toward Sunstruck
+				dev.overcraft.illari.Illari.onDamaged(entity, damage);
 				// a sleeper wakes from any damage once it has slept 0.5 s (224E #202 / #205 -> #332)
 				dev.overcraft.hero.Sleep.onDamaged(entity);
 			}

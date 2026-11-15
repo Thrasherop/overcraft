@@ -78,6 +78,22 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 		return new LifeweaverPropRenderer<>(context, "junkrat_tire", (e, s) -> clip(s, "tire_roll_ra0", (e.tickCount + s.partialTick) / 20f, true));
 	}
 
+	/**
+	 * Illari's Healing Pylon (model 134D8, set 10FA: tools/clipmaps/illari_pylon.txt): in flight still, set down its build clip,
+	 * built its idle looped. Ours: the same renderer as Lifeweaver's props.
+	 */
+	public static LifeweaverPropRenderer<dev.overcraft.entity.HealingPylonEntity> pylon(EntityRendererProvider.Context context) {
+		return new LifeweaverPropRenderer<>(context, "illari_pylon", (e, s) -> {
+			if (e.stage() == 0) {
+				s.clip = null;
+			} else if (e.stage() == 1) {
+				clip(s, "build", (e.down() + s.partialTick) / 20f, false);
+			} else {
+				clip(s, "idle", (e.tickCount + s.partialTick) / 20f, true);
+			}
+		});
+	}
+
 	/** Sow the Seed's seed on the ground: his model 126CC, still. */
 	public static LifeweaverPropRenderer<SeedEntity> seed(EntityRendererProvider.Context context) {
 		return new LifeweaverPropRenderer<>(context, "lifeweaver_seed", (e, s) -> s.clip = null);

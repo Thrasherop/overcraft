@@ -1,0 +1,525 @@
+
+=== S0 2026-11-14 19:10:39
+19:10:54.765 state -> {"screen": "GenericMessageScreen"}
+19:10:54.778 window 1920 1080 -> {"ok":true}
+19:11:01.557 newworld il1 -> {"ok":true}
+19:11:31.580 state -> {"screen": "LevelLoadingScreen"}
+19:11:31.642 screenshot illari_select.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_select.png"}
+
+=== S0b 2026-11-14 19:11:40
+19:12:00.547 state -> {"screen": "LevelLoadingScreen"}
+19:12:01.062 screenshot illari_select.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_select.png"}
+
+=== S0c 2026-11-14 19:12:12
+19:12:34.548 state -> {"screen": "LevelLoadingScreen"}
+19:12:34.782 screenshot illari_select.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_select.png"}
+
+=== S0d 2026-11-14 19:12:44
+19:13:24.516 state -> {"screen": "HeroSelectScreen", "x": 7.5, "y": -60.0, "z": -2.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": false, "hero": "", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "idle"}
+19:13:24.550 screenshot illari_select.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_select.png"}
+
+=== S1-select 2026-11-14 19:13:31
+19:13:31.563 screenclick 390 216 1 -> {"screen":"HeroSelectScreen"}
+19:13:33.579 screenshot illari_select_kit.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_select_kit.png"}
+
+=== I1 2026-11-14 19:14:03
+19:14:03.174 MARK I1 select: click Illari again to play (second click), then the HUD
+19:14:03.204 screenclick 390 216 1 -> {"screen":"DeathScreen"}
+19:14:06.214 state -> {"screen": "DeathScreen", "x": 15.911, "y": -60.0, "z": 6.008, "yaw": 0.0, "health": 0.0, "onGround": true, "heroMode": false, "hero": "", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "idle"}
+19:14:06.239 screenshot illari_hud0.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_hud0.png"}
+19:14:07.284 cmd /gamerule spawn_monsters false -> {"ok":true}
+19:14:07.286 cmd /difficulty easy -> {"ok":true}
+19:14:07.320 cmd /time set noon -> {"ok":true}
+19:14:07.361 cmd /kill @e[type=!player] -> {"ok":true}
+19:14:07.361 MARK I1a rifle full charge: husk 100 MC (1250 OW) 10 m ahead, chest; wait 1.5 s, one tap (expected 75 OW = 6 MC; ammo 14 -> 13)
+19:14:07.394 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+19:14:07.440 cmd /summon husk 0.5 -60 10.5 {NoAI:1b,Tags:["h1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:14:07.454 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:14:09.401 hp @e[tag=h1,limit=1] -> No entity was found
+19:14:09.427 key secondary_fire down -> {"key":"key.mouse.left"}
+19:14:09.559 key secondary_fire up -> {"key":"key.mouse.left"}
+19:14:10.475 hp @e[tag=h1,limit=1] -> No entity was found
+19:14:10.496 state -> {"screen": "DeathScreen", "x": 15.911, "y": -60.0, "z": 6.008, "yaw": 0.0, "health": 0.0, "onGround": true, "heroMode": false, "hero": "", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "idle"}
+19:14:10.496 MARK I1b quick second tap 0.3 s after the shot (charge 0.05/0.575 ~ 9 percent: expected no shot) then 0.4 s later (charge ~ 78 percent: ~ 56 OW)
+19:14:10.530 key secondary_fire down -> {"key":"key.mouse.left"}
+19:14:10.663 key secondary_fire up -> {"key":"key.mouse.left"}
+19:14:11.474 hp @e[tag=h1,limit=1] -> No entity was found
+19:14:11.498 key secondary_fire down -> {"key":"key.mouse.left"}
+19:14:11.632 key secondary_fire up -> {"key":"key.mouse.left"}
+19:14:12.479 hp @e[tag=h1,limit=1] -> No entity was found
+19:14:12.503 state -> {"screen": "DeathScreen", "x": 15.911, "y": -60.0, "z": 6.008, "yaw": 0.0, "health": 0.0, "onGround": true, "heroMode": false, "hero": "", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "idle"}
+19:14:12.503 MARK I1c head: aim at the head (eyes ~1.74 above feet), wait full, tap (expected 112.5 OW = 9 MC)
+19:14:12.537 cmd /data merge entity @e[tag=h1,limit=1] {Health:100f} -> {"ok":true}
+19:14:12.570 cmd /execute as @s at @s anchored eyes facing 0.5 -58.3 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:14:14.216 hp @e[tag=h1,limit=1] -> No entity was found
+19:14:14.240 key secondary_fire down -> {"key":"key.mouse.left"}
+19:14:14.373 key secondary_fire up -> {"key":"key.mouse.left"}
+19:14:15.321 hp @e[tag=h1,limit=1] -> No entity was found
+19:14:15.321 MARK I1d hold the left button 4 s (expected a shot each 0.825 s at full: ~4-5 x 75; ammo down by that)
+19:14:15.342 cmd /data merge entity @e[tag=h1,limit=1] {Health:100f} -> {"ok":true}
+19:14:15.374 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:14:16.382 state -> {"screen": "DeathScreen", "x": 15.911, "y": -60.0, "z": 6.008, "yaw": 0.0, "health": 0.0, "onGround": true, "heroMode": false, "hero": "", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "idle"}
+19:14:16.411 key secondary_fire down -> {"key":"key.mouse.left"}
+19:14:20.420 key secondary_fire up -> {"key":"key.mouse.left"}
+19:14:21.164 hp @e[tag=h1,limit=1] -> No entity was found
+19:14:21.188 state -> {"screen": "DeathScreen", "x": 15.911, "y": -60.0, "z": 6.008, "yaw": 0.0, "health": 0.0, "onGround": true, "heroMode": false, "hero": "", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "idle"}
+19:14:21.222 screenshot illari_fire.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_fire.png"}
+19:14:21.222 MARK I1e reload by R (expected ammo 14 back at 1.08 s, reload done 1.5 s)
+19:14:21.255 key reload down -> {"key":"key.keyboard.r"}
+19:14:21.427 key reload up -> {"key":"key.keyboard.r"}
+19:14:22.228 state -> {"screen": "DeathScreen", "x": 15.911, "y": -60.0, "z": 6.008, "yaw": 0.0, "health": 0.0, "onGround": true, "heroMode": false, "hero": "", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "idle"}
+19:14:22.730 state -> {"screen": "DeathScreen", "x": 15.911, "y": -60.0, "z": 6.008, "yaw": 0.0, "health": 0.0, "onGround": true, "heroMode": false, "hero": "", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "idle"}
+19:14:23.264 state -> {"screen": "DeathScreen", "x": 15.911, "y": -60.0, "z": 6.008, "yaw": 0.0, "health": 0.0, "onGround": true, "heroMode": false, "hero": "", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "idle"}
+
+=== R 2026-11-14 19:14:27
+19:14:27.172 respawn -> {"ok":true}
+19:14:30.189 cmd /difficulty peaceful -> {"ok":true}
+19:14:30.224 cmd /kill @e[type=slime] -> {"ok":true}
+19:14:30.265 state -> {"screen": "HeroSelectScreen", "x": -5.5, "y": -60.0, "z": 2.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": false, "hero": "", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "idle"}
+19:14:30.290 screenshot illari_respawn.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_respawn.png"}
+
+=== I1 2026-11-14 19:14:36
+19:14:36.826 MARK I1 select: click Illari again to play (second click), then the HUD
+19:14:36.833 screenclick 390 216 1 -> {"screen":"HeroSelectScreen"}
+19:14:38.337 screenclick 390 216 1 -> {"screen":""}
+19:14:41.378 state -> {"screen": "", "x": -5.5, "y": -60.0, "z": 2.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 15.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:14:41.403 screenshot illari_hud0.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_hud0.png"}
+19:14:42.412 cmd /gamerule spawn_monsters false -> {"ok":true}
+19:14:42.447 cmd /difficulty easy -> {"ok":true}
+19:14:42.480 cmd /time set noon -> {"ok":true}
+19:14:42.513 cmd /kill @e[type=!player] -> {"ok":true}
+19:14:43.014 MARK I1a rifle full charge: husk 100 MC (1250 OW) 10 m ahead, chest; wait 1.5 s, one tap (expected 75 OW = 6 MC; ammo 14 -> 13)
+19:14:43.046 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+19:14:43.083 cmd /summon husk 0.5 -60 10.5 {NoAI:1b,Tags:["h1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:14:43.114 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:14:45.060 hp @e[tag=h1,limit=1] -> Husk has the following entity data: 100.0f
+19:14:45.086 key secondary_fire down -> {"key":"key.mouse.left"}
+19:14:45.215 key secondary_fire up -> {"key":"key.mouse.left"}
+19:14:46.132 hp @e[tag=h1,limit=1] -> Husk has the following entity data: 94.0f
+19:14:46.159 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 114.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 13, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:14:46.159 MARK I1b quick second tap 0.3 s after the shot (charge 0.05/0.575 ~ 9 percent: expected no shot) then 0.4 s later (charge ~ 78 percent: ~ 56 OW)
+19:14:46.192 key secondary_fire down -> {"key":"key.mouse.left"}
+19:14:46.326 key secondary_fire up -> {"key":"key.mouse.left"}
+19:14:47.171 hp @e[tag=h1,limit=1] -> Husk has the following entity data: 88.0f
+19:14:47.194 key secondary_fire down -> {"key":"key.mouse.left"}
+19:14:47.295 key secondary_fire up -> {"key":"key.mouse.left"}
+19:14:48.137 hp @e[tag=h1,limit=1] -> Husk has the following entity data: 82.0f
+19:14:48.162 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 274.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 11, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:14:48.162 MARK I1c head: aim at the head (eyes ~1.74 above feet), wait full, tap (expected 112.5 OW = 9 MC)
+19:14:48.196 cmd /data merge entity @e[tag=h1,limit=1] {Health:100f} -> {"ok":true}
+19:14:48.231 cmd /execute as @s at @s anchored eyes facing 0.5 -58.3 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:14:49.875 hp @e[tag=h1,limit=1] -> Husk has the following entity data: 100.0f
+19:14:49.900 key secondary_fire down -> {"key":"key.mouse.left"}
+19:14:50.035 key secondary_fire up -> {"key":"key.mouse.left"}
+19:14:50.979 hp @e[tag=h1,limit=1] -> Husk has the following entity data: 91.0f
+19:14:50.979 MARK I1d hold the left button 4 s (expected a shot each 0.825 s at full: ~4-5 x 75; ammo down by that)
+19:14:51.002 cmd /data merge entity @e[tag=h1,limit=1] {Health:100f} -> {"ok":true}
+19:14:51.036 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:14:52.038 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 406.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 10, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:14:52.071 key secondary_fire down -> {"key":"key.mouse.left"}
+19:14:56.082 key secondary_fire up -> {"key":"key.mouse.left"}
+19:14:56.824 hp @e[tag=h1,limit=1] -> Husk has the following entity data: 70.0f
+19:14:56.854 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 805.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:14:56.887 screenshot illari_fire.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_fire.png"}
+19:14:56.887 MARK I1e reload by R (expected ammo 14 back at 1.08 s, reload done 1.5 s)
+19:14:56.920 key reload down -> {"key":"key.keyboard.r"}
+19:14:57.097 key reload up -> {"key":"key.keyboard.r"}
+19:14:57.900 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 810.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": 0.533, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+19:14:58.434 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 813.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": 0.9, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+19:14:58.937 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 815.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload"}
+
+=== I2 2026-11-14 19:15:19
+19:15:19.682 MARK I2a beam: a villager ally (20 MC) at 5 HP, 8 m ahead; hold the right button 1 s (expected +115 OW = +9.2 MC; energy 100 -> ~67)
+19:15:19.689 cmd /kill @e[type=!player] -> {"ok":true}
+19:15:19.723 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+19:15:19.756 cmd /summon villager 0.5 -60 8.5 {NoAI:1b,Tags:["v1"],Health:5f} -> {"ok":true}
+19:15:19.790 cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 8.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:15:21.209 hp @e[tag=v1,limit=1] -> Villager has the following entity data: 5.0f
+19:15:21.235 key primary_fire down -> {"key":"key.mouse.right"}
+19:15:22.237 key primary_fire up -> {"key":"key.mouse.right"}
+19:15:22.779 hp @e[tag=v1,limit=1] -> Villager has the following entity data: 14.200001f
+19:15:22.812 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 1049.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 0.667, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:15:22.812 MARK I2b hold the beam 4 s with the villager hurt again: empties at 3 s (energy 0, emptied bit 32 in mode), then locked; refill after ~1 s + 100/35 s
+19:15:22.837 cmd /data merge entity @e[tag=v1,limit=1] {Health:1f} -> {"ok":true}
+19:15:25.348 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 1062.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:15:25.381 key primary_fire down -> {"key":"key.mouse.right"}
+19:15:26.887 screenshot illari_beam.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_beam.png"}
+19:15:26.919 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 1242.75, "shield": 0.0, "mode": 4, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 0.5, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:15:29.423 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 1320.25, "shield": 0.0, "mode": 32, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:15:29.457 key primary_fire up -> {"key":"key.mouse.right"}
+19:15:29.899 hp @e[tag=v1,limit=1] -> Villager has the following entity data: 20.0f
+19:15:31.926 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 1333.0, "shield": 0.0, "mode": 32, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 0.892, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:15:33.932 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 1343.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:15:33.932 MARK I2c the beam on a husk (enemy): no heal, no damage
+19:15:33.966 cmd /summon husk 2.5 -60 8.5 {NoAI:1b,Tags:["h2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:50f} -> {"ok":true}
+19:15:34.000 cmd /execute as @s at @s anchored eyes facing 2.5 -59.0 8.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:15:35.534 key primary_fire down -> {"key":"key.mouse.right"}
+19:15:36.568 key primary_fire up -> {"key":"key.mouse.right"}
+19:15:37.011 hp @e[tag=h2,limit=1] -> Husk has the following entity data: 50.0f
+19:15:37.011 MARK I2d pylon: E aimed at the ground 4 m ahead; villager at 2 HP 6 m off; expected built 1.25 s after landing, then +50 OW (4 MC) every 0.8 s
+19:15:37.036 cmd /kill @e[type=!player] -> {"ok":true}
+19:15:37.071 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+19:15:37.104 cmd /summon villager 4.5 -60 6.5 {NoAI:1b,Tags:["v1"],Health:2f} -> {"ok":true}
+19:15:37.138 cmd /execute as @s at @s anchored eyes facing 0.5 -60 4.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:15:38.139 key ability_2 down -> {"key":"key.keyboard.e"}
+19:15:38.312 key ability_2 up -> {"key":"key.keyboard.e"}
+19:15:38.840 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 1367.5, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+pylon_throw"}
+19:15:40.787 hp @e[tag=v1,limit=1] -> Villager has the following entity data: 6.0f
+19:15:42.007 hp @e[tag=v1,limit=1] -> Villager has the following entity data: 14.0f
+19:15:43.246 hp @e[tag=v1,limit=1] -> Villager has the following entity data: 18.0f
+19:15:43.269 perspective back -> {"ok":true}
+19:15:43.794 screenshot illari_pylon.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_pylon.png"}
+19:15:44.305 perspective first -> {"ok":true}
+19:15:44.305 MARK I2e enemy: a husk with AI walks up (she stands behind the pylon); it should claw the pylon (75 + 50) and break it; her cooldown then 14 s
+19:15:44.339 cmd /summon husk 0.5 -60 9.5 {Tags:["h3"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:15:44.373 cmd /effect give @s resistance 60 4 true -> {"ok":true}
+19:15:50.386 state -> {"screen": "", "x": 0.498, "y": -59.46, "z": -3.294, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 1650.25, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.0, "vy": 0.226, "vz": -0.218, "anim": "jump"}
+19:15:50.420 screenshot illari_pylon_husk.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_pylon_husk.png"}
+19:15:56.442 state -> {"screen": "", "x": -0.02, "y": -58.906, "z": -17.564, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 1680.5, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": -0.042, "vy": 0.051, "vz": -0.214, "anim": "jump"}
+
+=== I3 2026-11-14 19:16:30
+19:16:30.078 MARK I3a enemy vs pylon: wait out the cooldown; corridor of glass along z; she at z 0.5, the pylon ~2 m ahead, a husk (AI) from z 10 walks at her through the pylon; expected the husk claws it (3 a hit on easy = 37.5 OW, 125 total: ~4 hits) and breaks it; her E cooldown then 14 s
+19:16:30.086 cmd /kill @e[type=!player] -> {"ok":true}
+19:16:30.120 cmd /effect give @s resistance 120 4 true -> {"ok":true}
+19:16:30.153 cmd /fill -1 -60 -1 -1 -58 14 glass -> {"ok":true}
+19:16:30.188 cmd /fill 1 -60 -1 1 -58 14 glass -> {"ok":true}
+19:16:30.219 cmd /fill 0 -60 -2 0 -58 -2 glass -> {"ok":true}
+19:16:30.253 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+19:16:30.329 cmd /execute as @s at @s anchored eyes facing 0.5 -60 2.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:16:31.369 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 1855.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 12.75, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:16:31.395 key ability_2 down -> {"key":"key.keyboard.e"}
+19:16:31.561 key ability_2 up -> {"key":"key.keyboard.e"}
+19:16:33.567 cmd /summon husk 0.5 -60 10.5 {Tags:["h3"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:16:36.575 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 1881.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 7.55, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:16:36.608 screenshot illari_pylon_husk.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_pylon_husk.png"}
+19:16:39.624 state -> {"screen": "", "x": 0.5, "y": -58.906, "z": -0.7, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 1896.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 4.5, "vx": 0.0, "vy": 0.051, "vz": 0.0, "anim": "jump"}
+19:16:42.632 state -> {"screen": "", "x": 0.5, "y": -58.906, "z": -0.7, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 1911.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 1.45, "vx": 0.0, "vy": 0.051, "vz": 0.0, "anim": "jump"}
+19:16:42.665 screenshot illari_pylon_broken.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_pylon_broken.png"}
+19:16:42.665 MARK I3b skeleton: pylon placed again between her and a NoAI-less skeleton 12 m off in the corridor; its arrows should hit the pylon first
+19:16:42.699 cmd /kill @e[type=husk] -> {"ok":true}
+19:16:54.709 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -0.7, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 1971.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:16:54.742 key ability_2 down -> {"key":"key.keyboard.e"}
+19:16:54.909 key ability_2 up -> {"key":"key.keyboard.e"}
+19:16:56.916 cmd /summon skeleton 0.5 -60 12.5 {Tags:["s1"]} -> {"ok":true}
+19:17:04.943 state -> {"screen": "", "x": 0.498, "y": -59.197, "z": -0.7, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 2023.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 13.95, "vx": 0.0, "vy": -0.167, "vz": 0.0, "anim": "fall"}
+19:17:08.953 state -> {"screen": "", "x": 0.443, "y": -59.197, "z": -0.7, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 2043.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 9.95, "vx": -0.005, "vy": -0.167, "vz": 0.0, "anim": "fall"}
+19:17:08.986 cmd /kill @e[type=skeleton] -> {"ok":true}
+19:17:09.020 cmd /fill -1 -60 -2 1 -58 14 air -> {"ok":true}
+
+=== I3 2026-11-14 19:17:16
+19:17:19.307 MARK I3a enemy vs pylon: wait out the cooldown; corridor of glass along z; she at z 0.5, the pylon ~2 m ahead, a husk (AI) from z 10 walks at her through the pylon; expected the husk claws it (3 a hit on easy = 37.5 OW, 125 total: ~4 hits) and breaks it; her E cooldown then 14 s
+19:17:19.316 cmd /kill @e[type=!player,type=!overcraft:healing_pylon] -> {"ok":true}
+19:17:19.351 cmd /effect give @s resistance 120 4 true -> {"ok":true}
+19:17:19.384 cmd /fill -1 -60 -1 -1 -58 14 glass -> {"ok":true}
+19:17:19.417 cmd /fill 1 -60 -1 1 -58 14 glass -> {"ok":true}
+19:17:19.451 cmd /fill 0 -60 -2 0 -58 -2 glass -> {"ok":true}
+19:17:19.484 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+19:17:19.518 cmd /execute as @s at @s anchored eyes facing 0.5 -60 2.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:17:20.537 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2101.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:17:21.566 key ability_2 down -> {"key":"key.keyboard.e"}
+19:17:21.733 key ability_2 up -> {"key":"key.keyboard.e"}
+19:17:23.739 cmd /summon husk 0.5 -60 10.5 {Tags:["h3"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:17:26.748 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2132.0, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:17:26.781 screenshot illari_pylon_husk.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_pylon_husk.png"}
+19:17:29.802 state -> {"screen": "", "x": 0.5, "y": -59.096, "z": -0.7, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 2147.25, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.139, "vz": 0.0, "anim": "jump"}
+19:17:32.810 state -> {"screen": "", "x": 0.5, "y": -59.096, "z": -0.7, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 2162.25, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.139, "vz": 0.0, "anim": "jump"}
+19:17:32.845 screenshot illari_pylon_broken.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_pylon_broken.png"}
+19:17:32.845 MARK I3b skeleton: pylon placed again between her and a NoAI-less skeleton 12 m off in the corridor; its arrows should hit the pylon first
+19:17:32.879 cmd /kill @e[type=husk] -> {"ok":true}
+19:17:44.886 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -0.7, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2222.75, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:17:44.919 key ability_2 down -> {"key":"key.keyboard.e"}
+19:17:45.087 key ability_2 up -> {"key":"key.keyboard.e"}
+19:17:47.091 cmd /summon skeleton 0.5 -60 12.5 {Tags:["s1"]} -> {"ok":true}
+19:17:55.111 state -> {"screen": "", "x": 0.498, "y": -59.051, "z": -0.7, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 2273.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.124, "vz": 0.0, "anim": "fall"}
+19:17:59.121 state -> {"screen": "", "x": 0.3, "y": -59.197, "z": -0.7, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 2293.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.167, "vz": 0.0, "anim": "fall"}
+19:17:59.155 cmd /kill @e[type=skeleton] -> {"ok":true}
+19:17:59.189 cmd /fill -1 -60 -2 1 -58 14 air -> {"ok":true}
+
+=== I3c 2026-11-14 19:18:17
+19:18:17.912 MARK I3c a NoAI husk set right beside a fresh pylon (box 0.5 m off): expected the claws break it in ~4 s
+19:18:17.934 cmd /kill @e[type=!player] -> {"ok":true}
+19:18:25.952 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+19:18:25.987 cmd /execute as @s at @s anchored eyes facing 0.5 -60 3.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:18:26.988 key ability_2 down -> {"key":"key.keyboard.e"}
+19:18:27.155 key ability_2 up -> {"key":"key.keyboard.e"}
+19:18:29.664 ents Pylon -> {"ents":"489 0.25 -59.99 3.07 v 0.00 0.00 0.00 t98 | "}
+19:18:29.697 cmd /execute at @e[type=overcraft:healing_pylon] run summon husk ~1 ~ ~ {NoAI:1b,Tags:["h4"]} -> {"ok":true}
+19:18:31.709 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2456.75, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:18:34.741 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2472.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 12.45, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:18:34.774 ents Pylon -> {"ents":""}
+
+=== I3d 2026-11-14 19:18:50
+19:18:50.970 MARK I3d skeleton (AI) 12 m off down a glass corridor shoots at her; the pylon 2.5 m ahead in the line of fire, at chest height on the corridor's end wall? no: on the floor. Arrows over it may miss it; expected some hits break it (cooldown 14)
+19:18:50.980 cmd /kill @e[type=!player] -> {"ok":true}
+19:19:05.010 cmd /fill -1 -60 -1 -1 -58 14 glass -> {"ok":true}
+19:19:05.043 cmd /fill 1 -60 -1 1 -58 14 glass -> {"ok":true}
+19:19:05.077 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+19:19:05.111 cmd /execute as @s at @s anchored eyes facing 0.5 -60 2.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:19:06.121 key ability_2 down -> {"key":"key.keyboard.e"}
+19:19:06.289 key ability_2 up -> {"key":"key.keyboard.e"}
+19:19:08.794 key crouch down -> {"key":"key.keyboard.left.control"}
+19:19:08.827 cmd /summon skeleton 0.5 -60 12.5 {Tags:["s1"]} -> {"ok":true}
+19:19:14.847 state -> {"screen": "", "x": 0.5, "y": -59.708, "z": 0.282, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 2672.5, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.27, "vz": -0.218, "anim": "jump"}
+19:19:20.857 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": -12.927, "yaw": -0.0, "health": 19.4, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2720.0, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "crouch_walk"}
+19:19:20.891 key crouch up -> {"key":"key.keyboard.left.control"}
+19:19:20.924 cmd /kill @e[type=skeleton] -> {"ok":true}
+19:19:20.958 cmd /kill @e[type=arrow] -> {"ok":true}
+19:19:20.991 cmd /fill -1 -60 -2 1 -58 14 air -> {"ok":true}
+
+=== I4 2026-11-14 19:19:34
+19:19:34.325 MARK I4a Outburst standing tap: husks (NoAI, 100 MC) at 3 m and 7 m and 10 m; expected 25 OW (2 MC) to the two within 8 m, pushed (18/5 x1 at 3 m, ~x0.48 at 7 m), the 10 m one untouched; her vy ~0.3 b/t (6 m/s); no fall damage
+19:19:34.326 cmd /kill @e[type=!player] -> {"ok":true}
+19:19:34.360 cmd /effect clear @s -> {"ok":true}
+19:19:34.393 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+19:19:34.427 cmd /summon husk 0.5 -60 3.5 {NoAI:1b,Tags:["o1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:19:34.461 cmd /summon husk 7.5 -60 0.5 {NoAI:1b,Tags:["o2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:19:34.493 cmd /summon husk -9.5 -60 0.5 {NoAI:1b,Tags:["o3"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:19:35.496 trace start -> {"ok":true}
+19:19:35.529 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+19:19:35.696 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+19:19:36.071 state -> {"screen": "", "x": 0.5, "y": -58.987, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 2846.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 7.5, "ability2Cooldown": 12.3, "vx": 0.0, "vy": 0.038, "vz": 0.0, "anim": "jump+outburst"}
+19:19:36.399 state -> {"screen": "", "x": 0.5, "y": -59.794, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 2847.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 7.15, "ability2Cooldown": 11.95, "vx": 0.0, "vy": -0.267, "vz": 0.0, "anim": "fall+outburst"}
+19:19:36.432 screenshot illari_outburst.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_outburst.png"}
+19:19:37.947 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2855.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 5.6, "ability2Cooldown": 10.4, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:19:38.422 hp @e[tag=o1,limit=1] -> Husk has the following entity data: 98.0f
+19:19:38.856 hp @e[tag=o1,limit=1] Pos -> Husk has the following entity data: [0.5d, -60.0d, 3.5d]
+19:19:39.292 hp @e[tag=o2,limit=1] -> Husk has the following entity data: 98.0f
+19:19:39.726 hp @e[tag=o2,limit=1] Pos -> Husk has the following entity data: [7.5d, -60.0d, 0.5d]
+19:19:40.162 hp @e[tag=o3,limit=1] -> Husk has the following entity data: 100.0f
+19:19:40.162 MARK I4b Outburst moving: hold W, Shift after the 8 s cooldown; expected 13.5 m/s along (x, 0.6, z): vy ~ 0.35 b/t, forward ~0.58 b/t
+19:19:46.165 key forward down -> {"key":"key.keyboard.w"}
+19:19:46.666 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+19:19:46.833 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+19:19:47.067 state -> {"screen": "", "x": 0.5, "y": -58.81, "z": 6.85, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 2951.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 7.6, "ability2Cooldown": 1.3, "vx": 0.0, "vy": 0.129, "vz": 0.458, "anim": "jump+outburst"}
+19:19:47.401 state -> {"screen": "", "x": 0.5, "y": -58.818, "z": 9.307, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 2952.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 7.25, "ability2Cooldown": 0.95, "vx": 0.0, "vy": -0.131, "vz": 0.374, "anim": "fall+outburst"}
+19:19:47.435 key forward up -> {"key":"key.keyboard.w"}
+19:19:49.439 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 11.261, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2963.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 5.2, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:19:49.439 MARK I4c Outburst held (Jump held at the burst), moving: expected (x, 2, z) at 13.5: vy ~ 0.6 b/t
+19:19:57.458 key forward down -> {"key":"key.keyboard.w"}
+19:19:57.491 key jump down -> {"key":"key.keyboard.space"}
+19:19:57.792 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+19:19:57.960 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+19:19:58.161 state -> {"screen": "", "x": 0.5, "y": -57.643, "z": 15.134, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 2975.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 7.65, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.472, "vz": 0.295, "anim": "jump+outburst"}
+19:19:58.395 state -> {"screen": "", "x": 0.5, "y": -55.827, "z": 16.585, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 2975.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 7.4, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.254, "vz": 0.287, "anim": "jump+outburst"}
+19:19:58.427 key jump up -> {"key":"key.keyboard.space"}
+19:19:58.462 key forward up -> {"key":"key.keyboard.w"}
+19:20:01.470 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 22.601, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2975.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 4.35, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== I5 2026-11-14 19:20:19
+19:20:20.000 MARK I5a Captive Sun: ult full (2975); three NoAI husks 100 MC around z 15.5 (two 1.5 m apart, one 6 m off); Q, the launch (12 m/s up), the flight (mode 1), the left button after 1.5 s fires the ball at the pair
+19:20:20.024 cmd /kill @e[type=!player] -> {"ok":true}
+19:20:20.058 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+19:20:20.093 cmd /summon husk 0.5 -60 15.5 {NoAI:1b,Tags:["u1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:20:20.125 cmd /summon husk 2.0 -60 15.5 {NoAI:1b,Tags:["u2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:20:20.160 cmd /summon husk 6.5 -60 15.5 {NoAI:1b,Tags:["u3"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:20:20.193 cmd /summon husk 0.5 -60 30.5 {NoAI:1b,Tags:["u4"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:20:21.235 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2975.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:20:21.261 key ultimate down -> {"key":"key.keyboard.q"}
+19:20:21.428 key ultimate up -> {"key":"key.keyboard.q"}
+19:20:21.961 state -> {"screen": "", "x": 0.5, "y": -55.814, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.115, "vz": 0.0, "anim": "jump+ult_launch"}
+19:20:22.495 state -> {"screen": "", "x": 0.5, "y": -54.67, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 0.0, "shield": 0.0, "mode": 17, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.095, "vz": 0.0, "anim": "jump+ult_launch"}
+19:20:22.528 perspective back -> {"ok":true}
+19:20:22.962 screenshot illari_ult_launch.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_ult_launch.png"}
+19:20:22.995 perspective first -> {"ok":true}
+19:20:23.305 cmd /execute as @s at @s anchored eyes facing 1.2 -59 15.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:20:23.640 state -> {"screen": "", "x": 0.5, "y": -52.887, "z": 0.5, "yaw": -2.672, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 0.0, "shield": 0.0, "mode": 17, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.063, "vz": 0.0, "anim": "jump"}
+19:20:23.673 key secondary_fire down -> {"key":"key.mouse.left"}
+
+=== RJ 2026-11-14 19:25:53
+19:25:53.744 MARK RJ rejoin after the crash: open il1 again (expected the select screen with Illari kept, or straight into her)
+19:25:53.789 window 1920 1080 -> {"ok":true}
+19:25:57.251 openworld il1 -> {"ok":true}
+19:26:42.262 state -> {"screen": "HeroSelectScreen", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -2.672, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 181.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:26:42.294 screenshot illari_rejoin.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_rejoin.png"}
+
+=== I5 2026-11-14 19:26:48
+19:26:48.595 MARK I5a Captive Sun: ult full (2975); three NoAI husks 100 MC around z 15.5 (two 1.5 m apart, one 6 m off); Q, the launch (12 m/s up), the flight (mode 1), the left button after 1.5 s fires the ball at the pair
+19:26:48.621 screenclick 240 244 1 -> {"screen":""}
+19:26:50.645 cmd /difficulty easy -> {"ok":true}
+19:26:50.658 cmd /time set noon -> {"ok":true}
+19:26:50.712 ult 100 -> {"ok":true}
+19:26:51.230 cmd /kill @e[type=!player] -> {"ok":true}
+19:26:51.260 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+19:26:51.318 cmd /summon husk 0.5 -60 15.5 {NoAI:1b,Tags:["u1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:26:51.327 cmd /summon husk 2.0 -60 15.5 {NoAI:1b,Tags:["u2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:26:51.359 cmd /summon husk 6.5 -60 15.5 {NoAI:1b,Tags:["u3"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:26:51.392 cmd /summon husk 0.5 -60 30.5 {NoAI:1b,Tags:["u4"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:26:52.434 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2975.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:26:52.460 key ultimate down -> {"key":"key.keyboard.q"}
+19:26:52.627 key ultimate up -> {"key":"key.keyboard.q"}
+19:26:53.129 state -> {"screen": "", "x": 0.5, "y": -55.929, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.117, "vz": 0.0, "anim": "jump+ult_launch"}
+19:26:53.663 state -> {"screen": "", "x": 0.5, "y": -54.765, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 0.0, "shield": 0.0, "mode": 17, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.096, "vz": 0.0, "anim": "jump+ult_launch"}
+19:26:53.696 perspective back -> {"ok":true}
+19:26:54.113 screenshot illari_ult_launch.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_ult_launch.png"}
+19:26:54.146 perspective first -> {"ok":true}
+19:26:54.459 cmd /execute as @s at @s anchored eyes facing 1.2 -59 15.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:26:54.761 state -> {"screen": "", "x": 0.5, "y": -53.015, "z": 0.5, "yaw": -2.672, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 0.0, "shield": 0.0, "mode": 17, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.065, "vz": 0.0, "anim": "jump"}
+19:26:54.794 key secondary_fire down -> {"key":"key.mouse.left"}
+19:26:54.952 key secondary_fire up -> {"key":"key.mouse.left"}
+19:26:55.186 screenshot illari_ult_ball.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_ult_ball.png"}
+19:26:56.610 hp @e[tag=u1,limit=1] -> Husk has the following entity data: 96.0f
+19:26:57.020 hp @e[tag=u2,limit=1] -> Husk has the following entity data: 96.0f
+19:26:57.455 hp @e[tag=u3,limit=1] -> Husk has the following entity data: 96.0f
+19:26:57.893 hp @e[tag=u4,limit=1] -> Husk has the following entity data: 100.0f
+19:26:57.916 state -> {"screen": "", "x": 0.5, "y": -51.07, "z": 0.5, "yaw": -2.672, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 1.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 13, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.194, "vz": 0.0, "anim": "fall"}
+19:26:57.916 MARK I5b Sunstruck: one full rifle shot (75) on u1 (marked, 50 taken) -> 125 >= 90 -> 0.8 s later 160 at 1 m to 120 at 5 m on enemies near it (u2 ~1.5 m: ~155), chains to u2's mark
+19:26:57.948 cmd /execute as @s at @s anchored eyes facing 0.5 -59 15.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:26:59.150 key secondary_fire down -> {"key":"key.mouse.left"}
+19:26:59.251 key secondary_fire up -> {"key":"key.mouse.left"}
+19:26:59.995 hp @e[tag=u1,limit=1] -> Husk has the following entity data: 96.0f
+19:27:00.431 hp @e[tag=u2,limit=1] -> Husk has the following entity data: 96.0f
+19:27:02.369 hp @e[tag=u1,limit=1] -> Husk has the following entity data: 96.0f
+19:27:02.801 hp @e[tag=u2,limit=1] -> Husk has the following entity data: 96.0f
+19:27:03.236 hp @e[tag=u3,limit=1] -> Husk has the following entity data: 96.0f
+19:27:03.262 screenshot illari_sunstruck.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_sunstruck.png"}
+19:27:04.273 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 33.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:27:06.280 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 43.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== I5c 2026-11-14 19:27:28
+19:27:28.599 MARK I5c Sunstruck in flight: fresh husks; ult 100; Q; 1.3 s; aim at the pair, left (ball: 50 each, marked); 1 s; aim at u1's chest, left (rifle 75: 125 >= 90) -> 0.8 s later u1 160, u2 at ~1 m ~160 and its own mark set off by it, u3 6 m off 0
+19:27:28.606 cmd /kill @e[type=!player] -> {"ok":true}
+19:27:28.641 cmd /summon husk 0.5 -60 15.5 {NoAI:1b,Tags:["u1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:27:28.674 cmd /summon husk 2.0 -60 15.5 {NoAI:1b,Tags:["u2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:27:28.707 cmd /summon husk 7.0 -60 15.5 {NoAI:1b,Tags:["u3"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:27:28.740 ult 100 -> {"ok":true}
+19:27:29.742 key ultimate down -> {"key":"key.keyboard.q"}
+19:27:29.909 key ultimate up -> {"key":"key.keyboard.q"}
+19:27:31.214 cmd /execute as @s at @s anchored eyes facing 1.2 -60 15.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:27:31.447 key secondary_fire down -> {"key":"key.mouse.left"}
+19:27:31.581 key secondary_fire up -> {"key":"key.mouse.left"}
+19:27:32.583 cmd /execute as @s at @s anchored eyes facing 0.5 -59 15.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:27:32.925 state -> {"screen": "", "x": 0.5, "y": -52.056, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 13, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.049, "vz": 0.0, "anim": "jump"}
+19:27:33.358 hp @e[tag=u1,limit=1] -> Husk has the following entity data: 96.0f
+19:27:33.385 cmd /execute as @s at @s anchored eyes facing 0.5 -59 15.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:27:33.620 key secondary_fire down -> {"key":"key.mouse.left"}
+19:27:33.753 key secondary_fire up -> {"key":"key.mouse.left"}
+19:27:34.577 hp @e[tag=u1,limit=1] -> Husk has the following entity data: 90.0f
+19:27:35.607 screenshot illari_sunstruck.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_sunstruck.png"}
+19:27:36.046 hp @e[tag=u1,limit=1] -> Husk has the following entity data: 64.56f
+19:27:36.492 hp @e[tag=u2,limit=1] -> Husk has the following entity data: 60.719997f
+19:27:36.923 hp @e[tag=u3,limit=1] -> Husk has the following entity data: 73.36f
+19:27:40.925 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 753.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== N1 2026-11-14 19:28:10
+19:28:10.349 MARK N1 night fight: normal, midnight, monsters on; 3 zombies, 2 skeletons, a spider, a creeper, a villager beside her; 90 s of fight.py
+19:28:10.350 cmd /kill @e[type=!player] -> {"ok":true}
+19:28:10.384 cmd /difficulty normal -> {"ok":true}
+19:28:10.418 cmd /time set midnight -> {"ok":true}
+19:28:10.451 cmd /gamerule spawn_monsters true -> {"ok":true}
+19:28:10.485 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+19:28:10.518 cmd /summon villager 1.5 -60 0.5 {NoAI:1b,Tags:["vf"]} -> {"ok":true}
+19:28:10.556 cmd /summon zombie 0.5 -60 14.5 -> {"ok":true}
+19:28:10.604 cmd /summon zombie 6.5 -60 12.5 -> {"ok":true}
+19:28:10.636 cmd /summon zombie -6.5 -60 13.5 -> {"ok":true}
+19:28:10.670 cmd /summon skeleton 10.5 -60 18.5 -> {"ok":true}
+19:28:10.704 cmd /summon skeleton -10.5 -60 18.5 -> {"ok":true}
+19:28:10.736 cmd /summon spider 0.5 -60 -14.5 -> {"ok":true}
+19:28:10.771 cmd /summon creeper 14.5 -60 0.5 -> {"ok":true}
+
+=== N1-fight 2026-11-14 19:28:28
+19:28:28.390 DEATH 1 at -6.9 -4.0
+19:28:32.983 respawned: {"hero": "illari", "heroMode": true}
+19:28:33.529 t 5 hp 20.00 ammo 14 mode 0 a1 0.0 a2 0.0 ult 970 | Spider 3.5, Zombie 9.7, Zombie 9.9, Zombie 16.8
+19:28:34.429 OUTBURST with Spider at 2.1
+19:28:35.886 t 8 hp 17.13 ammo 12 mode 0 a1 6.8 a2 0.0 ult 1007 | Spider 1.5, Zombie 8.0, Zombie 8.8, Zombie 11.8
+19:28:36.891 PYLON at her feet
+19:28:38.228 t 10 hp 13.95 ammo 11 mode 2 a1 4.5 a2 0.0 ult 1019 | Spider 2.1, Zombie 6.8, Zombie 7.7, Zombie 8.3
+19:28:40.364 t 12 hp 13.15 ammo 10 mode 2 a1 2.4 a2 0.0 ult 1082 | Spider 1.0, Spider 2.1, Zombie 3.2, Creeper 7.5
+19:28:42.577 t 14 hp 11.95 ammo 9 mode 2 a1 0.1 a2 0.0 ult 1240 | Creeper 1.8, Spider 2.7, Spider 3.4, Zombie 4.9
+19:28:42.844 DEATH 2 at 26.9 -8.3
+19:28:47.448 respawned: {"hero": "illari", "heroMode": true}
+19:28:48.150 OUTBURST with Zombie at 2.9
+19:28:48.150 t 20 hp 20.00 ammo 14 mode 0 a1 0.0 a2 11.4 ult 1552 | Zombie 2.9, Zombie 10.6, Zombie 11.4, Zombie 11.4
+19:28:50.287 t 22 hp 15.95 ammo 12 mode 0 a1 6.2 a2 9.1 ult 1661 | Zombie 1.5, Zombie 5.0, Zombie 5.9, Zombie 6.2
+19:28:52.400 t 24 hp 6.95 ammo 12 mode 0 a1 4.0 a2 6.9 ult 1672 | Zombie 1.8, Zombie 2.3, Zombie 2.7, Zombie 3.3
+19:28:54.102 DEATH 3 at 3.8 2.7
+19:28:58.726 respawned: {"hero": "illari", "heroMode": true}
+19:28:59.493 PYLON at her feet
+19:29:00.295 OUTBURST with Zombie at 1.4
+19:29:00.295 t 32 hp 11.00 ammo 14 mode 0 a1 0.0 a2 0.0 ult 1694 | Zombie 1.4, Zombie 1.7, Zombie 1.8, Zombie 2.0
+19:29:01.297 DEATH 4 at 1.0 4.7
+19:29:05.911 respawned: {"hero": "illari", "heroMode": false}
+19:29:58.405 END: 4 deaths, 2 pylons, 3 outbursts, 0 suns
+
+=== P 2026-11-14 19:30:05
+19:30:05.164 state -> {"screen": "DeathScreen", "x": -1.616, "y": -60.0, "z": 5.686, "yaw": 0.0, "health": 0.0, "onGround": true, "heroMode": false, "hero": "illari", "ult": 2061.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 12.15, "vx": 0.006, "vy": -0.078, "vz": 0.006, "anim": "death"}
+19:30:05.190 cmd /difficulty peaceful -> {"ok":true}
+19:30:05.224 cmd /time set noon -> {"ok":true}
+19:30:05.258 cmd /gamerule spawn_monsters false -> {"ok":true}
+19:30:06.260 screenshot illari_after_fight.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_after_fight.png"}
+
+=== S2 2026-11-14 19:30:28
+19:30:28.319 MARK S2a after the fight: respawn, READY on the select screen (Illari kept)
+19:30:28.329 respawn -> {"ok":true}
+19:30:31.343 state -> {"screen": "", "x": -0.5, "y": -60.0, "z": 2.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2076.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:30:31.370 screenclick 240 244 1 -> {"screen":""}
+19:30:33.375 cmd /kill @e[type=!player] -> {"ok":true}
+19:30:33.409 state -> {"screen": "", "x": -0.5, "y": -60.0, "z": 2.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2086.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:30:33.409 MARK S2b Survivor: hurt to 10 MC (125 OW) by /damage, then at once Outburst: regen starts at once (10 + 5 % = 22.5 OW/s = 1.8 MC/s), not after 6 s
+19:30:33.441 cmd /damage @s 10 minecraft:generic -> {"ok":true}
+19:30:33.776 state -> {"screen": "", "x": -0.5, "y": -60.0, "z": 2.5, "yaw": 0.0, "health": 10.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2088.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:30:33.808 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+19:30:33.975 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+19:30:35.481 state -> {"screen": "", "x": -0.5, "y": -60.0, "z": 2.5, "yaw": 0.0, "health": 14.52, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2096.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 6.35, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:30:36.483 state -> {"screen": "", "x": -0.5, "y": -60.0, "z": 2.5, "yaw": 0.0, "health": 17.32, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2101.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 5.35, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:30:36.483 MARK S2c control: hurt again with Outburst on cooldown: no regen for 6 s
+19:30:36.516 cmd /damage @s 6 minecraft:generic -> {"ok":true}
+19:30:38.521 state -> {"screen": "", "x": -0.5, "y": -60.0, "z": 2.5, "yaw": 0.0, "health": 13.5, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2112.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 3.3, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:30:40.527 state -> {"screen": "", "x": -0.5, "y": -60.0, "z": 2.5, "yaw": 0.0, "health": 15.5, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2122.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 1.3, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:30:40.527 MARK S2d G: Minecraft mode (vanilla health, no HUD) and back (her kit fresh); pylon out first: it stays through G
+19:30:40.559 key ability_2 down -> {"key":"key.keyboard.e"}
+19:30:40.726 key ability_2 up -> {"key":"key.keyboard.e"}
+19:30:43.230 press key.keyboard.g -> {"key":"key.keyboard.g"}
+19:30:44.739 state -> {"screen": "", "x": -0.5, "y": -60.0, "z": 2.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": false, "hero": "illari", "ult": 2168.0, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "idle"}
+19:30:44.747 screenshot illari_gmode.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_gmode.png"}
+19:30:44.756 press key.keyboard.g -> {"key":"key.keyboard.g"}
+19:30:46.261 state -> {"screen": "", "x": -0.5, "y": -60.0, "z": 2.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 2175.75, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:30:46.261 MARK S2e switch to Junkrat and back (dev hero = the select screen's payload): her pylon gone on the switch
+19:30:46.270 hero junkrat -> {"ok":true}
+19:30:47.774 state -> {"screen": "", "x": -0.5, "y": -60.0, "z": 2.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 7.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:30:47.784 ents Pylon -> {"ents":""}
+19:30:47.793 hero illari -> {"ok":true}
+19:30:49.299 state -> {"screen": "", "x": -0.5, "y": -60.0, "z": 2.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 7.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== Q 2026-11-14 19:31:08
+19:31:08.658 press key.keyboard.escape -> {"key":"key.keyboard.escape"}
+19:31:09.661 screenshot illari_pause.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_pause.png"}
+19:31:10.683 screenclick 66 213 1 -> {"screen":"PauseScreen"}
+19:31:14.692 screen -> {"screen":"net.minecraft.client.gui.screens.PauseScreen"}
+
+=== Q 2026-11-14 19:31:20
+19:31:20.858 screenclick 66 232 1 -> {"screen":"PauseScreen"}
+19:31:25.864 screen -> {"screen":"net.minecraft.client.gui.screens.PauseScreen"}
+
+=== V1 2026-11-14 19:34:55
+19:34:55.265 MARK V1 fresh world il2 (peaceful start), pick Illari on the select screen (two clicks), Captive Sun again: ball press must not also fire the rifle (ammo stays 14); fly with W held 1 s: ~8 m/s (0.4 b/t)
+19:34:55.281 window 1920 1080 -> {"ok":true}
+19:35:00.985 newworld il2 -> {"ok":true}
+19:35:46.038 state -> {"screen": "HeroSelectScreen", "x": -7.5, "y": -60.0, "z": -7.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": false, "hero": "", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 0, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "idle"}
+19:35:46.089 cmd /difficulty peaceful -> {"ok":true}
+19:35:46.102 cmd /gamerule spawn_monsters false -> {"ok":true}
+19:35:46.135 cmd /time set noon -> {"ok":true}
+19:35:46.218 cmd /weather clear -> {"ok":true}
+19:35:46.228 screenclick 390 216 1 -> {"screen":"HeroSelectScreen"}
+19:35:47.746 screenclick 390 216 1 -> {"screen":""}
+19:35:50.753 state -> {"screen": "", "x": -7.5, "y": -60.0, "z": -7.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 15.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+19:35:50.787 cmd /difficulty easy -> {"ok":true}
+19:35:50.849 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+19:35:50.901 cmd /summon husk 0.5 -60 15.5 {NoAI:1b,Tags:["u1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+19:35:50.909 ult 100 -> {"ok":true}
+19:35:51.914 key ultimate down -> {"key":"key.keyboard.q"}
+19:35:52.080 key ultimate up -> {"key":"key.keyboard.q"}
+19:35:53.383 cmd /execute as @s at @s anchored eyes facing 0.5 -59 15.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:35:53.583 key secondary_fire down -> {"key":"key.mouse.left"}
+19:35:53.732 key secondary_fire up -> {"key":"key.mouse.left"}
+19:35:54.342 state -> {"screen": "", "x": 0.5, "y": -51.863, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.086, "vz": 0.0, "anim": "jump+ball_fire"}
+19:35:54.778 hp @e[tag=u1,limit=1] -> Husk has the following entity data: 95.6f
+19:35:54.804 cmd /execute as @s at @s rotated 0 0 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+19:35:54.837 key forward down -> {"key":"key.keyboard.w"}
+19:35:55.472 state -> {"screen": "", "x": 0.5, "y": -50.993, "z": 5.242, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.399, "anim": "fall"}
+19:35:55.906 state -> {"screen": "", "x": 0.5, "y": -50.993, "z": 8.83, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "illari", "ult": 0.0, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.399, "anim": "fall"}
+19:35:55.939 perspective back -> {"ok":true}
+19:35:56.255 screenshot illari_flight.png -> {"file":"E:\\claude\\mods\\overcraft_illari\\run\\screenshots\\illari_flight.png"}
+19:35:56.287 key forward up -> {"key":"key.keyboard.w"}
+19:35:56.470 perspective first -> {"ok":true}
+19:35:59.479 state -> {"screen": "", "x": 0.5, "y": -60.0, "z": 23.558, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "illari", "ult": 11.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 14, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}

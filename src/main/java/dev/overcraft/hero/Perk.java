@@ -84,7 +84,12 @@ public enum Perk {
 	JUNKRAT_NITRO_BOOST(Hero.JUNKRAT, Tier.MINOR, "nitro_boost"),
 	JUNKRAT_BOMB_VOYAGE(Hero.JUNKRAT, Tier.MINOR, "bomb_voyage"),
 	JUNKRAT_FRAG_CANNON(Hero.JUNKRAT, Tier.MAJOR, "frag_cannon"),
-	JUNKRAT_MINE_RECYCLING(Hero.JUNKRAT, Tier.MAJOR, "mine_recycling");
+	JUNKRAT_MINE_RECYCLING(Hero.JUNKRAT, Tier.MAJOR, "mine_recycling"),
+	// Illari's, the live list's order (D 0064.177: 25B1, 25B2; 25B4, 26F8; illari-map.md)
+	ILLARI_RAPID_CONSTRUCTION(Hero.ILLARI, Tier.MINOR, "rapid_construction"),
+	ILLARI_SUMMER_SOLSTICE(Hero.ILLARI, Tier.MINOR, "summer_solstice"),
+	ILLARI_SUNBURN(Hero.ILLARI, Tier.MAJOR, "sunburn"),
+	ILLARI_SOLAR_FLARE(Hero.ILLARI, Tier.MAJOR, "solar_flare");
 
 	public enum Tier { MINOR, MAJOR }
 

@@ -1,0 +1,7 @@
+respawn
+sleep 3
+cmd /difficulty peaceful
+cmd /kill @e[type=slime]
+state
+screenshot illari_respawn.png
+sleep 1

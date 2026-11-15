@@ -183,6 +183,7 @@ public final class HeroManager {
 		KITS.put(Hero.TRACER, new dev.overcraft.tracer.Tracer());
 		KITS.put(Hero.CASSIDY, new dev.overcraft.cassidy.Cassidy());
 		KITS.put(Hero.JUNKRAT, new dev.overcraft.junkrat.Junkrat());
+		KITS.put(Hero.ILLARI, new dev.overcraft.illari.Illari());
 	}
 
 	private HeroManager() {
@@ -276,7 +277,8 @@ public final class HeroManager {
 		// jets, her hover and her own blasts; Junkrat: his mine's launch and his frags' push
 		return state != null && ((state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA
 			|| state.hero == Hero.SOJOURN || state.hero == Hero.SIGMA || state.hero == Hero.DVA || state.hero == Hero.LUCIO
-			|| state.hero == Hero.BRIGITTE || state.hero == Hero.KIRIKO || state.hero == Hero.PHARAH || state.hero == Hero.JUNKRAT)
+			|| state.hero == Hero.BRIGITTE || state.hero == Hero.KIRIKO || state.hero == Hero.PHARAH || state.hero == Hero.JUNKRAT
+			|| state.hero == Hero.ILLARI)
 			&& state.softLanding || state.hero == Hero.JUNO);
 	}
 

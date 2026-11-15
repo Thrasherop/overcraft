@@ -588,6 +588,24 @@ public final class OcSounds {
 	public static final java.util.List<String> JUNKRAT_VOICE = java.util.List.of(
 		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
 		"ping_warning", "ping_enemy", "mine_throw", "mine_jump", "mine_kill", "trap", "tire_kill", "ultimate");
+	/**
+	 * Illari's sounds by name ("illari." + name, played through dev.overcraft.illari.IllariSounds; tools/soundmaps/illari_sfx.txt says
+	 * which data event each is) and her voice moments (Voice.say: "illari.voice.<moment>", tools/soundmaps/illari.txt). The ult line is
+	 * ult.friendly / ult.enemy, her own "ultimate".
+	 */
+	public static final java.util.List<String> ILLARI_SOUNDS = java.util.List.of("ult.friendly", "ult.enemy",
+		"beam.full", "beam.heal", "beam.heal_3p", "beam.healing", "beam.hit", "beam.hit_3p", "beam.hit_world", "beam.loop",
+		"beam.loop_3p", "beam.refill", "beam.start", "beam.start_3p", "beam.stop", "beam.stop_3p", "flare", "flare.hit", "flare_3p",
+		"melee", "melee_3p", "outburst", "outburst.burn", "outburst.burn_3p", "outburst.hit_enemy", "outburst.hit_enemy_3p",
+		"outburst.sunburn", "outburst_3p", "pylon.build", "pylon.build_fast", "pylon.destroyed", "pylon.destroyed_3p", "pylon.flight",
+		"pylon.heal", "pylon.heal_hit", "pylon.land", "pylon.loop", "pylon.removed", "pylon.removed_3p", "pylon.targeted",
+		"pylon.throw", "pylon.throw_3p", "reload", "reload_3p", "rifle.charge", "rifle.charged", "rifle.fire", "rifle.fire_3p",
+		"rifle.fire_uncharged", "rifle.fire_uncharged_3p", "rifle.hit_enemy", "rifle.hit_enemy_3p", "rifle.hit_world", "rifle.whiz",
+		"sun.armed", "sun.armed_3p", "sun.ball", "sun.cast", "sun.cast_3p", "sun.explode", "sun.explode_3p", "sun.fire", "sun.fire_3p",
+		"sun.flight", "sun.flight_3p", "sun.impact", "sun.mark", "sun.mark_3p", "sun.marked", "sun.marked_own", "sun.trigger",
+		"sun.trigger_3p", "sun.trigger_owner");
+	public static final java.util.List<String> ILLARI_VOICE = java.util.List.of(
+		"beam_empty", "beam_hurt_ally", "death", "elimination", "melee", "melee_kill", "multikill", "on_fire", "outburst", "outburst_hit", "pain", "ping", "ping_enemy", "ping_pylon", "ping_warning", "pylon", "pylon_destroyed", "pylon_moved", "respawn", "select", "ult_ready", "ultimate");
 	public static final java.util.List<String> DVA_VOICE = java.util.List.of(
 		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
 		"ping_warning", "ping_enemy", "boosters", "matrix", "matrix_absorb", "call_mech", "call_mech_kill", "eject", "mech_back",
@@ -639,6 +657,8 @@ public final class OcSounds {
 		CASSIDY_VOICE.forEach(moment -> register("cassidy.voice." + moment));
 		JUNKRAT_SOUNDS.forEach(name -> register("junkrat." + name));
 		JUNKRAT_VOICE.forEach(moment -> register("junkrat.voice." + moment));
+		ILLARI_SOUNDS.forEach(name -> register("illari." + name));
+		ILLARI_VOICE.forEach(moment -> register("illari.voice." + moment));
 	}
 
 	private OcSounds() {

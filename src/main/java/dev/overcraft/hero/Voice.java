@@ -231,7 +231,17 @@ public final class Voice {
 		java.util.Map.entry("junkrat.mine_kill", new Stimulus(60, 10, 10, false)), // 0415
 		java.util.Map.entry("junkrat.trap", new Stimulus(60, 1, 1, false)), // 043D (09BB #791)
 		java.util.Map.entry("junkrat.tire_kill", new Stimulus(75, 5, 5, false)), // 0414
-		java.util.Map.entry("junkrat.ultimate", new Stimulus(95, 1, 1, false))); // 184C (0232 #572, the own key F1AC)
+		java.util.Map.entry("junkrat.ultimate", new Stimulus(95, 1, 1, false)), // 184C (0232 #572, the own key F1AC)
+		// Illari's (tools/soundmaps/illari.txt; her stimuli's .078)
+		java.util.Map.entry("illari.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("illari.pylon", new Stimulus(95, 0.1f, 0.1f, false)), // 13E0 (3DF4 #116)
+		java.util.Map.entry("illari.pylon_destroyed", new Stimulus(60, 2, 5, false)), // 13E1 (3DF5 #428)
+		java.util.Map.entry("illari.pylon_moved", new Stimulus(60, 10, 10, false)), // 1465 (3DF5 #428)
+		java.util.Map.entry("illari.outburst_hit", new Stimulus(50, 20, 25, false)), // 1461 (3B38 #874)
+		java.util.Map.entry("illari.outburst", new Stimulus(45, 1, 1, false)), // 1462 (3B38 #905)
+		java.util.Map.entry("illari.beam_hurt_ally", new Stimulus(60, 15, 20, false)), // 1463 (3A65 #2804)
+		java.util.Map.entry("illari.beam_empty", new Stimulus(60, 30, 30, false)), // 1464 (3A65 #2560)
+		java.util.Map.entry("illari.ultimate", new Stimulus(95, 1, 1, false))); // 1848 (3CAB #1084, the own key F1AC)
 
 	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
 	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);

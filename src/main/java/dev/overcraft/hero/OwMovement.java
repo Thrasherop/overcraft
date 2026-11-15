@@ -139,6 +139,8 @@ public final class OwMovement {
 	public static Predicate<LivingEntity> driven = entity -> false;
 	/** Mercy in Valkyrie: the flight with her mover's numbers (else Jetpack Cat's). */
 	public static Predicate<LivingEntity> valkyrie = entity -> false;
+	/** Illari in Captive Sun's flight: her speed (m/s), 0 when she isn't flying. */
+	public static java.util.function.ToDoubleFunction<LivingEntity> illariFlight = entity -> 0;
 	/** Mercy's Guardian Angel: where it takes her and how fast (null when she isn't flying to someone). */
 	public static java.util.function.Function<LivingEntity, @org.jspecify.annotations.Nullable Glide> glide = entity -> null;
 	/** Set by the client: D.Va flies in her Boosters (the sync's Dva.MODE_BOOSTING). */
@@ -1063,7 +1065,8 @@ public final class OwMovement {
 		Vec3 dir = look.scale(fwd).add(new Vec3(Math.cos(yaw), 0, Math.sin(yaw)).scale(strafe)).add(0, vert, 0);
 		boolean wants = dir.lengthSqr() > 1.0E-6;
 		Vec3 wishDir = wants ? dir.normalize() : Vec3.ZERO;
-		boolean valk = valkyrie.test(entity);
+		double illari = illariFlight.applyAsDouble(entity);
+		boolean valk = valkyrie.test(entity) || illari > 0;
 		int boost = valk ? -1 : boosting.applyAsInt(entity);
 		double t = Math.max(0, boost) * 0.05;
 		double wishSpeed;
@@ -1079,7 +1082,8 @@ public final class OwMovement {
 			// Valkyrie (her graph 10DA's mover: forward, back and strafe 5.5, x1.636 = 9 m/s every way, air acceleration
 			// 8, air drag 0.35 with no input, above 9 m/s a 2/s decay); in the 0.5 s after a launch her speed is
 			// x2.4444 (22 m/s) and nothing damps it (006E #477)
-			wishSpeed = dev.overcraft.mercy.MercyStats.VALKYRIE_SPEED * factor
+			// (Illari in Captive Sun: the same mover at her flight's speed, 5.5 x 1.45: D 1D3D; its acceleration and drag Valkyrie's, ours)
+			wishSpeed = illari > 0 ? illari * factor : dev.overcraft.mercy.MercyStats.VALKYRIE_SPEED * factor
 				* (free ? 1 + dev.overcraft.mercy.MercyStats.GA_LAUNCH_SPEED_VALKYRIE : 1);
 			accel = dev.overcraft.mercy.MercyStats.VALKYRIE_AIR_ACCEL;
 			drag = free ? 0 : dev.overcraft.mercy.MercyStats.VALKYRIE_DRAG;

@@ -1044,6 +1044,17 @@ public final class HeroHud {
 				(float) dev.overcraft.tracer.TracerStats.RECALL_COOLDOWN, ability2ReadyAt);
 			return;
 		}
+		if (hero == Hero.ILLARI) {
+			// Outburst (Shift) and Healing Pylon (E, lit while it's out: E takes it back), in Kiriko's two places (ours)
+			ability(g, hero, w, "outburst", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.illari.IllariStats.OUTBURST_COOLDOWN, ability1ReadyAt);
+			ability(g, hero, w, "healing_pylon", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.illari.IllariStats.PYLON_COOLDOWN_HIT, ability2ReadyAt);
+			if ((s.mode() & dev.overcraft.illari.Illari.MODE_PYLON_OUT) != 0) {
+				song(g, true, false, w - 563, 906, w);
+			}
+			return;
+		}
 		if (hero == Hero.JUNKRAT) {
 			// Concussion Mine (Shift) with its charges in the corner and the next one's recharge as a band, its time shown only with none left
 			// (Tracer's Blink's way), lit while a mine is out (the right button sets it off), and Steel Trap (E), in Kiriko's two places (ours)
@@ -1460,6 +1471,16 @@ public final class HeroHud {
 			}
 			weapon(g, hero, w, "railgun", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
 				dev.overcraft.sojourn.SojournStats.RAILGUN_AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
+		if (hero == Hero.ILLARI) {
+			// the healing beam (the right button) where Kiriko's ofuda panel is, its solar energy along the panel's foot (Sojourn's bar);
+			// the Solar Rifle's 14 (the left) where her kunai are
+			weapon(g, hero, w, "healing_beam", w - 484, 923.5f, 169, 64, 40, 40, w - 342, -1, 0,
+				HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
+			railgunEnergy(g, s.meter(), w - 484, 923.5f, 169, w);
+			weapon(g, hero, w, "solar_rifle", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+				dev.overcraft.illari.IllariStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;
 		}
 		if (hero == Hero.JUNKRAT) {
