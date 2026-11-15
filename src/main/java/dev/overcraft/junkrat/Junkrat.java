@@ -324,6 +324,15 @@ public final class Junkrat implements HeroKit {
 		if (!canDetonate(mine != null && !mine.detonating(), now - j.mineThrownAt)) {
 			return;
 		}
+		// it cuts a reload, as Sojourn's Charged Shot does (the owner, #147: "detonating junkrat mines should cancel everything
+		// like soj railgun"; reproduced 2026-11-15: a reload 0.25 s in ran on to full after the press). The magazine keeps what it
+		// has (HeroState.interruptReload); his client's animator ends the reload's look on reload_cut, as hers does
+		boolean cut = s.primaryReload >= 0;
+		s.interruptReload(0);
+		j.reloadFast = false;
+		if (cut) {
+			net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, new dev.overcraft.net.HeroActionPayload(player.getId(), "reload_cut"));
+		}
 		Combat.animate(player, "mine_detonate");
 		JunkratSounds.split(player, "mine.detonate", player.getEyePosition(), 30);
 		Vec3 at = mine.position();

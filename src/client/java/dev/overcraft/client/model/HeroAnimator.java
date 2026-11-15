@@ -294,12 +294,17 @@ public final class HeroAnimator {
 			dev.overcraft.hero.PressTrace.seen("clip");
 		}
 		boolean own = net.minecraft.client.Minecraft.getInstance().player != null && net.minecraft.client.Minecraft.getInstance().player.getId() == entityId;
-		if ((action.equals("charged_shot") || action.equals("reload_cut")) && a.since("reload", now) < dev.overcraft.sojourn.SojournStats.RELOAD) {
-			// her Charged Shot ends a reload (Railgun.chargedShot), on every client: its clips and layers, its sound
+		if ((action.equals("charged_shot") && a.since("reload", now) < dev.overcraft.sojourn.SojournStats.RELOAD) || action.equals("reload_cut")) {
+			// her Charged Shot ends a reload (Railgun.chargedShot), on every client: its clips and layers, its sound; and Junkrat's
+			// mine detonation (Junkrat.detonateMine, #147), whose reload outlasts hers: reload_cut alone is a cut, whatever the time
 			a.actionAt.remove("reload");
 			a.actions.cancel("reload", now);
 			a.actionsFirstPerson.cancel("reload", now);
-			dev.overcraft.client.ClientSojourn.reloadCut(entityId, own);
+			if (own && dev.overcraft.client.ClientHero.hero() == dev.overcraft.hero.Hero.JUNKRAT) {
+				net.minecraft.client.Minecraft.getInstance().getSoundManager().stop(dev.overcraft.Overcraft.id("junkrat.reload"), null);
+			} else {
+				dev.overcraft.client.ClientSojourn.reloadCut(entityId, own);
+			}
 		}
 		if (action.equals("charged_ack")) {
 			dev.overcraft.client.ClientSojourn.acked();

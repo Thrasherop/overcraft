@@ -4,7 +4,25 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-15: 0.3.53 on next (not on main yet)
+## 2026-11-15: 0.3.54 on next (not on main yet)
+
+- **D.Va's Boosters stopped by any rise (#148):** the owner: "Dva's boosters keep getting cancelled after just like a second or
+  two". The flight always ran its 2 s (a tap, Shift held, firing, Defense Matrix, Micro Missiles: all 2 s, about 24 m); what cut
+  it short was the ground: Minecraft steps an entity up only when it's on the ground or moving down into it, and a level flight
+  is neither, so even a half slab held her still for the rest of the flight (z 134.30 from 1.3 s on). Along the ground she now
+  steps up what she'd walk up (0.6 m): over a slab row she went from y -60 to -59.5 and on at full speed. A full block stays a
+  wall (dva.md step 6): she stopped at it (z 29.30) for the rest of her 2 s.
+- **Junkrat's mine detonation cuts a reload (#147):** the owner: "detonating junkrat mines should cancel everything like soj
+  railgun". Before: a detonation 0.25 s into a reload let it run on to full (ammo 1 -> 5). Now it's cut as Sojourn's Charged
+  Shot cuts hers: the magazine keeps what it has (3 stayed 3), and his reload's look and sound stop. A reload with no detonation
+  still runs to full.
+- Played with real keys (dev client, flat world): D.Va picked from the select screen, Shift tapped and held, into a wall, a
+  slab row and a stone row; Junkrat's frags, R, Shift's mine and the right button. Not tried: slopes in a survival world, water,
+  a second player watching Junkrat's cut reload (their client gets no cut yet: the message goes to him alone).
+- **#145 (select screen on Kiriko after a rejoin) not reproduced:** two Save and Leave rejoins as Junkrat, one with the hero
+  sync held back 500 ms, both came back on Junkrat, chosen. What was tried is on the issue.
+
+## 2026-11-15: 0.3.53
 
 - **The 0.3.32 playtest's side-by-side work, merged at last (#149):** `fix/side-by-side` (24 commits, 2026-11-05) went into the
   0.3.32 playtest build but never into `next`, so every build since lacked it. The owner noticed Ana's scope: "0.3.32 used that

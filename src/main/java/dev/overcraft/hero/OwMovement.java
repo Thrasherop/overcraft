@@ -556,6 +556,12 @@ public final class OwMovement {
 			entity.resetFallDistance();
 			Vec3 v = entity.getViewVector(1.0f).scale(Ow.speed(dev.overcraft.dva.DvaStats.BOOSTERS_SPEED * speedFactor(entity)));
 			entity.setDeltaMovement(v);
+			// along the ground she steps up what she'd walk up (a slab, a path's edge): Minecraft's collide steps only an entity on
+			// the ground or moving down into it, and a level flight is neither, so a half slab stopped her dead for the rest of the
+			// flight (#148, reproduced 2026-11-15: z 134.30 from 1.3 s into it). A full block stays a wall (dva.md step 6)
+			if (v.y <= 0 && !entity.level().noCollision(entity, entity.getBoundingBox().move(0, -0.05, 0))) {
+				entity.setOnGround(true);
+			}
 			entity.move(MoverType.SELF, v);
 			return;
 		}
