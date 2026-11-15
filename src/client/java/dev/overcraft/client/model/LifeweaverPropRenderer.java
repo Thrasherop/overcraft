@@ -79,6 +79,28 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 	}
 
 	/**
+	 * Torbjörn's turret (model 1000C, set 0996: tools/clipmaps/torbjorn_turret.txt): in flight its rest pose, building its build clip
+	 * (00DC, 2.5 s), built its level 2 idle with a fire layer on each shot, its upgrade (00DE) then the level 3 idle; turned to its aim.
+	 */
+	public static LifeweaverPropRenderer<dev.overcraft.entity.TurretEntity> turret(EntityRendererProvider.Context context) {
+		return new LifeweaverPropRenderer<>(context, "torbjorn_turret", (e, s) -> {
+			float t = e.stateTime(s.partialTick);
+			switch (e.state()) {
+				case dev.overcraft.entity.TurretEntity.FLYING -> s.clip = null;
+				case dev.overcraft.entity.TurretEntity.BUILDING -> clip(s, "build", t, false);
+				case dev.overcraft.entity.TurretEntity.UPGRADING -> clip(s, "upgrade", t, false);
+				case dev.overcraft.entity.TurretEntity.LEVEL3 -> clip(s, "l3_idle", t, true);
+				default -> clip(s, "l2_idle", t, true);
+			}
+			float shot = (e.tickCount - e.shotAt() + s.partialTick) / 20f;
+			if (e.built() && shot >= 0 && shot < 0.3f) {
+				s.add = e.state() == dev.overcraft.entity.TurretEntity.LEVEL3 ? "add_l3_fire" : "add_l2_fire";
+				s.addTime = shot;
+			}
+		});
+	}
+
+	/**
 	 * Illari's Healing Pylon (model 134D8, set 10FA: tools/clipmaps/illari_pylon.txt): in flight still, set down its build clip,
 	 * built its idle looped. Ours: the same renderer as Lifeweaver's props.
 	 */

@@ -1,0 +1,58 @@
+# Torbjorn's turret (pet entity 28B7, model 00000001000C.00C (base 092E, look 0AF0); set 0996), graphs 38EA / 1688 / 1689; thrown as
+# entity 2931 (the same model, no set). Level branches l2_ / l3_ (dfE5 cat91 / cat92, M).
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\torbjorn\scripts\clipmaps_torbjorn.py from the
+# compacted blend-tree sets (research\torbjorn\work\clipmap_torbjorn\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+0-60_000000000EAC = base   # 0.0333 s; set 0996 alias A0E (the set's base tree); df8A=cat4 @82658050 dfE5=cat90 @82658051; on 6 paths
+0-60_000000000EAE = l2_base   # 0.0333 s; set 0996 alias A0E (the set's base tree); df8A=cat4 @82658050 dfE5=cat91 @82658052; on 5 paths
+0-60_000000000EB5 = l3_base   # 0.0333 s; set 0996 alias A0E (the set's base tree); df8A=cat4 @82658050 dfE5=cat92 @82658053; on 5 paths
+0-36_000000000E5D = idle   # 0.0333 s; set 0996 alias 86 ((was level1: alias 86 df8A default (level 1 pose, M)) dfE5 cat90 (M)); df8A=default[1] @2 sel[4] @85 dfE5=cat90 @86 df8A=default[1]; on 4 paths
+36-6_000000000E57 = add_level1   # 0.8667 s; set 0996 alias 86 (dfE5 cat90 (M)); df8A=default[1] @2 sel[4] @85 dfE5=cat90 @86 df8A=default[1] +add(); on 4 paths
+4-0_000000000E4E = add_fire   # 0.5 s; set 0996 alias 92 ((was add_fire_sm0: alias 92 (0.5 s, M level 1/2 shot)) level 1 shot (M)); df8A=default[1] @2 sel[4] @85 dfE5=cat90 @86 df8A=default[1] +add() @92 sm[0]; on 25 paths
+4-28_000000000EB9 = add_level1_sm0   # 0.0333 s; set 0996 alias 86 (dfE5 cat90 (M)); df8A=default[1] @2 sel[4] @85 dfE5=cat90 @86 df8A=default[1] +add() sm[0]; on 4 paths
+0-60_000000000E5C = l2_idle   # 0.0333 s; set 0996 alias 85 ((was l2_base_85: alias 87 df8A default (M)) the 1P / turret base under alias 2 (M)); df8A=default[1] @2 sel[4] @85 dfE5=cat91 @87 df8A=default[1]; on 4 paths
+36-6_000000000E59 = add_l2_base_85   # 0.8667 s; set 0996 alias 85 (the 1P / turret base under alias 2 (M)); df8A=default[1] @2 sel[4] @85 dfE5=cat91 @87 df8A=default[1] +add(); on 4 paths
+4-0_000000000E5A = add_l2_fire   # 0.5 s; set 0996 alias 93 ((was add_l2_fire_sm0: alias 93 (M)) level 2 shot (M)); df8A=default[1] @2 sel[4] @85 dfE5=cat91 @87 df8A=default[1] +add() @93 sm[0]; on 25 paths
+4-28_000000000EBA = add_l2_base_85_sm0   # 0.0333 s; set 0996 alias 85 (the 1P / turret base under alias 2 (M)); df8A=default[1] @2 sel[4] @85 dfE5=cat91 @87 df8A=default[1] +add() sm[0]; on 4 paths
+0-60_000000000E5F = l3_idle   # 0.0333 s; set 0996 alias 85 ((was l3_base_85: alias DF df8A default (M)) the 1P / turret base under alias 2 (M)); df8A=default[1] @2 sel[4] @85 dfE5=cat92 @DF df8A=default[1]; on 4 paths
+36-6_000000000E60 = add_l3_base_85   # 0.8667 s; set 0996 alias 85 (the 1P / turret base under alias 2 (M)); df8A=default[1] @2 sel[4] @85 dfE5=cat92 @DF df8A=default[1] +add(); on 4 paths
+4-0_000000000E61 = add_l3_fire   # 0.5 s; set 0996 alias 85 ((was add_l3_base_85_sm0: DF's shot (M)) the 1P / turret base under alias 2 (M)); df8A=default[1] @2 sel[4] @85 dfE5=cat92 @DF df8A=default[1] +add() @82658055 @8265803A sm[0]; on 20 paths
+4-0_000000000E62 = add_l3_base_85_sm0   # 1 s; set 0996 alias 85 (the 1P / turret base under alias 2 (M)); df8A=default[1] @2 sel[4] @85 dfE5=cat92 @DF df8A=default[1] +add() @82658055 +add({'bound': None}) @8265803C sm[0]; on 20 paths
+4-28_000000000EBB = add_l3_base_85_sm0_2   # 0.0333 s; set 0996 alias 85 (the 1P / turret base under alias 2 (M)); df8A=default[1] @2 sel[4] @85 dfE5=cat92 @DF df8A=default[1] +add() sm[0]; on 4 paths
+0-36_000000004F64 = base_85   # 0.0333 s; set 0996 alias 85 (the 1P / turret base under alias 2 (M)); df8A=default[1] @2 sel[4] @85 dfE5=default[3] @82658056; on 3 paths
+4-4_0000000037E5 = add_l2_base   # 0.6667 s; set 0996 alias 2 (); df8A=default[1] @2 +add(df102) @82658065 dfE5=cat91 @8265805A; on 2 paths
+4-4_0000000037E4 = add_l3_base   # 0.6667 s; set 0996 alias 2 (); df8A=default[1] @2 +add(df102) @82658065 dfE5=cat92 @82658059; on 2 paths
+4-4_0000000037E6 = add_base   # 0.6667 s; set 0996 alias 2 (); df8A=default[1] @2 +add(df102) @82658065 dfE5=default[2] @82658057; on 2 paths
+4-4_000000000EB1 = add_l2_aim_tree_down   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=cat91 @EB +add() blend1d({'bound': '000000000103.013'}) 1d@-0.5; on 2 paths
+4-0_000000000EB0 = add_l2_aim_tree   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=cat91 @EB +add() blend1d({'bound': '000000000103.013'}); on 2 paths
+4-4_000000000EB2 = add_l2_aim_tree_up   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=cat91 @EB +add() blend1d({'bound': '000000000103.013'}) 1d@0.5; on 2 paths
+4-0_000000000EAF = add_l2_aim_tree_up_2   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=cat91 @EB +add() blend1d({'bound': '000000000103.013'}) 1d@1.0; on 2 paths
+4-4_000000000ED7 = add_l2_aim_tree_down_2   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=cat91 @EB +add() blend1d({'bound': '0000000000DD.013'}) 1d@-0.5; on 2 paths
+4-4_000000000ED6 = add_l2_aim_tree_2   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=cat91 @EB +add() blend1d({'bound': '0000000000DD.013'}); on 2 paths
+4-4_000000000ED4 = add_l2_aim_tree_up_3   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=cat91 @EB +add() blend1d({'bound': '0000000000DD.013'}) 1d@0.5; on 2 paths
+4-4_000000000ED5 = add_l2_aim_tree_up_4   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=cat91 @EB +add() blend1d({'bound': '0000000000DD.013'}) 1d@1.0; on 2 paths
+4-4_000000000EB4 = add_l3_aim_tree_down   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=cat92 @EC +add() blend1d({'bound': '000000000103.013'}) 1d@-0.5; on 2 paths
+4-0_000000000EB8 = add_l3_aim_tree   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=cat92 @EC +add() blend1d({'bound': '000000000103.013'}); on 2 paths
+4-4_000000000EB6 = add_l3_aim_tree_up   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=cat92 @EC +add() blend1d({'bound': '000000000103.013'}) 1d@0.5; on 2 paths
+4-0_000000000EB7 = add_l3_aim_tree_up_2   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=cat92 @EC +add() blend1d({'bound': '000000000103.013'}) 1d@1.0; on 2 paths
+4-4_000000000EDC = add_l3_aim_tree_down_2   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=cat92 @EC +add() blend1d({'bound': '0000000000DD.013'}) 1d@-0.5; on 2 paths
+4-4_000000000EDB = add_l3_aim_tree_2   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=cat92 @EC +add() blend1d({'bound': '0000000000DD.013'}); on 2 paths
+4-4_000000000ED8 = add_l3_aim_tree_up_3   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=cat92 @EC +add() blend1d({'bound': '0000000000DD.013'}) 1d@0.5; on 2 paths
+4-4_000000000ED9 = add_l3_aim_tree_up_4   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=cat92 @EC +add() blend1d({'bound': '0000000000DD.013'}) 1d@1.0; on 2 paths
+4-4_000000000EAB = add_aim_tree_down   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=default[2] @EA +add() blend1d({'bound': '000000000103.013'}) 1d@-0.5; on 2 paths
+4-0_000000000EA9 = add_aim_tree   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=default[2] @EA +add() blend1d({'bound': '000000000103.013'}); on 2 paths
+4-4_000000000EAA = add_aim_tree_up   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=default[2] @EA +add() blend1d({'bound': '000000000103.013'}) 1d@0.5; on 2 paths
+4-0_000000000EA8 = add_aim_tree_up_2   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=default[2] @EA +add() blend1d({'bound': '000000000103.013'}) 1d@1.0; on 2 paths
+4-4_000000000ED3 = add_aim_tree_down_2   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=default[2] @EA +add() blend1d({'bound': '0000000000DD.013'}) 1d@-0.5; on 2 paths
+4-4_000000000ED2 = add_aim_tree_2   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=default[2] @EA +add() blend1d({'bound': '0000000000DD.013'}); on 2 paths
+4-4_000000000EDA = add_aim_tree_up_3   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=default[2] @EA +add() blend1d({'bound': '0000000000DD.013'}) 1d@0.5; on 2 paths
+4-4_000000000ED1 = add_aim_tree_up_4   # 0.4 s; set 0996 alias C8 (aim / hit layers (M)); dfE5=default[2] @EA +add() blend1d({'bound': '0000000000DD.013'}) 1d@1.0; on 2 paths
+0-32_000000005F79 = build   # 3.6333 s; set 0996 alias DC ((was build: alias DC) turret build (1688 #179 / #832, 3.63 s clip; the build is 2.5 s, 091A) (H)); -
+0-32_000000000E45 = add   # 1.7333 s; set 0996 alias DD (1688 #839 (L: 1.73 s)); -
+0-32_000000000E46 = upgrade   # 1.7 s; set 0996 alias DE ((was upgrade: alias DE) turret level 3 upgrade (1688 #182, 1.7 s) (H)); -
+0-60_000000000E5B = deploy   # 0.0333 s; set 0996 alias A9 (the thrown-in pose (L)); -
+0-32_00000000BD82 = a8b9   # 2.4667 s; set 0996 alias 8B9 (L (2.47 s)); -
+# Extracted under this model but in none of its sets (5, not named): 000E41 003709 003721 0043AE 00604F

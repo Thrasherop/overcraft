@@ -1,0 +1,1229 @@
+# Torbjörn's sound effects: <sound id> = <file under E:/Overwatch Archive/extracted/154088/> (build 154088). Same format as
+# illari_sfx.txt / junkrat_sfx.txt; his voice is torbjorn.txt (torbjorn_voice_gen.py). build_asset_pack.py sounds
+#  copies / mixes them
+# into the local pack. Read 2026-11-14 offline (Overwatch and Battle.net checked closed before every archive read and DataTool /
+# TankLib run): his 02C sounds' Wwise banks decoded (ww.py, dump_banks.py), the Init bank's game parameter defaults
+#  (1E818, Illari's
+# stmg.py output, the same build). Scripts: E:/Overwatch Archive/research/torbjorn/scripts/sounds/ (torbjorn_gen.py
+#  writes this file
+# from torbjorn_table.py; Illari's pipeline copied and retargeted: fx_graph_torbjorn.py, fx_sounds2_torbjorn.py,
+#  contacts.py, ww.py,
+# dump_banks.py, extract_banks.py, measure_torbjorn.py, overview.py, torbjorn_events.py, torbjorn_layers.py); their data:
+# research/torbjorn/sounds/ (torbjorn_ww.json, banks_raw.json, torbjorn_measure.json, contacts.json, overview.txt,
+#  torbjorn_ids.txt)
+# and research/torbjorn/work/ (graph_effects.json, fx_sounds.json / .txt). His skin extraction is
+#  research/torbjorn/extract and the
+# 44 banks it lacked (the projectiles' slots and contacts, the thrown turret, the slag, the burn, the hammer's contacts, the
+# Overloaded Turret effect, the shared hit crack) were extracted into research/torbjorn/sounds/ExtraSounds/Torbjörn
+#  (extract_banks.py;
+# groups Rivet, Pellets, Turret, Molten, Hammer, Shared).
+# Slot readings (M, from Junkrat's / Illari's passes): a projectile's m_A18274A3 = 'on a target', m_2170A015 = 'sound
+#  only' (in flight),
+# its STUEffectComponent child = its launch (Cassidy's bullet, H there); no volley of his names an ActionEffect.
+# Ids: 02C sounds (5DA3 = 000000005DA3.02C), 00D effects, 006 clips, 08F clip animation effects, 049 contact sets; graphs
+# 01B with their node numbers. Confidence: H read in the data, M inferred, L guess. Stadium powers' sets are left out.
+# Gains: Wwise volume + make-up gain summed from each file up through its containers and mixers (the middle of a random
+# range included) plus its output bus chain, plus RTPC curves (dB scaling 20*log10(1+y); linear between points) and
+# SetVolume actions. RTPCs are read at their game parameter's default (the Init bank's list); modulators: an LFO at its
+# middle, a time modulator at its start on one-shots and at its end on loops. As in sojourn.txt, ONE offset per family keeps
+# his sounds' balance with each other, bringing the family's loudest single layer to -1 dBFS (the builder's limiter catches
+# sums): own -3 dB (loudest: torbjorn.hammer.hit), 3p -7 dB (loudest: torbjorn.hammer.hit_3p).
+# Pitch: cents as a speed factor (*). Low / high-pass filters, random pitch / volume per play, fades, Seek, Wwise states
+# and the voice priority RTPCs are not reproduced. Layers more than 60 dB down are left out, and in loops those 20 dB
+# under the loudest loop. A loop's LOOP LENGTH is its longest bed within 6 dB of the loudest layer; shorter layers are
+# tiled across it and beds more than 15 % longer are left out.
+# Own vs others: audience-1 copies and no-range copies are the player the effect plays on ('own': Torbjörn, the shooter
+# for a hit, the burning enemy for molten.burn, M as in Sigma's map); ranged copies are everyone else's ('3p'); where
+#  two ranged copies hold the same files the
+# louder is built (L which team's / near or far). A sound with no own copy is built once for everyone ('both').
+
+# ===== How each game event is put together (rules)
+# torbjorn.rivet.fire: Rivet Gun shot, own: 185B (0.25-0.41 s cracks).
+# Trigger: PRIMARY (1683 #83 -> #428 -> volley #171 / #429, the rivet 2A66; no ActionEffect on the volley) -> 2A66's
+#  m_2170A015 slot 0300; 185B (60 m; no own copy: M that the shooter hears this one).
+# Layers: a 185B 301755238 RanSeq 0.25-0.41 s x7 -2 cents, net -21.
+@torbjorn.rivet.fire = torbjorn.rivet.fire.a*0.999:-24
+# torbjorn.rivet.fire_3p: Rivet Gun shot heard by others: 1896.
+# Trigger: PRIMARY (1683 #83 -> #428 -> volley #171 / #429, the rivet 2A66; no ActionEffect on the volley) -> 2A66's
+#  m_2170A015 slot 0300; 1896 (60 m, the same containers with a longer tail, M).
+# Layers: a 1896 129183795 RanSeq 0.25-1.26 s x10 +130 cents, net -22.
+@torbjorn.rivet.fire_3p = torbjorn.rivet.fire_3p.a*1.078:-29
+# torbjorn.rivet.hit_enemy: Rivet hits a target, own: 5DA3 + 8DE7.
+# Trigger: a rivet hits a character: 2A66's m_A18274A3 'on a target' slot 2651: 5DA3 (audience 1, no range: the
+#  shooter's) + its sub-effect 4047's 8DE7 (the shared hit crack), H ids.
+# Layers: a 8DE7 413748272 RanSeq 0.41-0.61 s x16 +430 cents, net -22; b 5DA3 14317559 RanSeq 0.98-1.22 s x10, net
+#  -1.5; c 8DE7 19863385 RanSeq 0.54-0.60 s x10 +710 cents, net -12; d 8DE7 1057399041 RanSeq 0.49-0.56 s x7 +535
+#  cents, net -18.5; e 5DA3 192384705 RanSeq 2.77-3.06 s x7 +746 cents, net -25; f 5DA3 393914769 RanSeq 0.13-0.14 s
+#  x5 +646 cents, net -30.5; g 5DA3 782700930 Sound 0.37 s +400 cents, net -12.
+@torbjorn.rivet.hit_enemy = torbjorn.rivet.hit_enemy.a*1.282@0.002:-25 + torbjorn.rivet.hit_enemy.b:-4.5 + torbjorn.rivet.hit_enemy.c*1.507@0.002:-15 + torbjorn.rivet.hit_enemy.d*1.362@0.002:-21.5 + torbjorn.rivet.hit_enemy.e*1.539@0.005:-28 + torbjorn.rivet.hit_enemy.f*1.452@0.105:-33.5 + torbjorn.rivet.hit_enemy.g*1.260@0.04:-15
+# torbjorn.rivet.hit_enemy_3p: Rivet hit heard by others: 752D.
+# Trigger: the same hit for everyone else: 2651's 752D (100 m), H.
+# Layers: a 752D 327578442 RanSeq 0.98-1.22 s x10, net -7.5; b 752D 548378800 RanSeq 2.77-3.06 s x7 +746 cents, net
+#  -37; c 752D 356884323 RanSeq 0.13-0.14 s x5 +646 cents, net -42.5.
+@torbjorn.rivet.hit_enemy_3p = torbjorn.rivet.hit_enemy_3p.a:-14.5 + torbjorn.rivet.hit_enemy_3p.b*1.539@0.06:-44 + torbjorn.rivet.hit_enemy_3p.c*1.452@0.16:-49.5
+# torbjorn.rivet.hit_world: Rivet hits the world: 1852.
+# Trigger: a rivet hits the world: 2A66's m_contactSet 00A2, type 2, material 0001 -> 0506 -> 1852 (120 m; 1853 the 32
+#  m copy), H ids.
+# Layers: a 1852 624579756 RanSeq 0.82-1.23 s x9 -18 cents, net -11.
+@torbjorn.rivet.hit_world = torbjorn.rivet.hit_world.a*0.990:-18
+# torbjorn.rivet.alt_fire: Rivet Gun burst, own: 39EC (0.32-0.62 s blasts + tails).
+# Trigger: SECONDARY (1683 #174 -> #431 -> volley #178 / #432, 10 pellets 13ED) -> 13ED's m_2170A015 slot 1AB6 (H ids;
+#  L that the burst rides on it: 13ED's child 1413 -> 1865 has no sound); 39EC (60 m).
+# Layers: a 39EC 959103779 RanSeq 0.25-1.26 s x18 +780 cents, net -16; b 39EC 442345778 RanSeq 0.32-0.62 s x11 -100
+#  cents, net -18.
+@torbjorn.rivet.alt_fire = torbjorn.rivet.alt_fire.a*1.569@0.0175:-19 + torbjorn.rivet.alt_fire.b*0.944@0.0075:-21
+# torbjorn.rivet.alt_fire_3p: Rivet Gun burst heard by others: 8F01.
+# Trigger: SECONDARY (1683 #174 -> #431 -> volley #178 / #432, 10 pellets 13ED) -> 13ED's m_2170A015 slot 1AB6 (H ids;
+#  L that the burst rides on it: 13ED's child 1413 -> 1865 has no sound); 8F01 (60 m, the same containers in the other
+#  order, M).
+# Layers: a 8F01 313499427 RanSeq 0.25-1.26 s x18 +780 cents, net -13.5; b 8F01 1005385700 RanSeq 0.32-0.62 s x11 -100
+#  cents, net -15.5.
+@torbjorn.rivet.alt_fire_3p = torbjorn.rivet.alt_fire_3p.a*1.569@0.0175:-20.5 + torbjorn.rivet.alt_fire_3p.b*0.944@0.0075:-22.5
+# torbjorn.rivet.alt_hit_enemy: Pellet hits, own: 5DA4.
+# Trigger: a pellet hits a character: 13ED's m_A18274A3 slot 2662: 5DA4 (audience 1: the shooter's), H ids.
+# Layers: a 5DA4 46765461 RanSeq 1.50-1.67 s x10, net -1.5; b 5DA4 592118055 RanSeq 1.69-2.07 s x4 -268 cents, net
+#  -14; c 5DA4 800398826 RanSeq 1.65-1.76 s x3 +32 cents, net -23; d 5DA4 293391000 RanSeq 1.64-1.76 s x3 +32 cents,
+#  net -23; e 5DA4 53652567 Sound 0.76 s, net -14; f 5DA4 823587711 Sound 0.10 s, net -19.
+@torbjorn.rivet.alt_hit_enemy = torbjorn.rivet.alt_hit_enemy.a@0.03:-4.5 + torbjorn.rivet.alt_hit_enemy.b*0.857@0.07:-17 + torbjorn.rivet.alt_hit_enemy.c*1.019@0.08:-26 + torbjorn.rivet.alt_hit_enemy.d*1.019@0.12:-26 + torbjorn.rivet.alt_hit_enemy.e:-17 + torbjorn.rivet.alt_hit_enemy.f:-22
+# torbjorn.rivet.alt_hit_enemy_3p: Pellet hit heard by others: 7534.
+# Trigger: the same for everyone else: 2662's 7534 (100 m; 7535 the same sets), H.
+# Layers: a 7534 784945442 RanSeq 1.50-1.67 s x10, net -7.5; b 7534 951283685 RanSeq 1.69-2.07 s x4 -468 cents, net
+#  -17; c 7534 942158740 RanSeq 1.65-1.76 s x3 -168 cents, net -26; d 7534 480099296 RanSeq 1.64-1.76 s x3 -168 cents,
+#  net -26; e 7534 221974292 Sound 0.10 s, net -36.
+@torbjorn.rivet.alt_hit_enemy_3p = torbjorn.rivet.alt_hit_enemy_3p.a@0.03:-14.5 + torbjorn.rivet.alt_hit_enemy_3p.b*0.763@0.07:-24 + torbjorn.rivet.alt_hit_enemy_3p.c*0.908@0.08:-33 + torbjorn.rivet.alt_hit_enemy_3p.d*0.908@0.12:-33 + torbjorn.rivet.alt_hit_enemy_3p.e:-43
+# torbjorn.rivet.alt_hit_world: Pellet hits the world: 8D0A.
+# Trigger: a pellet hits the world: 13ED's m_contactSet 00AB, type 2, material 0001 -> 05B8 -> 8D0A (120 m; 8D0B 32 m), H ids.
+# Layers: a 8D0A 624579756 RanSeq 0.82-1.23 s x9 -18 cents, net -11.
+@torbjorn.rivet.alt_hit_world = torbjorn.rivet.alt_hit_world.a*0.990:-18
+# torbjorn.reload: Reload, own: five clanks over 1.8 s.
+# Trigger: RELOAD (1683 #80 -> #141 alias 4): the 1P reload clip 7D6 (2.2 s)'s effect 00E2: 923E @0, 923C @0.776, 923F
+#  @0.904, 6439 @1.593, 923D @1.781 (no range: his), H.
+# Layers: a 923E 216959417 RanSeq 1.08-1.14 s x5, net -11; b 923C 889342981 RanSeq 0.77-1.11 s x5 +25 cents, net -17;
+#  c 923F 245062127 RanSeq 1.09-1.43 s x5, net -8.5; d 923D 171689628 RanSeq 0.41-0.75 s x3 +38 cents, net -23.5; e
+#  6439 672096132 RanSeq 0.95 s, net -32.5.
+@torbjorn.reload = torbjorn.reload.a:-14 + torbjorn.reload.b*1.015@0.7756:-20 + torbjorn.reload.c@0.904:-11.5 + torbjorn.reload.d*1.022@1.7808:-26.5 + torbjorn.reload.e@1.5931:-35.5
+# torbjorn.reload_3p: Reload heard by others: 4CA5 + 963D / 963E / 963F (45 m).
+# Trigger: the same for everyone else: the 3P reload clip FED (alias 4, 2.0 s)'s effect 029D: 4CA5 + 963D @0, 963E
+#  @0.454, 963F @1.118 (45 m), H.
+# Layers: a 4CA5 200273367 RanSeq 2.29-2.39 s x3, net -24.5; b 963D 543729597 RanSeq 0.50-0.51 s x3, net -23.5; c 963E
+#  853230656 RanSeq 0.67-0.69 s x3, net -23.5; d 963F 898572775 RanSeq 1.16-1.26 s x3, net -23.5.
+@torbjorn.reload_3p = torbjorn.reload_3p.a:-31.5 + torbjorn.reload_3p.b:-30.5 + torbjorn.reload_3p.c@0.4542:-30.5 + torbjorn.reload_3p.d@1.1177:-30.5
+# torbjorn.draw_rivet: Rivet Gun drawn, own: 281A.
+# Trigger: the Rivet Gun drawn: 1683 #212 StateCosmeticEntity (entity 0147) onBegin -> #194 ActionEffect 0DB1: 281A
+#  (no range: his), H.
+# Layers: a 281A 856663745 RanSeq 0.41-0.50 s x5, net -11.
+@torbjorn.draw_rivet = torbjorn.draw_rivet.a:-14
+# torbjorn.draw_rivet_3p: Rivet Gun drawn heard by others: 361C.
+# Trigger: the same for everyone else: 0DB1's 361C (45 m), H.
+# Layers: a 361C 893145429 RanSeq 0.41-0.50 s x5, net -23.5.
+@torbjorn.draw_rivet_3p = torbjorn.draw_rivet_3p.a:-30.5
+# torbjorn.draw_hammer: Forge Hammer drawn, own: 2819.
+# Trigger: the Forge Hammer drawn: 168C #73 StateCosmeticEntity (entity 01BC) onBegin -> #279 ActionEffect 0DB2: 2819
+#  (no range: his), H.
+# Layers: a 2819 1001659411 RanSeq 0.53-0.84 s x4, net -11.
+@torbjorn.draw_hammer = torbjorn.draw_hammer.a:-14
+# torbjorn.draw_hammer_3p: Forge Hammer drawn heard by others: 361B.
+# Trigger: the same for everyone else: 0DB2's 361B (45 m), H.
+# Layers: a 361B 1011075939 RanSeq 0.53-0.84 s x4, net -23.5.
+@torbjorn.draw_hammer_3p = torbjorn.draw_hammer_3p.a:-30.5
+# torbjorn.hammer.swing: Forge Hammer swing, own: 642B + 1ADB at 0.2 s.
+# Trigger: PRIMARY with the hammer (168C #828 -> #325, alias 71): the 1P swing clip D8E (rand[0]; D92 / D93 play 6420
+#  / 6421 the same way)'s effect 0219: 642B @0.001 (audience 1: his) + 1ADB @0.2 (no range), H.
+# Layers: a 642B 930157811 RanSeq 0.50-0.89 s x3, net -14.5; b 1ADB 650160137 RanSeq 0.44-0.52 s x3, net -17.
+@torbjorn.hammer.swing = torbjorn.hammer.swing.a@0.03:-17.5 + torbjorn.hammer.swing.b@0.2:-20
+# torbjorn.hammer.swing_3p: Forge Hammer swing heard by others: 1962 + 08B8.
+# Trigger: the same for everyone else: the 3P swing clip 1010 (alias 71)'s effect 02A9: 1962 (30 m) + 08B8 (40 m)
+#  @0.006 (1ADE 30 m and 08B5 his, audience 1, beside them), H.
+# Layers: a 1962 360777349 RanSeq 0.26-0.38 s x9 +50 cents, net -48; b 08B8 19316191 RanSeq 0.34-0.60 s x7 -75 cents,
+#  net -40.5; c 08B8 775237089 RanSeq 0.40-0.51 s x6, net -30.5; d 08B8 74926424 RanSeq 0.35-0.48 s x6 +500 cents, net
+#  -44.5; e 08B8 22872038 Sound 0.58 s -130 cents, net -46.5.
+@torbjorn.hammer.swing_3p = torbjorn.hammer.swing_3p.a*1.029:-55 + torbjorn.hammer.swing_3p.b*0.958@0.11:-47.5 + torbjorn.hammer.swing_3p.c:-37.5 + torbjorn.hammer.swing_3p.d*1.335:-51.5 + torbjorn.hammer.swing_3p.e*0.928@0.075:-53.5
+# torbjorn.hammer.hit: Forge Hammer hits, own: 8D97.
+# Trigger: the hammer hits a character: the hammer entity 01BC's m_contactSet 0089, type 0, material 0001 -> 0479 ->
+#  8D97 (no range: his), H ids, M that the swing's hits use the weapon's contact set.
+# Layers: a 8D97 855585076 RanSeq 0.28-0.54 s x10, net +2; b 8D97 90228806 RanSeq 0.27-0.40 s x7, net +3; c 8D97
+#  587249142 RanSeq 0.13-0.31 s x7 +600 cents, net -9.5.
+@torbjorn.hammer.hit = torbjorn.hammer.hit.a:-1 + torbjorn.hammer.hit.b:0 + torbjorn.hammer.hit.c*1.414@0.035:-12.5
+# torbjorn.hammer.hit_3p: Forge Hammer hit heard by others: 8F62.
+# Trigger: the same for everyone else: 0479's 8F62 (500 m; 8F5B the 12 m copy), H ids.
+# Layers: a 8F62 152029602 RanSeq 0.33-0.52 s x9, net +4; b 8F62 571448557 RanSeq 0.27-0.40 s x7, net +7.
+@torbjorn.hammer.hit_3p = torbjorn.hammer.hit_3p.a:-3 + torbjorn.hammer.hit_3p.b:0
+# torbjorn.hammer.hit_world (EXTRA): Forge Hammer hits the world: 16F9.
+# Trigger: the hammer hits the world: 0089, type 2, material 0001 -> 048A -> 16F9 (30 m; 1676 its 20 m copy), H ids.
+# Layers: a 16F9 1015137450 RanSeq 0.29-0.37 s x8 -38 cents, net -23.5; b 16F9 321483932 RanSeq 0.30-0.44 s x5 -100
+#  cents, net -24; c 16F9 114388613 RanSeq 0.28-0.46 s x4 +635 cents, net -23.5.
+@torbjorn.hammer.hit_world = torbjorn.hammer.hit_world.a*0.978:-30.5 + torbjorn.hammer.hit_world.b*0.944:-31 + torbjorn.hammer.hit_world.c*1.443:-30.5
+# torbjorn.hammer.repair: Turret repaired, own: 1683 (a 0.3-0.44 s clank).
+# Trigger: the hammer repairs the turret: 168C #237 message 008F -> the turret's 1688 #54 -> #126 ActionEffect 0230:
+#  1683 (no range), H.
+# Layers: a 1683 23228420 RanSeq 0.30-0.44 s x5, net -16; b 1683 404609266 RanSeq 0.46-0.87 s x5 -538 cents, net
+#  -19.5; c 1683 614017560 RanSeq 0.49-0.58 s x5 -488 cents, net -15; d 1683 125874094 Sound 0.41 s -400 cents, net
+#  -34.5; e 1683 927721468 RanSeq 0.55 s -1050 cents, net -24; f 1683 574774094 Sound 0.56 s -550 cents, net -34.5.
+@torbjorn.hammer.repair = torbjorn.hammer.repair.a:-19 + torbjorn.hammer.repair.b*0.733:-22.5 + torbjorn.hammer.repair.c*0.754@0.085:-18 + torbjorn.hammer.repair.d*0.794@0.2:-37.5 + torbjorn.hammer.repair.e*0.545@0.23:-27 + torbjorn.hammer.repair.f*0.728@0.25:-37.5
+# torbjorn.hammer.repair_3p: Turret repaired heard by others: 1684.
+# Trigger: the same for everyone else: 0230's 1684 (60 m), H.
+# Layers: a 1684 256218522 RanSeq 0.76-1.07 s x5, net -17.5; b 1684 352081147 RanSeq 0.30-0.44 s x5, net -19.
+@torbjorn.hammer.repair_3p = torbjorn.hammer.repair_3p.a:-24.5 + torbjorn.hammer.repair_3p.b:-26
+# torbjorn.hammer.repair_full (EXTRA): Hammer hits a healthy turret: 1681.
+# Trigger: the hammer hits a turret at full health: 168C #246 message 0091 -> 1688 #77 -> #78 ActionEffect 0225 (and
+#  168C #247 0226): 1681 (70 m; 1682 the no-range copy), H.
+# Layers: a 1681 64005793 RanSeq 0.93-1.09 s x5 -50 cents, net -17.5.
+@torbjorn.hammer.repair_full = torbjorn.hammer.repair_full.a*0.972@0.35:-24.5
+# torbjorn.turret.throw: Turret thrown, own: 4DFA.
+# Trigger: ABILITY 1 (16C5 #495) -> #481 ActionEffect 0221: 4DFA (audience 1: his), H.
+# Layers: a 4DFA 832540384 RanSeq 0.73-0.80 s x2 -22 cents, net -6.5.
+@torbjorn.turret.throw = torbjorn.turret.throw.a*0.987:-9.5
+# torbjorn.turret.throw_3p: Turret thrown heard by others: 4DFB.
+# Trigger: the same for everyone else: 0221's 4DFB (60 m), H.
+# Layers: a 4DFB 911109868 RanSeq 0.73-0.80 s x2 -22 cents, net -17.5.
+@torbjorn.turret.throw_3p = torbjorn.turret.throw_3p.a*0.987:-24.5
+# torbjorn.turret.flight (EXTRA): Turret in flight: 4F12.
+# Trigger: the thrown turret 2931 in flight: its m_306ABA15 slot 2723: 4F12 (60 m; 4F11 his, 4F37 the same), H ids, L
+#  that the slot is the flight.
+# Layers: a 4F12 956479761 RanSeq 0.48-0.55 s x3, net -3.5.
+@torbjorn.turret.flight = torbjorn.turret.flight.a:-10.5
+# torbjorn.turret.land: Turret lands: 4EEC.
+# Trigger: the thrown turret meets the world: 2931's m_contactSet 067E, type 2, material 0001 -> 345B -> 4EEC (35 m;
+#  4EEB his), H ids.
+# Layers: a 4EEC 557427734 RanSeq 0.70-0.78 s x4, net -4.5.
+@torbjorn.turret.land = torbjorn.turret.land.a:-11.5
+# torbjorn.turret.deploy: Turret unfolds: 168B.
+# Trigger: the turret unfolds: 1688 #690 StateChaseVar (level v639 to 1) -> #828 0240: 168B (60 m, 3.15 s), H.
+# Layers: a 168B 724699710 Sound 3.15 s, net -42.5.
+@torbjorn.turret.deploy = torbjorn.turret.deploy.a:-49.5
+# torbjorn.turret.build: Turret building: 4E09 (3.4-3.6 s).
+# Trigger: the turret builds: its build clip 5F79 (alias DC)'s effect 2AB5: 4E09 (70 m; 4E04 his, audience 1; 4F36 60
+#  m), 3.4-3.6 s, H.
+# Layers: a 4E09 741108291 RanSeq 3.40-3.62 s x2, net -7.5.
+@torbjorn.turret.build = torbjorn.turret.build.a:-14.5
+# torbjorn.turret.build_step (EXTRA): Turret build step: 1917.
+# Trigger: each tenth of the build: 1688 #279 STU_DEBD057B on (v639 - 1) x 10 -> #232 / #227 / #233 / #228 / #229
+#  ActionEffect 03C7 / 03C8 / 03CB / 03CA / 03C9 (two steps each): 1917 (no range) + 2DDE (70 m) for the first, H;
+#  ours plays 03C7's for every step (L).
+# Layers: a 1917 171087781 RanSeq 0.64-0.89 s x10, net -8.5; b 1917 23228420 RanSeq 0.30-0.44 s x5, net -16; c 1917
+#  120232917 Sound 0.98 s, net -8.5.
+@torbjorn.turret.build_step = torbjorn.turret.build_step.a:-15.5 + torbjorn.turret.build_step.b:-23 + torbjorn.turret.build_step.c@0.02:-15.5
+# torbjorn.turret.fire: Turret fires: 185B.
+# Trigger: each turret shot (1689 volley #161 level 2 / #17 level 3, projectile 2A69): 2A69's m_2170A015 slot 0300:
+#  185B (60 m; 1896 the same), H ids, M that the shot's only sound is its fire.
+# Layers: a 185B 301755238 RanSeq 0.25-0.41 s x7 -2 cents, net -21.
+@torbjorn.turret.fire = torbjorn.turret.fire.a*0.999:-28
+# torbjorn.turret.hit (EXTRA): Turret shot hits: 5D53.
+# Trigger: a turret shot hits a character: 2A69's m_contactSet 00A6, type 0, material 0001 -> 055C -> 5D53 (no range;
+#  905C 12 m), H ids.
+# Layers: a 5D53 869440074 RanSeq 0.14-0.24 s x10, net +2; b 5D53 923138318 RanSeq 0.28-0.30 s x8 +200 cents, net
+#  -7.5; c 5D53 21462275 RanSeq 0.13-0.31 s x7 +200 cents, net -18.5; d 5D53 607390467 RanSeq 0.13-0.31 s x7 +900
+#  cents, net -11.5.
+@torbjorn.turret.hit = torbjorn.turret.hit.a:-5 + torbjorn.turret.hit.b*1.122:-14.5 + torbjorn.turret.hit.c*1.122:-25.5 + torbjorn.turret.hit.d*1.682@0.035:-18.5
+# torbjorn.turret.upgrade: Turret upgrades: 1688.
+# Trigger: level 3 (Overloaded Turret, 1688 #67 v639 == 3) -> #91 ActionEffect 0229: 1688 (60 m, 1.96 s; 18CE the
+#  same; 18B7 / 18B9 1.13 s at 0.011 s), H.
+# Layers: a 1688 449593480 RanSeq 1.96 s, net -7.5.
+@torbjorn.turret.upgrade = torbjorn.turret.upgrade.a@0.75:-14.5
+# torbjorn.turret.downgrade (EXTRA): Turret powers down: E96A.
+# Trigger: back from level 3: 1688 #185 (category 0092) onEnd -> #901 ActionEffect 7086: E96A (60 m; E96B the same), H
+#  node, M meaning.
+# Layers: a E96A 227154484 Sound 0.98 s, net -16.5.
+@torbjorn.turret.downgrade = torbjorn.turret.downgrade.a:-23.5
+# torbjorn.turret.damaged (EXTRA): Turret damaged: 1910.
+# Trigger: below half health: 1688 #215 (health / max < 0.5) -> #218 03A3: 1905 (his, 2.4 s bed) + 190C / 1910 / 190D
+#  (30 m), H node, M meaning.
+# Layers: a 1910 547127427 RanSeq 0.61-0.86 s x4, net -52.5.
+@torbjorn.turret.damaged = torbjorn.turret.damaged.a:-59.5
+# torbjorn.turret.destroyed: Turret destroyed, own: 1906.
+# Trigger: the turret dies (1688 #9, v478) -> #20 ActionEffect 018C: 1906 (200 m, audience 1: Torbjörn's) + 198D (no range), H.
+# Layers: a 1906 577716776 RanSeq 3.35-3.80 s x9 -10 cents, net -14.5; b 1906 677685491 RanSeq 4.70-6.09 s x7 -150
+#  cents, net +3.5; c 1906 105921428 RanSeq 1.50-1.72 s x2 +25 cents, net -16.5.
+@torbjorn.turret.destroyed = torbjorn.turret.destroyed.a*0.994@0.225:-17.5 + torbjorn.turret.destroyed.b*0.917@0.215:+0.5 + torbjorn.turret.destroyed.c*1.015:-19.5
+# torbjorn.turret.destroyed_3p: Turret destroyed heard by others: 125D.
+# Trigger: the same for everyone else: 018C's 125D (200 m, audience 2), H.
+# Layers: a 125D 525401241 RanSeq 3.35-3.80 s x10, net -20.5; b 125D 741222748 RanSeq 4.70-6.09 s x7, net -14.5; c
+#  125D 1047243382 RanSeq 2.20-2.25 s x2, net -8.5.
+@torbjorn.turret.destroyed_3p = torbjorn.turret.destroyed_3p.a@0.1:-27.5 + torbjorn.turret.destroyed_3p.b@0.1:-21.5 + torbjorn.turret.destroyed_3p.c:-15.5
+# torbjorn.turret.recall: Turret recalled, own: 4E52.
+# Trigger: the turret recalled (16C5 #521 true: message 003F to it) -> #530 ActionEffect 26ED: 4E52 (audience 1: his), H.
+# Layers: a 4E52 982548459 Sound 1.13 s +50 cents, net -14.5.
+@torbjorn.turret.recall = torbjorn.turret.recall.a*1.029:-17.5
+# torbjorn.turret.overloaded (EXTRA): Turret overloaded: C305.
+# Trigger: Overloaded Turret (perk 2501): 51F6 #408 ActionEffect 6538 on the turret: C305 (60 m), H.
+# Layers: a C305 759156898 Sound 1.13 s, net -8.5.
+@torbjorn.turret.overloaded = torbjorn.turret.overloaded.a:-15.5
+# torbjorn.overload: Overload, own: 5DA0 (2.5-2.7 s).
+# Trigger: ABILITY 2 (1721) -> #175 ActionEffect 2668: 5DA0 (audience 1: his), H.
+# Layers: a 5DA0 161276582 RanSeq 2.54-2.70 s x3, net -8; b 5DA0 321649416 Sound 1.08 s, net -20.
+@torbjorn.overload = torbjorn.overload.a:-11 + torbjorn.overload.b:-23
+# torbjorn.overload_3p: Overload heard by others: 4CA2.
+# Trigger: the same for everyone else: 2668's 4CA2 (70 m), H.
+# Layers: a 4CA2 716447293 RanSeq 2.54-2.70 s x3, net -17.
+@torbjorn.overload_3p = torbjorn.overload_3p.a:-24
+# torbjorn.overload.loop: Overload hum, own: BE28's loop.
+# Trigger: while Overload lasts: 1721 #81 STU_691BFA55 (held) 26F1: BE28 (no range: his), H.
+# Layers: a BE28 758394276 Sound 4.22 s, net -25.
+# LOOP LENGTH 4.219 s: play it again every LOOP LENGTH (the built file runs 4.22 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@torbjorn.overload.loop = torbjorn.overload.loop.a:-28
+# torbjorn.overload.loop_3p: Overload hum heard by others: BE29.
+# Trigger: the same for everyone else: 26F1's BE29 (70 m; BE2A the same), H.
+# Layers: a BE29 57690543 Sound 4.22 s, net -31.
+# LOOP LENGTH 4.219 s: play it again every LOOP LENGTH (the built file runs 4.22 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@torbjorn.overload.loop_3p = torbjorn.overload.loop_3p.a:-38
+# torbjorn.overload.end: Overload ends, own.
+# Trigger: Overload ends (1721 #205 v10473 cleared): the held 26F1 ends: BE28's stop actions, H.
+# Layers: a BE28 Stop-event 534037211 Sound 1.36 s, net -5; b BE28 Stop-event 380130188 Sound 1.25 s, net -21.
+@torbjorn.overload.end = torbjorn.overload.end.a:-8 + torbjorn.overload.end.b@0.5:-24
+# torbjorn.ult.cast: Molten Core cast, own: 5DA1 (2.9 s).
+# Trigger: ULTIMATE (16DA #367 StateAbility) -> #351 ActionEffect 26E6: 5DA1 (no range: his), H.
+# Layers: a 5DA1 105043164 RanSeq 2.92 s, net -8; b 5DA1 881967830 Sound 0.88 s, net -14.
+@torbjorn.ult.cast = torbjorn.ult.cast.a:-11 + torbjorn.ult.cast.b:-17
+# torbjorn.ult.cast_3p: Molten Core cast heard by others: 4ECA.
+# Trigger: the same for everyone else: 26E6's 4ECA (75 m; 4EC9 the same), H.
+# Layers: a 4ECA 561958178 RanSeq 2.85-3.05 s x3, net -9; b 4ECA 639015698 Sound 1.01 s, net -16.
+@torbjorn.ult.cast_3p = torbjorn.ult.cast_3p.a:-16 + torbjorn.ult.cast_3p.b@0.5:-23
+# torbjorn.molten.loop: Molten Core held, own: 4E23.
+# Trigger: while Molten Core lasts: 16DA #438 STU_691BFA55 (held) 26DC: 4E23 + 4EBE + 4ECD (no range: his), H.
+# Layers: a 4E23 711454243 Sound 2.78 s, net -27.
+# LOOP LENGTH 2.779 s: play it again every LOOP LENGTH (the built file runs 2.78 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@torbjorn.molten.loop = torbjorn.molten.loop.a:-30
+# torbjorn.molten.loop_3p: Molten Core held heard by others: 4EC6.
+# Trigger: the same for everyone else: 26DC's 4EC6 (75 m; 4EC4 75 m, 4ECC 70 m beside it), H.
+# Layers: a 4EC6 608521637 Sound 2.78 s, net -38.
+# LOOP LENGTH 2.779 s: play it again every LOOP LENGTH (the built file runs 2.78 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@torbjorn.molten.loop_3p = torbjorn.molten.loop_3p.a:-45
+# torbjorn.molten.fire: Slag shot, own: 4E2F.
+# Trigger: each slag shot (PRIMARY / SECONDARY in Molten Core, volley #382, 6.5 a second): #375 ActionEffect 26E4:
+#  4E2F (no range: his), H node, M that it plays per shot.
+# Layers: a 4E2F 30512016 RanSeq 1.20-1.38 s x2, net -14.5.
+@torbjorn.molten.fire = torbjorn.molten.fire.a:-17.5
+# torbjorn.molten.fire_3p: Slag shot heard by others: 4EC7.
+# Trigger: the same for everyone else: 26E4's 4EC7 (75 m), H.
+# Layers: a 4EC7 468636535 RanSeq 1.20-1.38 s x2, net -24.
+@torbjorn.molten.fire_3p = torbjorn.molten.fire_3p.a:-31
+# torbjorn.molten.flight (EXTRA): Slag in flight: 4E4B.
+# Trigger: each slag in flight: 2902's child 2904 STUEffectComponent 2509: 4E4B (20 m, 5 s), H.
+# Layers: a 4E4B 414282104 Sound 5.00 s +543 cents, net -4.
+# LOOP LENGTH 3.653 s: play it again every LOOP LENGTH (the built file runs 3.65 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@torbjorn.molten.flight = torbjorn.molten.flight.a*1.368:-11
+# torbjorn.molten.hit: Slag hits: 4EC8.
+# Trigger: slag hits a character: 2902's m_A18274A3 'on a target' slot 26CC: 4EC8 (75 m; 4E26 his, no range), H ids.
+# Layers: a 4EC8 1042854364 RanSeq 0.70-0.97 s x6, net -8; b 4EC8 73206061 RanSeq 1.20-1.38 s x2, net -29; c 4EC8
+#  925085861 RanSeq 0.97-1.05 s x2, net -8; d 4EC8 704929018 RanSeq 0.99-1.02 s x2, net -8; e 4EC8 634879728 RanSeq
+#  0.53-0.71 s x2 +300 cents, net -27.
+@torbjorn.molten.hit = torbjorn.molten.hit.a:-15 + torbjorn.molten.hit.b:-36 + torbjorn.molten.hit.c:-15 + torbjorn.molten.hit.d:-15 + torbjorn.molten.hit.e*1.189@0.12:-34
+# torbjorn.molten.impact: Slag splashes: 4EE2 + 4EED.
+# Trigger: slag meets the world: 2902's m_contactSet 067D, material 0001 -> 3451 / 3456 -> 4EE2, 345D -> 4EED (40 m), H ids.
+# Layers: a 4EED 543622126 RanSeq 0.39-0.49 s x6 -10 cents, net -15; b 4EE2 956045482 RanSeq 1.71-2.28 s x5, net -2.
+@torbjorn.molten.impact = torbjorn.molten.impact.a*0.994:-22 + torbjorn.molten.impact.b:-9
+# torbjorn.molten.pool: Slag pool forms: 4E49.
+# Trigger: a pool forms: 16DD #140 STU_691BFA55 26FB: 4E49 (75 m; 4EBC the same), H node, M meaning.
+# Layers: a 4E49 70535229 RanSeq 1.52-1.81 s x7, net -13.
+@torbjorn.molten.pool = torbjorn.molten.pool.a:-20
+# torbjorn.molten.pool_loop: Slag pool bubbling: 4E4A.
+# Trigger: the pool's 10 s: 16DD #142 STU_691BFA55 (held) 254E: 4E4A (75 m; 4EBB the same), H.
+# Layers: a 4E4A 58552388 Sound 5.91 s -100 cents, net -18.
+# LOOP LENGTH 6.258 s: play it again every LOOP LENGTH (the built file runs 6.26 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@torbjorn.molten.pool_loop = torbjorn.molten.pool_loop.a*0.944:-25
+# torbjorn.molten.burn: Burning, own: 4C8A.
+# Trigger: an enemy burning in a pool: 16DE #150 STU_691BFA55 (held) 254F: 4C8A (no range: the burning player's), H.
+# Layers: a 4C8A 708094257 Sound 4.85 s +260 cents, net -7.5.
+# LOOP LENGTH 4.175 s: play it again every LOOP LENGTH (the built file runs 4.17 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@torbjorn.molten.burn = torbjorn.molten.burn.a*1.162:-10.5
+# torbjorn.molten.burn_3p: Burning heard by others: 4F8A.
+# Trigger: the same for everyone else: 254F's 4F8A (25 m), H.
+# Layers: a 4F8A 857705568 Sound 3.10 s +60 cents, net -11.
+# LOOP LENGTH 2.990 s: play it again every LOOP LENGTH (the built file runs 2.99 s: shorter layers are tiled to fill
+# the loop and the last tile runs over; Overwatch's layers loop on their own lengths, which one file cannot do).
+@torbjorn.molten.burn_3p = torbjorn.molten.burn_3p.a*1.035:-18
+# torbjorn.molten.burn_hit (EXTRA): Slag burns: 4FF9.
+# Trigger: 16DE #158 ActionEffect 27B8: 4FF9 (45 m; 4FF7 the target's, 4FF8 45 m), H node, L meaning (the burn's first tick).
+# Layers: a 4FF9 438920372 Sound 2.78 s +250 cents, net -24.5.
+@torbjorn.molten.burn_hit = torbjorn.molten.burn_hit.a*1.155:-31.5
+
+# ===== Sources (layers of the rules above; not events of their own). One line per file (random variants).
+# torbjorn.rivet.fire.a: 185B play 301755238 (7 files, 0.252-0.409 s, 1ch); net -21 dB, -2 cents, @0.000 s. H.
+torbjorn.rivet.fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000185B.02C/0000002AA514.03F.ogg
+torbjorn.rivet.fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000185B.02C/0000002AA510.03F.ogg
+torbjorn.rivet.fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000185B.02C/0000002AA518.03F.ogg
+torbjorn.rivet.fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000185B.02C/0000002AA50D.03F.ogg
+torbjorn.rivet.fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000185B.02C/0000002AA509.03F.ogg
+torbjorn.rivet.fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000185B.02C/0000002AA515.03F.ogg
+torbjorn.rivet.fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000185B.02C/0000002AA50A.03F.ogg
+# torbjorn.rivet.fire_3p.a: 1896 play 129183795 (10 files, 0.252-1.265 s, 1ch); net -22 dB, +130 cents, @0.000 s. H.
+torbjorn.rivet.fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001896.02C/0000002AA510.03F.ogg
+torbjorn.rivet.fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001896.02C/0000002AA514.03F.ogg
+torbjorn.rivet.fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001896.02C/0000002AA518.03F.ogg
+torbjorn.rivet.fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001896.02C/0000002AA565.03F.ogg
+torbjorn.rivet.fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001896.02C/0000002AA5D1.03F.ogg
+torbjorn.rivet.fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001896.02C/0000002AA50D.03F.ogg
+torbjorn.rivet.fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001896.02C/0000002AA509.03F.ogg
+torbjorn.rivet.fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001896.02C/0000002AA515.03F.ogg
+torbjorn.rivet.fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001896.02C/0000002AA50A.03F.ogg
+torbjorn.rivet.fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001896.02C/0000002AA554.03F.ogg
+# torbjorn.rivet.hit_enemy.a: 8DE7 play 413748272 (16 files, 0.407-0.607 s, 2ch); net -22 dB, +430 cents, @0.002 s. H.
+torbjorn.rivet.hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5C20.03F.ogg
+torbjorn.rivet.hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5C7A.03F.ogg
+torbjorn.rivet.hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5C17.03F.ogg
+torbjorn.rivet.hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A597C.03F.ogg
+torbjorn.rivet.hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A596A.03F.ogg
+torbjorn.rivet.hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A59AF.03F.ogg
+torbjorn.rivet.hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A599C.03F.ogg
+torbjorn.rivet.hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5953.03F.ogg
+torbjorn.rivet.hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5C61.03F.ogg
+torbjorn.rivet.hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5BD4.03F.ogg
+torbjorn.rivet.hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5955.03F.ogg
+torbjorn.rivet.hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5970.03F.ogg
+torbjorn.rivet.hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A599D.03F.ogg
+torbjorn.rivet.hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5BEA.03F.ogg
+torbjorn.rivet.hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5CA0.03F.ogg
+torbjorn.rivet.hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A59AD.03F.ogg
+# torbjorn.rivet.hit_enemy.b: 5DA3 play 14317559 (10 files, 0.985-1.220 s, 2ch); net -1.5 dB, +0 cents, @0.000 s,
+#  avoid repeat 5. H.
+torbjorn.rivet.hit_enemy.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002ADBE7.03F.ogg
+torbjorn.rivet.hit_enemy.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002ADBE1.03F.ogg
+torbjorn.rivet.hit_enemy.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002ADD49.03F.ogg
+torbjorn.rivet.hit_enemy.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002ADD4A.03F.ogg
+torbjorn.rivet.hit_enemy.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002ADBDF.03F.ogg
+torbjorn.rivet.hit_enemy.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002ADD3C.03F.ogg
+torbjorn.rivet.hit_enemy.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002ADC08.03F.ogg
+torbjorn.rivet.hit_enemy.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002ADD2B.03F.ogg
+torbjorn.rivet.hit_enemy.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002ADBDA.03F.ogg
+torbjorn.rivet.hit_enemy.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002ADBAD.03F.ogg
+# torbjorn.rivet.hit_enemy.c: 8DE7 play 19863385 (10 files, 0.537-0.599 s, 1ch); net -12 dB, +710 cents, @0.002 s. H.
+torbjorn.rivet.hit_enemy.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5C08.03F.ogg
+torbjorn.rivet.hit_enemy.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5C77.03F.ogg
+torbjorn.rivet.hit_enemy.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5C02.03F.ogg
+torbjorn.rivet.hit_enemy.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5AB1.03F.ogg
+torbjorn.rivet.hit_enemy.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A595A.03F.ogg
+torbjorn.rivet.hit_enemy.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5C12.03F.ogg
+torbjorn.rivet.hit_enemy.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5C66.03F.ogg
+torbjorn.rivet.hit_enemy.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A598A.03F.ogg
+torbjorn.rivet.hit_enemy.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5C06.03F.ogg
+torbjorn.rivet.hit_enemy.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5BAE.03F.ogg
+# torbjorn.rivet.hit_enemy.d: 8DE7 play 1057399041 (7 files, 0.487-0.559 s, 2ch); net -18.5 dB, +535 cents, @0.002 s. H.
+torbjorn.rivet.hit_enemy.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5C60.03F.ogg
+torbjorn.rivet.hit_enemy.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A595B.03F.ogg
+torbjorn.rivet.hit_enemy.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5C4F.03F.ogg
+torbjorn.rivet.hit_enemy.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5C29.03F.ogg
+torbjorn.rivet.hit_enemy.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5BB3.03F.ogg
+torbjorn.rivet.hit_enemy.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5BAA.03F.ogg
+torbjorn.rivet.hit_enemy.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Shared/Sounds/000000008DE7.02C/0000002A5C2D.03F.ogg
+# torbjorn.rivet.hit_enemy.e: 5DA3 play 192384705 (7 files, 2.767-3.065 s, 2ch); net -25 dB, +746 cents, @0.005 s,
+#  avoid repeat 3. H.
+torbjorn.rivet.hit_enemy.e = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002A5E69.03F.ogg
+torbjorn.rivet.hit_enemy.e = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002A641E.03F.ogg
+torbjorn.rivet.hit_enemy.e = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002A6288.03F.ogg
+torbjorn.rivet.hit_enemy.e = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002A62AB.03F.ogg
+torbjorn.rivet.hit_enemy.e = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002A6344.03F.ogg
+torbjorn.rivet.hit_enemy.e = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002A62C0.03F.ogg
+torbjorn.rivet.hit_enemy.e = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002A5DCA.03F.ogg
+# torbjorn.rivet.hit_enemy.f: 5DA3 play 393914769 (5 files, 0.132-0.135 s, 2ch); net -30.5 dB, +646 cents, @0.105 s. H.
+torbjorn.rivet.hit_enemy.f = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002A5E00.03F.ogg
+torbjorn.rivet.hit_enemy.f = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002A62AA.03F.ogg
+torbjorn.rivet.hit_enemy.f = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002A62E7.03F.ogg
+torbjorn.rivet.hit_enemy.f = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002A6294.03F.ogg
+torbjorn.rivet.hit_enemy.f = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002A5E83.03F.ogg
+# torbjorn.rivet.hit_enemy.g: 5DA3 play 782700930 (1 file, 0.372 s, 1ch); net -12 dB, +400 cents, @0.040 s. H.
+torbjorn.rivet.hit_enemy.g = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000005DA3.02C/0000002ADBEC.03F.ogg
+# torbjorn.rivet.hit_enemy_3p.a: 752D play 327578442 (10 files, 0.985-1.220 s, 2ch); net -7.5 dB, +0 cents, @0.000 s,
+#  avoid repeat 5. H.
+torbjorn.rivet.hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002ADBE7.03F.ogg
+torbjorn.rivet.hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002ADBE1.03F.ogg
+torbjorn.rivet.hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002ADD49.03F.ogg
+torbjorn.rivet.hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002ADD4A.03F.ogg
+torbjorn.rivet.hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002ADBDF.03F.ogg
+torbjorn.rivet.hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002ADD3C.03F.ogg
+torbjorn.rivet.hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002ADC08.03F.ogg
+torbjorn.rivet.hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002ADD2B.03F.ogg
+torbjorn.rivet.hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002ADBDA.03F.ogg
+torbjorn.rivet.hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002ADBAD.03F.ogg
+# torbjorn.rivet.hit_enemy_3p.b: 752D play 548378800 (7 files, 2.767-3.065 s, 2ch); net -37 dB, +746 cents, @0.060 s,
+#  avoid repeat 3. H.
+torbjorn.rivet.hit_enemy_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002A5E69.03F.ogg
+torbjorn.rivet.hit_enemy_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002A641E.03F.ogg
+torbjorn.rivet.hit_enemy_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002A6288.03F.ogg
+torbjorn.rivet.hit_enemy_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002A62AB.03F.ogg
+torbjorn.rivet.hit_enemy_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002A6344.03F.ogg
+torbjorn.rivet.hit_enemy_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002A62C0.03F.ogg
+torbjorn.rivet.hit_enemy_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002A5DCA.03F.ogg
+# torbjorn.rivet.hit_enemy_3p.c: 752D play 356884323 (5 files, 0.132-0.135 s, 2ch); net -42.5 dB, +646 cents, @0.160 s. H.
+torbjorn.rivet.hit_enemy_3p.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002A5E00.03F.ogg
+torbjorn.rivet.hit_enemy_3p.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002A62AA.03F.ogg
+torbjorn.rivet.hit_enemy_3p.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002A62E7.03F.ogg
+torbjorn.rivet.hit_enemy_3p.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002A6294.03F.ogg
+torbjorn.rivet.hit_enemy_3p.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000752D.02C/0000002A5E83.03F.ogg
+# torbjorn.rivet.hit_world.a: 1852 play 624579756 (9 files, 0.823-1.231 s, 1ch); net -11 dB, -18 cents, @0.000 s,
+#  avoid repeat 7. H.
+torbjorn.rivet.hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001852.02C/0000002AAB02.03F.ogg
+torbjorn.rivet.hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001852.02C/0000002AAB2A.03F.ogg
+torbjorn.rivet.hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001852.02C/0000002AAB31.03F.ogg
+torbjorn.rivet.hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001852.02C/0000002AAB08.03F.ogg
+torbjorn.rivet.hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001852.02C/0000002AAB07.03F.ogg
+torbjorn.rivet.hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001852.02C/0000002AAB3E.03F.ogg
+torbjorn.rivet.hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001852.02C/0000002AAB22.03F.ogg
+torbjorn.rivet.hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001852.02C/0000002AAAED.03F.ogg
+torbjorn.rivet.hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/000000001852.02C/0000002AAB09.03F.ogg
+# torbjorn.rivet.alt_fire.a: 39EC play 959103779 (18 files, 0.252-1.265 s, 1ch/2ch); net -16 dB, +780 cents, @0.018 s. H.
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA510.03F.ogg
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA514.03F.ogg
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA518.03F.ogg
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA565.03F.ogg
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA5D1.03F.ogg
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA50D.03F.ogg
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA509.03F.ogg
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA515.03F.ogg
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA50A.03F.ogg
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA554.03F.ogg
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA519.03F.ogg
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA511.03F.ogg
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA516.03F.ogg
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA512.03F.ogg
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA566.03F.ogg
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA50F.03F.ogg
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA513.03F.ogg
+torbjorn.rivet.alt_fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA50C.03F.ogg
+# torbjorn.rivet.alt_fire.b: 39EC play 442345778 (11 files, 0.316-0.617 s, 1ch); net -18 dB, -100 cents, @0.007 s,
+#  avoid repeat 8. H.
+torbjorn.rivet.alt_fire.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002A79CF.03F.ogg
+torbjorn.rivet.alt_fire.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002A79EA.03F.ogg
+torbjorn.rivet.alt_fire.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002A79E8.03F.ogg
+torbjorn.rivet.alt_fire.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002A79EE.03F.ogg
+torbjorn.rivet.alt_fire.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002AA51A.03F.ogg
+torbjorn.rivet.alt_fire.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002A79E5.03F.ogg
+torbjorn.rivet.alt_fire.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002A79E7.03F.ogg
+torbjorn.rivet.alt_fire.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002A79E9.03F.ogg
+torbjorn.rivet.alt_fire.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002A79EB.03F.ogg
+torbjorn.rivet.alt_fire.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002A79EC.03F.ogg
+torbjorn.rivet.alt_fire.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/0000000039EC.02C/0000002A79E2.03F.ogg
+# torbjorn.rivet.alt_fire_3p.a: 8F01 play 313499427 (18 files, 0.252-1.265 s, 1ch/2ch); net -13.5 dB, +780 cents, @0.018 s. H.
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA510.03F.ogg
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA514.03F.ogg
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA518.03F.ogg
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA565.03F.ogg
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA5D1.03F.ogg
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA50D.03F.ogg
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA509.03F.ogg
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA515.03F.ogg
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA50A.03F.ogg
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA554.03F.ogg
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA519.03F.ogg
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA511.03F.ogg
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA516.03F.ogg
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA512.03F.ogg
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA566.03F.ogg
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA50F.03F.ogg
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA513.03F.ogg
+torbjorn.rivet.alt_fire_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA50C.03F.ogg
+# torbjorn.rivet.alt_fire_3p.b: 8F01 play 1005385700 (11 files, 0.316-0.617 s, 1ch); net -15.5 dB, -100 cents, @0.007
+#  s, avoid repeat 8. H.
+torbjorn.rivet.alt_fire_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002A79CF.03F.ogg
+torbjorn.rivet.alt_fire_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002A79EA.03F.ogg
+torbjorn.rivet.alt_fire_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002A79E8.03F.ogg
+torbjorn.rivet.alt_fire_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002A79EE.03F.ogg
+torbjorn.rivet.alt_fire_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002AA51A.03F.ogg
+torbjorn.rivet.alt_fire_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002A79E5.03F.ogg
+torbjorn.rivet.alt_fire_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002A79E7.03F.ogg
+torbjorn.rivet.alt_fire_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002A79E9.03F.ogg
+torbjorn.rivet.alt_fire_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002A79EB.03F.ogg
+torbjorn.rivet.alt_fire_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002A79EC.03F.ogg
+torbjorn.rivet.alt_fire_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008F01.02C/0000002A79E2.03F.ogg
+# torbjorn.rivet.alt_hit_enemy.a: 5DA4 play 46765461 (10 files, 1.495-1.665 s, 2ch); net -1.5 dB, +0 cents, @0.030 s,
+#  avoid repeat 4. H.
+torbjorn.rivet.alt_hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002ADC10.03F.ogg
+torbjorn.rivet.alt_hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002ADD23.03F.ogg
+torbjorn.rivet.alt_hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002ADC03.03F.ogg
+torbjorn.rivet.alt_hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002ADBF6.03F.ogg
+torbjorn.rivet.alt_hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002ADD12.03F.ogg
+torbjorn.rivet.alt_hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002ADD3B.03F.ogg
+torbjorn.rivet.alt_hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002ADD20.03F.ogg
+torbjorn.rivet.alt_hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002ADD11.03F.ogg
+torbjorn.rivet.alt_hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002ADBE5.03F.ogg
+torbjorn.rivet.alt_hit_enemy.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002ADBDE.03F.ogg
+# torbjorn.rivet.alt_hit_enemy.b: 5DA4 play 592118055 (4 files, 1.692-2.073 s, 2ch); net -14 dB, -268 cents, @0.070 s,
+#  avoid repeat 2. H.
+torbjorn.rivet.alt_hit_enemy.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002ABB8D.03F.ogg
+torbjorn.rivet.alt_hit_enemy.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002ABC3A.03F.ogg
+torbjorn.rivet.alt_hit_enemy.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002ABC2F.03F.ogg
+torbjorn.rivet.alt_hit_enemy.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002ABC23.03F.ogg
+# torbjorn.rivet.alt_hit_enemy.c: 5DA4 play 800398826 (3 files, 1.649-1.756 s, 1ch); net -23 dB, +32 cents, @0.080 s. H.
+torbjorn.rivet.alt_hit_enemy.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002A5DAE.03F.ogg
+torbjorn.rivet.alt_hit_enemy.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002A5DC8.03F.ogg
+torbjorn.rivet.alt_hit_enemy.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002A5DD5.03F.ogg
+# torbjorn.rivet.alt_hit_enemy.d: 5DA4 play 293391000 (3 files, 1.644-1.756 s, 1ch); net -23 dB, +32 cents, @0.120 s. H.
+torbjorn.rivet.alt_hit_enemy.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002A5DFE.03F.ogg
+torbjorn.rivet.alt_hit_enemy.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002A604D.03F.ogg
+torbjorn.rivet.alt_hit_enemy.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002A5DF3.03F.ogg
+# torbjorn.rivet.alt_hit_enemy.e: 5DA4 play 53652567 (1 file, 0.756 s, 1ch); net -14 dB, +0 cents, @0.000 s. H.
+torbjorn.rivet.alt_hit_enemy.e = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002ADD1D.03F.ogg
+# torbjorn.rivet.alt_hit_enemy.f: 5DA4 play 823587711 (1 file, 0.095 s, 2ch); net -19 dB, +0 cents, @0.000 s. H.
+torbjorn.rivet.alt_hit_enemy.f = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000005DA4.02C/0000002ADBF1.03F.ogg
+# torbjorn.rivet.alt_hit_enemy_3p.a: 7534 play 784945442 (10 files, 1.495-1.665 s, 2ch); net -7.5 dB, +0 cents, @0.030
+#  s, avoid repeat 4. H.
+torbjorn.rivet.alt_hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002ADC10.03F.ogg
+torbjorn.rivet.alt_hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002ADD23.03F.ogg
+torbjorn.rivet.alt_hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002ADC03.03F.ogg
+torbjorn.rivet.alt_hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002ADBF6.03F.ogg
+torbjorn.rivet.alt_hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002ADD12.03F.ogg
+torbjorn.rivet.alt_hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002ADD3B.03F.ogg
+torbjorn.rivet.alt_hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002ADD20.03F.ogg
+torbjorn.rivet.alt_hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002ADD11.03F.ogg
+torbjorn.rivet.alt_hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002ADBE5.03F.ogg
+torbjorn.rivet.alt_hit_enemy_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002ADBDE.03F.ogg
+# torbjorn.rivet.alt_hit_enemy_3p.b: 7534 play 951283685 (4 files, 1.692-2.073 s, 2ch); net -17 dB, -468 cents, @0.070
+#  s, avoid repeat 2. H.
+torbjorn.rivet.alt_hit_enemy_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002ABB8D.03F.ogg
+torbjorn.rivet.alt_hit_enemy_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002ABC3A.03F.ogg
+torbjorn.rivet.alt_hit_enemy_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002ABC2F.03F.ogg
+torbjorn.rivet.alt_hit_enemy_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002ABC23.03F.ogg
+# torbjorn.rivet.alt_hit_enemy_3p.c: 7534 play 942158740 (3 files, 1.649-1.756 s, 1ch); net -26 dB, -168 cents, @0.080 s. H.
+torbjorn.rivet.alt_hit_enemy_3p.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002A5DAE.03F.ogg
+torbjorn.rivet.alt_hit_enemy_3p.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002A5DC8.03F.ogg
+torbjorn.rivet.alt_hit_enemy_3p.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002A5DD5.03F.ogg
+# torbjorn.rivet.alt_hit_enemy_3p.d: 7534 play 480099296 (3 files, 1.644-1.756 s, 1ch); net -26 dB, -168 cents, @0.120 s. H.
+torbjorn.rivet.alt_hit_enemy_3p.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002A5DFE.03F.ogg
+torbjorn.rivet.alt_hit_enemy_3p.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002A604D.03F.ogg
+torbjorn.rivet.alt_hit_enemy_3p.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002A5DF3.03F.ogg
+# torbjorn.rivet.alt_hit_enemy_3p.e: 7534 play 221974292 (1 file, 0.095 s, 2ch); net -36 dB, +0 cents, @0.000 s. H.
+torbjorn.rivet.alt_hit_enemy_3p.e = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000007534.02C/0000002ADBF1.03F.ogg
+# torbjorn.rivet.alt_hit_world.a: 8D0A play 624579756 (9 files, 0.823-1.231 s, 1ch); net -11 dB, -18 cents, @0.000 s,
+#  avoid repeat 7. H.
+torbjorn.rivet.alt_hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008D0A.02C/0000002AAB02.03F.ogg
+torbjorn.rivet.alt_hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008D0A.02C/0000002AAB2A.03F.ogg
+torbjorn.rivet.alt_hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008D0A.02C/0000002AAB31.03F.ogg
+torbjorn.rivet.alt_hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008D0A.02C/0000002AAB08.03F.ogg
+torbjorn.rivet.alt_hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008D0A.02C/0000002AAB07.03F.ogg
+torbjorn.rivet.alt_hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008D0A.02C/0000002AAB3E.03F.ogg
+torbjorn.rivet.alt_hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008D0A.02C/0000002AAB22.03F.ogg
+torbjorn.rivet.alt_hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008D0A.02C/0000002AAAED.03F.ogg
+torbjorn.rivet.alt_hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Pellets/Sounds/000000008D0A.02C/0000002AAB09.03F.ogg
+# torbjorn.reload.a: 923E play 216959417 (5 files, 1.083-1.137 s, 2ch); net -11 dB, +0 cents, @0.000 s. H.
+torbjorn.reload.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923E.02C/0000002B02D4.03F.ogg
+torbjorn.reload.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923E.02C/0000002B02D2.03F.ogg
+torbjorn.reload.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923E.02C/0000002B02E4.03F.ogg
+torbjorn.reload.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923E.02C/0000002B02D1.03F.ogg
+torbjorn.reload.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923E.02C/0000002B0326.03F.ogg
+# torbjorn.reload.b: 923C play 889342981 (5 files, 0.772-1.111 s, 2ch); net -17 dB, +25 cents, @0.776 s. H.
+torbjorn.reload.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923C.02C/0000002ADC30.03F.ogg
+torbjorn.reload.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923C.02C/0000002B037A.03F.ogg
+torbjorn.reload.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923C.02C/0000002B0377.03F.ogg
+torbjorn.reload.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923C.02C/0000002ADC27.03F.ogg
+torbjorn.reload.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923C.02C/0000002ADC75.03F.ogg
+# torbjorn.reload.c: 923F play 245062127 (5 files, 1.087-1.431 s, 2ch); net -8.5 dB, +0 cents, @0.904 s. H.
+torbjorn.reload.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923F.02C/0000002B02C8.03F.ogg
+torbjorn.reload.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923F.02C/0000002B02E2.03F.ogg
+torbjorn.reload.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923F.02C/0000002B02AC.03F.ogg
+torbjorn.reload.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923F.02C/0000002B0379.03F.ogg
+torbjorn.reload.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923F.02C/0000002B02DE.03F.ogg
+# torbjorn.reload.d: 923D play 171689628 (3 files, 0.407-0.748 s, 1ch); net -23.5 dB, +38 cents, @1.781 s. H.
+torbjorn.reload.d = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923D.02C/0000002ADC2C.03F.ogg
+torbjorn.reload.d = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923D.02C/0000002ADC21.03F.ogg
+torbjorn.reload.d = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/00000000923D.02C/0000002ADC1C.03F.ogg
+# torbjorn.reload.e: 6439 play 672096132 (1 file, 0.951 s, 2ch); net -32.5 dB, +0 cents, @1.593 s. H.
+torbjorn.reload.e = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/0000000007D6/Sounds/000000006439.02C/0000002B02CD.03F.ogg
+# torbjorn.reload_3p.a: 4CA5 play 200273367 (3 files, 2.295-2.391 s, 1ch); net -24.5 dB, +0 cents, @0.000 s, avoid repeat 2. H.
+torbjorn.reload_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000000FED/Sounds/000000004CA5.02C/0000002B037E.03F.ogg
+torbjorn.reload_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000000FED/Sounds/000000004CA5.02C/0000002B02E3.03F.ogg
+torbjorn.reload_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000000FED/Sounds/000000004CA5.02C/0000002B02D9.03F.ogg
+# torbjorn.reload_3p.b: 963D play 543729597 (3 files, 0.503-0.511 s, 1ch); net -23.5 dB, +0 cents, @0.000 s. H.
+torbjorn.reload_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000000FD5/Sounds/00000000963D.02C/0000002B02DA.03F.ogg
+torbjorn.reload_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000000FD5/Sounds/00000000963D.02C/0000002B0325.03F.ogg
+torbjorn.reload_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000000FD5/Sounds/00000000963D.02C/0000002B02D7.03F.ogg
+# torbjorn.reload_3p.c: 963E play 853230656 (3 files, 0.673-0.689 s, 1ch); net -23.5 dB, +0 cents, @0.454 s. H.
+torbjorn.reload_3p.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000000FD5/Sounds/00000000963E.02C/0000002B02D0.03F.ogg
+torbjorn.reload_3p.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000000FD5/Sounds/00000000963E.02C/0000002B02E0.03F.ogg
+torbjorn.reload_3p.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000000FD5/Sounds/00000000963E.02C/0000002B037B.03F.ogg
+# torbjorn.reload_3p.d: 963F play 898572775 (3 files, 1.161-1.265 s, 1ch); net -23.5 dB, +0 cents, @1.118 s. H.
+torbjorn.reload_3p.d = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000000FD5/Sounds/00000000963F.02C/0000002B02C9.03F.ogg
+torbjorn.reload_3p.d = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000000FD5/Sounds/00000000963F.02C/0000002B02D5.03F.ogg
+torbjorn.reload_3p.d = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000000FD5/Sounds/00000000963F.02C/0000002B02AA.03F.ogg
+# torbjorn.draw_rivet.a: 281A play 856663745 (5 files, 0.412-0.497 s, 1ch); net -11 dB, +0 cents, @0.000 s. H.
+torbjorn.draw_rivet.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB1.00D/Sounds/00000000281A.02C/0000002ABE74.03F.ogg
+torbjorn.draw_rivet.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB1.00D/Sounds/00000000281A.02C/0000002ABE70.03F.ogg
+torbjorn.draw_rivet.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB1.00D/Sounds/00000000281A.02C/0000002ABF17.03F.ogg
+torbjorn.draw_rivet.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB1.00D/Sounds/00000000281A.02C/0000002ABECA.03F.ogg
+torbjorn.draw_rivet.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB1.00D/Sounds/00000000281A.02C/0000002ABEC9.03F.ogg
+# torbjorn.draw_rivet_3p.a: 361C play 893145429 (5 files, 0.412-0.497 s, 1ch); net -23.5 dB, +0 cents, @0.000 s. H.
+torbjorn.draw_rivet_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB1.00D/Sounds/00000000361C.02C/0000002ABE74.03F.ogg
+torbjorn.draw_rivet_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB1.00D/Sounds/00000000361C.02C/0000002ABE70.03F.ogg
+torbjorn.draw_rivet_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB1.00D/Sounds/00000000361C.02C/0000002ABF17.03F.ogg
+torbjorn.draw_rivet_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB1.00D/Sounds/00000000361C.02C/0000002ABECA.03F.ogg
+torbjorn.draw_rivet_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB1.00D/Sounds/00000000361C.02C/0000002ABEC9.03F.ogg
+# torbjorn.draw_hammer.a: 2819 play 1001659411 (4 files, 0.532-0.836 s, 1ch); net -11 dB, +0 cents, @0.000 s. H.
+torbjorn.draw_hammer.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB2.00D/Sounds/000000002819.02C/0000002ABF1A.03F.ogg
+torbjorn.draw_hammer.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB2.00D/Sounds/000000002819.02C/0000002ABE71.03F.ogg
+torbjorn.draw_hammer.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB2.00D/Sounds/000000002819.02C/0000002ABE6D.03F.ogg
+torbjorn.draw_hammer.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB2.00D/Sounds/000000002819.02C/0000002ABE6B.03F.ogg
+# torbjorn.draw_hammer_3p.a: 361B play 1011075939 (4 files, 0.532-0.836 s, 1ch); net -23.5 dB, +0 cents, @0.000 s. H.
+torbjorn.draw_hammer_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB2.00D/Sounds/00000000361B.02C/0000002ABF1A.03F.ogg
+torbjorn.draw_hammer_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB2.00D/Sounds/00000000361B.02C/0000002ABE71.03F.ogg
+torbjorn.draw_hammer_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB2.00D/Sounds/00000000361B.02C/0000002ABE6D.03F.ogg
+torbjorn.draw_hammer_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000DB2.00D/Sounds/00000000361B.02C/0000002ABE6B.03F.ogg
+# torbjorn.hammer.swing.a: 642B play 930157811 (3 files, 0.503-0.887 s, 2ch); net -14.5 dB, +0 cents, @0.030 s. H.
+torbjorn.hammer.swing.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/000000000D8E/Sounds/00000000642B.02C/0000002A8BC5.03F.ogg
+torbjorn.hammer.swing.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/000000000D8E/Sounds/00000000642B.02C/0000002A8BC7.03F.ogg
+torbjorn.hammer.swing.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/000000000D8E/Sounds/00000000642B.02C/0000002A8CFE.03F.ogg
+# torbjorn.hammer.swing.b: 1ADB play 650160137 (3 files, 0.436-0.519 s, 1ch); net -17 dB, +0 cents, @0.200 s, avoid repeat 3. H.
+torbjorn.hammer.swing.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/000000000D8E/Sounds/000000001ADB.02C/0000002A8B91.03F.ogg
+torbjorn.hammer.swing.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/000000000D8E/Sounds/000000001ADB.02C/0000002A8B89.03F.ogg
+torbjorn.hammer.swing.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EDA5.00C/AnimationEffects/000000000D8E/Sounds/000000001ADB.02C/0000002A8B90.03F.ogg
+# torbjorn.hammer.swing_3p.a: 1962 play 360777349 (9 files, 0.257-0.383 s, 1ch); net -48 dB, +50 cents, @0.000 s. H.
+torbjorn.hammer.swing_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/000000001962.02C/0000002A8BE8.03F.ogg
+torbjorn.hammer.swing_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/000000001962.02C/0000002A8C00.03F.ogg
+torbjorn.hammer.swing_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/000000001962.02C/0000002A8BF6.03F.ogg
+torbjorn.hammer.swing_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/000000001962.02C/0000002A8D1E.03F.ogg
+torbjorn.hammer.swing_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/000000001962.02C/0000002A8BF3.03F.ogg
+torbjorn.hammer.swing_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/000000001962.02C/0000002A8BE7.03F.ogg
+torbjorn.hammer.swing_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/000000001962.02C/0000002A8B9B.03F.ogg
+torbjorn.hammer.swing_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/000000001962.02C/0000002A8BFF.03F.ogg
+torbjorn.hammer.swing_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/000000001962.02C/0000002A8B95.03F.ogg
+# torbjorn.hammer.swing_3p.b: 08B8 play 19316191 (7 files, 0.343-0.596 s, 1ch); net -40.5 dB, -75 cents, @0.110 s,
+#  avoid repeat 3. H.
+torbjorn.hammer.swing_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8B87.03F.ogg
+torbjorn.hammer.swing_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8B8F.03F.ogg
+torbjorn.hammer.swing_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8B9E.03F.ogg
+torbjorn.hammer.swing_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8B8B.03F.ogg
+torbjorn.hammer.swing_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8B88.03F.ogg
+torbjorn.hammer.swing_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8B94.03F.ogg
+torbjorn.hammer.swing_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8BE3.03F.ogg
+# torbjorn.hammer.swing_3p.c: 08B8 play 775237089 (6 files, 0.401-0.505 s, 2ch); net -30.5 dB, +0 cents, @0.000 s,
+#  avoid repeat 7. H.
+torbjorn.hammer.swing_3p.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8BEF.03F.ogg
+torbjorn.hammer.swing_3p.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8BD1.03F.ogg
+torbjorn.hammer.swing_3p.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8D37.03F.ogg
+torbjorn.hammer.swing_3p.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8BFD.03F.ogg
+torbjorn.hammer.swing_3p.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8BD4.03F.ogg
+torbjorn.hammer.swing_3p.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8BC9.03F.ogg
+# torbjorn.hammer.swing_3p.d: 08B8 play 74926424 (6 files, 0.351-0.481 s, 1ch); net -44.5 dB, +500 cents, @0.000 s. H.
+torbjorn.hammer.swing_3p.d = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8B8A.03F.ogg
+torbjorn.hammer.swing_3p.d = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8B9A.03F.ogg
+torbjorn.hammer.swing_3p.d = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8BA0.03F.ogg
+torbjorn.hammer.swing_3p.d = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8BF9.03F.ogg
+torbjorn.hammer.swing_3p.d = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8BEA.03F.ogg
+torbjorn.hammer.swing_3p.d = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8BBE.03F.ogg
+# torbjorn.hammer.swing_3p.e: 08B8 play 22872038 (1 file, 0.583 s, 2ch); net -46.5 dB, -130 cents, @0.075 s. H.
+torbjorn.hammer.swing_3p.e = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000000EBD2.00C/AnimationEffects/000000001010/Sounds/0000000008B8.02C/0000002A8BA3.03F.ogg
+# torbjorn.hammer.hit.a: 8D97 play 855585076 (10 files, 0.279-0.543 s, 1ch); net +2 dB, +0 cents, @0.000 s, avoid repeat 6. H.
+torbjorn.hammer.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002AFE9D.03F.ogg
+torbjorn.hammer.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002AFE44.03F.ogg
+torbjorn.hammer.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002AFCEB.03F.ogg
+torbjorn.hammer.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002AFE6A.03F.ogg
+torbjorn.hammer.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002AFE8B.03F.ogg
+torbjorn.hammer.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002AFEA9.03F.ogg
+torbjorn.hammer.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002AFCE7.03F.ogg
+torbjorn.hammer.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002AFCE5.03F.ogg
+torbjorn.hammer.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002AFE56.03F.ogg
+torbjorn.hammer.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002AFD2E.03F.ogg
+# torbjorn.hammer.hit.b: 8D97 play 90228806 (7 files, 0.271-0.399 s, 2ch); net +3 dB, +0 cents, @0.000 s, avoid repeat 5. H.
+torbjorn.hammer.hit.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002AAAD1.03F.ogg
+torbjorn.hammer.hit.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002AAB3B.03F.ogg
+torbjorn.hammer.hit.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002AAB3A.03F.ogg
+torbjorn.hammer.hit.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002AAB36.03F.ogg
+torbjorn.hammer.hit.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002AAB32.03F.ogg
+torbjorn.hammer.hit.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002AAADF.03F.ogg
+torbjorn.hammer.hit.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002AAADC.03F.ogg
+# torbjorn.hammer.hit.c: 8D97 play 587249142 (7 files, 0.127-0.311 s, 1ch); net -9.5 dB, +600 cents, @0.035 s, avoid repeat 3. H.
+torbjorn.hammer.hit.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002ABB7F.03F.ogg
+torbjorn.hammer.hit.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002ABC22.03F.ogg
+torbjorn.hammer.hit.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002ABC51.03F.ogg
+torbjorn.hammer.hit.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002ABC2B.03F.ogg
+torbjorn.hammer.hit.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002ABC46.03F.ogg
+torbjorn.hammer.hit.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002ABC48.03F.ogg
+torbjorn.hammer.hit.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008D97.02C/0000002ABC41.03F.ogg
+# torbjorn.hammer.hit_3p.a: 8F62 play 152029602 (9 files, 0.327-0.519 s, 1ch); net +4 dB, +0 cents, @0.000 s, avoid repeat 6. H.
+torbjorn.hammer.hit_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008F62.02C/0000002AE339.03F.ogg
+torbjorn.hammer.hit_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008F62.02C/0000002AE2DF.03F.ogg
+torbjorn.hammer.hit_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008F62.02C/0000002AE33A.03F.ogg
+torbjorn.hammer.hit_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008F62.02C/0000002AE32B.03F.ogg
+torbjorn.hammer.hit_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008F62.02C/0000002AE2AD.03F.ogg
+torbjorn.hammer.hit_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008F62.02C/0000002AE2DE.03F.ogg
+torbjorn.hammer.hit_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008F62.02C/0000002AE343.03F.ogg
+torbjorn.hammer.hit_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008F62.02C/0000002AE2D7.03F.ogg
+torbjorn.hammer.hit_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008F62.02C/0000002AE2B3.03F.ogg
+# torbjorn.hammer.hit_3p.b: 8F62 play 571448557 (7 files, 0.271-0.399 s, 2ch); net +7 dB, +0 cents, @0.000 s, avoid repeat 5. H.
+torbjorn.hammer.hit_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008F62.02C/0000002AAAD1.03F.ogg
+torbjorn.hammer.hit_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008F62.02C/0000002AAB3B.03F.ogg
+torbjorn.hammer.hit_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008F62.02C/0000002AAB3A.03F.ogg
+torbjorn.hammer.hit_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008F62.02C/0000002AAB36.03F.ogg
+torbjorn.hammer.hit_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008F62.02C/0000002AAB32.03F.ogg
+torbjorn.hammer.hit_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008F62.02C/0000002AAADF.03F.ogg
+torbjorn.hammer.hit_3p.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/000000008F62.02C/0000002AAADC.03F.ogg
+# torbjorn.hammer.hit_world.a: 16F9 play 1015137450 (8 files, 0.295-0.372 s, 1ch); net -23.5 dB, -38 cents, @0.000 s. H.
+torbjorn.hammer.hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/0000000016F9.02C/0000002AAAEE.03F.ogg
+torbjorn.hammer.hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/0000000016F9.02C/0000002AAAD0.03F.ogg
+torbjorn.hammer.hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/0000000016F9.02C/0000002AAACD.03F.ogg
+torbjorn.hammer.hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/0000000016F9.02C/0000002AAAE1.03F.ogg
+torbjorn.hammer.hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/0000000016F9.02C/0000002AAAE8.03F.ogg
+torbjorn.hammer.hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/0000000016F9.02C/0000002AAAE6.03F.ogg
+torbjorn.hammer.hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/0000000016F9.02C/0000002AAAF5.03F.ogg
+torbjorn.hammer.hit_world.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/0000000016F9.02C/0000002AAAC8.03F.ogg
+# torbjorn.hammer.hit_world.b: 16F9 play 321483932 (5 files, 0.303-0.444 s, 2ch); net -24 dB, -100 cents, @0.000 s. H.
+torbjorn.hammer.hit_world.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/0000000016F9.02C/0000002AAAE4.03F.ogg
+torbjorn.hammer.hit_world.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/0000000016F9.02C/0000002AAAEC.03F.ogg
+torbjorn.hammer.hit_world.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/0000000016F9.02C/0000002AAAFB.03F.ogg
+torbjorn.hammer.hit_world.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/0000000016F9.02C/0000002AAAEF.03F.ogg
+torbjorn.hammer.hit_world.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/0000000016F9.02C/0000002AAB97.03F.ogg
+# torbjorn.hammer.hit_world.c: 16F9 play 114388613 (4 files, 0.281-0.463 s, 2ch); net -23.5 dB, +635 cents, @0.000 s,
+#  avoid repeat 2. H.
+torbjorn.hammer.hit_world.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/0000000016F9.02C/0000002AAAE7.03F.ogg
+torbjorn.hammer.hit_world.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/0000000016F9.02C/0000002AAAF9.03F.ogg
+torbjorn.hammer.hit_world.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/0000000016F9.02C/0000002AAAFC.03F.ogg
+torbjorn.hammer.hit_world.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Hammer/Sounds/0000000016F9.02C/0000002AAAEA.03F.ogg
+# torbjorn.hammer.repair.a: 1683 play 23228420 (5 files, 0.303-0.444 s, 2ch); net -16 dB, +0 cents, @0.000 s. H.
+torbjorn.hammer.repair.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAAE4.03F.ogg
+torbjorn.hammer.repair.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAAEC.03F.ogg
+torbjorn.hammer.repair.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAAFB.03F.ogg
+torbjorn.hammer.repair.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAAEF.03F.ogg
+torbjorn.hammer.repair.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAB97.03F.ogg
+# torbjorn.hammer.repair.b: 1683 play 404609266 (5 files, 0.460-0.873 s, 2ch); net -19.5 dB, -538 cents, @0.000 s,
+#  avoid repeat 3. H.
+torbjorn.hammer.repair.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAAFA.03F.ogg
+torbjorn.hammer.repair.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAAFD.03F.ogg
+torbjorn.hammer.repair.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAAEB.03F.ogg
+torbjorn.hammer.repair.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAAF2.03F.ogg
+torbjorn.hammer.repair.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAAFE.03F.ogg
+# torbjorn.hammer.repair.c: 1683 play 614017560 (5 files, 0.487-0.583 s, 2ch); net -15 dB, -488 cents, @0.085 s. H.
+torbjorn.hammer.repair.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAAC9.03F.ogg
+torbjorn.hammer.repair.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAAF1.03F.ogg
+torbjorn.hammer.repair.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAACC.03F.ogg
+torbjorn.hammer.repair.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAB96.03F.ogg
+torbjorn.hammer.repair.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAB9A.03F.ogg
+# torbjorn.hammer.repair.d: 1683 play 125874094 (1 file, 0.412 s, 2ch); net -34.5 dB, -400 cents, @0.200 s. H.
+torbjorn.hammer.repair.d = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAAF3.03F.ogg
+# torbjorn.hammer.repair.e: 1683 play 927721468 (1 file, 0.553 s, 2ch); net -24 dB, -1050 cents, @0.230 s. H.
+torbjorn.hammer.repair.e = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAB42.03F.ogg
+# torbjorn.hammer.repair.f: 1683 play 574774094 (1 file, 0.561 s, 2ch); net -34.5 dB, -550 cents, @0.250 s. H.
+torbjorn.hammer.repair.f = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001683.02C/0000002AAAE3.03F.ogg
+# torbjorn.hammer.repair_3p.a: 1684 play 256218522 (5 files, 0.764-1.071 s, 2ch); net -17.5 dB, +0 cents, @0.000 s. H.
+torbjorn.hammer.repair_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001684.02C/0000002AFC23.03F.ogg
+torbjorn.hammer.repair_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001684.02C/0000002AFC30.03F.ogg
+torbjorn.hammer.repair_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001684.02C/0000002AF96A.03F.ogg
+torbjorn.hammer.repair_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001684.02C/0000002AFC2B.03F.ogg
+torbjorn.hammer.repair_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001684.02C/0000002AFC26.03F.ogg
+# torbjorn.hammer.repair_3p.b: 1684 play 352081147 (5 files, 0.303-0.444 s, 2ch); net -19 dB, +0 cents, @0.000 s. H.
+torbjorn.hammer.repair_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001684.02C/0000002AAAE4.03F.ogg
+torbjorn.hammer.repair_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001684.02C/0000002AAAEC.03F.ogg
+torbjorn.hammer.repair_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001684.02C/0000002AAAFB.03F.ogg
+torbjorn.hammer.repair_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001684.02C/0000002AAAEF.03F.ogg
+torbjorn.hammer.repair_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000230.00D/Sounds/000000001684.02C/0000002AAB97.03F.ogg
+# torbjorn.hammer.repair_full.a: 1681 play 64005793 (5 files, 0.929-1.095 s, 2ch); net -17.5 dB, -50 cents, @0.350 s,
+#  avoid repeat 2. H.
+torbjorn.hammer.repair_full.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000226.00D/Sounds/000000001681.02C/0000002AAACA.03F.ogg
+torbjorn.hammer.repair_full.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000226.00D/Sounds/000000001681.02C/0000002AAAD2.03F.ogg
+torbjorn.hammer.repair_full.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000226.00D/Sounds/000000001681.02C/0000002AAAE5.03F.ogg
+torbjorn.hammer.repair_full.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000226.00D/Sounds/000000001681.02C/0000002AAACB.03F.ogg
+torbjorn.hammer.repair_full.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000226.00D/Sounds/000000001681.02C/0000002AAAE9.03F.ogg
+# torbjorn.turret.throw.a: 4DFA play 832540384 (2 files, 0.735-0.804 s, 2ch); net -6.5 dB, -22 cents, @0.000 s, avoid repeat 3. H.
+torbjorn.turret.throw.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000221.00D/Sounds/000000004DFA.02C/0000002AF969.03F.ogg
+torbjorn.turret.throw.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000221.00D/Sounds/000000004DFA.02C/0000002AFAD8.03F.ogg
+# torbjorn.turret.throw_3p.a: 4DFB play 911109868 (2 files, 0.735-0.804 s, 2ch); net -17.5 dB, -22 cents, @0.000 s,
+#  avoid repeat 5. H.
+torbjorn.turret.throw_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000221.00D/Sounds/000000004DFB.02C/0000002AF969.03F.ogg
+torbjorn.turret.throw_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000000221.00D/Sounds/000000004DFB.02C/0000002AFAD8.03F.ogg
+# torbjorn.turret.flight.a: 4F12 play 956479761 (3 files, 0.479-0.548 s, 2ch); net -3.5 dB, +0 cents, @0.000 s, avoid repeat 2. H.
+torbjorn.turret.flight.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000004F12.02C/0000002AFC1E.03F.ogg
+torbjorn.turret.flight.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000004F12.02C/0000002AFC1A.03F.ogg
+torbjorn.turret.flight.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000004F12.02C/0000002AF982.03F.ogg
+# torbjorn.turret.land.a: 4EEC play 557427734 (4 files, 0.700-0.783 s, 2ch); net -4.5 dB, +0 cents, @0.000 s, avoid repeat 2. H.
+torbjorn.turret.land.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000004EEC.02C/0000002AF98C.03F.ogg
+torbjorn.turret.land.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000004EEC.02C/0000002AFC49.03F.ogg
+torbjorn.turret.land.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000004EEC.02C/0000002AFC1D.03F.ogg
+torbjorn.turret.land.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000004EEC.02C/0000002AF990.03F.ogg
+# torbjorn.turret.deploy.a: 168B play 724699710 (1 file, 3.153 s, 2ch); net -42.5 dB, +0 cents, @0.000 s. H.
+torbjorn.turret.deploy.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000240.00D/Sounds/00000000168B.02C/0000002AF994.03F.ogg
+# torbjorn.turret.build.a: 4E09 play 741108291 (2 files, 3.399-3.620 s, 2ch); net -7.5 dB, +0 cents, @0.000 s. H.
+torbjorn.turret.build.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000001000C.00C/AnimationEffects/000000005F79/Sounds/000000004E09.02C/0000002AF963.03F.ogg
+torbjorn.turret.build.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Models/00000001000C.00C/AnimationEffects/000000005F79/Sounds/000000004E09.02C/0000002AF993.03F.ogg
+# torbjorn.turret.build_step.a: 1917 play 171087781 (10 files, 0.641-0.892 s, 2ch); net -8.5 dB, +0 cents, @0.000 s. H.
+torbjorn.turret.build_step.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003C7.00D/Sounds/000000001917.02C/0000002AFC2D.03F.ogg
+torbjorn.turret.build_step.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003C7.00D/Sounds/000000001917.02C/0000002AFC47.03F.ogg
+torbjorn.turret.build_step.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003C7.00D/Sounds/000000001917.02C/0000002AFC17.03F.ogg
+torbjorn.turret.build_step.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003C7.00D/Sounds/000000001917.02C/0000002AFC12.03F.ogg
+torbjorn.turret.build_step.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003C7.00D/Sounds/000000001917.02C/0000002AFC43.03F.ogg
+torbjorn.turret.build_step.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003C7.00D/Sounds/000000001917.02C/0000002AFC42.03F.ogg
+torbjorn.turret.build_step.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003C7.00D/Sounds/000000001917.02C/0000002AFC14.03F.ogg
+torbjorn.turret.build_step.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003C7.00D/Sounds/000000001917.02C/0000002AFC13.03F.ogg
+torbjorn.turret.build_step.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003C7.00D/Sounds/000000001917.02C/0000002AFC20.03F.ogg
+torbjorn.turret.build_step.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003C7.00D/Sounds/000000001917.02C/0000002AFC4A.03F.ogg
+# torbjorn.turret.build_step.b: 1917 play 23228420 (5 files, 0.303-0.444 s, 2ch); net -16 dB, +0 cents, @0.000 s. H.
+torbjorn.turret.build_step.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003C7.00D/Sounds/000000001917.02C/0000002AAAE4.03F.ogg
+torbjorn.turret.build_step.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003C7.00D/Sounds/000000001917.02C/0000002AAAEC.03F.ogg
+torbjorn.turret.build_step.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003C7.00D/Sounds/000000001917.02C/0000002AAAFB.03F.ogg
+torbjorn.turret.build_step.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003C7.00D/Sounds/000000001917.02C/0000002AAAEF.03F.ogg
+torbjorn.turret.build_step.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003C7.00D/Sounds/000000001917.02C/0000002AAB97.03F.ogg
+# torbjorn.turret.build_step.c: 1917 play 120232917 (1 file, 0.983 s, 2ch); net -8.5 dB, +0 cents, @0.020 s. H.
+torbjorn.turret.build_step.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003C7.00D/Sounds/000000001917.02C/0000002AF99C.03F.ogg
+# torbjorn.turret.fire.a: 185B play 301755238 (7 files, 0.252-0.409 s, 1ch); net -21 dB, -2 cents, @0.000 s. H.
+torbjorn.turret.fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000185B.02C/0000002AA514.03F.ogg
+torbjorn.turret.fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000185B.02C/0000002AA510.03F.ogg
+torbjorn.turret.fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000185B.02C/0000002AA518.03F.ogg
+torbjorn.turret.fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000185B.02C/0000002AA50D.03F.ogg
+torbjorn.turret.fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000185B.02C/0000002AA509.03F.ogg
+torbjorn.turret.fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000185B.02C/0000002AA515.03F.ogg
+torbjorn.turret.fire.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Rivet/Sounds/00000000185B.02C/0000002AA50A.03F.ogg
+# torbjorn.turret.hit.a: 5D53 play 869440074 (10 files, 0.137-0.244 s, 1ch); net +2 dB, +0 cents, @0.000 s, avoid repeat 6. H.
+torbjorn.turret.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AFD25.03F.ogg
+torbjorn.turret.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AFD3D.03F.ogg
+torbjorn.turret.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AFE64.03F.ogg
+torbjorn.turret.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AFD28.03F.ogg
+torbjorn.turret.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AFE93.03F.ogg
+torbjorn.turret.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AFCD1.03F.ogg
+torbjorn.turret.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AFCCF.03F.ogg
+torbjorn.turret.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AFCEA.03F.ogg
+torbjorn.turret.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AFD3C.03F.ogg
+torbjorn.turret.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AFDEF.03F.ogg
+# torbjorn.turret.hit.b: 5D53 play 923138318 (8 files, 0.284-0.300 s, 2ch); net -7.5 dB, +200 cents, @0.000 s. H.
+torbjorn.turret.hit.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AE2D4.03F.ogg
+torbjorn.turret.hit.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AE2A0.03F.ogg
+torbjorn.turret.hit.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AE27D.03F.ogg
+torbjorn.turret.hit.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AE2E6.03F.ogg
+torbjorn.turret.hit.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AE338.03F.ogg
+torbjorn.turret.hit.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AE32F.03F.ogg
+torbjorn.turret.hit.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AE297.03F.ogg
+torbjorn.turret.hit.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002AE275.03F.ogg
+# torbjorn.turret.hit.c: 5D53 play 21462275 (7 files, 0.127-0.311 s, 1ch); net -18.5 dB, +200 cents, @0.000 s, avoid repeat 3. H.
+torbjorn.turret.hit.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002ABC29.03F.ogg
+torbjorn.turret.hit.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002ABC26.03F.ogg
+torbjorn.turret.hit.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002ABC1B.03F.ogg
+torbjorn.turret.hit.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002ABC32.03F.ogg
+torbjorn.turret.hit.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002ABC27.03F.ogg
+torbjorn.turret.hit.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002ABC53.03F.ogg
+torbjorn.turret.hit.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002ABC4B.03F.ogg
+# torbjorn.turret.hit.d: 5D53 play 607390467 (7 files, 0.127-0.311 s, 1ch); net -11.5 dB, +900 cents, @0.035 s, avoid repeat 3. H.
+torbjorn.turret.hit.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002ABB7F.03F.ogg
+torbjorn.turret.hit.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002ABC22.03F.ogg
+torbjorn.turret.hit.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002ABC51.03F.ogg
+torbjorn.turret.hit.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002ABC2B.03F.ogg
+torbjorn.turret.hit.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002ABC46.03F.ogg
+torbjorn.turret.hit.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002ABC48.03F.ogg
+torbjorn.turret.hit.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/000000005D53.02C/0000002ABC41.03F.ogg
+# torbjorn.turret.upgrade.a: 1688 play 449593480 (1 file, 1.956 s, 2ch); net -7.5 dB, +0 cents, @0.750 s. H.
+torbjorn.turret.upgrade.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000000229.00D/Sounds/000000001688.02C/0000002AF98F.03F.ogg
+# torbjorn.turret.downgrade.a: E96A play 227154484 (1 file, 0.983 s, 2ch); net -16.5 dB, +0 cents, @0.000 s. H.
+torbjorn.turret.downgrade.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000007086.00D/Sounds/00000000E96A.02C/00000031FD3A.03F.ogg
+# torbjorn.turret.damaged.a: 1910 play 547127427 (4 files, 0.612-0.863 s, 1ch); net -52.5 dB, +0 cents, @0.000 s. H.
+torbjorn.turret.damaged.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003A3.00D/Sounds/000000001910.02C/0000002AFC24.03F.ogg
+torbjorn.turret.damaged.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003A3.00D/Sounds/000000001910.02C/0000002AFC2E.03F.ogg
+torbjorn.turret.damaged.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003A3.00D/Sounds/000000001910.02C/0000002AFC44.03F.ogg
+torbjorn.turret.damaged.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/0000000003A3.00D/Sounds/000000001910.02C/0000002AF991.03F.ogg
+# torbjorn.turret.destroyed.a: 1906 play 577716776 (9 files, 3.353-3.801 s, 2ch); net -14.5 dB, -10 cents, @0.225 s,
+#  avoid repeat 4. H.
+torbjorn.turret.destroyed.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002A5B11.03F.ogg
+torbjorn.turret.destroyed.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002A5B74.03F.ogg
+torbjorn.turret.destroyed.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002A5B7F.03F.ogg
+torbjorn.turret.destroyed.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002A5B3D.03F.ogg
+torbjorn.turret.destroyed.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002A5B6E.03F.ogg
+torbjorn.turret.destroyed.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002A5B77.03F.ogg
+torbjorn.turret.destroyed.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002A5B6B.03F.ogg
+torbjorn.turret.destroyed.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002A5ACE.03F.ogg
+torbjorn.turret.destroyed.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002A5AE9.03F.ogg
+# torbjorn.turret.destroyed.b: 1906 play 677685491 (7 files, 4.697-6.087 s, 2ch); net +3.5 dB, -150 cents, @0.215 s,
+#  avoid repeat 3. H.
+torbjorn.turret.destroyed.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002A5AD5.03F.ogg
+torbjorn.turret.destroyed.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002A5AC2.03F.ogg
+torbjorn.turret.destroyed.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002A5B3E.03F.ogg
+torbjorn.turret.destroyed.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002A5B86.03F.ogg
+torbjorn.turret.destroyed.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002A5B49.03F.ogg
+torbjorn.turret.destroyed.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002A5AB7.03F.ogg
+torbjorn.turret.destroyed.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002A5B8D.03F.ogg
+# torbjorn.turret.destroyed.c: 1906 play 105921428 (2 files, 1.500-1.721 s, 2ch); net -16.5 dB, +25 cents, @0.000 s. H.
+torbjorn.turret.destroyed.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002AFAD7.03F.ogg
+torbjorn.turret.destroyed.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/000000001906.02C/0000002AF992.03F.ogg
+# torbjorn.turret.destroyed_3p.a: 125D play 525401241 (10 files, 3.353-3.801 s, 2ch); net -20.5 dB, +0 cents, @0.100 s. H.
+torbjorn.turret.destroyed_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002A5B11.03F.ogg
+torbjorn.turret.destroyed_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002A5B74.03F.ogg
+torbjorn.turret.destroyed_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002A5B7F.03F.ogg
+torbjorn.turret.destroyed_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002A5B3D.03F.ogg
+torbjorn.turret.destroyed_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002A5B6E.03F.ogg
+torbjorn.turret.destroyed_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002A5B77.03F.ogg
+torbjorn.turret.destroyed_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002A5B6B.03F.ogg
+torbjorn.turret.destroyed_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002A5ACE.03F.ogg
+torbjorn.turret.destroyed_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002A5BA4.03F.ogg
+torbjorn.turret.destroyed_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002A5AE9.03F.ogg
+# torbjorn.turret.destroyed_3p.b: 125D play 741222748 (7 files, 4.697-6.087 s, 2ch); net -14.5 dB, +0 cents, @0.100 s. H.
+torbjorn.turret.destroyed_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002A5AD5.03F.ogg
+torbjorn.turret.destroyed_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002A5AC2.03F.ogg
+torbjorn.turret.destroyed_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002A5B3E.03F.ogg
+torbjorn.turret.destroyed_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002A5B86.03F.ogg
+torbjorn.turret.destroyed_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002A5B49.03F.ogg
+torbjorn.turret.destroyed_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002A5AB7.03F.ogg
+torbjorn.turret.destroyed_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002A5B8D.03F.ogg
+# torbjorn.turret.destroyed_3p.c: 125D play 1047243382 (2 files, 2.204-2.255 s, 2ch); net -8.5 dB, +0 cents, @0.000 s. H.
+torbjorn.turret.destroyed_3p.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002AF980.03F.ogg
+torbjorn.turret.destroyed_3p.c = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/00000000018C.00D/Sounds/00000000125D.02C/0000002AF986.03F.ogg
+# torbjorn.turret.recall.a: 4E52 play 982548459 (1 file, 1.132 s, 2ch); net -14.5 dB, +50 cents, @0.000 s. H.
+torbjorn.turret.recall.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026ED.00D/Sounds/000000004E52.02C/0000002AF96B.03F.ogg
+# torbjorn.turret.overloaded.a: C305 play 759156898 (1 file, 1.127 s, 2ch); net -8.5 dB, +0 cents, @0.000 s. H.
+torbjorn.turret.overloaded.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Turret/Sounds/00000000C305.02C/0000002AFC45.03F.ogg
+# torbjorn.overload.a: 5DA0 play 161276582 (3 files, 2.535-2.697 s, 2ch); net -8 dB, +0 cents, @0.000 s. H.
+torbjorn.overload.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002668.00D/Sounds/000000005DA0.02C/0000002ABB3A.03F.ogg
+torbjorn.overload.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002668.00D/Sounds/000000005DA0.02C/0000002ABA87.03F.ogg
+torbjorn.overload.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002668.00D/Sounds/000000005DA0.02C/0000002ABA88.03F.ogg
+# torbjorn.overload.b: 5DA0 play 321649416 (1 file, 1.076 s, 1ch); net -20 dB, +0 cents, @0.000 s. H.
+torbjorn.overload.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002668.00D/Sounds/000000005DA0.02C/0000002ABB4D.03F.ogg
+# torbjorn.overload_3p.a: 4CA2 play 716447293 (3 files, 2.535-2.697 s, 2ch); net -17 dB, +0 cents, @0.000 s. H.
+torbjorn.overload_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002668.00D/Sounds/000000004CA2.02C/0000002ABB3A.03F.ogg
+torbjorn.overload_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002668.00D/Sounds/000000004CA2.02C/0000002ABA87.03F.ogg
+torbjorn.overload_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/000000002668.00D/Sounds/000000004CA2.02C/0000002ABA88.03F.ogg
+# torbjorn.overload.loop.a: BE28 play 758394276 (1 file, 4.219 s, 2ch); net -25 dB, +0 cents, @0.000 s, period 4.219 s. H.
+torbjorn.overload.loop.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026F1.00D/Sounds/00000000BE28.02C/0000002ABA85.03F.ogg
+# torbjorn.overload.loop_3p.a: BE29 play 57690543 (1 file, 4.219 s, 2ch); net -31 dB, +0 cents, @0.000 s, period 4.219 s. H.
+torbjorn.overload.loop_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026F1.00D/Sounds/00000000BE29.02C/0000002ABA85.03F.ogg
+# torbjorn.overload.end.a: BE28 stop 534037211 (1 file, 1.361 s, 2ch); net -5 dB, +0 cents, @0.000 s. H.
+torbjorn.overload.end.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026F1.00D/Sounds/00000000BE28.02C/0000002ABAE2.03F.ogg
+# torbjorn.overload.end.b: BE28 stop 380130188 (1 file, 1.252 s, 2ch); net -21 dB, +0 cents, @0.500 s. H.
+torbjorn.overload.end.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026F1.00D/Sounds/00000000BE28.02C/0000002ABA86.03F.ogg
+# torbjorn.ult.cast.a: 5DA1 play 105043164 (1 file, 2.919 s, 2ch); net -8 dB, +0 cents, @0.000 s. H.
+torbjorn.ult.cast.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026E6.00D/Sounds/000000005DA1.02C/0000002ADF45.03F.ogg
+# torbjorn.ult.cast.b: 5DA1 play 881967830 (1 file, 0.884 s, 1ch); net -14 dB, +0 cents, @0.000 s. H.
+torbjorn.ult.cast.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026E6.00D/Sounds/000000005DA1.02C/0000002ADF49.03F.ogg
+# torbjorn.ult.cast_3p.a: 4ECA play 561958178 (3 files, 2.847-3.052 s, 2ch); net -9 dB, +0 cents, @0.000 s. H.
+torbjorn.ult.cast_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026E6.00D/Sounds/000000004ECA.02C/0000002ADF48.03F.ogg
+torbjorn.ult.cast_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026E6.00D/Sounds/000000004ECA.02C/0000002ADF6F.03F.ogg
+torbjorn.ult.cast_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026E6.00D/Sounds/000000004ECA.02C/0000002ADF54.03F.ogg
+# torbjorn.ult.cast_3p.b: 4ECA play 639015698 (1 file, 1.012 s, 2ch); net -16 dB, +0 cents, @0.500 s. H.
+torbjorn.ult.cast_3p.b = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026E6.00D/Sounds/000000004ECA.02C/0000002ABB39.03F.ogg
+# torbjorn.molten.loop.a: 4E23 play 711454243 (1 file, 2.779 s, 2ch); net -27 dB, +0 cents, @0.000 s, period 2.779 s. H.
+torbjorn.molten.loop.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026DC.00D/Sounds/000000004E23.02C/0000002ADF5E.03F.ogg
+# torbjorn.molten.loop_3p.a: 4EC6 play 608521637 (1 file, 2.779 s, 2ch); net -38 dB, +0 cents, @0.000 s, period 2.779 s. H.
+torbjorn.molten.loop_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026DC.00D/Sounds/000000004EC6.02C/0000002ADF5E.03F.ogg
+# torbjorn.molten.fire.a: 4E2F play 30512016 (2 files, 1.201-1.377 s, 2ch); net -14.5 dB, +0 cents, @0.000 s, avoid repeat 3. H.
+torbjorn.molten.fire.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026E4.00D/Sounds/000000004E2F.02C/0000002ADE56.03F.ogg
+torbjorn.molten.fire.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026E4.00D/Sounds/000000004E2F.02C/0000002ADDC2.03F.ogg
+# torbjorn.molten.fire_3p.a: 4EC7 play 468636535 (2 files, 1.201-1.377 s, 2ch); net -24 dB, +0 cents, @0.000 s, avoid repeat 4. H.
+torbjorn.molten.fire_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026E4.00D/Sounds/000000004EC7.02C/0000002ADE56.03F.ogg
+torbjorn.molten.fire_3p.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026E4.00D/Sounds/000000004EC7.02C/0000002ADDC2.03F.ogg
+# torbjorn.molten.flight.a: 4E4B play 414282104 (1 file, 4.999 s, 1ch); net -4 dB, +543 cents, @0.000 s, period 3.653 s. H.
+torbjorn.molten.flight.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Effects/000000002509.00D/Sounds/000000004E4B.02C/0000002AA50E.03F.ogg
+# torbjorn.molten.hit.a: 4EC8 play 1042854364 (6 files, 0.704-0.968 s, 2ch); net -8 dB, +0 cents, @0.000 s. H.
+torbjorn.molten.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EC8.02C/0000002ADE62.03F.ogg
+torbjorn.molten.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EC8.02C/0000002ADDD1.03F.ogg
+torbjorn.molten.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EC8.02C/0000002ADDD7.03F.ogg
+torbjorn.molten.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EC8.02C/0000002ADDA8.03F.ogg
+torbjorn.molten.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EC8.02C/0000002ADD94.03F.ogg
+torbjorn.molten.hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EC8.02C/0000002ADDAE.03F.ogg
+# torbjorn.molten.hit.b: 4EC8 play 73206061 (2 files, 1.201-1.377 s, 2ch); net -29 dB, +0 cents, @0.000 s, avoid repeat 4. H.
+torbjorn.molten.hit.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EC8.02C/0000002ADE56.03F.ogg
+torbjorn.molten.hit.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EC8.02C/0000002ADDC2.03F.ogg
+# torbjorn.molten.hit.c: 4EC8 play 925085861 (2 files, 0.971-1.052 s, 2ch); net -8 dB, +0 cents, @0.000 s. H.
+torbjorn.molten.hit.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EC8.02C/0000002ADDA0.03F.ogg
+torbjorn.molten.hit.c = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EC8.02C/0000002ADE6E.03F.ogg
+# torbjorn.molten.hit.d: 4EC8 play 704929018 (2 files, 0.991-1.017 s, 2ch); net -8 dB, +0 cents, @0.000 s. H.
+torbjorn.molten.hit.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EC8.02C/0000002ADE51.03F.ogg
+torbjorn.molten.hit.d = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EC8.02C/0000002ADE6A.03F.ogg
+# torbjorn.molten.hit.e: 4EC8 play 634879728 (2 files, 0.529-0.713 s, 2ch); net -27 dB, +300 cents, @0.120 s. H.
+torbjorn.molten.hit.e = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EC8.02C/0000002ADF61.03F.ogg
+torbjorn.molten.hit.e = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EC8.02C/0000002ADF7C.03F.ogg
+# torbjorn.molten.impact.a: 4EED play 543622126 (6 files, 0.388-0.487 s, 1ch); net -15 dB, -10 cents, @0.000 s, avoid repeat 5. H.
+torbjorn.molten.impact.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EED.02C/0000002ADF55.03F.ogg
+torbjorn.molten.impact.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EED.02C/0000002ADF47.03F.ogg
+torbjorn.molten.impact.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EED.02C/0000002ADF5A.03F.ogg
+torbjorn.molten.impact.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EED.02C/0000002ADF44.03F.ogg
+torbjorn.molten.impact.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EED.02C/0000002ADF4F.03F.ogg
+torbjorn.molten.impact.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EED.02C/0000002ADF5D.03F.ogg
+# torbjorn.molten.impact.b: 4EE2 play 956045482 (5 files, 1.708-2.284 s, 2ch); net -2 dB, +0 cents, @0.000 s, avoid repeat 3. H.
+torbjorn.molten.impact.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EE2.02C/0000002ADF52.03F.ogg
+torbjorn.molten.impact.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EE2.02C/0000002ADF04.03F.ogg
+torbjorn.molten.impact.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EE2.02C/0000002ADF58.03F.ogg
+torbjorn.molten.impact.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EE2.02C/0000002ADF5B.03F.ogg
+torbjorn.molten.impact.b = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004EE2.02C/0000002ADF59.03F.ogg
+# torbjorn.molten.pool.a: 4E49 play 70535229 (7 files, 1.519-1.807 s, 1ch); net -13 dB, +0 cents, @0.000 s, avoid repeat 5. H.
+torbjorn.molten.pool.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026FB.00D/Sounds/000000004E49.02C/0000002ACF27.03F.ogg
+torbjorn.molten.pool.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026FB.00D/Sounds/000000004E49.02C/0000002ACF35.03F.ogg
+torbjorn.molten.pool.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026FB.00D/Sounds/000000004E49.02C/0000002ACF3A.03F.ogg
+torbjorn.molten.pool.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026FB.00D/Sounds/000000004E49.02C/0000002ACF26.03F.ogg
+torbjorn.molten.pool.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026FB.00D/Sounds/000000004E49.02C/0000002AD1D4.03F.ogg
+torbjorn.molten.pool.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026FB.00D/Sounds/000000004E49.02C/0000002ACF36.03F.ogg
+torbjorn.molten.pool.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/0000000026FB.00D/Sounds/000000004E49.02C/0000002ACF2D.03F.ogg
+# torbjorn.molten.pool_loop.a: 4E4A play 58552388 (1 file, 5.907 s, 2ch); net -18 dB, -100 cents, @0.000 s, period 6.258 s. H.
+torbjorn.molten.pool_loop.a = ../../research/torbjorn/extract/Heroes/Torbjörn/Skin/Overwatch/Overwatch/Entities/Gameplay3P/Effects/00000000254E.00D/Sounds/000000004E4A.02C/0000002ACF33.03F.ogg
+# torbjorn.molten.burn.a: 4C8A play 708094257 (1 file, 4.851 s, 2ch); net -7.5 dB, +260 cents, @0.000 s, period 4.175 s. H.
+torbjorn.molten.burn.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004C8A.02C/0000002B176D.03F.ogg
+# torbjorn.molten.burn_3p.a: 4F8A play 857705568 (1 file, 3.095 s, 1ch); net -11 dB, +60 cents, @0.000 s, period 2.990 s. H.
+torbjorn.molten.burn_3p.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004F8A.02C/0000002AADD4.03F.ogg
+# torbjorn.molten.burn_hit.a: 4FF9 play 438920372 (1 file, 2.777 s, 2ch); net -24.5 dB, +250 cents, @0.000 s. H.
+torbjorn.molten.burn_hit.a = ../../research/torbjorn/sounds/ExtraSounds/Torbjörn/Molten/Sounds/000000004FF9.02C/0000002AAE7D.03F.ogg
+
+# ===== Subtitles (the jar's lang names none of his events)
+$torbjorn.rivet.fire = Rivet Gun fires
+$torbjorn.rivet.fire_3p = Rivet Gun fires
+$torbjorn.rivet.hit_enemy = Rivet hits
+$torbjorn.rivet.hit_enemy_3p = Rivet hits
+$torbjorn.rivet.hit_world = Rivet hits
+$torbjorn.rivet.alt_fire = Rivet Gun blasts
+$torbjorn.rivet.alt_fire_3p = Rivet Gun blasts
+$torbjorn.rivet.alt_hit_enemy = Rivets hit
+$torbjorn.rivet.alt_hit_enemy_3p = Rivets hit
+$torbjorn.rivet.alt_hit_world = Rivets hit
+$torbjorn.reload = Torbjörn reloads
+$torbjorn.reload_3p = Torbjörn reloads
+$torbjorn.draw_rivet = Torbjörn draws the Rivet Gun
+$torbjorn.draw_rivet_3p = Torbjörn draws the Rivet Gun
+$torbjorn.draw_hammer = Torbjörn draws the hammer
+$torbjorn.draw_hammer_3p = Torbjörn draws the hammer
+$torbjorn.hammer.swing = Torbjörn swings
+$torbjorn.hammer.swing_3p = Torbjörn swings
+$torbjorn.hammer.hit = Hammer hits
+$torbjorn.hammer.hit_3p = Hammer hits
+$torbjorn.hammer.hit_world = Hammer hits
+$torbjorn.hammer.repair = Turret repaired
+$torbjorn.hammer.repair_3p = Turret repaired
+$torbjorn.hammer.repair_full = Hammer clangs
+$torbjorn.turret.throw = Torbjörn throws his turret
+$torbjorn.turret.throw_3p = Torbjörn throws his turret
+$torbjorn.turret.flight = Turret flies
+$torbjorn.turret.land = Turret lands
+$torbjorn.turret.deploy = Turret deploys
+$torbjorn.turret.build = Turret builds
+$torbjorn.turret.build_step = Turret builds
+$torbjorn.turret.fire = Turret fires
+$torbjorn.turret.hit = Turret hits
+$torbjorn.turret.upgrade = Turret upgrades
+$torbjorn.turret.downgrade = Turret powers down
+$torbjorn.turret.damaged = Turret sparks
+$torbjorn.turret.destroyed = Turret destroyed
+$torbjorn.turret.destroyed_3p = Turret destroyed
+$torbjorn.turret.recall = Torbjörn recalls his turret
+$torbjorn.turret.overloaded = Turret overloads
+$torbjorn.overload = Torbjörn overloads
+$torbjorn.overload_3p = Torbjörn overloads
+$torbjorn.overload.loop = Overload hums
+$torbjorn.overload.loop_3p = Overload hums
+$torbjorn.overload.end = Overload ends
+$torbjorn.ult.cast = Molten Core
+$torbjorn.ult.cast_3p = Molten Core
+$torbjorn.molten.loop = Molten Core rumbles
+$torbjorn.molten.loop_3p = Molten Core rumbles
+$torbjorn.molten.fire = Torbjörn hurls slag
+$torbjorn.molten.fire_3p = Torbjörn hurls slag
+$torbjorn.molten.flight = Slag flies
+$torbjorn.molten.hit = Slag hits
+$torbjorn.molten.impact = Slag splashes
+$torbjorn.molten.pool = Slag pools
+$torbjorn.molten.pool_loop = Slag bubbles
+$torbjorn.molten.burn = Burning
+$torbjorn.molten.burn_3p = Burning
+$torbjorn.molten.burn_hit = Slag burns
+
+# ===== For the integration: each event, loop or one-shot, who it is built for, its length, and what triggers it
+# (own = the player the effect plays on, in the head: Torbjörn, the shooter, the burning enemy; 3p = everyone else, at him
+# / the turret / the slag / the pool; both = one rule for everyone). 'EXTRA' = in the data but not needed for the
+# kit's moments. Not built: see 'Not mapped'.
+#   torbjorn.rivet.fire                one-shot own  0.41 s; PRIMARY (1683 #83 -> #428 -> volley #171 / #429, the
+#     rivet 2A66; no ActionEffect on the volley) -> 2A66's m_2170A015 slot 0300; 185B (60 m; no own copy: M that the
+#     shooter hears this one)
+#   torbjorn.rivet.fire_3p             one-shot 3p   1.17 s; PRIMARY (1683 #83 -> #428 -> volley #171 / #429, the
+#     rivet 2A66; no ActionEffect on the volley) -> 2A66's m_2170A015 slot 0300; 1896 (60 m, the same containers with
+#     a longer tail, M)
+#   torbjorn.rivet.hit_enemy           one-shot own  2.00 s; a rivet hits a character: 2A66's m_A18274A3 'on a target'
+#     slot 2651: 5DA3 (audience 1, no range: the shooter's) + its sub-effect 4047's 8DE7 (the shared hit crack), H ids
+#   torbjorn.rivet.hit_enemy_3p        one-shot 3p   2.05 s; the same hit for everyone else: 2651's 752D (100 m), H
+#   torbjorn.rivet.hit_world           one-shot both 1.24 s; a rivet hits the world: 2A66's m_contactSet 00A2, type 2,
+#     material 0001 -> 0506 -> 1852 (120 m; 1853 the 32 m copy), H ids
+#   torbjorn.rivet.alt_fire            one-shot own  0.82 s; SECONDARY (1683 #174 -> #431 -> volley #178 / #432, 10
+#     pellets 13ED) -> 13ED's m_2170A015 slot 1AB6 (H ids; L that the burst rides on it: 13ED's child 1413 -> 1865 has
+#     no sound); 39EC (60 m)
+#   torbjorn.rivet.alt_fire_3p         one-shot 3p   0.82 s; SECONDARY (1683 #174 -> #431 -> volley #178 / #432, 10
+#     pellets 13ED) -> 13ED's m_2170A015 slot 1AB6 (H ids; L that the burst rides on it: 13ED's child 1413 -> 1865 has
+#     no sound); 8F01 (60 m, the same containers in the other order, M)
+#   torbjorn.rivet.alt_hit_enemy       one-shot own  2.49 s; a pellet hits a character: 13ED's m_A18274A3 slot 2662:
+#     5DA4 (audience 1: the shooter's), H ids
+#   torbjorn.rivet.alt_hit_enemy_3p    one-shot 3p   2.79 s; the same for everyone else: 2662's 7534 (100 m; 7535 the
+#     same sets), H
+#   torbjorn.rivet.alt_hit_world       one-shot both 1.24 s; a pellet hits the world: 13ED's m_contactSet 00AB, type
+#     2, material 0001 -> 05B8 -> 8D0A (120 m; 8D0B 32 m), H ids
+#   torbjorn.reload                    one-shot own  2.54 s; RELOAD (1683 #80 -> #141 alias 4): the 1P reload clip 7D6
+#     (2.2 s)'s effect 00E2: 923E @0, 923C @0.776, 923F @0.904, 6439 @1.593, 923D @1.781 (no range: his), H
+#   torbjorn.reload_3p                 one-shot 3p   2.39 s; the same for everyone else: the 3P reload clip FED (alias
+#     4, 2.0 s)'s effect 029D: 4CA5 + 963D @0, 963E @0.454, 963F @1.118 (45 m), H
+#   torbjorn.draw_rivet                one-shot own  0.50 s; the Rivet Gun drawn: 1683 #212 StateCosmeticEntity
+#     (entity 0147) onBegin -> #194 ActionEffect 0DB1: 281A (no range: his), H
+#   torbjorn.draw_rivet_3p             one-shot 3p   0.50 s; the same for everyone else: 0DB1's 361C (45 m), H
+#   torbjorn.draw_hammer               one-shot own  0.84 s; the Forge Hammer drawn: 168C #73 StateCosmeticEntity
+#     (entity 01BC) onBegin -> #279 ActionEffect 0DB2: 2819 (no range: his), H
+#   torbjorn.draw_hammer_3p            one-shot 3p   0.84 s; the same for everyone else: 0DB2's 361B (45 m), H
+#   torbjorn.hammer.swing              one-shot own  0.92 s; PRIMARY with the hammer (168C #828 -> #325, alias 71):
+#     the 1P swing clip D8E (rand[0]; D92 / D93 play 6420 / 6421 the same way)'s effect 0219: 642B @0.001 (audience 1:
+#     his) + 1ADB @0.2 (no range), H
+#   torbjorn.hammer.swing_3p           one-shot 3p   0.73 s; the same for everyone else: the 3P swing clip 1010 (alias
+#     71)'s effect 02A9: 1962 (30 m) + 08B8 (40 m) @0.006 (1ADE 30 m and 08B5 his, audience 1, beside them), H
+#   torbjorn.hammer.hit                one-shot own  0.54 s; the hammer hits a character: the hammer entity 01BC's
+#     m_contactSet 0089, type 0, material 0001 -> 0479 -> 8D97 (no range: his), H ids, M that the swing's hits use the
+#     weapon's contact set
+#   torbjorn.hammer.hit_3p             one-shot 3p   0.52 s; the same for everyone else: 0479's 8F62 (500 m; 8F5B the
+#     12 m copy), H ids
+#   torbjorn.hammer.hit_world (EXTRA)  one-shot both 0.47 s; the hammer hits the world: 0089, type 2, material 0001 ->
+#     048A -> 16F9 (30 m; 1676 its 20 m copy), H ids
+#   torbjorn.hammer.repair             one-shot own  1.24 s; the hammer repairs the turret: 168C #237 message 008F ->
+#     the turret's 1688 #54 -> #126 ActionEffect 0230: 1683 (no range), H
+#   torbjorn.hammer.repair_3p          one-shot 3p   1.07 s; the same for everyone else: 0230's 1684 (60 m), H
+#   torbjorn.hammer.repair_full (EXTRA) one-shot both 1.48 s; the hammer hits a turret at full health: 168C #246
+#     message 0091 -> 1688 #77 -> #78 ActionEffect 0225 (and 168C #247 0226): 1681 (70 m; 1682 the no-range copy), H
+#   torbjorn.turret.throw              one-shot own  0.81 s; ABILITY 1 (16C5 #495) -> #481 ActionEffect 0221: 4DFA
+#     (audience 1: his), H
+#   torbjorn.turret.throw_3p           one-shot 3p   0.81 s; the same for everyone else: 0221's 4DFB (60 m), H
+#   torbjorn.turret.flight (EXTRA)     one-shot both 0.55 s; the thrown turret 2931 in flight: its m_306ABA15 slot
+#     2723: 4F12 (60 m; 4F11 his, 4F37 the same), H ids, L that the slot is the flight
+#   torbjorn.turret.land               one-shot both 0.78 s; the thrown turret meets the world: 2931's m_contactSet
+#     067E, type 2, material 0001 -> 345B -> 4EEC (35 m; 4EEB his), H ids
+#   torbjorn.turret.deploy             one-shot both 3.15 s; the turret unfolds: 1688 #690 StateChaseVar (level v639
+#     to 1) -> #828 0240: 168B (60 m, 3.15 s), H
+#   torbjorn.turret.build              one-shot both 3.62 s; the turret builds: its build clip 5F79 (alias DC)'s
+#     effect 2AB5: 4E09 (70 m; 4E04 his, audience 1; 4F36 60 m), 3.4-3.6 s, H
+#   torbjorn.turret.build_step (EXTRA) one-shot both 1.00 s; each tenth of the build: 1688 #279 STU_DEBD057B on (v639
+#     - 1) x 10 -> #232 / #227 / #233 / #228 / #229 ActionEffect 03C7 / 03C8 / 03CB / 03CA / 03C9 (two steps each):
+#     1917 (no range) + 2DDE (70 m) for the first, H; ours plays 03C7's for every step (L)
+#   torbjorn.turret.fire               one-shot both 0.41 s; each turret shot (1689 volley #161 level 2 / #17 level 3,
+#     projectile 2A69): 2A69's m_2170A015 slot 0300: 185B (60 m; 1896 the same), H ids, M that the shot's only sound
+#     is its fire
+#   torbjorn.turret.hit (EXTRA)        one-shot both 0.28 s; a turret shot hits a character: 2A69's m_contactSet 00A6,
+#     type 0, material 0001 -> 055C -> 5D53 (no range; 905C 12 m), H ids
+#   torbjorn.turret.upgrade            one-shot both 2.71 s; level 3 (Overloaded Turret, 1688 #67 v639 == 3) -> #91
+#     ActionEffect 0229: 1688 (60 m, 1.96 s; 18CE the same; 18B7 / 18B9 1.13 s at 0.011 s), H
+#   torbjorn.turret.downgrade (EXTRA)  one-shot both 0.98 s; back from level 3: 1688 #185 (category 0092) onEnd ->
+#     #901 ActionEffect 7086: E96A (60 m; E96B the same), H node, M meaning
+#   torbjorn.turret.damaged (EXTRA)    one-shot both 0.86 s; below half health: 1688 #215 (health / max < 0.5) -> #218
+#     03A3: 1905 (his, 2.4 s bed) + 190C / 1910 / 190D (30 m), H node, M meaning
+#   torbjorn.turret.destroyed          one-shot own  6.85 s; the turret dies (1688 #9, v478) -> #20 ActionEffect 018C:
+#     1906 (200 m, audience 1: Torbjörn's) + 198D (no range), H
+#   torbjorn.turret.destroyed_3p       one-shot 3p   6.19 s; the same for everyone else: 018C's 125D (200 m, audience 2), H
+#   torbjorn.turret.recall             one-shot own  1.10 s; the turret recalled (16C5 #521 true: message 003F to it)
+#     -> #530 ActionEffect 26ED: 4E52 (audience 1: his), H
+#   torbjorn.turret.overloaded (EXTRA) one-shot both 1.13 s; Overloaded Turret (perk 2501): 51F6 #408 ActionEffect
+#     6538 on the turret: C305 (60 m), H
+#   torbjorn.overload                  one-shot own  2.70 s; ABILITY 2 (1721) -> #175 ActionEffect 2668: 5DA0 (audience 1: his), H
+#   torbjorn.overload_3p               one-shot 3p   2.70 s; the same for everyone else: 2668's 4CA2 (70 m), H
+#   torbjorn.overload.loop             LOOP     own  loop 4.219 s; while Overload lasts: 1721 #81 STU_691BFA55 (held)
+#     26F1: BE28 (no range: his), H
+#   torbjorn.overload.loop_3p          LOOP     3p   loop 4.219 s; the same for everyone else: 26F1's BE29 (70 m; BE2A
+#     the same), H
+#   torbjorn.overload.end              one-shot own  1.75 s; Overload ends (1721 #205 v10473 cleared): the held 26F1
+#     ends: BE28's stop actions, H
+#   torbjorn.ult.cast                  one-shot own  2.92 s; ULTIMATE (16DA #367 StateAbility) -> #351 ActionEffect
+#     26E6: 5DA1 (no range: his), H
+#   torbjorn.ult.cast_3p               one-shot 3p   3.05 s; the same for everyone else: 26E6's 4ECA (75 m; 4EC9 the same), H
+#   torbjorn.molten.loop               LOOP     own  loop 2.779 s; while Molten Core lasts: 16DA #438 STU_691BFA55
+#     (held) 26DC: 4E23 + 4EBE + 4ECD (no range: his), H
+#   torbjorn.molten.loop_3p            LOOP     3p   loop 2.779 s; the same for everyone else: 26DC's 4EC6 (75 m; 4EC4
+#     75 m, 4ECC 70 m beside it), H
+#   torbjorn.molten.fire               one-shot own  1.38 s; each slag shot (PRIMARY / SECONDARY in Molten Core,
+#     volley #382, 6.5 a second): #375 ActionEffect 26E4: 4E2F (no range: his), H node, M that it plays per shot
+#   torbjorn.molten.fire_3p            one-shot 3p   1.38 s; the same for everyone else: 26E4's 4EC7 (75 m), H
+#   torbjorn.molten.flight (EXTRA)     LOOP     both loop 3.653 s; each slag in flight: 2902's child 2904
+#     STUEffectComponent 2509: 4E4B (20 m, 5 s), H
+#   torbjorn.molten.hit                one-shot both 1.38 s; slag hits a character: 2902's m_A18274A3 'on a target'
+#     slot 26CC: 4EC8 (75 m; 4E26 his, no range), H ids
+#   torbjorn.molten.impact             one-shot both 2.28 s; slag meets the world: 2902's m_contactSet 067D, material
+#     0001 -> 3451 / 3456 -> 4EE2, 345D -> 4EED (40 m), H ids
+#   torbjorn.molten.pool               one-shot both 1.81 s; a pool forms: 16DD #140 STU_691BFA55 26FB: 4E49 (75 m;
+#     4EBC the same), H node, M meaning
+#   torbjorn.molten.pool_loop          LOOP     both loop 6.258 s; the pool's 10 s: 16DD #142 STU_691BFA55 (held)
+#     254E: 4E4A (75 m; 4EBB the same), H
+#   torbjorn.molten.burn               LOOP     own  loop 4.175 s; an enemy burning in a pool: 16DE #150 STU_691BFA55
+#     (held) 254F: 4C8A (no range: the burning player's), H
+#   torbjorn.molten.burn_3p            LOOP     3p   loop 2.990 s; the same for everyone else: 254F's 4F8A (25 m), H
+#   torbjorn.molten.burn_hit (EXTRA)   one-shot both 2.40 s; 16DE #158 ActionEffect 27B8: 4FF9 (45 m; 4FF7 the
+#     target's, 4FF8 45 m), H node, L meaning (the burn's first tick)

@@ -76,6 +76,7 @@ public final class HeroArt {
 			case TRACER -> "pulse_bomb";
 			case CASSIDY -> "deadeye";
 			case JUNKRAT -> "rip_tire";
+			case TORBJORN -> "molten_core";
 			case ILLARI -> "captive_sun";
 		});
 	}

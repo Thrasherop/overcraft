@@ -4,7 +4,25 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-14: 0.3.51 on next (not on main yet)
+## 2026-11-14: 0.3.52 on next (not on main yet)
+
+- **Torbjörn (#136), his whole kit:** Rivet Gun (rivets and the close-range alt fire), Forge Hammer (weapon 2: 70 a
+  swing, repairs his turret, reloads the gun after 2 s out), Deploy Turret (Shift; level 2, enemies only, never
+  villagers, cows or golems), Overload (E), Molten Core (Q), the Specialist sub-role and his four perks. Numbers from
+  the patch notes, the wiki and his game data; each says where it came from in `TorbjornStats`.
+- A critic's round fixed: Molten Core's damage charging his ult, the hammer not reloading the gun, swapping back to the
+  gun while holding a hammer swing, redeploying the turret mid-fight, the Overloaded Turret perk staying on through
+  his death, the turret ring on the HUD, the hammer's hit timing, and his size on the select screen.
+- Played with real keys on the merged branch (fresh flat world): picked from the select screen with the arrow keys; a
+  rivet to a husk's head took it 20 → 9.0 (about 138); Shift's turret killed a husk and left a villager (20) and a cow
+  (10) alone; 13 rivets, 2.4 s with the hammer out, back to 18; holding a hammer swing and pressing 1 brought the gun
+  out; Molten Core (Q, held fire) killed two husks and the ult charge only grew by its slow trickle (57 → 81 in 4 s);
+  Overload showed 400 health, and G cleared the extra (absorption 0); back on G, 300.
+- Still open: no turret recall on Interact, no turret health widget, rivets and slag drawn as Minecraft items, the
+  turret's level-3 pods showing at level 2. Not played by hand: Hammer Time, Anchor Bolts, water, slopes, night, a
+  second player.
+
+## 2026-11-14: 0.3.51
 
 - **Illari (#135), the whole current kit:** Solar Rifle (charged shots 25-75, 14 rounds), the healing beam on the right
   button, Outburst, Healing Pylon, Captive Sun and Sunstruck, and Survivor (Outburst starts her regeneration; the

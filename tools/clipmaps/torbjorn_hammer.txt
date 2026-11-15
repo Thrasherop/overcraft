@@ -1,0 +1,18 @@
+# Torbjorn's Forge Hammer (entity 01BC, model 00000000EED9.00C (base 0A2A, look 0A52); set 008E), on 000A (var 12A4) and 0010
+# (var 1DAD).
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\torbjorn\scripts\clipmaps_torbjorn.py from the
+# compacted blend-tree sets (research\torbjorn\work\clipmap_torbjorn\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+0-16_000000000D2F = base_sm0_sm5_air_sm0_se0   # 0.3333 s; set 008E alias 2 (the base tree (locomotion + layers)); sm[0] sm[5] @87 df18=cat6 @89 sm[0] seq[0]; on 4 paths
+0-16_000000000D30 = base_sm0_sm5_air_sm0_se1   # 0.3333 s; set 008E alias 2 (the base tree (locomotion + layers)); sm[0] sm[5] @87 df18=cat6 @89 sm[0] seq[1]; on 8 paths
+0-16_000000000D31 = base_sm0_sm5   # 0.4333 s; set 008E alias 2 (the base tree (locomotion + layers)); sm[0] sm[5] @87 df18:tr[0>4, 2, 1, 3]; on 3 paths
+0-0_000000000D1E = hammer_swing   # 1 s; set 008E alias 71 (Forge Hammer swing (168C #303, 0.6 s x attack speed) (H)); -
+0-16_000000000FFF = overload_sm1   # 0.7 s; set 008E alias 100 (Overload cast (1721 #97, 0.7 s) (H)); sm[1] @80238057
+0-0_000000003AA1 = a9d   # 0.8 s; set 008E alias 9D (L); -
+# emote clips the data plays on the Forge Hammer (slot 12A4, EntityControls with action 4: tools/emote_data.py WEAPON_SLOTS), from
+# the emote folders (--clips-from): research/torbjorn/extract/Unlocks/Heroes/Torbjörn/Emote/Battle Pass/March of the Turrets/Animations
+emote_00000000A1AB = emote_march_of_the_turrets   # March of the Turrets: 0-4.83 s
+emote_00000000A1AA = emote_march_of_the_turrets_2   # March of the Turrets: 0-1.33 s
