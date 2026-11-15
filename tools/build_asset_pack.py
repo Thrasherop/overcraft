@@ -24,6 +24,7 @@
 
 The dev client (gradlew runClient) reads local-assets/pack/ directly.
 """
+import json
 import os
 import shutil
 import subprocess
@@ -482,6 +483,23 @@ def add_voicelines(source, out, sounds):
 
 # variants kept per sound event (Minecraft picks one at random each time)
 MAX_VARIANTS = 8
+
+
+def missing_sounds():
+    """Every sound sounds.json names that has no .ogg in the pack: the zip refuses to ship a pack with gaps."""
+    index = PACK / "assets" / "overcraft" / "sounds.json"
+    if not index.exists():
+        return []
+    lost = []
+    for event in json.loads(index.read_text(encoding="utf8")).values():
+        for s in event.get("sounds", []):
+            name = s["name"] if isinstance(s, dict) else s
+            if isinstance(s, dict) and s.get("type") == "event":
+                continue
+            ns, _, path = name.partition(":")
+            if not (PACK / "assets" / ns / "sounds" / f"{path}.ogg").exists():
+                lost.append(name)
+    return lost
 
 # the HUD's faces (HudText): pack file -> (Overwatch's file, font/*.json entries: size in GUI units and oversampling).
 # Minecraft only reads TrueType outlines, which these two are.
@@ -1498,6 +1516,10 @@ def main():
         gaps = missing()
         if gaps:
             print("WARNING, this pack lacks:", *gaps, "(py tools/build_asset_pack.py weapons <roots>)", sep="\n  ")
+        lost = missing_sounds()
+        if lost:
+            # 0.3.50 shipped with only Ana's and Brigitte's sounds: a sounds step had dropped the rest from the pack
+            sys.exit(f"{len(lost)} sounds in sounds.json have no file in the pack (first: {lost[0]}); rebuild them first")
         write_version()
         out = LOCAL / "overcraft-assets.zip"
         with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
