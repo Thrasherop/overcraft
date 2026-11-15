@@ -125,6 +125,8 @@ public final class HeroAnimator {
 	private boolean juno, junoGliding;
 	/** Pharah's look (HeroManager.PHARAH_STATE: dev.overcraft.pharah.Pharah.LOOK_*), 0 not her. */
 	private int pharahLook;
+	/** Illari in Captive Sun's flight (HeroManager.ILLARI_FLIGHT). */
+	private boolean illariFlying;
 	/** Sojourn: sliding (the synced flag), when the slide began and when a slide jump left the ground (seconds). */
 	private boolean sojourn, sojournSliding;
 	/** Cassidy (his Deadeye's first-person clips are left out: below). */
@@ -1372,8 +1374,13 @@ public final class HeroAnimator {
 	 * pose (HeroWeapon.placeShowcase).
 	 */
 	public static Skeleton.@Nullable Pose showcasePose(SkinnedModel model, float sinceOpened) {
-		SkinnedModel.Clip intro = model.clips.get("select_intro");
-		SkinnedModel.Clip hold = model.clips.get("select_hold");
+		return showcasePose(model, sinceOpened, "select_intro", "select_hold");
+	}
+
+	/** The same with the intro and hold clips named (Illari's map names them "select" / "select_2"). */
+	public static Skeleton.@Nullable Pose showcasePose(SkinnedModel model, float sinceOpened, String introName, String holdName) {
+		SkinnedModel.Clip intro = model.clips.get(introName);
+		SkinnedModel.Clip hold = model.clips.get(holdName);
 		if (hold == null || hold.duration() <= 0) {
 			return null;
 		}
@@ -1382,7 +1389,7 @@ public final class HeroAnimator {
 			showcaseRun(model, sinceOpened, pose);
 			return pose;
 		}
-		if (showcaseIntro(model, sinceOpened)) {
+		if (intro != null && sinceOpened < intro.duration()) {
 			Skeleton.sample(intro, sinceOpened, pose);
 		} else {
 			float t = sinceOpened - (intro == null ? 0 : intro.duration());
@@ -1873,6 +1880,8 @@ public final class HeroAnimator {
 		Integer pharahNow = "pharah".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO))
 			? entity.getAttached(dev.overcraft.hero.HeroManager.PHARAH_STATE) : null;
 		pharahLook = pharahNow == null ? 0 : pharahNow;
+		illariFlying = "illari".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO))
+			&& Boolean.TRUE.equals(entity.getAttached(dev.overcraft.hero.HeroManager.ILLARI_FLIGHT));
 		boolean sojourn = "sojourn".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		this.sojourn = sojourn;
 		this.cassidy = "cassidy".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
@@ -2145,7 +2154,10 @@ public final class HeroAnimator {
 				case "_back_right" -> "hover_rb";
 				case "_right" -> "hover_r";
 				default -> "hover_rf";
-			};		} else if (!onGround && entity.isInWater()) {
+			};		} else if (illariFlying && model.clips.containsKey("flight")) {
+			// Captive Sun's flight (illari.txt: flight D482, its 2D blend's centre; the directions not driven: ours)
+			next = "flight";
+		} else if (!onGround && entity.isInWater()) {
 			// treading water: Overwatch has no swimming (and hero mode no sprint-swim), so the air pose
 			next = "fall";
 		} else if (!onGround && skates) {

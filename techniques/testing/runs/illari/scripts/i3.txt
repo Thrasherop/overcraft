@@ -1,0 +1,40 @@
+sleep 3
+MARK I3a enemy vs pylon: wait out the cooldown; corridor of glass along z; she at z 0.5, the pylon ~2 m ahead, a husk (AI) from z 10 walks at her through the pylon; expected the husk claws it (3 a hit on easy = 37.5 OW, 125 total: ~4 hits) and breaks it; her E cooldown then 14 s
+cmd /kill @e[type=!player,type=!overcraft:healing_pylon]
+cmd /effect give @s resistance 120 4 true
+cmd /fill -1 -60 -1 -1 -58 14 glass
+cmd /fill 1 -60 -1 1 -58 14 glass
+cmd /fill 0 -60 -2 0 -58 -2 glass
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /execute as @s at @s anchored eyes facing 0.5 -60 2.5 run tp @s ~ ~ ~ ~ ~
+sleep 1
+state
+sleep 1
+key ability_2 down
+sleep 0.15
+key ability_2 up
+sleep 2
+cmd /summon husk 0.5 -60 10.5 {Tags:["h3"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+sleep 3
+state
+screenshot illari_pylon_husk.png
+sleep 3
+state
+sleep 3
+state
+screenshot illari_pylon_broken.png
+MARK I3b skeleton: pylon placed again between her and a NoAI-less skeleton 12 m off in the corridor; its arrows should hit the pylon first
+cmd /kill @e[type=husk]
+sleep 12
+state
+key ability_2 down
+sleep 0.15
+key ability_2 up
+sleep 2
+cmd /summon skeleton 0.5 -60 12.5 {Tags:["s1"]}
+sleep 8
+state
+sleep 4
+state
+cmd /kill @e[type=skeleton]
+cmd /fill -1 -60 -2 1 -58 14 air

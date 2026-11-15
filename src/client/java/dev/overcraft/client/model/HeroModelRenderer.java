@@ -199,7 +199,11 @@ public final class HeroModelRenderer {
 			Skeleton.sample(intro, Math.min(previewClipAt, intro.duration() - 0.001f), showcase);
 			showcaseAt = 1000;
 		} else if (previewing) {
-			showcase = HeroAnimator.showcasePose(loaded.model(), showcaseAt);
+			// Illari's map names her hero file's select alias 0x477 "select" (DB91, its intro, cat 6E) and "select_2" (DB92, the
+			// default slot: its hold), as Junkrat's; read as the showcase's intro and hold for her (the critic, 2026-11-14: she stood
+			// side-on in her idle, unlike the others)
+			showcase = preview == Hero.ILLARI ? HeroAnimator.showcasePose(loaded.model(), showcaseAt, "select", "select_2")
+				: HeroAnimator.showcasePose(loaded.model(), showcaseAt);
 		}
 		Matrix4f[] skin = showcase != null ? Skeleton.skin(loaded.model(), showcase, -1, null) : null;
 		if (skin == null) {

@@ -1,0 +1,7 @@
+state
+cmd /difficulty peaceful
+cmd /time set noon
+cmd /gamerule spawn_monsters false
+sleep 1
+screenshot illari_after_fight.png
+sleep 1

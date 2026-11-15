@@ -469,7 +469,7 @@ public class HeroSelectScreen extends OwScreen {
 		// Mercy's wings spread 1.7 m and rise over her head; Lifeweaver stands 2.03 m with his back petals over his head
 		// (ours, by eye as hers)
 		// Ana's showcase stands with her hood up and cape out: Lifeweaver's size kept her whole (ours, by eye)
-		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN || hero == Hero.PHARAH || hero == Hero.TRACER || hero == Hero.CASSIDY || hero == Hero.JUNKRAT || hero == Hero.TORBJORN ? 0.72f
+		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN || hero == Hero.PHARAH || hero == Hero.TRACER || hero == Hero.CASSIDY || hero == Hero.JUNKRAT || hero == Hero.TORBJORN || hero == Hero.ILLARI ? 0.72f
 			// Sigma floats with his head 2.1 m up and his hands out at his sides (ours, by eye)
 			: hero == Hero.SIGMA ? SIGMA_FRAME[0] : hero == Hero.DVA ? DVA_FRAME[0] : 1;
 	}
@@ -607,6 +607,14 @@ public class HeroSelectScreen extends OwScreen {
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "deadeye"));
 			// his data's loadouts: the Frag Launcher (the left button), Concussion Mine (Shift; the right button sets it off), Steel Trap,
 			// RIP-Tire; Total Mayhem his passive (Specialist is the sub-role's)
+			// her data's loadouts: the Solar Rifle (the left button), its healing beam (the right), Outburst, Healing Pylon, Captive Sun;
+			// no passive of her own (Survivor is the sub-role's)
+			case ILLARI -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "solar_rifle"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "healing_beam"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "outburst"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "healing_pylon"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "captive_sun"));
 			case JUNKRAT -> List.of(
 				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "frag_launcher"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "concussion_mine"),

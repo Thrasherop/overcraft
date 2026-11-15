@@ -89,7 +89,12 @@ public enum Perk {
 	TORBJORN_HAMMER_TIME(Hero.TORBJORN, Tier.MINOR, "hammer_time"),
 	TORBJORN_PRE_HEATED(Hero.TORBJORN, Tier.MINOR, "pre_heated"),
 	TORBJORN_OVERLOADED_TURRET(Hero.TORBJORN, Tier.MAJOR, "overloaded_turret"),
-	TORBJORN_ANCHOR_BOLTS(Hero.TORBJORN, Tier.MAJOR, "anchor_bolts");
+	TORBJORN_ANCHOR_BOLTS(Hero.TORBJORN, Tier.MAJOR, "anchor_bolts"),
+	// Illari's, the live list's order (D 0064.177: 25B1, 25B2; 25B4, 26F8; illari-map.md)
+	ILLARI_RAPID_CONSTRUCTION(Hero.ILLARI, Tier.MINOR, "rapid_construction"),
+	ILLARI_SUMMER_SOLSTICE(Hero.ILLARI, Tier.MINOR, "summer_solstice"),
+	ILLARI_SUNBURN(Hero.ILLARI, Tier.MAJOR, "sunburn"),
+	ILLARI_SOLAR_FLARE(Hero.ILLARI, Tier.MAJOR, "solar_flare");
 
 	public enum Tier { MINOR, MAJOR }
 

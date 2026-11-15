@@ -117,6 +117,8 @@ public final class HeroHud {
 	private static float ability1Seen;
 	private static float ability2Seen;
 	private static long ability1ReadyAt = -1;
+	/** Illari's pylon cooldown as it started, and as last seen (its HUD fill's whole). */
+	private static float illariPylonTotal = (float) dev.overcraft.illari.IllariStats.PYLON_COOLDOWN, illariPylonLast;
 	private static long ability2ReadyAt = -1;
 	private static long ability3ReadyAt = -1;
 	private static float ability3Seen;
@@ -1044,6 +1046,24 @@ public final class HeroHud {
 				(float) dev.overcraft.tracer.TracerStats.RECALL_COOLDOWN, ability2ReadyAt);
 			return;
 		}
+		if (hero == Hero.ILLARI) {
+			// Outburst (Shift) and Healing Pylon (E, lit while it's out: E takes it back), in Kiriko's two places (ours)
+			ability(g, hero, w, "outburst", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.illari.IllariStats.OUTBURST_COOLDOWN, ability1ReadyAt);
+			// its fill against the cooldown it started with: 7 from a throw, 14 from its destruction, 5 / 12 with Rapid Construction (the
+			// critic, 2026-11-14: always out of 14)
+			float pylonCd = s.ability2Cooldown();
+			if (pylonCd > illariPylonLast + 0.05f) {
+				illariPylonTotal = pylonCd;
+			}
+			illariPylonLast = pylonCd;
+			ability(g, hero, w, "healing_pylon", w - 563, 906, HeroControls.get(Action.ABILITY_2), pylonCd,
+				Math.max(pylonCd, illariPylonTotal), ability2ReadyAt);
+			if ((s.mode() & dev.overcraft.illari.Illari.MODE_PYLON_OUT) != 0) {
+				song(g, true, false, w - 563, 906, w);
+			}
+			return;
+		}
 		if (hero == Hero.JUNKRAT) {
 			// Concussion Mine (Shift) with its charges in the corner and the next one's recharge as a band, its time shown only with none left
 			// (Tracer's Blink's way), lit while a mine is out (the right button sets it off), and Steel Trap (E), in Kiriko's two places (ours)
@@ -1490,6 +1510,16 @@ public final class HeroHud {
 				weapon(g, hero, w, "rivet_gun", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
 					dev.overcraft.torbjorn.TorbjornStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			}
+			return;
+		}
+		if (hero == Hero.ILLARI) {
+			// the healing beam (the right button) where Kiriko's ofuda panel is, its solar energy along the panel's foot (Sojourn's bar);
+			// the Solar Rifle's 14 (the left) where her kunai are
+			weapon(g, hero, w, "healing_beam", w - 484, 923.5f, 169, 64, 40, 40, w - 342, -1, 0,
+				HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
+			railgunEnergy(g, s.meter(), w - 484, 923.5f, 169, w);
+			weapon(g, hero, w, "solar_rifle", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+				dev.overcraft.illari.IllariStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;
 		}
 		if (hero == Hero.JUNKRAT) {

@@ -4,7 +4,24 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-14: 0.3.50 on next (not on main yet)
+## 2026-11-14: 0.3.51 on next (not on main yet)
+
+- **Illari (#135), the whole current kit:** Solar Rifle (charged shots 25-75, 14 rounds), the healing beam on the right
+  button, Outburst, Healing Pylon, Captive Sun and Sunstruck, and Survivor (Outburst starts her regeneration; the
+  Support role passive was removed on 2026-02-10). Numbers from Blizzard's 2026-11-03 patch, then the wiki and her data;
+  each cites its source in `IllariStats`. Her right button is the beam of the live game, not the pre-release healing shot.
+- A critic's round fixed: her own pylon stopping her shots, the ball's damage counting toward Sunstruck, the ball bursting
+  on the first enemy (it passes through), the pylon's cooldown frozen while it stands, Outburst's launch speed and push,
+  the pylon hum outliving the pylon, a second Captive Sun cancelling a mark, the HUD's pylon cooldown, her select pose.
+- Played with real keys: picked from the select screen (arrow keys and Enter); a full-charge headshot 20 -> 11.1 on a husk
+  (about 111 of 112.5); a shot through her own pylon landed (20 -> 14.1); the beam took a villager 8 -> 19.5 in about a
+  second (held through the harness: the desktop tool can't hold the right button); E's pylon healed it to full in 3 s
+  with its cooldown running; Shift launched her and hit a husk for 24; Q, a click for the ball (both husks 20 -> 16),
+  then two shots: both husks died to Sunstruck. Not played: water, the Nether, perks, a second player.
+- Still open: her hair lock renders white (its material has no colour image); her effects are vanilla particles; no
+  reticle widget.
+
+## 2026-11-14: 0.3.50
 
 - **Neutral mobs take abilities (#99, the owner's call):** cows, sheep, calm piglins, calm endermen, armor stands and
   the like now take area abilities too (blasts, waves, fields), not only aimed shots: "A cow is nuetral but you should

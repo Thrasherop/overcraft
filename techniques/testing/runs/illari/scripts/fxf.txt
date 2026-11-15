@@ -1,0 +1,14 @@
+MARK FXF flight pose: Q, 2 s in, the animator state (expected flight)
+ult 100
+sleep 1
+key ultimate down
+sleep 0.15
+key ultimate up
+sleep 2
+state
+perspective front
+sleep 0.4
+screenshot illari_fx_flight_front.png
+sleep 0.3
+perspective first
+sleep 5

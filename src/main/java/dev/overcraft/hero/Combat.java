@@ -246,6 +246,9 @@ public final class Combat {
 				state = dev.overcraft.juno.JunoStats.GLIDE_KNOCKBACK;
 			} else if (s.hero == Hero.JETPACK_CAT) {
 				state = dev.overcraft.jetpackcat.JetpackCatStats.KNOCKBACK_TAKEN;
+			} else if (s.hero == Hero.ILLARI) {
+				// half in Captive Sun's flight (D 1DF9)
+				state = dev.overcraft.illari.Illari.knockbackTaken(s);
 			}
 		}
 		// D.Va in her Boosters: a tenth (047E #243)
@@ -793,6 +796,7 @@ public final class Combat {
 			case CASSIDY -> (int) dev.overcraft.cassidy.CassidyStats.ULT_COST;
 			case JUNKRAT -> (int) dev.overcraft.junkrat.JunkratStats.ULT_COST;
 			case TORBJORN -> (int) dev.overcraft.torbjorn.TorbjornStats.ULT_COST;
+			case ILLARI -> (int) dev.overcraft.illari.IllariStats.ULT_COST;
 			case DVA -> (int) dev.overcraft.dva.DvaStats.MECH_ULT_COST;
 			default -> 1;
 		};

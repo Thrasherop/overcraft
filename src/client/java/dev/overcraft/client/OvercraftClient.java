@@ -244,6 +244,10 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.SLAG, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"torbjorn_slag", 0.4f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.TURRET, dev.overcraft.client.model.LifeweaverPropRenderer::turret);
+		// Illari's Healing Pylon (134D8) and Captive Sun's ball (10BAE)
+		EntityRendererRegistry.register(OcEntities.HEALING_PYLON, dev.overcraft.client.model.LifeweaverPropRenderer::pylon);
+		EntityRendererRegistry.register(OcEntities.CAPTIVE_SUN, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"illari_sun", 1f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PULSE_BOMB, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"tracer_bomb", 0.4f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PHARAH_ROCKET, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
@@ -326,7 +330,11 @@ public class OvercraftClient implements ClientModInitializer {
 		OwMovement.mover = entity -> entity == mc.player && ClientHero.hero() == Hero.LUCIO ? OwMovement.Mover.LUCIO : OwMovement.Mover.DEFAULT;
 		OwMovement.jumpKeyHeld = entity -> entity == mc.player && HeroControls.get(HeroControls.Action.JUMP).isDown()
 			&& !ClientMercy.heldForLaunch(HeroControls.Action.JUMP);
-		OwMovement.flight = entity -> entity == mc.player && (ClientHero.hero() == Hero.JETPACK_CAT
+		// Illari in Captive Sun's flight (Illari.MODE_FLIGHT): her client flies her (OwMovement.fly, Valkyrie's mover at her speed)
+		OwMovement.illariFlight = entity -> entity != mc.player || ClientHero.hero() != Hero.ILLARI || !ClientHero.controls()
+			|| (ClientHero.sync().mode() & dev.overcraft.illari.Illari.MODE_FLIGHT) == 0 ? 0
+			: dev.overcraft.illari.Illari.flightSpeed((ClientHero.sync().mode() & dev.overcraft.illari.Illari.MODE_SOLSTICE) != 0);
+		OwMovement.flight = entity -> entity == mc.player && (ClientHero.hero() == Hero.JETPACK_CAT || OwMovement.illariFlight.applyAsDouble(entity) > 0
 			|| ClientHero.hero() == Hero.MERCY && ClientMercy.valkyrie(entity));
 		OwMovement.valkyrie = entity -> entity == mc.player && ClientHero.hero() == Hero.MERCY && ClientMercy.valkyrie(entity);
 		OwMovement.glide = entity -> {

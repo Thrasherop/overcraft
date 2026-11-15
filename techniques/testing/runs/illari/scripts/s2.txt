@@ -1,0 +1,45 @@
+MARK S2a after the fight: respawn, READY on the select screen (Illari kept)
+respawn
+sleep 3
+state
+screenclick 240 244 1
+sleep 2
+cmd /kill @e[type=!player]
+state
+MARK S2b Survivor: hurt to 10 MC (125 OW) by /damage, then at once Outburst: regen starts at once (10 + 5 % = 22.5 OW/s = 1.8 MC/s), not after 6 s
+cmd /damage @s 10 minecraft:generic
+sleep 0.3
+state
+key ability_1 down
+sleep 0.15
+key ability_1 up
+sleep 1.5
+state
+sleep 1
+state
+MARK S2c control: hurt again with Outburst on cooldown: no regen for 6 s
+cmd /damage @s 6 minecraft:generic
+sleep 2
+state
+sleep 2
+state
+MARK S2d G: Minecraft mode (vanilla health, no HUD) and back (her kit fresh); pylon out first: it stays through G
+key ability_2 down
+sleep 0.15
+key ability_2 up
+sleep 2.5
+press key.keyboard.g
+sleep 1.5
+state
+screenshot illari_gmode.png
+press key.keyboard.g
+sleep 1.5
+state
+MARK S2e switch to Junkrat and back (dev hero = the select screen's payload): her pylon gone on the switch
+hero junkrat
+sleep 1.5
+state
+ents Pylon
+hero illari
+sleep 1.5
+state

@@ -27,7 +27,9 @@ public enum Hero {
 	// her kit is being built (#65), step by step on her branch: playable there, not merged until it's whole
 	BRIGITTE("brigitte", "Brigitte", Role.SUPPORT, "survivor",
 		dev.overcraft.brigitte.BrigitteStats.HEALTH + dev.overcraft.brigitte.BrigitteStats.ARMOR, true, 0xFFC7432E),
-	ILLARI("illari", "Illari", Role.SUPPORT, "survivor", 250, false, 0xFFF2C14E),
+	// her kit (#135): Survivor (D tag 1173, 01C7 #2564); colour her data's hero colour (#A58C54, heroes.txt sRGB #D2C49B: ours the
+	// warmer gold kept)
+	ILLARI("illari", "Illari", Role.SUPPORT, "survivor", dev.overcraft.illari.IllariStats.HEALTH, true, 0xFFF2C14E),
 	// her kit is being built (#1), step by step on her branch: playable there, not merged until it's whole
 	JUNO("juno", "Juno", Role.SUPPORT, "survivor", dev.overcraft.juno.JunoStats.HEALTH + dev.overcraft.juno.JunoStats.SHIELDS, true,
 		0xFFE85A9B),

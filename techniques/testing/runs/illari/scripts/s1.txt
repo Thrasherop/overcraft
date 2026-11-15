@@ -1,0 +1,4 @@
+screenclick 390 216 1
+sleep 2
+screenshot illari_select_kit.png
+sleep 2
