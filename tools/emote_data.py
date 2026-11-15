@@ -180,6 +180,12 @@ WEAPON_SLOTS = {
     # and his Concussion Mine in the left hand, entity 04E8 (model 1445, the skin's 10095) in slot 1DB2 on 000B (child "4E8.003 hp B.03C
     # var 1DB2.01C"; put away in 14 controls, never played): junkrat_mine.txt, under "stowLeft" (EmoteData's second-weapon keys)
     "junkrat": {"193F": ("stow", "launcher", "junkrat_weapon.txt"), "1DB2": ("stowLeft", "mine", "junkrat_mine.txt")},
+    # Torbjorn's Rivet Gun, entity 0147 (model 091B, the classic skin's DB4F) in slot 1D35 on 000A, and his Forge Hammer, entity 01BC
+    # (model 0A2A, the skin's EED9) in slot 12A4 on 000A and slot 1DAD on 0010 (research/torbjorn/work/ents_torbjorn_out.txt: hero entity
+    # 28B6's children "147.003 hp A.03C var 1D35.01C", "1BC.003 hp A.03C var 12A4.01C", "1BC.003 hp 10.03C var 1DAD.01C"; the hammer
+    # graph 168C #73 spawns 01BC on 000A in var 12A4): torbjorn_weapon.txt; the hammer's in-hand slot 12A4 under "stowLeft"
+    # (EmoteData's second-weapon keys; it is in his right hand, not the left)
+    "torbjorn": {"1D35": ("stow", "rivet gun", "torbjorn_weapon.txt"), "12A4": ("stowLeft", "hammer", "torbjorn_hammer.txt")},
 }
 # a hero whose weapon geosets follow the stow windows where a clip has no GeoSetFlags: the mask bits that do (Juno's
 # Mediblaster, mask bit 1; her pod has no slot the emotes put away, so it stays where the data says nothing)
@@ -203,7 +209,7 @@ STOWS = {"lucio": True, "mercy": True, "ana": True, "sombra": True, "brigitte": 
 # heroes with no weapon pieces in their body .glb: their geosets are body variants (Pharah: geoset 1 her bare head and visor-up
 # look, geoset 2 her helmet, the submeshes 7-13 all 1.5-1.8 m up), so no mask or stow may hide them; her launcher is its own
 # entity (WEAPON_SLOTS), put away with the stow windows
-NO_PIECES = {"pharah", "tracer", "cassidy", "junkrat"}  # Tracer: her pistols are entities, no submesh of her body .glb sits stowed at the origin; Cassidy's Peacekeeper and Junkrat's launcher too
+NO_PIECES = {"pharah", "tracer", "cassidy", "junkrat", "torbjorn"}  # Tracer: her pistols are entities, no submesh of her body .glb sits stowed at the origin; Cassidy's Peacekeeper and Junkrat's launcher too
 
 # props that are children of the hero entity itself, by slot (STUChildEntityDefinition of the hero entity: H), shown by an
 # EntityControl that plays a clip on them (action 4) over its window: slot -> (model, hardpoint). Ana's (her hero entity
@@ -229,7 +235,7 @@ BODY_WEAPON_GEOSETS = {"juno": {4: 1, 2: 2}}
 CHILD_PROPS = {"ana": {"1F90": ("372A", "00C9"), "1F8F": ("373A", "000B"), "1F66": ("3730", "00A5")}}
 
 # DataTool's folder for a hero whose name isn't our id capitalised
-HERO_FOLDERS = {"lucio": "Lúcio", "jetpack_cat": "Jetpack Cat", "dva": "D.Va"}
+HERO_FOLDERS = {"lucio": "Lúcio", "jetpack_cat": "Jetpack Cat", "dva": "D.Va", "torbjorn": "Torbjörn"}
 # weapon clips the data plays that the weapon's clip map lacks: all listed before the run stops (nothing is written)
 MISSING_WEAPON_CLIPS = []
 

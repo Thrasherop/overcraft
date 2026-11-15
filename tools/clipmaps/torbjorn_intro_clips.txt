@@ -1,0 +1,15 @@
+# Torbjörn's Play of the Game highlight intro: the clips only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/torbjorn.glb by bone name (HeroModels, from hero_models/torbjorn_intro_clips.glb), as Illari's (illari_intro_clips.txt).
+# From DataTool's extract-unlocks "Torbjörn|highlightintro=*" (build 154088, archived: research\torbjorn\extract\Unlocks\Heroes\
+# Torbjörn\HighlightIntro). The default Overwatch plays "Heroic" (his other base intros: In your face, Refreshing, Ride 'Em). Heroic holds
+# (research\torbjorn\work\intro_clips_out.txt): group 32 ACB5 4.867 s (animation effect 41E7), BDFC 3.633 s (effect 4B1A), BDFD 7.2 s
+# (effect 4A45), BDFE 3.767 s (effect 4A46); group 28 ACB6 4.5 s (no effect); additive 4-12 3AF1 5.333 s. The intro set's sequence was
+# not read for him (L order: ACB5 first by its lower id and its effect, then BDFC / BDFD / BDFE); ACB6 kept as potg_intro_28 (L).
+# Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <EBD2.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/torbjorn_intro_clips.txt --clips-from=<...>\Heroes\Torbjörn\HighlightIntro\Overwatch\Heroic
+emote_00000000ACB5 = potg_intro
+emote_00000000BDFC = potg_intro_2
+emote_00000000BDFD = potg_intro_3
+emote_00000000BDFE = potg_intro_4
+emote_00000000ACB6 = potg_intro_28

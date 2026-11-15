@@ -1,0 +1,300 @@
+# Torbjörn's voice: <sound id> = <file under E:/Overwatch Archive/extracted/154088/> (build 154088). Same format as illari.txt /
+# junkrat.txt; build_asset_pack.py sounds copies / mixes them into the local pack. Read 2026-11-14 offline (Overwatch and Battle.net
+# checked closed before every archive read and TankLib run). Scripts: E:/Overwatch Archive/research/torbjorn/scripts/sounds/
+# (voiceset_torbjorn.py, torbjorn_voice.py, torbjorn_voice_gen.py, which writes this file; Illari's voice pipeline retargeted); data:
+# research/torbjorn/work/voiceset_0019.05F.json and stim078.json, research/torbjorn/sounds/voice_lines.json. His sound effects
+# are in torbjorn_sfx.txt.
+
+# ===== Voice (HeroVoice/Torbjörn): the voice set 0019.05F's lines by moment (408 stimuli, 1381 lines; from torbjorn_voice.py:
+# each line's 0B2, stimulus, weight and decoded criteria; files from DataTool's extract-hero-voice --subtitles-with-sounds,
+# in research/torbjorn/extract). w = the line's weight. Lines with criteria are left out, as Illari's are (hero interactions,
+# skins, maps, Overwatch Classic, scripted moments: counted per moment), except 'NOT ScriptedEvent 191E', treated as
+# always true (kiriko-voice.md). Stimulus numbers (the .078): priority, radius m, volume dB, interrupt, cooldown s
+# (m_A73F2EBE-m_DD27AC95 read as min-max, M); Voice.java's table takes priority, cooldown and interrupt.
+# Ult lines (Molten Core): his own copy 1862 is what Torbjörn says for himself; allies hear 048B, enemies 014A (16DA #491
+# STU_37D754C8 keys F1AC / F1AB / F1AA, as Illari's 3CAB #1084). The turret's lines (00AB / 00C3 / 00C5 / 00A7 / 00A6) carry
+# ScriptedEvent criteria the game raises itself (no node of his names them), so they are mapped by their text (M / L) and their
+# criteria are the moment, not a filter. Not mapped: the armor-pack lines 0148 / 0149 / 02F8 and scrap 011D / 00AE (removed
+# kit), 0AA6, 1893 / 1894 (perk-pick lines, L), the match / objective / PvE lines; no reload, turret-throw or hammer-swing
+# stimulus in his graphs (1683, 168C, 16C5, 1688, 1689, 16DD, 16DE, 51F6 searched).
+# Elimination 0008: 15 files; prio 70, 30 m, +2 dB, interrupt 0, cooldown 15-15 s; left out: 17 a hero interaction, 4 a scripted condition, 3 Overwatch Classic only, 1 a map (OnMap)
+torbjorn.voice.elimination = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Elimination/00000000A619.0B2-That's it!.ogg | w=0.05
+torbjorn.voice.elimination = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Elimination/00000000ADD4.0B2-If you can't stand the heat... stay out of my way.ogg | w=0.01
+torbjorn.voice.elimination = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Elimination/00000001FFCB.0B2-Slagged.ogg | w=0.01
+torbjorn.voice.elimination = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Elimination/000000060DBD.0B2-Scrapped!.ogg | w=1
+torbjorn.voice.elimination = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Elimination/000000060DC2.0B2-It's an honor to get dismantled by me!.ogg | w=1
+torbjorn.voice.elimination = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Elimination/000000060DBF.0B2-(chuckles) And I only needed one eye.ogg | w=0.2
+torbjorn.voice.elimination = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Elimination/000000060DCB.0B2-This old screw's still got it!.ogg | w=0.7
+torbjorn.voice.elimination = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Elimination/000000063E56.0B2-Torbjorn's on top.ogg | w=0.25
+torbjorn.voice.elimination = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Elimination/000000063E57.0B2-I planned that perfectly.ogg | w=1
+torbjorn.voice.elimination = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Elimination/000000063E58.0B2-All according to design.ogg | w=1
+torbjorn.voice.elimination = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Elimination/000000063E59.0B2-Go on, get out of here.ogg | w=1
+torbjorn.voice.elimination = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Elimination/0000000671FF.0B2-I engineered that perfectly.ogg | w=1
+torbjorn.voice.elimination = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Elimination/0000000671FC.0B2-Just as I thought.ogg | w=1
+torbjorn.voice.elimination = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Elimination/000000067201.0B2-How satisfactory.ogg | w=1
+torbjorn.voice.elimination = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Elimination/00000006C046.0B2-And they say I'm hot-headed!.ogg | w=1
+# Multikill 00C9: 4 files; prio 70, 35 m, +2 dB, interrupt 0, cooldown 15-20 s; left out: 2 Overwatch Classic only
+torbjorn.voice.multikill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Multikill/000000060DFF.0B2-(whistles) Efficient!.ogg | w=1
+torbjorn.voice.multikill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Multikill/000000060DFE.0B2-(laughs) They walked straight into that!.ogg | w=1
+torbjorn.voice.multikill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Multikill/000000061102.0B2-Who's counting_ I am.ogg | w=1
+torbjorn.voice.multikill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Multikill/0000000610FE.0B2-(laughs) A beautiful shot!.ogg | w=1
+# MeleeEnemyKilledRemark 0032 (an enemy killed in melee range): 5 files; prio 65, 30 m, +2 dB, interrupt 0, cooldown 10-14 s; left out: 3 Overwatch Classic only
+torbjorn.voice.melee_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/MeleeEnemyKilledRemark/000000060E04.0B2-Hammered.ogg | w=1
+torbjorn.voice.melee_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/MeleeEnemyKilledRemark/000000060E03.0B2-Hit the nail on the head!.ogg | w=1
+torbjorn.voice.melee_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/MeleeEnemyKilledRemark/000000060E02.0B2-Greasing the old shoulder.ogg | w=1
+torbjorn.voice.melee_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/MeleeEnemyKilledRemark/000000060E84.0B2-Here's some percussive maintenance.ogg | w=1
+torbjorn.voice.melee_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/MeleeEnemyKilledRemark/000000063E5A.0B2-Kapow!.ogg | w=1
+# On Fire 0583: 5 files; prio 60, 35 m, +2 dB, interrupt 0, cooldown 2-5 s; left out: 1 a map (OnMap)
+torbjorn.voice.on_fire = ../../research/torbjorn/extract/HeroVoice/Torbjörn/OnFire/00000001FFF2.0B2-I'm on fire!.ogg | w=1
+torbjorn.voice.on_fire = ../../research/torbjorn/extract/HeroVoice/Torbjörn/OnFire/000000060E19.0B2-I'm at maximum strength!.ogg | w=1
+torbjorn.voice.on_fire = ../../research/torbjorn/extract/HeroVoice/Torbjörn/OnFire/000000060E18.0B2-No one can withstand me!.ogg | w=1
+torbjorn.voice.on_fire = ../../research/torbjorn/extract/HeroVoice/Torbjörn/OnFire/000000060E17.0B2-I'm hotter than a furnace!.ogg | w=1
+torbjorn.voice.on_fire = ../../research/torbjorn/extract/HeroVoice/Torbjörn/OnFire/000000060E16.0B2-I'm a well-oiled, high-power machine!.ogg | w=0.6
+# Respawn 002C: 9 files; prio 40, 35 m, +0 dB, interrupt 0, cooldown 15-15 s; left out: 6 Overwatch Classic only, 3 a scripted condition, 1 a map (OnMap)
+torbjorn.voice.respawn = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Respawn/00000000A6E8.0B2-Time to roll up my sleeves!.ogg | w=0.01
+torbjorn.voice.respawn = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Respawn/000000060DEE.0B2-A good bop always gets it working again. Well.ogg | w=0.7
+torbjorn.voice.respawn = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Respawn/000000060DEC.0B2-Guess you can learn even at this age.ogg | w=1
+torbjorn.voice.respawn = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Respawn/000000060DEB.0B2-Oh I'm just getting warmed up!.ogg | w=1
+torbjorn.voice.respawn = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Respawn/000000060DE7.0B2-Let's get to work!.ogg | w=1
+torbjorn.voice.respawn = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Respawn/000000060DE8.0B2-Back down_ Not a chance.ogg | w=1
+torbjorn.voice.respawn = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Respawn/000000060DE9.0B2-Back at it!.ogg | w=1
+torbjorn.voice.respawn = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Respawn/000000060DEA.0B2-I still have some fight in me!.ogg | w=1
+torbjorn.voice.respawn = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Respawn/000000063E3B.0B2-I'm re-Bjorn!.ogg | w=0.01
+# Melee shout 0023 (the shared melee VoiceStimulus): 9 files; prio 35, 35 m, +0 dB, interrupt 0, cooldown 0.5-0.5 s
+torbjorn.voice.melee = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Melee/00000000A686.0B2-(shouts).ogg | w=0.7
+torbjorn.voice.melee = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Melee/00000000A685.0B2-(shouts).ogg | w=0.7
+torbjorn.voice.melee = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Melee/00000000A684.0B2-(shouts).ogg | w=0.7
+torbjorn.voice.melee = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Melee/00000000A683.0B2-(shouts).ogg | w=0.7
+torbjorn.voice.melee = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Melee/00000000A67A.0B2-(shouts).ogg | w=0.7
+torbjorn.voice.melee = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Melee/00000000A679.0B2-(shouts).ogg | w=0.7
+torbjorn.voice.melee = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Melee/000000064304.0B2-(shouts).ogg | w=1
+torbjorn.voice.melee = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Melee/000000064305.0B2-(shouts).ogg | w=1
+torbjorn.voice.melee = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Melee/000000064306.0B2-(shouts).ogg | w=1
+# Hero select 002B: 1 files; prio 100, 35 m, +0 dB, interrupt 0, cooldown 1-1 s; left out: 1 Overwatch Classic only
+torbjorn.voice.select = ../../research/torbjorn/extract/HeroVoice/Torbjörn/HeroSelect/000000060E82.0B2-Tools in hand. Brain in gear.ogg | w=1
+# Death 0001: 6 files; prio 90, 60 m, +2 dB, interrupt 0, cooldown 2-5 s
+torbjorn.voice.death = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Death/00000000A69F.0B2-(dying sounds).ogg | w=1
+torbjorn.voice.death = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Death/00000000A69E.0B2-(dying sounds).ogg | w=1
+torbjorn.voice.death = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Death/00000000A69D.0B2-(dying sounds).ogg | w=1
+torbjorn.voice.death = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Death/00000000A69C.0B2-(dying sounds).ogg | w=1
+torbjorn.voice.death = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Death/00000000A69B.0B2-(dying sounds).ogg | w=1
+torbjorn.voice.death = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Death/00000000A682.0B2-(dying sounds).ogg | w=1
+# Pain 0003 / 0004: 19 files; prio 40, 35 m, -3 dB, interrupt 0, cooldown 1-2.5 s
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A6A9.0B2-(grunts).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A6A8.0B2-(grunts).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A6A7.0B2-(grunts).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A6A0.0B2-(grunts).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A6A6.0B2-(grunts).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A681.0B2-(grunts).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A680.0B2-(grunts).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A678.0B2-(grunts).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A69A.0B2-(grunts).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A6A5.0B2-(painful grunt).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A6A4.0B2-(painful grunt).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A6A3.0B2-(painful grunt).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A6A2.0B2-(painful grunt).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A6A1.0B2-(painful grunt).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A67F.0B2-(painful grunt).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A67E.0B2-(painful grunt).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A67D.0B2-(painful grunt).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A67C.0B2-(painful grunt).ogg | w=1
+torbjorn.voice.pain = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Pain/00000000A67B.0B2-(painful grunt).ogg | w=1
+# Resurrected 005A: 1 files; prio 75, 35 m, +0 dB, interrupt 0, cooldown 10-10 s
+torbjorn.voice.resurrected = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Resurrected/00000000ADB7.0B2-Back to work!.ogg | w=1
+# Ultimate/Ready 02E7 (the wheel line): 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+torbjorn.voice.ult_ready = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Ultimate/Ready/00000000ADCD.0B2-My ultimate is ready!.ogg | w=1
+torbjorn.voice.ult_ready = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Ultimate/Ready/00000000ADC1.0B2-I'm ready to unleash the molten core!.ogg | w=1
+# Ultimate/Charging 0574: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+torbjorn.voice.call_ult_charging = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Ultimate/Charging/00000001FFBF.0B2-My ultimate is still charging. It's too soon!.ogg | w=0.001
+torbjorn.voice.call_ult_charging = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Ultimate/Charging/00000001FFC0.0B2-My ultimate is charging.ogg | w=1
+# Ultimate/AlmostReady 05A7: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+torbjorn.voice.call_ult_almost = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Ultimate/AlmostReady/00000001FFBE.0B2-My ultimate is almost ready!.ogg | w=1
+# Hello 01CF: 5 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+torbjorn.voice.call_hello = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Hello/00000000ADBF.0B2-Hello!.ogg | w=1
+torbjorn.voice.call_hello = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Hello/00000000B19F.0B2-Hello!.ogg | w=1
+torbjorn.voice.call_hello = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Hello/00000001FFB6.0B2-Hey.ogg | w=1
+torbjorn.voice.call_hello = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Hello/000000063E45.0B2-Why, hello!.ogg | w=1
+torbjorn.voice.call_hello = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Hello/000000063E46.0B2-My warmest greetings.ogg | w=0.1
+# Thanks 01D0: 5 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+torbjorn.voice.call_thanks = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Thanks/00000000ADB3.0B2-Thank you.ogg | w=1
+torbjorn.voice.call_thanks = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Thanks/00000001FFBC.0B2-Thanks!.ogg | w=1
+torbjorn.voice.call_thanks = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Thanks/00000001FFBD.0B2-Thanks.ogg | w=1
+torbjorn.voice.call_thanks = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Thanks/000000063E4B.0B2-Thank you.ogg | w=1
+torbjorn.voice.call_thanks = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Thanks/000000063E4C.0B2-Much appreciated.ogg | w=1
+# Sorry 05E1: 4 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+torbjorn.voice.call_sorry = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Sorry/00000002A901.0B2-My mistake.ogg | w=1
+torbjorn.voice.call_sorry = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Sorry/00000002A902.0B2-Sorry.ogg | w=1
+torbjorn.voice.call_sorry = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Sorry/00000002A903.0B2-Oops.ogg | w=1
+torbjorn.voice.call_sorry = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Sorry/00000002A905.0B2-Oopsy daisy.ogg | w=1
+# No 01D2: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+torbjorn.voice.call_no = ../../research/torbjorn/extract/HeroVoice/Torbjörn/No/00000000AE02.0B2-No.ogg | w=1
+# GroupUp 02C6: 7 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+torbjorn.voice.call_group_up = ../../research/torbjorn/extract/HeroVoice/Torbjörn/GroupUp/00000000ADCC.0B2-Form up.ogg | w=1
+torbjorn.voice.call_group_up = ../../research/torbjorn/extract/HeroVoice/Torbjörn/GroupUp/00000001FFC1.0B2-Group up!.ogg | w=1
+torbjorn.voice.call_group_up = ../../research/torbjorn/extract/HeroVoice/Torbjörn/GroupUp/00000001FFB4.0B2-Group up with me!.ogg | w=1
+torbjorn.voice.call_group_up = ../../research/torbjorn/extract/HeroVoice/Torbjörn/GroupUp/00000001FFB3.0B2-Group up here!.ogg | w=1
+torbjorn.voice.call_group_up = ../../research/torbjorn/extract/HeroVoice/Torbjörn/GroupUp/00000001FFB5.0B2-Join me!.ogg | w=1
+torbjorn.voice.call_group_up = ../../research/torbjorn/extract/HeroVoice/Torbjörn/GroupUp/000000063E43.0B2-Group up with me.ogg | w=1
+torbjorn.voice.call_group_up = ../../research/torbjorn/extract/HeroVoice/Torbjörn/GroupUp/000000063E44.0B2-Let's assemble our might.ogg | w=1
+# AssistanceRequired 0427: 3 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+torbjorn.voice.call_need_help = ../../research/torbjorn/extract/HeroVoice/Torbjörn/AssistanceRequired/00000001FFB8.0B2-I need help!.ogg | w=1
+torbjorn.voice.call_need_help = ../../research/torbjorn/extract/HeroVoice/Torbjörn/AssistanceRequired/00000001FFB9.0B2-Help!.ogg | w=1
+torbjorn.voice.call_need_help = ../../research/torbjorn/extract/HeroVoice/Torbjörn/AssistanceRequired/00000001FFB7.0B2-I could use some help here!.ogg | w=1
+# Healing 0045: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+torbjorn.voice.call_need_healing = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Healing/00000000A6EC.0B2-I need healing.ogg | w=1
+torbjorn.voice.call_need_healing = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Healing/00000001FFBA.0B2-Need healing!.ogg | w=1
+# ping 11D9: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+torbjorn.voice.ping = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/11D9.078/000000063E37.0B2-Over there!.ogg | w=1
+# ping warning 11DA: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+torbjorn.voice.ping_warning = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/11DA.078/000000063E38.0B2-Be careful!.ogg | w=1
+torbjorn.voice.ping_warning = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/11DA.078/000000063E39.0B2-Heads up!.ogg | w=1
+torbjorn.voice.ping_warning = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/11DA.078/000000063E3A.0B2-Watch here.ogg | w=1
+# ping enemy 1117: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+torbjorn.voice.ping_enemy = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/1117.078/000000061E0B.0B2-There's an enemy here!.ogg | w=1
+torbjorn.voice.ping_enemy = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/1117.078/000000061E0C.0B2-Got an enemy here!.ogg | w=1
+torbjorn.voice.ping_enemy = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/1117.078/0000000668C4.0B2-Enemy spotted!.ogg | w=1
+# DamageBoosted 00CC: 5 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 30-30 s
+torbjorn.voice.damage_boosted = ../../research/torbjorn/extract/HeroVoice/Torbjörn/DamageBoosted/00000000A634.0B2-Time to get my hands dirty!.ogg | w=1
+torbjorn.voice.damage_boosted = ../../research/torbjorn/extract/HeroVoice/Torbjörn/DamageBoosted/00000000A6C3.0B2-Yes!.ogg | w=1
+torbjorn.voice.damage_boosted = ../../research/torbjorn/extract/HeroVoice/Torbjörn/DamageBoosted/00000000A6C4.0B2-Good. Good!.ogg | w=1
+torbjorn.voice.damage_boosted = ../../research/torbjorn/extract/HeroVoice/Torbjörn/DamageBoosted/00000000A6C5.0B2-Haha!.ogg | w=1
+torbjorn.voice.damage_boosted = ../../research/torbjorn/extract/HeroVoice/Torbjörn/DamageBoosted/00000001FFD4.0B2-Now that's more like it!.ogg | w=1
+# NanoBoosted 05E2: 5 files; prio 95, 80 m, +3 dB, interrupt 1, cooldown 2-2 s; left out: 1 Overwatch Classic only, 1 a map (OnMap)
+torbjorn.voice.nano_boosted = ../../research/torbjorn/extract/HeroVoice/Torbjörn/NanoBoosted/00000002A8FF.0B2-I'm unstoppable!.ogg | w=1
+torbjorn.voice.nano_boosted = ../../research/torbjorn/extract/HeroVoice/Torbjörn/NanoBoosted/000000060DFC.0B2-Upgraded!.ogg | w=1
+torbjorn.voice.nano_boosted = ../../research/torbjorn/extract/HeroVoice/Torbjörn/NanoBoosted/000000060DFB.0B2-Watch out! I'm boiling hot!.ogg | w=1
+torbjorn.voice.nano_boosted = ../../research/torbjorn/extract/HeroVoice/Torbjörn/NanoBoosted/000000060DFD.0B2-(laughs) Boosted up!.ogg | w=1
+torbjorn.voice.nano_boosted = ../../research/torbjorn/extract/HeroVoice/Torbjörn/NanoBoosted/0000000671F3.0B2-It's Torbin' time!.ogg | w=0.01
+# Overload 0AA7 ('I'm overloading!' / 'Time to let off some steam!'; 1721 #174 STU_40E05F6B, H): 6 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 10-10 s; left out: 3 Overwatch Classic only
+torbjorn.voice.overload = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/AA7.078/000000055550.0B2-I'm overloading!.ogg | w=1
+torbjorn.voice.overload = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/AA7.078/00000005556D.0B2-Time to let off some steam!.ogg | w=0.3
+torbjorn.voice.overload = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/AA7.078/00000005556E.0B2-Power overwhelming!.ogg | w=0.1
+torbjorn.voice.overload = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/AA7.078/000000055570.0B2-Maximum power!.ogg | w=0.3
+torbjorn.voice.overload = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/AA7.078/000000055571.0B2-Turning up the heat!.ogg | w=0.3
+torbjorn.voice.overload = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/AA7.078/000000055572.0B2-Working the bellows!.ogg | w=0.3
+# Forge Hammer kill 0FF2 ('Smack!' / 'Kapow!'; 168C #387 sends it with the kill message, H node, M meaning): 9 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 5-5 s; left out: 2 a hero interaction, 1 Overwatch Classic only
+torbjorn.voice.hammer_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/FF2.078/00000005F229.0B2-Smack!.ogg | w=1
+torbjorn.voice.hammer_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/FF2.078/00000005F228.0B2-Kapow! Haha!.ogg | w=1
+torbjorn.voice.hammer_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/FF2.078/00000005F227.0B2-That settles it! Every problem is a nail.ogg | w=0.01
+torbjorn.voice.hammer_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/FF2.078/000000060D9A.0B2-The most useful tool of them all.ogg | w=1
+torbjorn.voice.hammer_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/FF2.078/000000060D98.0B2-Knock knock.ogg | w=1
+torbjorn.voice.hammer_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/FF2.078/000000060D99.0B2-Nailed it!.ogg | w=1
+torbjorn.voice.hammer_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/FF2.078/000000060DD9.0B2-Hammered away!.ogg | w=1
+torbjorn.voice.hammer_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/FF2.078/0000000610FF.0B2-Sorry, thought you were a nail.ogg | w=1
+torbjorn.voice.hammer_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/FF2.078/0000000610FD.0B2-Who needs a fist when you have a hammer_.ogg | w=1
+# Turret kill 00D1 ('(laughs) I'm so proud' / 'It's working great!'; 1684 #161, H node, M meaning): 19 files; prio 55, 35 m, +0 dB, interrupt 0, cooldown 10-20 s
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/00000000A663.0B2-(laughs) I'm so proud.ogg | w=1
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/00000000A650.0B2-It's working great!.ogg | w=1
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/00000000A632.0B2-Do you appreciate my craftsmanship_.ogg | w=1
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/00000000A631.0B2-Oops, did I leave that there_.ogg | w=1
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/00000000ADF5.0B2-I designed that, you know.ogg | w=1
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/00000000ADBD.0B2-(laughs) A marvel of engineering! Don't you think_.ogg | w=0.01
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/000000044477.0B2-(laugh) A marvel of craftsmanship! Don't you think_.ogg | w=1
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/000000060D8E.0B2-Calibration's spot on.ogg | w=1
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/000000060D8B.0B2-Now that's a turret.ogg | w=1
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/000000060D8A.0B2-Function and beauty!.ogg | w=1
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/000000060D90.0B2-My little assistant.ogg | w=1
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/000000060D89.0B2-Takes after her maker.ogg | w=1
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/000000060D91.0B2-You can't mass-produce that!.ogg | w=1
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/000000060D8C.0B2-Wonder who designed that little gem_.ogg | w=1
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/000000060D8D.0B2-Pretty useful, if I do say so myself.ogg | w=1
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/000000063B77.0B2-I see you fell for my new Anti-Reinhardt turret technology!.ogg | w=1
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/000000068EE9.0B2-Call my inventions ugly again. I dare you!.ogg | w=0.5
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/000000068EEA.0B2-That's why turrets should be for offense!.ogg | w=0.5
+torbjorn.voice.turret_kill = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/D1.078/000000068EE6.0B2-Auto-targeting_ Oldest trick in the book!.ogg | w=1
+# Molten Core, his own copy 1862 ('Molten floor!' / 'Molten core!'; 16DA #491 STU_37D754C8 key F1AC, H): 2 files; prio 95, 60 m, +8 dB, interrupt 0, cooldown 1-1 s; left out: 1 a skin / celebration
+torbjorn.voice.ultimate = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Ultimate/00000005555F.0B2-Molten floor!.ogg | w=0.001
+torbjorn.voice.ultimate = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Ultimate/00000006988B.0B2-Molten core!.ogg | w=1
+# Molten Core line, allies 048B ('Setting out the welcome mat!' / 'The floor is lava'; 16DA #491 key F1AB, H): 1 files; prio 95, 60 m, +6 dB, interrupt 0, cooldown 1-1 s; left out: 1 a skin / celebration
+torbjorn.ult.friendly = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Ultimate/000000055560.0B2-Setting out the welcome mat!.ogg | w=1
+# Molten Core line, enemies 014A ('Molten core!' / 'La-va!'; 16DA #491 key F1AA, H): 1 files; prio 95, 60 m, +8 dB, interrupt 0, cooldown 1-1 s; left out: 1 a skin / celebration
+torbjorn.ult.enemy = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Ultimate/00000000A61E.0B2-Molten core!.ogg | w=1
+# His turret destroyed 00AB ('My turret!' / 'My baby!'; ScriptedEvent 0582, M): 6 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 2-5 s
+torbjorn.voice.turret_destroyed = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/AB.078/00000000A667.0B2-I worked hard on that!.ogg | w=1
+torbjorn.voice.turret_destroyed = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/AB.078/00000000A666.0B2-My turret!.ogg | w=1
+torbjorn.voice.turret_destroyed = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/AB.078/00000000A665.0B2-My baby!.ogg | w=0.5
+torbjorn.voice.turret_destroyed = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/AB.078/000000060D95.0B2-Pick on someone your own size!.ogg | w=1
+torbjorn.voice.turret_destroyed = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/AB.078/000000060D96.0B2-My baby's destroyed!.ogg | w=1
+torbjorn.voice.turret_destroyed = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/AB.078/000000060D9E.0B2-My precious work!.ogg | w=1
+# His turret under fire 00C3 ('Protect my turret!'; ScriptedEvent 0585, M): 7 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 20-40 s
+torbjorn.voice.turret_attacked = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C3.078/00000000A65D.0B2-My turret's being destroyed!.ogg | w=1
+torbjorn.voice.turret_attacked = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C3.078/00000000A65C.0B2-My turret's under fire!.ogg | w=1
+torbjorn.voice.turret_attacked = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C3.078/00000000A64E.0B2-Protect my turret!.ogg | w=1
+torbjorn.voice.turret_attacked = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C3.078/000000044479.0B2-(grunt) My turret is being attacked!.ogg | w=1
+torbjorn.voice.turret_attacked = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C3.078/000000060D92.0B2-My turret's getting hit!.ogg | w=1
+torbjorn.voice.turret_attacked = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C3.078/000000060D94.0B2-They're hurting my turret!.ogg | w=1
+torbjorn.voice.turret_attacked = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C3.078/000000060D93.0B2-My baby's under attack!.ogg | w=1
+# Repairing his turret 00C5 ('I'll fix you up!'; ScriptedEvent 0584, M): 11 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 20-30 s
+torbjorn.voice.turret_repair = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C5.078/00000000A661.0B2-It's just a scratch!.ogg | w=1
+torbjorn.voice.turret_repair = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C5.078/00000000A660.0B2-Hold it together!.ogg | w=1
+torbjorn.voice.turret_repair = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C5.078/00000000A65F.0B2-I'll fix you up!.ogg | w=1
+torbjorn.voice.turret_repair = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C5.078/00000000A65E.0B2-I'll have you good as new.ogg | w=1
+torbjorn.voice.turret_repair = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C5.078/00000000A64F.0B2-Don't worry, I'll patch you up.ogg | w=1
+torbjorn.voice.turret_repair = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C5.078/000000060D88.0B2-Let's patch you up.ogg | w=1
+torbjorn.voice.turret_repair = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C5.078/000000060D83.0B2-Fixing you right up!.ogg | w=1
+torbjorn.voice.turret_repair = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C5.078/000000060D87.0B2-A little mending's all you need.ogg | w=1
+torbjorn.voice.turret_repair = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C5.078/000000060D84.0B2-I'll get you running like new again.ogg | w=1
+torbjorn.voice.turret_repair = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C5.078/000000060D86.0B2-Just a little touch up.ogg | w=1
+torbjorn.voice.turret_repair = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/C5.078/000000060D85.0B2-Don't you break on me yet!.ogg | w=1
+# Turret upgraded 00A7 ('My masterpiece'; ScriptedEvent 0587, L: read as Overloaded Turret's level 3): 5 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 30-60 s
+torbjorn.voice.turret_upgrade = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/A7.078/00000000A655.0B2-Alright! Now do what you were built to do!.ogg | w=1
+torbjorn.voice.turret_upgrade = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/A7.078/00000000A653.0B2-My masterpiece.ogg | w=1
+torbjorn.voice.turret_upgrade = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/A7.078/00000000A652.0B2-Ha! Now, that's what I had in mind!.ogg | w=1
+torbjorn.voice.turret_upgrade = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/A7.078/00000000A64C.0B2-Let's hear those guns!.ogg | w=1
+torbjorn.voice.turret_upgrade = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/A7.078/00000000ADB9.0B2-Now we're getting somewhere!.ogg | w=1
+# Turret building 00A6 ('Damn machine!' / 'That'll do.'; ScriptedEvent 0586, L): 7 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 5-15 s
+torbjorn.voice.turret_build = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/A6.078/00000000A65A.0B2-Damn machine!.ogg | w=0.5
+torbjorn.voice.turret_build = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/A6.078/00000000A659.0B2-Come on!.ogg | w=0.5
+torbjorn.voice.turret_build = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/A6.078/00000000A658.0B2-That'll do.ogg | w=1
+torbjorn.voice.turret_build = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/A6.078/00000000A63B.0B2-C'mon, baby!.ogg | w=0.5
+torbjorn.voice.turret_build = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/A6.078/00000000A613.0B2-Now we're getting somewhere!.ogg | w=1
+torbjorn.voice.turret_build = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/A6.078/00000000AE01.0B2-How about this_.ogg | w=1
+torbjorn.voice.turret_build = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Unknown/A6.078/00000000ADC5.0B2-Just wait and see what I have in mind!.ogg | w=1
+# Enemy turret destroyed 0037 ('Enemy turret down!'; Turret/EnemyTurretDestroyed, H name): 3 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 5-5 s
+torbjorn.voice.enemy_turret_destroyed = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Turret/EnemyTurretDestroyed/00000000A62D.0B2-(grunts) Shoddy workmanship.ogg | w=0.2
+torbjorn.voice.enemy_turret_destroyed = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Turret/EnemyTurretDestroyed/00000000A62C.0B2-Enemy turret down! Clearly not one of mine.ogg | w=1
+torbjorn.voice.enemy_turret_destroyed = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Turret/EnemyTurretDestroyed/00000000A6E6.0B2-Enemy turret down!.ogg | w=1
+# GOOD JOB (the wheel key's tap): as Illari's, ours are his Teammate/KillSeen 001B lines (a teammate's kill seen) with no criteria.
+torbjorn.voice.call_good_job = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Teammate/KillSeen/00000000A6CD.0B2-That gets my stamp of approval!.ogg | w=1
+torbjorn.voice.call_good_job = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Teammate/KillSeen/000000060DAA.0B2-Go get 'em!.ogg | w=1
+torbjorn.voice.call_good_job = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Teammate/KillSeen/000000060DA7.0B2-Great. Can you do it again_.ogg | w=0.5
+torbjorn.voice.call_good_job = ../../research/torbjorn/extract/HeroVoice/Torbjörn/Teammate/KillSeen/000000060DA8.0B2-Nice one!.ogg | w=1
+# Voice subtitles: one per event (its lines vary); ours describe the moment, quoting a line where the pool says one thing.
+$torbjorn.voice.elimination = Torbjörn remarks on a takedown
+$torbjorn.voice.multikill = Torbjörn remarks on a multikill
+$torbjorn.voice.melee_kill = Torbjörn remarks on a melee kill
+$torbjorn.voice.on_fire = Torbjörn is on fire
+$torbjorn.voice.respawn = Torbjörn is back
+$torbjorn.voice.melee = Torbjörn shouts
+$torbjorn.voice.select = Torbjörn: Build 'em up, break 'em down
+$torbjorn.voice.death = Torbjörn dies
+$torbjorn.voice.pain = Torbjörn grunts
+$torbjorn.voice.resurrected = Torbjörn: Back to work!
+$torbjorn.voice.ult_ready = Torbjörn: My ultimate is ready
+$torbjorn.voice.call_ult_charging = Torbjörn: My ultimate is charging
+$torbjorn.voice.call_ult_almost = Torbjörn: My ultimate is almost ready
+$torbjorn.voice.call_hello = Torbjörn: Hello
+$torbjorn.voice.call_thanks = Torbjörn: Thank you
+$torbjorn.voice.call_sorry = Torbjörn: Sorry
+$torbjorn.voice.call_no = Torbjörn: No
+$torbjorn.voice.call_group_up = Torbjörn: Group up
+$torbjorn.voice.call_need_help = Torbjörn: I need help
+$torbjorn.voice.call_need_healing = Torbjörn: I need healing
+$torbjorn.voice.ping = Torbjörn: Over there
+$torbjorn.voice.ping_warning = Torbjörn: Heads up
+$torbjorn.voice.ping_enemy = Torbjörn: Enemy spotted
+$torbjorn.voice.damage_boosted = Torbjörn is damage boosted
+$torbjorn.voice.nano_boosted = Torbjörn is nano boosted
+$torbjorn.voice.overload = Torbjörn: I'm overloading!
+$torbjorn.voice.hammer_kill = Torbjörn: Smack!
+$torbjorn.voice.turret_kill = Torbjörn is proud of his turret
+$torbjorn.voice.ultimate = Torbjörn: Molten core!
+$torbjorn.voice.turret_destroyed = Torbjörn: My turret!
+$torbjorn.voice.turret_attacked = Torbjörn: Protect my turret!
+$torbjorn.voice.turret_repair = Torbjörn: I'll fix you up!
+$torbjorn.voice.turret_upgrade = Torbjörn: My masterpiece
+$torbjorn.voice.turret_build = Torbjörn grumbles at his turret
+$torbjorn.voice.enemy_turret_destroyed = Torbjörn: Enemy turret down!
+$torbjorn.voice.call_good_job = Torbjörn compliments a teammate
+$torbjorn.ult.friendly = Torbjörn: Setting out the welcome mat!
+$torbjorn.ult.enemy = Torbjörn: Molten core!
