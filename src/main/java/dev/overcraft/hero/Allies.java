@@ -36,10 +36,11 @@ import net.minecraft.world.entity.player.Player;
  * against them, an angry wolf, bee, llama, goat or Nautilus, and an unowned mount carrying an enemy. A golem turned on the hero is an
  * enemy for as long as Minecraft keeps it so and an ally again after: it had been an ally even while killing them, and heroes
  * couldn't hit back. Who a mob targets is known only on the server: a client still sees a golem as an ally.</li>
- * <li><b>Bystanders</b> (everything else: cows, sheep, horses, a wolf not angry, a copper golem, an armor stand, a calm piglin): neither.
- * No healing or lock, no area ability touches them, and they pay nothing: ult charge, perk progress, On Fire, energy. A hero's shot aimed straight at one
- * still lands ({@link #canHurt}), so a player can hunt without pressing G, and a shot doesn't fly through a cow standing
- * in front of a zombie, while a fight near a farm or a display stays off them ({@link #areaHits}).</li>
+ * <li><b>Bystanders</b> (neutral: everything else: cows, sheep, horses, a wolf not angry, a copper golem, an armor stand, a calm piglin,
+ * a calm enderman): neither. Everything that hurts hurts them, aimed shots and area abilities alike ({@link #canHurt},
+ * {@link #areaHits}): the owner, 2026-11-14, "A cow is nuetral but you should still be able to kill it". No healing, no
+ * lock-on picks one ({@link #lockOn}: a Deadeye or a torpedo isn't spent on a cow), and they pay nothing: ult charge,
+ * perk progress, On Fire, energy, or a chicken farm would fill an ult.</li>
  * </ul>
  */
 public final class Allies {
@@ -221,8 +222,8 @@ public final class Allies {
 	}
 
 	/**
-	 * Whether the hero's abilities that take everyone in reach, without aiming at them (a burst, a field, a wave, a swing, a
-	 * lock), touch other: an enemy, or an ally with friendly fire on. Never a bystander (#99).
+	 * Whether the hero's abilities that take everyone in reach, without aiming at them (a burst, a field, a wave, a swing),
+	 * touch other: an enemy, a bystander (#99: the owner, 2026-11-14), or an ally with friendly fire on.
 	 */
 	public static boolean areaHits(LivingEntity hero, Entity other) {
 		return !(other instanceof LivingEntity living && Combat.phaseStops(living)) && areaTouches(hero, other);
@@ -230,7 +231,21 @@ public final class Allies {
 
 	/** The same whether or not it's phased: Gravitic Flux's lift alone: its filter (1E41) is mask 16, no bit 4 (M); W "completely unaffected". */
 	public static boolean areaTouches(LivingEntity hero, Entity other) {
-		return isEnemy(hero, other) || hero instanceof Player player && HeroManager.options(player).friendlyFire() && isAlly(hero, other);
+		return isEnemy(hero, other) || other instanceof LivingEntity living && living.isAlive() && !other.isSpectator() && isBystander(hero, other)
+			|| friendlyFireOn(hero) && isAlly(hero, other);
+	}
+
+	/**
+	 * What a lock-on picks by itself (Deadeye, Juno's torpedoes): an enemy, or an ally with friendly fire on. Never a bystander:
+	 * a player aims a lock at the fight, not the cow beside it (ours, #99).
+	 */
+	public static boolean lockOn(LivingEntity hero, Entity other) {
+		return !(other instanceof LivingEntity living && Combat.phaseStops(living))
+			&& (isEnemy(hero, other) || friendlyFireOn(hero) && isAlly(hero, other));
+	}
+
+	private static boolean friendlyFireOn(LivingEntity hero) {
+		return hero instanceof Player player && HeroManager.options(player).friendlyFire();
 	}
 
 	/**

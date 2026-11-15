@@ -4,7 +4,20 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-14: 0.3.49 on next (not on main yet)
+## 2026-11-14: 0.3.50 on next (not on main yet)
+
+- **Neutral mobs take abilities (#99, the owner's call):** cows, sheep, calm piglins, calm endermen, armor stands and
+  the like now take area abilities too (blasts, waves, fields), not only aimed shots: "A cow is nuetral but you should
+  still be able to kill it". Lock-ons (Deadeye, Juno's torpedoes) still pick only enemies (`Allies.lockOn`), and
+  neutral mobs still give no ult charge, energy or On Fire. Iron and snow golems stay allies (one that turns on the
+  hero is an enemy while it fights them).
+- **Respawn (#111, the owner's call):** full health and no spawn protection, which is what the game already did.
+- Played with real keys (Junkrat's Shift and right-click, Cassidy's Q): a Concussion Mine 1.5 m from a cow, a calm
+  piglin and a husk took them from 10 to 0.5, 16 to 9.3 and 20 to 13.3; one at an iron golem's feet left it at 74 of
+  74, unmoved. Deadeye with all four in view locked only the husk (`run/screenshots/r99_deadeye3.png`). Not played: the
+  other heroes' area abilities on neutral mobs, a calm enderman, an armor stand, the old build side by side.
+
+## 2026-11-14: 0.3.49
 
 - **Jetpack Cat's Lifeline icon for allies (#85):** while she seeks someone to tow, her allies see the Lifeline icon
   over her (from the data's 0BA3 widget, the look ours); not shown to her, to enemies, or while she tows. Seen with two

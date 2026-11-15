@@ -711,8 +711,8 @@ public final class Cassidy implements HeroKit {
 		Vec3 look = player.getViewVector(1.0f);
 		c.inSight = 0;
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(DEADEYE_RANGE))) {
-			// an enemy only, never a bystander (Allies.areaHits: what every lock and area ult takes; a cow or a sheep isn't one)
-			if (!e.isAlive() || !Allies.areaHits(player, e)) {
+			// an enemy only, never a bystander (Allies.lockOn: a cow or a sheep isn't one, #99)
+			if (!e.isAlive() || !Allies.lockOn(player, e)) {
 				continue;
 			}
 			Vec3 at = aim(e);
