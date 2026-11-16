@@ -51,7 +51,8 @@ import java.util.Set;
 public final class HeroModelRenderer {
 	/** What to draw this frame, worked out while extracting the render state. */
 	/** {@code cull}: back faces left out before upload (not for the select screen's GUI view, whose camera isn't at the origin). */
-	public record Draw(HeroModels.Loaded loaded, Matrix4f[] skin, float climbShift, Set<Integer> hidden, boolean cull, boolean angryFace) {
+	public record Draw(HeroModels.Loaded loaded, Matrix4f[] skin, float climbShift, Set<Integer> hidden, boolean cull, boolean angryFace,
+		boolean squash) {
 	}
 
 	public static final RenderStateDataKey<Draw> DRAW = RenderStateDataKey.create(() -> "overcraft:hero_draw");
@@ -222,7 +223,8 @@ public final class HeroModelRenderer {
 			hidden = allProps(loaded.model());
 		}
 		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(), hidden, preview == null,
-			hero == Hero.JUNO && preview == null && dev.overcraft.client.ClientJuno.faceAngry(entity)));
+			hero == Hero.JUNO && preview == null && dev.overcraft.client.ClientJuno.faceAngry(entity),
+			previewing && previewClip != null));
 		float phase = hero == Hero.SOMBRA && !previewing ? dev.overcraft.client.ClientSombra.phase(entity, now) : 0;
 		state.setData(STEALTH, phase > 0 ? new float[] {phase, now} : null);
 		state.setData(SHADOW, previewing ? null : shadow(entity, partialTicks));
@@ -711,12 +713,23 @@ public final class HeroModelRenderer {
 			return true;
 		}
 		altGlow = draw.angryFace();
+		if (draw.squash()) {
+			// Play of the Game's intro (#155, the owner: "the allowed field of rendering is WAY too shallow ... Kiriko is missing an
+			// arm, hair"; their recording's first intro frames, her side-on: an arm and half her face cut away). It's drawn as
+			// Minecraft draws a menu's entity: an orthographic picture whose depth is +-1000 px, about 1.6 m either side of her
+			// at the intro's size. Her depth halved changes nothing on screen (orthographic) and doubles the room
+			poseStack.pushPose();
+			poseStack.scale(1, 1, 0.5f);
+		}
 		submitModel(draw.loaded(), draw.skin(), poseStack, collector, light, overlay, draw.hidden(), draw.cull());
 		altGlow = false;
 		if (state.outlineColor != 0) {
 			submitOutline(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), draw.cull(), state.outlineColor);
 		}
 		submitGlow(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), white(state), draw.cull());
+		if (draw.squash()) {
+			poseStack.popPose();
+		}
 		EmoteProps.Held props = state.getData(EmoteProps.HELD);
 		if (props != null) {
 			EmoteProps.submit(props, poseStack, collector, light, overlay);

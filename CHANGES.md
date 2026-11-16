@@ -4,7 +4,15 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-16: 0.3.60 on next (not on main yet)
+## 2026-11-16: 0.3.61 on next (not on main yet)
+
+- **The POTG intro no longer cuts the hero away (#155):** the owner: "the allowed field of rendering is WAY too shallow
+  ... Kiriko is missing an arm, hair". Their recording: in the intro's first frames, Kiriko side-on, an arm and half
+  her face missing. The intro hero is drawn as Minecraft draws a menu's entity: an orthographic picture with a depth of
+  +-1000 px, about 1.6 m either side of her at the intro's size. Her depth is now halved there (invisible in an
+  orthographic picture), doubling the room. Played: the intro's side-on opening caught on screen, whole.
+
+## 2026-11-16: 0.3.60
 
 - **The Play of the Game is the scorer's own first person (#155):** the owner: "No UI of the player. like, no hands, no
   animations, no cooldowns shown". As in Overwatch (the owner's clip): the scorer's hero arms with their actions, and
