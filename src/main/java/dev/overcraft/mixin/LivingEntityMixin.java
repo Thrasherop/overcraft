@@ -207,7 +207,9 @@ public abstract class LivingEntityMixin {
 	 */
 	@org.spongepowered.asm.mixin.injection.ModifyVariable(method = "knockback(DDDLnet/minecraft/world/damagesource/DamageSource;FZ)V",
 		at = @At("HEAD"), argsOnly = true, ordinal = 0)
-	private double overcraft$flightResistance(double power) {
-		return power * dev.overcraft.hero.Combat.knockbackTaken((LivingEntity) (Object) this);
+	private double overcraft$flightResistance(double power,
+											  @com.llamalad7.mixinextras.sugar.Local(argsOnly = true) net.minecraft.world.damagesource.DamageSource source) {
+		return power * dev.overcraft.hero.Combat.knockbackTaken((LivingEntity) (Object) this)
+			* dev.overcraft.hero.Combat.minecraftPushOnHero((LivingEntity) (Object) this, source);
 	}
 }

@@ -256,6 +256,27 @@ public final class Combat {
 		return state * boosters * Tank.knockbackFactor(target) * dev.overcraft.sigma.GraviticFlux.knockbackFactor(target);
 	}
 
+	/**
+	 * Minecraft's own push (a zombie's or husk's hit, an arrow) on a hero in hero play: Minecraft sizes it for its own
+	 * gravity, 0.4 blocks a tick up and out, which a plain player lands from in about 0.5 s, about 1 m back. Under Overwatch's
+	 * gravity (17.5 m/s², OwMovement) the same lift kept a hero up about 0.9 s at full sideways speed: 3.3 m a hit, a husk
+	 * juggling her 19 m in six (#143, measured 2026-11-15: hero mode 3.3 m a hit, plain Minecraft 1.0 m). The distance goes
+	 * with the push squared (speed times time aloft), so 0.55 gives Minecraft's hop and distance back. Ours: Overwatch has
+	 * no mob hits to copy. A hero's own pushes (their quick melee, abilities) stay as they are.
+	 */
+	public static final double MINECRAFT_PUSH_ON_HERO = 0.55;
+
+	public static double minecraftPushOnHero(LivingEntity target, @org.jspecify.annotations.Nullable DamageSource source) {
+		if (!(target instanceof Player player) || !HeroManager.inHeroPlay(player)) {
+			return 1;
+		}
+		Entity attacker = source == null ? null : source.getEntity();
+		if (attacker instanceof Player a && HeroManager.inHeroPlay(a)) {
+			return 1;
+		}
+		return MINECRAFT_PUSH_ON_HERO;
+	}
+
 	/** The share of a hero's push that reaches it: its state's, and its knockback resistance (a warden, a ravager: none). */
 	public static double pushShare(LivingEntity target) {
 		return knockbackTaken(target) * Math.max(0, 1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));

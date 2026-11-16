@@ -4,7 +4,15 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-15: 0.3.54 on next (not on main yet)
+## 2026-11-15: 0.3.55 on next (not on main yet)
+
+- **A mob's hit no longer throws a hero 3 m (#143):** a husk hit Kiriko in hero mode 3.3 m back a hit (19 m in six hits);
+  the same husk hit a plain Minecraft player 1.0 m a hit (7.3 m in seven). Minecraft's push lifts 0.4 blocks a tick, sized
+  for its own gravity; under Overwatch's lighter gravity the hero stayed up about twice as long at full sideways speed.
+  Minecraft's own pushes (mobs, arrows) now reach a hero in hero play at 0.55 (`Combat.MINECRAFT_PUSH_ON_HERO`, ours), which
+  gives back Minecraft's hop and distance. A hero's own pushes (quick melee, abilities) are unchanged.
+
+## 2026-11-15: 0.3.54
 
 - **D.Va's Boosters stopped by any rise (#148):** the owner: "Dva's boosters keep getting cancelled after just like a second or
   two". The flight always ran its 2 s (a tap, Shift held, firing, Defense Matrix, Micro Missiles: all 2 s, about 24 m); what cut
