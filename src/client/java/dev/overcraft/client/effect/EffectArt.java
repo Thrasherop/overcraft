@@ -420,6 +420,13 @@ public final class EffectArt {
 		SOMBRA_SKULL(0, 0, 0, 0, .1f, .13f, .011f, .231f, .55f, .27f, .125f, .539f, 1, .509f, .402f, 1),
 		/** The pistol's muzzle strip A260, magenta to gold: the effects reading's report (tools/reference/sombra-effects.md), sRGB to linear. */
 		SOMBRA_MUZZLE(0, 0, 0, 0, .1f, .558f, 0, .73f, .325f, .839f, .117f, .156f, .55f, 1, .584f, .025f, .775f, 1, 1, .109f, 1, 1, 1, 1),
+		/**
+		 * Tracer's shot line 002C (tools/reference/tracer-effects.md): her team row, LUT 0967 row 4, a flat HDR (1.78, 2.58, 4.0), here
+		 * scaled to its brightest channel; the white top stands in for the HDR's bloom (ours).
+		 */
+		TR_SHOT(0, 0, 0, 0, .3f, .2f, .29f, .45f, .7f, .445f, .645f, 1, 1, .85f, .95f, 1),
+		/** The same for an enemy Tracer: LUT CDAD row 4, a flat HDR (3.2, 0.62, 0.33), scaled the same way. */
+		TR_SHOT_ENEMY(0, 0, 0, 0, .3f, .45f, .09f, .05f, .7f, 1, .194f, .103f, 1, 1, .75f, .6f),
 		/** The pistol's tracer 1998, warm orange #FF6236 (normalised; the ends ours): the effects reading's report (tools/reference/sombra-effects.md), sRGB to linear. */
 		SOMBRA_TRACER(0, 0, 0, 0, .1f, 0, 0, 0, .55f, 1, .122f, .037f, 1, 1, .644f, .479f),
 		/** Her heals' gold LUT row (Hotfix's healed ally, Cyberspace's allies): the effects reading's report (tools/reference/sombra-effects.md), sRGB to linear. */

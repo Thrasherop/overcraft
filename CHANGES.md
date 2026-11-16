@@ -4,7 +4,17 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-16: 0.3.61 on next (not on main yet)
+## 2026-11-16: 0.3.62 on next (not on main yet)
+
+- **Tracer's bullets are her own (#150):** the owner: "tracer bullets are just minecraft particles". From her effects'
+  data (tools/reference/tracer-effects.md, read offline 2026-11-16): each bullet draws her line 002C (Sombra's tracer
+  masks, her blue LUT 0967 / enemy red CDAD), 0.03 m wide for 0.1 s, then the world hit's flash and a small mark, or the
+  flash alone on a creature (her data's creature hit is empty). Played: firing at a wall and a zombie.
+- Research notes for the rest of #150: tools/reference/tracer-effects.md (Pulse Bomb, Blink, Recall still to build) and
+  tools/reference/dva-effects.md (Defense Matrix, Self-Destruct, Micro Missiles; her melee has no effect in the data, only
+  animations).
+
+## 2026-11-16: 0.3.61
 
 - **The POTG intro no longer cuts the hero away (#155):** the owner: "the allowed field of rendering is WAY too shallow
   ... Kiriko is missing an arm, hair". Their recording: in the intro's first frames, Kiriko side-on, an arm and half

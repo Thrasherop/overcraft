@@ -592,10 +592,16 @@ public final class Tracer implements HeroKit {
 					bestDist = hit.get().distanceToSqr(eye);
 				}
 			}
-			// the stand-in look: a spark from her pistol (left, then right) to where the bullet ended
+			// her shot's look (#150, tools/reference/tracer-effects.md): the line 002C from her pistol (left, then right) to where
+			// the bullet ended, then the world hit 0114 on a block, or a flash on a creature (her data's creature hit is empty)
 			Vec3 muzzle = fromEyes(player, i == 0 ? -MUZZLE_SIDE : MUZZLE_SIDE, MUZZLE_UP, MUZZLE_AHEAD);
 			Vec3 stop = best != null ? bestAt : block;
-			trail(level, muzzle, stop);
+			Effects.play(level, "tracer_shot", muzzle, stop.subtract(muzzle), player, 0, player);
+			if (best != null) {
+				Effects.play(level, "tracer_hit", stop, Vec3.ZERO, player, 0, player);
+			} else if (blockHit.getType() == HitResult.Type.BLOCK) {
+				Effects.play(level, "tracer_hit_block", stop, Vec3.atLowerCornerOf(blockHit.getDirection().getUnitVec3i()), player, 0, player);
+			}
 			if (best == null) {
 				if (blockHit.getType() == HitResult.Type.BLOCK && wall == null) {
 					wall = block;
@@ -632,17 +638,6 @@ public final class Tracer implements HeroKit {
 				Effects.hitMarker(player, target, h.crit);
 			}
 		}
-	}
-
-	private static void trail(ServerLevel level, Vec3 from, Vec3 to) {
-		Vec3 d = to.subtract(from);
-		double len = d.length();
-		int n = (int) Math.min(12, Math.max(1, len / 1.5));
-		for (int k = 1; k <= n; k++) {
-			Vec3 p = from.add(d.scale(k / (double) n * Math.min(1, 18 / Math.max(len, 1e-3))));
-			level.sendParticles(ParticleTypes.ELECTRIC_SPARK, p.x, p.y, p.z, 1, 0, 0, 0, 0);
-		}
-		level.sendParticles(ParticleTypes.CRIT, to.x, to.y, to.z, 1, 0, 0, 0, 0);
 	}
 
 	/** A point from her eyes in her look's frame (right, up, ahead), or her eyes when a wall is between. */
