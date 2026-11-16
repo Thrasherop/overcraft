@@ -125,6 +125,8 @@ public final class DvaStats {
 	// ---- Boosters (dva.md "Boosters", 047E) ----
 	/** Her flight's speed along her aim: 5.5 x (1 + 1.18) = 12 m/s (D 047E #158 flight mover, 1285 1.18; W 12) M. */
 	public static final double BOOSTERS_SPEED = 5.5 * (1 + 1.18);
+	/** Ours (#148, the owner on 0.3.55): Boosters lift her over a rise this high (a block and a little), as a curb; Overwatch's maps have no blocks. */
+	public static final double BOOSTERS_CURB = 1.05;
 	/** Its length: 2 s at most, ended by a second press from 0.4 s on (D 03AF 2 at #166, #179 0.4 s; W) M. */
 	public static final double BOOSTERS_TIME = 2, BOOSTERS_MIN = 0.4;
 	/** Its cooldown starts 0.3 s after the flight ends (D 047E #168 -> #171) M. */

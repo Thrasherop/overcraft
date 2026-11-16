@@ -4,7 +4,15 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-16: 0.3.56 on next (not on main yet)
+## 2026-11-16: 0.3.57 on next (not on main yet)
+
+- **D.Va's Boosters over real terrain (#148, again):** the owner on 0.3.55: "Dva is still having boosters cancelled".
+  Reproduced in a generated desert: the first one-block rise stopped her 10 m in for the rest of the flight (the
+  0.3.54 fix only stepped what she could walk up). Boosters now lift her over a rise of up to a block
+  (`DvaStats.BOOSTERS_CURB` 1.05, ours). Played the same spot: up two rises and on to a tall cliff (a real wall); the
+  other way, the full 23.8 m over the dunes, three blocks up.
+
+## 2026-11-16: 0.3.56
 
 From the owner's 0.3.55 playtest (issues #151-#160 filed from their notes).
 - **Tracer's Blink over a bump (#152):** a Blink whose path went up over something and down again (a one-block bump)

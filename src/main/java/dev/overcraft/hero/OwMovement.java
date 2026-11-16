@@ -558,9 +558,17 @@ public final class OwMovement {
 			entity.setDeltaMovement(v);
 			// along the ground she steps up what she'd walk up (a slab, a path's edge): Minecraft's collide steps only an entity on
 			// the ground or moving down into it, and a level flight is neither, so a half slab stopped her dead for the rest of the
-			// flight (#148, reproduced 2026-11-15: z 134.30 from 1.3 s into it). A full block stays a wall (dva.md step 6)
+			// flight (#148, reproduced 2026-11-15: z 134.30 from 1.3 s into it)
 			if (v.y <= 0 && !entity.level().noCollision(entity, entity.getBoundingBox().move(0, -0.05, 0))) {
 				entity.setOnGround(true);
+			}
+			// and up over a one-block rise (a curb in Minecraft's terrain): on generated ground the first such rise stopped her
+			// for the rest of the flight, which played as the flight cut short (the owner on 0.3.55, "Dva is still having
+			// boosters cancelled"; reproduced 2026-11-16 in a desert, stopped 10 m in at z -103.7). As little lift as clears it,
+			// with room overhead; anything taller is a wall
+			double lift = boostersLift(entity, v);
+			if (lift > 0) {
+				entity.move(MoverType.SELF, new Vec3(0, lift, 0));
 			}
 			entity.move(MoverType.SELF, v);
 			return;
@@ -1459,6 +1467,24 @@ public final class OwMovement {
 		}
 		Vec3 heading = shownHeading(entity, ride);
 		return (float) Math.toDegrees(Math.atan2(-heading.x, heading.z));
+	}
+
+	/** D.Va's Boosters: the lift (m) that takes this tick's move over what's in its way, up to BOOSTERS_CURB; 0 if none is needed or none will do. */
+	private static double boostersLift(LivingEntity entity, Vec3 v) {
+		net.minecraft.world.phys.AABB box = entity.getBoundingBox();
+		Vec3 level = new Vec3(v.x, Math.min(0, v.y), v.z);
+		if (entity.level().noCollision(entity, box.move(level))) {
+			return 0;
+		}
+		for (double up = 0.05; up <= dev.overcraft.dva.DvaStats.BOOSTERS_CURB + 1.0E-6; up += 0.05) {
+			if (!entity.level().noCollision(entity, box.move(0, up, 0))) {
+				return 0;
+			}
+			if (entity.level().noCollision(entity, box.move(level.x, up, level.z))) {
+				return up;
+			}
+		}
+		return 0;
 	}
 
 	/** Climbing a wall right now (the local player only: other players' movement isn't simulated here). */
