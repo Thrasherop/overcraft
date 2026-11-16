@@ -19,12 +19,28 @@ public final class DvaFx {
 		new EffectArt.Art("dva_matrix_field", Palette.DVA_MATRIX_TUBE, false),
 		new EffectArt.Art("dva_solid", Palette.DVA_MATRIX, false),
 		new EffectArt.Art("dva_absorb_beam", Palette.DVA_ABSORB, false),
-		new EffectArt.Art("dva_absorb_flash#8", Palette.DVA_ABSORB, false));
+		new EffectArt.Art("dva_absorb_flash#8", Palette.DVA_ABSORB, false),
+		new EffectArt.Art("dva_sd_flare", Palette.DVA_SD, false),
+		new EffectArt.Art("dva_sd_spark_in", Palette.DVA_SD, false),
+		new EffectArt.Art("dva_sd_burst#20", Palette.DVA_SD, false),
+		new EffectArt.Art("dva_sd_core", Palette.DVA_SD, false),
+		new EffectArt.Art("dva_solid", Palette.DVA_SD, false),
+		new EffectArt.Art("spark", Palette.DVA_SD, false),
+		new EffectArt.Art("dva_sd_smoke#4", Palette.DVA_SD, false),
+		new EffectArt.Art("dva_sd_scorch", Palette.DVA_SD, false));
 	public static final java.util.List<EffectArt.Art> ART_ENEMY = java.util.List.of(
 		new EffectArt.Art("dva_matrix_field", Palette.DVA_MATRIX_TUBE, false),
 		new EffectArt.Art("dva_solid", Palette.DVA_MATRIX_ENEMY, false),
 		new EffectArt.Art("dva_absorb_beam", Palette.DVA_ABSORB_ENEMY, false),
-		new EffectArt.Art("dva_absorb_flash#8", Palette.DVA_ABSORB_ENEMY, false));
+		new EffectArt.Art("dva_absorb_flash#8", Palette.DVA_ABSORB_ENEMY, false),
+		new EffectArt.Art("dva_sd_flare", Palette.DVA_SD_ENEMY, false),
+		new EffectArt.Art("dva_sd_spark_in", Palette.DVA_SD_ENEMY, false),
+		new EffectArt.Art("dva_sd_burst#20", Palette.DVA_SD_ENEMY, false),
+		new EffectArt.Art("dva_sd_core", Palette.DVA_SD_ENEMY, false),
+		new EffectArt.Art("dva_solid", Palette.DVA_SD_ENEMY, false),
+		new EffectArt.Art("spark", Palette.DVA_SD_ENEMY, false),
+		new EffectArt.Art("dva_sd_smoke#4", Palette.DVA_SD_ENEMY, false),
+		new EffectArt.Art("dva_sd_scorch", Palette.DVA_SD_ENEMY, false));
 
 	/** The field's ring frames D655 (2D61, H): their distance ahead (m), size and alpha (rows BC -> 59). */
 	private static final float[] RING_AT = {0.35f, 1, 2, 4, 6, 8, 9.5f};
@@ -37,6 +53,12 @@ public final class DvaFx {
 	/** The pulse rings (2D61's C37 / C53): 9 m/s, two a second, 0.75 m (H). */
 	private static final float PULSE_SPEED = 9, PULSE_EVERY = 0.5f, PULSE_SIZE = 0.75f, FIELD_LENGTH = 9.77f;
 
+	/** Self-Destruct's fields now: the mech's entity id -> when it started (Fx.now), its fuse (s), whether an enemy's. */
+	private record Field(float at, float fuse, boolean enemy) {
+	}
+
+	private static final java.util.Map<Integer, Field> FIELDS = new java.util.HashMap<>();
+
 	private DvaFx() {
 	}
 
@@ -47,6 +69,16 @@ public final class DvaFx {
 			return;
 		}
 		float partial = mc.getDeltaTracker().getGameTimeDeltaPartialTick(true);
+		float now = Fx.now();
+		FIELDS.entrySet().removeIf(f -> {
+			Entity mech = mc.level.getEntity(f.getKey());
+			float t = now - f.getValue().at();
+			if (mech == null || t > f.getValue().fuse()) {
+				return true;
+			}
+			field(f.getKey(), mech.getPosition(partial).add(0, mech.getBbHeight() * 0.6, 0), t, f.getValue());
+			return false;
+		});
 		for (Player p : mc.level.players()) {
 			Integer state = p.getAttached(dev.overcraft.hero.HeroManager.DVA_STATE);
 			if (state != null && (state & dev.overcraft.dva.Dva.MODE_MATRIX) != 0 && p.isAlive()) {
@@ -109,8 +141,118 @@ public final class DvaFx {
 		}
 	}
 
+	/**
+	 * Self-Destruct's warning field 1702 on the mech through its fuse (H): the big flare 34DC growing 4 -> 10 m over the first
+	 * half (alpha ours, 0.35), sparks 1C00 drawn in at 20-30 m/s, their rate 50 -> 400 a second (a fifth of it here: ours),
+	 * the 1.8 m core pulse five times a second, burst flares 4A39 1.5-2 m four a second.
+	 */
+	private static void field(int id, Vec3 c, float t, Field f) {
+		Palette colour = f.enemy() ? Palette.DVA_SD_ENEMY : Palette.DVA_SD;
+		float k = Math.min(1, t / f.fuse());
+		float grow = Math.min(1, t / (f.fuse() / 2));
+		Particle flare = Fx.attach("dva_sd/" + id + "/flare", c, () -> {
+			Particle s = Fx.particle("dva_sd_flare", colour);
+			return s == null ? null : s.life(0.2f).fade(0.05f, 0.5f);
+		});
+		if (flare != null) {
+			float size = 4 + 6 * grow;
+			flare.at(c).size(size, size).alpha(0.35f);
+		}
+		float dt = Fx.since(-(id * 8 + 1) - 1);
+		int sparks = Math.round((10 + 70 * k) * dt);
+		for (int i = 0; i < sparks; i++) {
+			Particle spark = Fx.particle("dva_sd_spark_in", colour);
+			if (spark == null) {
+				break;
+			}
+			Vec3 dir = new Vec3(Fx.RANDOM.nextGaussian(), Fx.RANDOM.nextGaussian(), Fx.RANDOM.nextGaussian()).normalize();
+			float speed = 20 + 10 * k;
+			float r = speed * 0.2f;
+			Fx.add(spark.at(c.add(dir.scale(r))).shape(Fx.Shape.STREAK).velocity(dir.scale(-speed)).life(0.2f).size(0.15f, 0.1f)
+				.fade(0.1f, 0.3f));
+		}
+		// the core pulse: five a second
+		if ((int) (t * 5) != (int) ((t - dt) * 5)) {
+			Particle core = Fx.particle("dva_sd_core", colour);
+			if (core != null) {
+				Fx.add(core.at(c).life(0.2f).size(1.75f, 1.8f).alpha(0.6f).fade(0.05f, 0.6f).nearFade(1));
+			}
+		}
+		if ((int) (t * 4) != (int) ((t - dt) * 4)) {
+			Particle burst = Fx.particle("dva_sd_burst#20", colour);
+			if (burst != null) {
+				Vec3 off = new Vec3(Fx.RANDOM.nextFloat() - 0.5, Fx.RANDOM.nextFloat() - 0.5, Fx.RANDOM.nextFloat() - 0.5);
+				Fx.add(burst.at(c.add(off)).life(0.5f).size(1.5f + 0.5f * Fx.RANDOM.nextFloat(), 2).loop(40).fade(0.05f, 0.5f).nearFade(1));
+			}
+		}
+	}
+
+	/**
+	 * The blast 1703 (H): the 3 m flash sphere 0.6 s, the shock ring 2B63 at 7.9 m for 0.5 s, sparks at 40-60 m/s (40 of the
+	 * data's 80: ours), three smoke puffs 3-3.5 m for 2-2.5 s, and a 2 m scorch on the ground for 2 s.
+	 */
+	private static void blast(Vec3 c, boolean enemy) {
+		Palette colour = enemy ? Palette.DVA_SD_ENEMY : Palette.DVA_SD;
+		float[] sphere = Fx.mesh("cat_sphere");
+		Particle flash = Fx.particle("dva_solid", colour);
+		if (flash != null) {
+			if (sphere != null) {
+				flash.mesh(sphere, new Vec3(1, 0, 0), new Vec3(0, 1, 0));
+				Fx.add(flash.at(c.add(0, -1.5, 0)).life(0.6f).size(3, 3.4f).alpha(0.5f).fade(0.02f, 0.7f).nearFade(1));
+			} else {
+				Fx.add(flash.at(c).life(0.6f).size(3, 3.4f).alpha(0.5f).fade(0.02f, 0.7f).nearFade(1));
+			}
+		}
+		float[] ring = Fx.mesh("dva_sd_ring");
+		Particle shock = Fx.particle("dva_solid", colour);
+		if (ring != null && shock != null) {
+			// the ring stands in its X-Y plane in its file: laid flat (its Y along +Z), set back half its size
+			Fx.add(shock.at(c.add(0, -0.75, -7.9 / 2)).mesh(ring, new Vec3(1, 0, 0), new Vec3(0, 0, 1)).life(0.5f).size(2, 7.9f)
+				.alpha(0.6f).fade(0.02f, 0.6f).nearFade(1));
+		}
+		for (int i = 0; i < 40; i++) {
+			Particle spark = Fx.particle("spark", colour);
+			if (spark == null) {
+				break;
+			}
+			Vec3 dir = new Vec3(Fx.RANDOM.nextGaussian(), Math.abs(Fx.RANDOM.nextGaussian()) * 0.7, Fx.RANDOM.nextGaussian()).normalize();
+			Fx.add(spark.at(c).shape(Fx.Shape.STREAK).velocity(dir.scale(40 + 20 * Fx.RANDOM.nextFloat())).drag(0.05f)
+				.life(0.25f + 0.75f * Fx.RANDOM.nextFloat()).size(0.08f, 0.05f).fade(0.05f, 0.5f));
+		}
+		for (int i = 0; i < 3; i++) {
+			Particle smoke = Fx.soft("dva_sd_smoke#4", colour);
+			if (smoke != null) {
+				Vec3 off = new Vec3(Fx.RANDOM.nextFloat() - 0.5, Fx.RANDOM.nextFloat() * 0.5, Fx.RANDOM.nextFloat() - 0.5).scale(2);
+				Fx.add(smoke.at(c.add(off)).velocity(new Vec3(0, 0.4, 0)).life(2 + 0.5f * Fx.RANDOM.nextFloat()).size(3, 3.5f)
+					.alpha(0.4f).loop(2).fade(0.1f, 0.6f).nearFade(1.5f));
+			}
+		}
+		Minecraft mc = Minecraft.getInstance();
+		if (mc.level != null) {
+			// the scorch on the ground under it (the first solid block below, within 6 m: ours)
+			net.minecraft.world.phys.BlockHitResult down = mc.level.clip(new net.minecraft.world.level.ClipContext(c, c.add(0, -6, 0),
+				net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE,
+				net.minecraft.world.phys.shapes.CollisionContext.empty()));
+			if (down.getType() == net.minecraft.world.phys.HitResult.Type.BLOCK) {
+				Particle scorch = Fx.soft("dva_sd_scorch", colour);
+				if (scorch != null) {
+					Fx.add(scorch.at(down.getLocation()).normal(new Vec3(0, 1, 0)).lift(new Vec3(0, 1, 0)).life(2).size(2, 2).alpha(0.7f)
+						.fade(0.02f, 0.4f));
+				}
+			}
+		}
+	}
+
 	/** Her effects from the server; false for others' names. */
 	static boolean dispatch(EffectPayload e, boolean enemy) {
+		if (e.effect().equals("dva_sd_field")) {
+			FIELDS.put(e.entity(), new Field(Fx.now(), e.variant() / 20f, enemy));
+			return true;
+		}
+		if (e.effect().equals("dva_sd_blast")) {
+			blast(new Vec3(e.x(), e.y(), e.z()), enemy);
+			return true;
+		}
 		if (!e.effect().equals("dva_absorb")) {
 			return false;
 		}

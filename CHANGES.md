@@ -4,7 +4,19 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-16: 0.3.63 on next (not on main yet)
+## 2026-11-16: 0.3.64 on next (not on main yet)
+
+- **D.Va's mech first-person melee (#150):** the owner: "Dva does have a first person melee mech animation in game ... Its
+  somewhere in the data." It is: her mech's 1P set 019B holds the melee alias D (tree 56B, a random pick of two clips,
+  34E4 and 34E5, 0.8 s each, H), which our clip map had named "a13" and "aim" (read as aim pitch). Renamed melee /
+  melee_2 in tools/clipmaps/dva_1p.txt (the pack's dva_1p.glb renamed with rename_glb_clips.py). Played: V twice, the right
+  cannon swinging in, then the left across.
+- **D.Va's Self-Destruct from her data (#150):** the owner: "explosive field around dva bomb" was Minecraft's. The
+  warning field 1702 on the flying mech for its fuse (the flare growing 4 -> 10 m, sparks drawn in faster and faster, the
+  1.8 m core pulsing, burst flares) and the blast 1703 (a 3 m flash sphere, the 7.9 m shock ring, 40 sparks, three smoke
+  puffs, a 2 m scorch). Played: the field's teal glow and sparks, the blast's sphere on screen; the rest listed live.
+
+## 2026-11-16: 0.3.63
 
 - **D.Va's Defense Matrix is her own (#150):** the owner: "dva matrix" was Minecraft's. From her effects' data
   (tools/reference/dva-effects.md): while it's up, her field 2D61 along her aim, its seven hexagonal ring frames at

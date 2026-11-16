@@ -910,6 +910,15 @@ EFFECT_MASKS = {
     "dva_solid": ("DVa", "DefenseMatrix", "000000001298", 1),
     "dva_absorb_beam": ("DVa", "DefenseMatrix", "000000011C54", 1),
     "dva_absorb_flash": ("DVa", "DefenseMatrix", "000000004AAA", 8),
+    # her Self-Destruct (dva-effects.md): the warning field's growing flare, in-drawn sparks, burst flipbook and streaks; the
+    # blast's core, smoke and scorch mark
+    "dva_sd_flare": ("DVa", "SelfDestruct", "0000000034DC", 1),
+    "dva_sd_spark_in": ("DVa", "SelfDestruct", "000000001C00", 1),
+    "dva_sd_burst": ("DVa", "SelfDestruct", "000000004A39", 20),
+    "dva_sd_streak": ("DVa", "SelfDestruct", "000000005438", 4),
+    "dva_sd_core": ("DVa", "SelfDestruct", "00000000E16E", 1),
+    "dva_sd_smoke": ("DVa", "SelfDestruct", "0000000004F0", 4),
+    "dva_sd_scorch": ("DVa", "SelfDestruct", "000000005502", 1),
     "sojourn_field_noise": ("Sojourn", "Disruptor", "0000000299E5", 1),
     "sojourn_flames": ("Sojourn", "Disruptor", "000000029132", 1),
     # Sigma's (tools/reference/sigma-effects.md "Masks for the pack"; research\sigmax). Hyperspheres: the launch swirl,
@@ -1014,6 +1023,8 @@ EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  "dva_matrix_tube": ("DVa", "DefenseMatrix", "00000000D6D1"),
                  "dva_matrix_frame": ("DVa", "DefenseMatrix", "00000000D655"),
                  "dva_matrix_pulse": ("DVa", "DefenseMatrix", "00000000D653"),
+                 # her Self-Destruct's shock ring (1703, 2B63)
+                 "dva_sd_ring": ("DVa", "SelfDestruct", "000000002B63"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
                  # rings (a fat torus lying flat), the hook's cone, the towed ally's arcs, Purr's sphere, torus and wall
                  "cat_torus": ("JetpackCat", "Lifeline", "000000015A26"),
