@@ -29,7 +29,7 @@ public final class DeadeyeHud {
 		share = payload.share();
 	}
 
-	public static void render(GuiGraphicsExtractor g, LocalPlayer player, Hero hero, float w, float h) {
+	public static void render(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, Hero hero, float w, float h) {
 		Minecraft mc = Minecraft.getInstance();
 		if (hero != Hero.CASSIDY || mc.level == null || targets.length == 0) {
 			return;

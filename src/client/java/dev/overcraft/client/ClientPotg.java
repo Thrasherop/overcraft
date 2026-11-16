@@ -39,6 +39,19 @@ public final class ClientPotg {
 		return active;
 	}
 
+	/**
+	 * In a showing's replay, the player the camera follows (the scorer, PotgReplay's camera lock), as the viewer's client
+	 * knows them; null otherwise. Their view is drawn as theirs: their hero's arms and HUD (#155, the owner: "No UI of the
+	 * player. like, no hands, no animations, no cooldowns shown"; Overwatch's POTG is the scorer's own first person).
+	 */
+	public static net.minecraft.client.player.@org.jspecify.annotations.Nullable AbstractClientPlayer followed() {
+		if (!active) {
+			return null;
+		}
+		Minecraft mc = Minecraft.getInstance();
+		return mc.getCameraEntity() instanceof net.minecraft.client.player.AbstractClientPlayer p && p != mc.player ? p : null;
+	}
+
 	/** Before the play starts: the player's own body is held still (the world is frozen too). */
 	public static boolean holdBody() {
 		return active && net.minecraft.util.Util.getMillis() < cardUntil;

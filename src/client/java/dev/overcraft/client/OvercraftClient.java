@@ -264,6 +264,8 @@ public class OvercraftClient implements ClientModInitializer {
 		// under everything: Sombra's stealth tints the view, not the HUD (#87)
 		HudElementRegistry.addFirst(Overcraft.id("stealth_wash"), HeroHud::stealthWash);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Overcraft.id("hero_hud"), HeroHud::render);
+		// a Play of the Game's replay: the viewer is a spectator (no hotbar), the HUD is the scorer's (#155)
+		HudElementRegistry.attachElementAfter(VanillaHudElements.SPECTATOR_MENU, Overcraft.id("hero_hud_potg"), HeroHud::renderFollowed);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Overcraft.id("rush_view"), HeroHud::rushView);
 		// over everything else, in either mode
 		HudElementRegistry.addLast(Overcraft.id("victory"), VictoryHud::render);

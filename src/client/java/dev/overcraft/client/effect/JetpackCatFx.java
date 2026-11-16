@@ -107,7 +107,7 @@ public final class JetpackCatFx {
 	 * How long a Jetpack Cat's Lifeline has towed the local player (s), -1 not towed: their Detach prompt (#85). Catnapper's carry
 	 * (a tether's third value) isn't a tow: jump does nothing there.
 	 */
-	public static float towedFor(net.minecraft.client.player.LocalPlayer player) {
+	public static float towedFor(net.minecraft.client.player.AbstractClientPlayer player) {
 		boolean towed = devTowed;
 		for (int[] tether : TETHERS.values()) {
 			towed |= tether[0] == player.getId() && tether[2] == 0;
@@ -223,7 +223,7 @@ public final class JetpackCatFx {
 	 * The Jetpack Cat whose Lifeline the local player could take now (Interact: LifelineGrabPayload), or -1: an ally's,
 	 * on and towing nobody, with the player in its cylinder (the server checks again: sight, the lock-out).
 	 */
-	public static int lifelineOffer(net.minecraft.client.player.LocalPlayer player) {
+	public static int lifelineOffer(net.minecraft.client.player.AbstractClientPlayer player) {
 		for (Map.Entry<Integer, Boolean> e : SEEKING.entrySet()) {
 			if (e.getValue() || TETHERS.containsKey(e.getKey()) || e.getKey() == player.getId()) {
 				continue;
@@ -241,7 +241,7 @@ public final class JetpackCatFx {
 	}
 
 	/** Allied Jetpack Cats seeking now (Lifeline on, towing nobody), not the local player: for the icon over each (ReticleHud). */
-	public static java.util.List<Integer> alliedSeekers(net.minecraft.client.player.LocalPlayer player) {
+	public static java.util.List<Integer> alliedSeekers(net.minecraft.client.player.AbstractClientPlayer player) {
 		java.util.List<Integer> out = new java.util.ArrayList<>();
 		for (Map.Entry<Integer, Boolean> e : SEEKING.entrySet()) {
 			if (!e.getValue() && !TETHERS.containsKey(e.getKey()) && e.getKey() != player.getId()) {

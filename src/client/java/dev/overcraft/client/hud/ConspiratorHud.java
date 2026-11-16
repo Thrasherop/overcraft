@@ -31,7 +31,7 @@ public final class ConspiratorHud {
 		enemies = payload.enemies();
 	}
 
-	public static void render(GuiGraphicsExtractor g, LocalPlayer player, Hero hero, float w, float h) {
+	public static void render(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, Hero hero, float w, float h) {
 		Minecraft mc = Minecraft.getInstance();
 		if (hero != Hero.SOMBRA || mc.level == null || enemies.length == 0) {
 			return;

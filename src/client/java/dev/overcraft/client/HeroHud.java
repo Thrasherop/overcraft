@@ -160,9 +160,26 @@ public final class HeroHud {
 		return Math.min(guiHeight / REF_H, guiWidth / REF_W);
 	}
 
+	/** The frame's graphics the HUD last drew on: it draws once a frame, from whichever slot comes first. */
+	private static @Nullable GuiGraphicsExtractor drawnOn;
+
+	/** A Play of the Game's replay: the spectating viewer has no hotbar slot, so the scorer's HUD comes from here (#155). */
+	public static void renderFollowed(GuiGraphicsExtractor g, DeltaTracker delta) {
+		if (ClientPotg.followed() != null) {
+			render(g, delta);
+		}
+	}
+
 	public static void render(GuiGraphicsExtractor g, DeltaTracker delta) {
+		if (drawnOn == g) {
+			return;
+		}
+		drawnOn = g;
 		Minecraft mc = Minecraft.getInstance();
-		LocalPlayer player = mc.player;
+		// in a Play of the Game's replay, the scorer's HUD: their health from their own entity, their numbers from their
+		// recorded sync (ClientHero.sync takes it as it comes: #155)
+		net.minecraft.client.player.AbstractClientPlayer followed = ClientPotg.followed();
+		net.minecraft.client.player.AbstractClientPlayer player = followed != null ? followed : mc.player;
 		Hero hero = ClientHero.hero();
 		if (player == null || hero == null || player.isSpectator()) {
 			return;
@@ -170,7 +187,7 @@ public final class HeroHud {
 		HudShapes.ensure();
 		HeroSyncPayload s = ClientHero.sync();
 		track(s, hero);
-		if (!ClientHero.heroView()) {
+		if (followed == null && !ClientHero.heroView()) {
 			minecraftMode(g, s, hero);
 			return;
 		}
@@ -333,7 +350,7 @@ public final class HeroHud {
 	 * Tints over the whole view (the reference, §2): stepping, the edges flash teal and streaks rush in; in Kitsune
 	 * Rush's path, a white-cyan mist at the edges and light streaks flying past. Low on health, the edges glow red.
 	 */
-	private static void screenEffects(GuiGraphicsExtractor g, HeroSyncPayload s, LocalPlayer player) {
+	private static void screenEffects(GuiGraphicsExtractor g, HeroSyncPayload s, net.minecraft.client.player.AbstractClientPlayer player) {
 		int w = g.guiWidth();
 		int h = g.guiHeight();
 		float health = player.getHealth() / Math.max(1, player.getMaxHealth());
@@ -578,7 +595,7 @@ public final class HeroHud {
 
 	// ---- bottom left: portrait, health, pips ----
 
-	private static void health(GuiGraphicsExtractor g, LocalPlayer player, Hero hero) {
+	private static void health(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, Hero hero) {
 		// the portrait, cut to a shield with a light-blue border
 		Identifier portrait = HudShapes.portrait(hero);
 		// the gable's peak under the head near y 902, the point at 1015 (the owner's frames, the eighth critique: 6% larger
@@ -1983,7 +2000,7 @@ public final class HeroHud {
 	 * Swift Step's target: four cyan corner brackets in a diamond around the ally it would go to, with its key under
 	 * them, on the ally (not the crosshair).
 	 */
-	private static void swiftStepTarget(GuiGraphicsExtractor g, LocalPlayer player, HeroSyncPayload s, float w, float h,
+	private static void swiftStepTarget(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, HeroSyncPayload s, float w, float h,
 										float partial) {
 		if (s.ability1Cooldown() > 0) {
 			return;
@@ -2003,7 +2020,7 @@ public final class HeroHud {
 	 * (more than 4 m away and within her range + 10 m), else the ally nearest the crosshair within 30 degrees and her range,
 	 * in sight, more than 4 m away. Souls aren't marked (ours: the client doesn't know them).
 	 */
-	private static void guardianAngelTarget(GuiGraphicsExtractor g, LocalPlayer player, HeroSyncPayload s, float w, float h,
+	private static void guardianAngelTarget(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, HeroSyncPayload s, float w, float h,
 											float partial) {
 		ClientMercy.State m = ClientMercy.state(player);
 		if (s.ability1Cooldown() > 0 || m == null || m.has(dev.overcraft.mercy.Mercy.FLAG_GA)
@@ -2087,7 +2104,7 @@ public final class HeroHud {
 	 * "v" under a row of white pips, one per 25 health): players and pets always, within ALLY_RANGE; villagers, golems
 	 * and allays only when hurt or close, or a village would be a wall of bars. Smaller further away.
 	 */
-	private static void allyMarkers(GuiGraphicsExtractor g, LocalPlayer player, float w, float h, float partial) {
+	private static void allyMarkers(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, float w, float h, float partial) {
 		Vec3 eye = player.getEyePosition(partial);
 		for (LivingEntity ally : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(ALLY_RANGE),
 			e -> Allies.isAlly(player, e) && !e.isInvisible())) {
@@ -2232,7 +2249,7 @@ public final class HeroHud {
 	}
 
 	/** Where Minecraft's status-effect icons end, in GUI units from the top (0 with none): as Hud.extractEffects lays them. */
-	private static float effectRowsBottom(LocalPlayer player) {
+	private static float effectRowsBottom(net.minecraft.client.player.AbstractClientPlayer player) {
 		boolean beneficial = false;
 		boolean harmful = false;
 		for (MobEffectInstance effect : player.getActiveEffects()) {

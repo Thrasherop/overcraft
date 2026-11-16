@@ -110,7 +110,7 @@ public final class ReticleHud {
 	}
 
 	/** One frame's widgets for this hero. */
-	public static void render(GuiGraphicsExtractor g, LocalPlayer player, Hero hero, HeroSyncPayload s, float w, float h, float partial) {
+	public static void render(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, Hero hero, HeroSyncPayload s, float w, float h, float partial) {
 		devWorld = "";
 		if (player.isAlive()) {
 			// (on whoever is near, whatever holds their view)
@@ -268,7 +268,7 @@ public final class ReticleHud {
 	 * up; Rally's time, 0237 (12BE #188); Repair Pack's target, 013C (0EDD #469); over each ally her packs are healing, 011F in the world
 	 * (0EE1 #611, hers alone: the pack's icon 01A4, at their hardpoint 0E + 0.4 m, 9A the share of the heal to come).
 	 */
-	private static void brigitte(GuiGraphicsExtractor g, LocalPlayer player, Hero hero, HeroSyncPayload s, float cx, float cy, float w,
+	private static void brigitte(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, Hero hero, HeroSyncPayload s, float cx, float cy, float w,
 								 float h, float partial, boolean reticle) {
 		HeroSyncPayload.Widgets d = s.widgets();
 		marker(g, player, d.preview(), w, h, partial, Action.ABILITY_2);
@@ -314,7 +314,7 @@ public final class ReticleHud {
 	 * wing icon 12F3); Valkyrie's time, 0237 (10DA #486). Resurrect's cast has a panel in the data (0693, 00CA #1072) and no fraction: its
 	 * bar's ours.
 	 */
-	private static void mercy(GuiGraphicsExtractor g, LocalPlayer player, Hero hero, HeroSyncPayload s, float cx, float cy, float w, float h,
+	private static void mercy(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, Hero hero, HeroSyncPayload s, float cx, float cy, float w, float h,
 							  boolean reticle) {
 		ClientMercy.State m = ClientMercy.state(player);
 		HeroSyncPayload.Widgets d = s.widgets();
@@ -352,7 +352,7 @@ public final class ReticleHud {
 	 * Hotfix's preview 013C (#593); over each ally Hotfix heals, 011F in the world (60FB #371, hers alone: the icon F5E, at their
 	 * hardpoint 0E + 0.4 m, no share bound). Its band on their health bar (0D86, #385) isn't drawn: the mod draws no allies' bars.
 	 */
-	private static void sombra(GuiGraphicsExtractor g, LocalPlayer player, HeroSyncPayload s, float cx, float cy, float w, float h,
+	private static void sombra(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, HeroSyncPayload s, float cx, float cy, float w, float h,
 							   float partial, boolean reticle) {
 		HeroSyncPayload.Widgets d = s.widgets();
 		marker(g, player, d.preview(), w, h, partial, Action.PRIMARY_FIRE);
@@ -418,7 +418,7 @@ public final class ReticleHud {
 	 * the lock's two buttons (4695 #1051, the default of the swap option v55397, off: the Mediblaster's button (the left, its Action named
 	 * for Kiriko's secondary) 177F0 "FIRE", the torpedoes' (the right) 04CC "CANCEL"; Torpedoes.tick does what they say, #112).
 	 */
-	private static void juno(GuiGraphicsExtractor g, LocalPlayer player, Hero hero, HeroSyncPayload s, float cx, float cy, float partial) {
+	private static void juno(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, Hero hero, HeroSyncPayload s, float cx, float cy, float partial) {
 		boolean gliding = (s.mode() & dev.overcraft.juno.Juno.MODE_GLIDE) != 0;
 		boolean locking = (s.mode() & dev.overcraft.juno.Juno.MODE_LOCK) != 0;
 		if (gliding) {
@@ -537,7 +537,7 @@ public final class ReticleHud {
 	 * 0237 (5A7E #320); Catnapper's carry, 0237 (5B7B #63), and its aim's prompts, 00DB (5B7B #34: primary 2B2F6 "POUNCE", secondary
 	 * 2B2F7 "CANCEL": in the mod the ult key cancels). A carried enemy has no panel: 0BA3 is Lifeline's alone.
 	 */
-	private static void jetpackCat(GuiGraphicsExtractor g, LocalPlayer player, Hero hero, HeroSyncPayload s, float cx, float cy, boolean reticle) {
+	private static void jetpackCat(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, Hero hero, HeroSyncPayload s, float cx, float cy, boolean reticle) {
 		HeroSyncPayload.Widgets d = s.widgets();
 		if (d.target() >= 0 && reticle && player.level().getEntity(d.target()) instanceof LivingEntity held) {
 			panel(g, held, displayName(held), "", "", health(held), 0, null, cx);
@@ -565,7 +565,7 @@ public final class ReticleHud {
 	 * (21C6 #913), and Life Grip's (21EF #704, the server's pick: Lifeweaver.widgets). Tree of Life's aim, 00DB (36A4 #901: primary 1701B
 	 * "BUILD", secondary 1701C "CANCEL").
 	 */
-	private static void lifeweaver(GuiGraphicsExtractor g, LocalPlayer player, HeroSyncPayload s, float cx, float cy, float w, float h,
+	private static void lifeweaver(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, HeroSyncPayload s, float cx, float cy, float w, float h,
 								   float partial, boolean reticle) {
 		ClientLifeweaver.State l = ClientLifeweaver.state(player);
 		boolean thorns = (s.mode() & dev.overcraft.lifeweaver.Lifeweaver.FLAG_THORNS) != 0;
@@ -618,7 +618,7 @@ public final class ReticleHud {
 	 * boosted). The panel 0257 (#381), the prompt 00DB (#384: 16195 "NANO BOOST" / 16196 "CANCEL") and #373 bind v8070, the target after the
 	 * press: they're the Requires Target Confirmation flow (option v29052, off by default, not in the mod), so not drawn.
 	 */
-	private static void ana(GuiGraphicsExtractor g, LocalPlayer player, HeroSyncPayload s, float w, float h, float partial) {
+	private static void ana(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, HeroSyncPayload s, float w, float h, float partial) {
 		int id = s.widgets().preview();
 		if (id < 0 || !(player.level().getEntity(id) instanceof LivingEntity target)) {
 			return;
@@ -707,7 +707,7 @@ public final class ReticleHud {
 	 * "Nitro Boost", the perk check #677). The mine's and the trap's markers, 011F in the world on each (096B #464 while the mine lives,
 	 * 09BB #654 to the trap's owner): his own, the ability's icon (look ours). Mine charges are on Concussion Mine's box (096A #355, 0243).
 	 */
-	private static void junkrat(GuiGraphicsExtractor g, LocalPlayer player, Hero hero, HeroSyncPayload s, float cy, float w, float h,
+	private static void junkrat(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, Hero hero, HeroSyncPayload s, float cy, float w, float h,
 								float partial) {
 		int mode = s.mode();
 		if ((mode & (dev.overcraft.junkrat.Junkrat.MODE_MINE_OUT | dev.overcraft.junkrat.Junkrat.MODE_TRAP_OUT)) != 0) {
@@ -739,7 +739,7 @@ public final class ReticleHud {
 	 * countdown. Ours: her Self-Destruct icon on a dark disc in a thick ring, orange, red inside the inner radius, pulsing (her bunny
 	 * alone, thin-ringed, read as her mech's own decal: rt85_dva_sd_inner).
 	 */
-	private static void selfDestruct(GuiGraphicsExtractor g, LocalPlayer player, float w, float h, float partial) {
+	private static void selfDestruct(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, float w, float h, float partial) {
 		for (Entity e : Minecraft.getInstance().level.entitiesForRendering()) {
 			if (!(e instanceof dev.overcraft.entity.DvaMechEntity mech) || mech.kind() != dev.overcraft.entity.DvaMechEntity.SELF_DESTRUCT) {
 				continue;
@@ -782,7 +782,7 @@ public final class ReticleHud {
 	 * 011F over an ally a heal of ours is on: the ability's icon on a dark disc in the ally cyan (0406, the team's colour), at the top
 	 * of them + 0.4 m (the data's hardpoint 0E + 0.4 m: 0E taken as the head's top, ours); with a share, the ring drains with it.
 	 */
-	private static void healIcon(GuiGraphicsExtractor g, LocalPlayer player, int id, float share, @Nullable Identifier icon, float w, float h,
+	private static void healIcon(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, int id, float share, @Nullable Identifier icon, float w, float h,
 								 float partial) {
 		if (id < 0 || !(player.level().getEntity(id) instanceof LivingEntity ally) || !ally.isAlive() || ally == player) {
 			return;
@@ -808,7 +808,7 @@ public final class ReticleHud {
 	 * Kept clear above her ally marker (HeroHud's name and pips, about 52 px over her head on screen): at 10 m the 0.7 m put
 	 * it on her health pips (c85_after, the two-client pass); the clearance is ours.
 	 */
-	private static void seekingCats(GuiGraphicsExtractor g, LocalPlayer player, float w, float h, float partial) {
+	private static void seekingCats(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, float w, float h, float partial) {
 		for (int id : JetpackCatFx.alliedSeekers(player)) {
 			if (!(player.level().getEntity(id) instanceof LivingEntity cat) || !cat.isAlive()) {
 				continue;
@@ -861,7 +861,7 @@ public final class ReticleHud {
 	 * "Detach", 2D604 "%1$s Detach"). Letting go is JetpackCat.lifeline's: the jump key, from 0.6 s into the tow, so its prompt from then.
 	 * Catnapper's carry has neither: jump does nothing there (JetpackCatFx.towedFor).
 	 */
-	private static void towed(GuiGraphicsExtractor g, LocalPlayer player) {
+	private static void towed(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player) {
 		float seconds = JetpackCatFx.towedFor(player);
 		if (seconds < 0) {
 			return;
@@ -890,7 +890,7 @@ public final class ReticleHud {
 	}
 
 	/** A target marker on this entity, if there is one (HeroHud.targetMarker). */
-	private static void marker(GuiGraphicsExtractor g, LocalPlayer player, int id, float w, float h, float partial, Action key) {
+	private static void marker(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, int id, float w, float h, float partial, Action key) {
 		if (id >= 0 && player.level().getEntity(id) instanceof LivingEntity target) {
 			HeroHud.targetMarker(g, target.getPosition(partial).add(0, target.getBbHeight() * 0.55, 0), w, h, key);
 		}

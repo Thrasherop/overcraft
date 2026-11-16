@@ -35,6 +35,7 @@
 		"MouseHandlerInvoker",
 		"OptionsCameraMixin",
 		"GameRendererHurtMixin",
+		"GameRendererPotgHandsMixin",
 		"EntityShadowMixin",
 		"HudFontTextureMixin",
 		"HeroChatFormatMixin",

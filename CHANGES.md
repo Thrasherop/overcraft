@@ -4,7 +4,17 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-16: 0.3.59 on next (not on main yet)
+## 2026-11-16: 0.3.60 on next (not on main yet)
+
+- **The Play of the Game is the scorer's own first person (#155):** the owner: "No UI of the player. like, no hands, no
+  animations, no cooldowns shown". As in Overwatch (the owner's clip): the scorer's hero arms with their actions, and
+  their HUD (health, abilities, ult meter, ammo, crosshair, hit markers) under the banner and the card. The viewer is a
+  spectator following the scorer, for whom Minecraft draws no first-person hands and no hotbar-slot HUD; both now draw
+  from the scorer (their entity, their recorded hero sync). Played: three real dragon-kill POTGs as Kiriko, her arms,
+  throws and HUD in every frame captured.
+- The owner confirmed the three match-end sounds (the music, Athena's "Victory" and "Play of the game").
+
+## 2026-11-16: 0.3.59
 
 - **The real match-end music (#155):** the owner: "wrong music", "No Play of the game music". Neither our victory sting
   nor cue 5B1F plays under the owner's real Overwatch ending. Matching 57 extracted music banks against their clip

@@ -985,7 +985,23 @@ public final class HeroModelRenderer {
 	public static boolean submitFirstPerson(float partialTicks, PoseStack poseStack, SubmitNodeCollector collector, int light,
 											float swayPitch, float swayYaw) {
 		// heroView, not controls: her arms stay while she dies (Minecraft's blocky arm took their place on the death screen)
-		return ClientHero.heroView() && submitArms(partialTicks, poseStack, collector, light, swayPitch, swayYaw, null, null);
+		return (dev.overcraft.client.ClientPotg.followed() != null || ClientHero.heroView())
+			&& submitArms(partialTicks, poseStack, collector, light, swayPitch, swayYaw, null, null);
+	}
+
+	/** Whose first person is drawn: a Play of the Game's scorer while the replay follows them (#155), else this player. */
+	private static net.minecraft.client.player.@Nullable AbstractClientPlayer viewed() {
+		net.minecraft.client.player.AbstractClientPlayer followed = dev.overcraft.client.ClientPotg.followed();
+		return followed != null ? followed : Minecraft.getInstance().player;
+	}
+
+	/** The viewed player's hero: the scorer's from their synced attachment, else this player's own. */
+	private static @Nullable Hero viewedHero(net.minecraft.client.player.AbstractClientPlayer player) {
+		if (player == Minecraft.getInstance().player) {
+			return ClientHero.hero();
+		}
+		String id = player.getAttached(dev.overcraft.hero.HeroManager.HERO);
+		return id == null ? null : Hero.byId(id);
 	}
 
 	/**
@@ -1058,9 +1074,8 @@ public final class HeroModelRenderer {
 	private static boolean submitArms(float partialTicks, PoseStack poseStack, SubmitNodeCollector collector, int light,
 									  float swayPitch, float swayYaw, @Nullable FirstPersonHandsAndItemsRenderState hands,
 									  @Nullable AvatarRenderState avatar) {
-		Minecraft mc = Minecraft.getInstance();
-		LocalPlayer player = mc.player;
-		Hero hero = ClientHero.hero();
+		net.minecraft.client.player.AbstractClientPlayer player = viewed();
+		Hero hero = player == null ? null : viewedHero(player);
 		if (player == null || hero == null) {
 			return false;
 		}
@@ -1365,7 +1380,7 @@ public final class HeroModelRenderer {
 	 * bone so it moves with her hand, no bigger than heldMax. Held to the view's corner the first-person way, items
 	 * floated beside her fist (the owner, 2026-10-27).
 	 */
-	private static void submitGripped(PoseStack poseStack, SubmitNodeCollector collector, int light, LocalPlayer player,
+	private static void submitGripped(PoseStack poseStack, SubmitNodeCollector collector, int light, net.minecraft.client.player.AbstractClientPlayer player,
 									  @org.jspecify.annotations.Nullable Matrix4f bone, boolean kunaiSide, ItemStack item,
 									  net.minecraft.client.renderer.item.ItemStackRenderState state) {
 		if (item.isEmpty() || bone == null) {
@@ -1749,7 +1764,7 @@ public final class HeroModelRenderer {
 	private static long driftAt = -1;
 
 	/** Moves the arms' drift toward the player's velocity in view space, against it. */
-	private static void drift(LocalPlayer player, float partialTicks) {
+	private static void drift(net.minecraft.client.player.AbstractClientPlayer player, float partialTicks) {
 		Camera camera = Minecraft.getInstance().gameRenderer.mainCamera();
 		Vec3 v = player.getDeltaMovement().scale(20);
 		Vector3fc left = camera.leftVector();
