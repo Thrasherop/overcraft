@@ -31,7 +31,7 @@ import org.jspecify.annotations.Nullable;
  * creatures (D restitution 0.15). 0.75 s after it lands it's armed; the first enemy within 1 m springs it: 100 and a 2.5 s root
  * ({@link Junkrat#trapSprung}). It lets go at the root's end and goes 8 s later. 100 health: an enemy can break it (D 0355; W).
  */
-public class SteelTrapEntity extends OwProjectile {
+public class SteelTrapEntity extends OwProjectile implements SurfaceStuck {
 	/** 0 in flight, 1 set down, 2 sprung (synced: its look). */
 	private static final EntityDataAccessor<Integer> STAGE = SynchedEntityData.defineId(SteelTrapEntity.class, EntityDataSerializers.INT);
 	private int landed = -1;
@@ -51,6 +51,12 @@ public class SteelTrapEntity extends OwProjectile {
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 		super.defineSynchedData(builder);
 		builder.define(STAGE, 0);
+	}
+
+	/** Set down, it's on the ground (it bounces off walls and ceilings): SurfaceStuck. */
+	@Override
+	public @Nullable Direction stuckFace() {
+		return stage() >= 1 ? Direction.UP : null;
 	}
 
 	public int stage() {

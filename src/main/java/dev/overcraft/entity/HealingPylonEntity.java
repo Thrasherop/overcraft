@@ -36,11 +36,13 @@ import java.util.List;
  * the shot flying at 55 m/s ({@link Illari#pylonHeal}). 75 health under 50 shields; her enemies break it, a monster beside it
  * clawing at it (ours). Not saved: it goes with its chunk.
  */
-public class HealingPylonEntity extends OwProjectile {
+public class HealingPylonEntity extends OwProjectile implements SurfaceStuck {
 	/** 0 in flight, 1 building, 2 built (synced: its clip). */
 	private static final EntityDataAccessor<Integer> STAGE = SynchedEntityData.defineId(HealingPylonEntity.class, EntityDataSerializers.INT);
 	/** Ticks since it set down (synced: the build clip's time). */
 	private static final EntityDataAccessor<Integer> DOWN = SynchedEntityData.defineId(HealingPylonEntity.class, EntityDataSerializers.INT);
+	/** The face it's set on, for its clients' look (SurfaceStuck: -1 flying). */
+	private static final EntityDataAccessor<Integer> FACE = SynchedEntityData.defineId(HealingPylonEntity.class, EntityDataSerializers.INT);
 	private double health = IllariStats.PYLON_HEALTH, shields = IllariStats.PYLON_SHIELDS;
 	private double buildTicks = Ow.ticks(IllariStats.PYLON_BUILD);
 	private int nextShot;
@@ -65,6 +67,7 @@ public class HealingPylonEntity extends OwProjectile {
 		super.defineSynchedData(builder);
 		builder.define(STAGE, 0);
 		builder.define(DOWN, 0);
+		builder.define(FACE, -1);
 	}
 
 	public int stage() {
@@ -72,6 +75,11 @@ public class HealingPylonEntity extends OwProjectile {
 	}
 
 	/** Ticks since it set down. */
+	@Override
+	public @org.jspecify.annotations.Nullable Direction stuckFace() {
+		return stage() >= 1 ? SurfaceStuck.decode(entityData.get(FACE)) : null;
+	}
+
 	public int down() {
 		return entityData.get(DOWN);
 	}
@@ -227,6 +235,7 @@ public class HealingPylonEntity extends OwProjectile {
 			: hit.getLocation().add(n.scale(getBbWidth() / 2 + 0.02)).subtract(0, getBbHeight() / 2, 0);
 		setPos(at);
 		setYRot((float) (face == Direction.UP ? getYRot() : Math.toDegrees(Math.atan2(-n.x, n.z))));
+		entityData.set(FACE, SurfaceStuck.encode(face));
 		if (getOwner() instanceof ServerPlayer owner) {
 			Illari.pylonLanded(owner, this);
 		}

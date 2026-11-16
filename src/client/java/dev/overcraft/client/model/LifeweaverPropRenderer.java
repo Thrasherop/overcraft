@@ -35,6 +35,10 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 		/** Drawn this far up from the entity's position (the tree's box starts under its root). */
 		float lift;
 		float partialTick;
+		/** The face it's set on (SurfaceStuck: Illari's pylon), or null; its width, to draw a wall's back on the face. */
+		net.minecraft.core.@Nullable Direction face;
+		float width;
+		float height;
 	}
 
 	private final String model;
@@ -177,6 +181,9 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 		state.loaded = HeroModels.get(model);
 		state.lift = 0;
 		state.partialTick = partialTicks;
+		state.face = entity instanceof dev.overcraft.entity.SurfaceStuck stuck ? stuck.stuckFace() : null;
+		state.width = entity.getBbWidth();
+		state.height = entity.getBbHeight();
 		poser.accept(entity, state);
 	}
 
@@ -199,7 +206,17 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 			poseStack.pushPose();
 			poseStack.translate(0, state.lift, 0);
 			// the models face +Z, like the heroes'
-			poseStack.rotateDegrees(Axis.YP, -state.yRot);
+			if (state.face != null && state.face.getAxis().isHorizontal()) {
+				// on a wall (#154, the owner: Illari's pylon "on a wall is straight up instead of tangent to the surface"): its base
+				// on the face (the entity stands its half width out, half its height down), its up out of the wall. It already
+				// faces out (HealingPylonEntity's yaw); a quarter turn about its side takes its up onto its front
+				net.minecraft.world.phys.Vec3 n = net.minecraft.world.phys.Vec3.atLowerCornerOf(state.face.getUnitVec3i());
+				poseStack.translate(-n.x * state.width / 2, state.height / 2, -n.z * state.width / 2);
+				poseStack.rotateDegrees(Axis.YP, -state.yRot);
+				poseStack.rotateDegrees(Axis.XP, 90);
+			} else {
+				poseStack.rotateDegrees(Axis.YP, -state.yRot);
+			}
 			HeroModelRenderer.submitModel(loaded, skin, poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, java.util.Set.of(),
 				true, false);
 			poseStack.popPose();

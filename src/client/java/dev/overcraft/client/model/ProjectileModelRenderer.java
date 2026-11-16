@@ -36,6 +36,9 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		boolean drawnByEffect;
 		/** Seconds since it was thrown, for its tumble. */
 		float age;
+		/** The face it's set down on (SurfaceStuck), or null while it flies. */
+		net.minecraft.core.@Nullable Direction face;
+		float height;
 	}
 
 	/** Per model: its rest skin and the turn that lays its longest side along +Z. */
@@ -115,6 +118,8 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		s.yRot = entity.getYRot(partialTicks);
 		s.xRot = entity.getXRot(partialTicks);
 		s.age = (entity.tickCount + partialTicks) / 20f;
+		s.face = entity instanceof dev.overcraft.entity.SurfaceStuck stuck ? stuck.stuckFace() : null;
+		s.height = entity.getBbHeight();
 		// "=name": a hero model by its own name (Sigma's rock, sigma_rock), else projectile_<name>
 		s.loaded = HeroModels.get(model.startsWith("=") ? model.substring(1) : "projectile_" + model);
 		// the flight effects (trail, glow, sparkles), fed with where it is this frame
@@ -170,6 +175,27 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		}
 		Prepared p = PREPARED.computeIfAbsent(loaded.model(), ProjectileModelRenderer::prepare);
 		poseStack.pushPose();
+		if (s.face != null) {
+			// set down (#154, the owner: the trap on the ground "is like sideways", the mine "in a weird tilt"): its own up along
+			// the face's normal, not its longest side along the way it flew. On the ground it keeps the heading it flew in; on a
+			// wall its front points down the wall. A wall's mine sits half its height down and 0.1 m out (the entity), so it's
+			// drawn back on the face
+			if (s.face == net.minecraft.core.Direction.UP) {
+				poseStack.rotateDegrees(Axis.YP, s.yRot);
+			} else {
+				Vec3 n = Vec3.atLowerCornerOf(s.face.getUnitVec3i());
+				poseStack.translate(-n.x * 0.1, s.height / 2, -n.z * 0.1);
+				poseStack.rotateDegrees(Axis.YP, (float) Math.toDegrees(Math.atan2(n.x, n.z)));
+				poseStack.rotateDegrees(Axis.XP, s.face == net.minecraft.core.Direction.DOWN ? 180 : 90);
+			}
+			if (modelScale != 1) {
+				poseStack.scale(modelScale, modelScale, modelScale);
+			}
+			HeroModelRenderer.submitModel(loaded, p.skin(), poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY,
+				java.util.Set.of(), false, false);
+			poseStack.popPose();
+			return;
+		}
 		// yaw then pitch take +Z onto the flight direction (yRot = atan2(vx, vz), xRot = atan2(vy, horizontal))
 		poseStack.rotateDegrees(Axis.YP, s.yRot);
 		poseStack.rotateDegrees(Axis.XP, -s.xRot);
