@@ -4,7 +4,29 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-15: 0.3.55 on next (not on main yet)
+## 2026-11-16: 0.3.56 on next (not on main yet)
+
+From the owner's 0.3.55 playtest (issues #151-#160 filed from their notes).
+- **Tracer's Blink over a bump (#152):** a Blink whose path went up over something and down again (a one-block bump)
+  put her back where she started: her client moved her along the path, Minecraft's server replayed the move as one
+  straight sweep, hit the bump and logged "moved wrongly". A move that can be a Blink now gets Minecraft's own impulse
+  grace (a wind charge's). Played: over a bump she lands 7.5 m on (z 1.5 -> 9.0); before, she stayed at 1.5. A Blink
+  straight at a wall stops at it (z 3.7) and a diagonal one slides along it, as before.
+- **Juno hits endermen (#158):** her Mediblaster used the arrow damage type, which an enderman dodges; it now uses the
+  hitscan type (as Ana's and Sombra's). Played: an enderman 8 m off went 40 -> 25.6 health and stayed put.
+- **No camera tilt on a hit in hero mode (#160).** Played: a hit in hero mode, the horizon stays level. Minecraft mode
+  keeps it (not caught on a screenshot: it peaks 0.08 s in).
+- **Your own projectile isn't drawn at your eye (#151):** the server launches the kunai (and every hero projectile) from
+  the eye, so its first frame was the model inside the camera; now it isn't drawn in first person until it's 3.5 m out
+  or two ticks old (Minecraft's old thrown-item rule). Not reproduced on the old build: one frame is too short for
+  screenshots; two throws on the new build showed no oversized kunai.
+- **/changehero <hero> [players] (#156):** an operator's hero change, anywhere. **/perks [players] [level]** and
+  **/perks reset [players] (#157):** the perk level (3 by default; reset: 1, nothing picked). Played: both typed in
+  chat, /changehero 22 m from spawn.
+- Not reproduced: Junkrat's second mine (#153; both mines detonated each time, the detonate pressed right after the
+  throw). Asked the owner: Kiriko's climb (#159).
+
+## 2026-11-15: 0.3.55
 
 - **A mob's hit no longer throws a hero 3 m (#143):** a husk hit Kiriko in hero mode 3.3 m back a hit (19 m in six hits);
   the same husk hit a plain Minecraft player 1.0 m a hit (7.3 m in seven). Minecraft's push lifts 0.4 blocks a tick, sized

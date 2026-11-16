@@ -86,6 +86,23 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		return this;
 	}
 
+	/**
+	 * Your own projectile, in first person, isn't drawn while it's still at your eye (#151, the owner: "for the first frame
+	 * of shooting kunai, the kunai is super big on the screen"): the server launches it from the eye, so its first frame
+	 * was the model inside the camera. Minecraft's thrown items had the same rule (not drawn for two ticks within 3.5 m
+	 * of the camera); ours applies it to your own only.
+	 */
+	@Override
+	public boolean shouldRender(T entity, net.minecraft.client.renderer.culling.Frustum culler, double camX, double camY,
+								double camZ, float partialTicks) {
+		net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+		if (entity.tickCount < 2 && entity.getOwner() != null && entity.getOwner() == mc.getCameraEntity()
+			&& mc.options.getCameraType().isFirstPerson() && entity.distanceToSqr(camX, camY, camZ) < 3.5 * 3.5) {
+			return false;
+		}
+		return super.shouldRender(entity, culler, camX, camY, camZ, partialTicks);
+	}
+
 	@Override
 	public ThrownItemRenderState createRenderState() {
 		return new State();

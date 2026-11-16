@@ -127,6 +127,29 @@ public final class Tracer implements HeroKit {
 		return s.tracerBlinks > 0 && s.tracerRecall < 0 && !asleep && !silenced && !passenger;
 	}
 
+	/**
+	 * A move packet that is one of her Blinks (#152, reproduced 2026-11-16: a Blink over a one-block bump put her back where
+	 * she started, "moved wrongly"). Her client moves her along the Blink's path (up over the bump, down again), but Minecraft's
+	 * server replays a move as one straight sweep, axis by axis, ran into the bump and set her back. A move that could be a
+	 * Blink (Tracer in play with a charge, or one just spent; within its 7.5 m and its step up) gets Minecraft's own impulse
+	 * grace for that move, as a wind charge's does; the server still refuses one that ends inside a block.
+	 */
+	public static void beforeMove(ServerPlayer player, Vec3 to) {
+		HeroState s = HeroManager.state(player);
+		if (s == null || s.hero != Hero.TRACER || !HeroManager.inHeroPlay(player)) {
+			return;
+		}
+		Vec3 from = player.position();
+		double level = Math.hypot(to.x - from.x, to.z - from.z);
+		if (level < 1 || level > BLINK_DISTANCE + 0.5 || Math.abs(to.y - from.y) > BLINK_STEP * 2) {
+			return;
+		}
+		long now = player.level().getGameTime();
+		if (s.tracerBlinks > 0 || now - s.tracerBlinkAt <= Ow.ticks(0.25)) {
+			player.applyPostImpulseGraceTime(1);
+		}
+	}
+
 	/** The Blinks her client made that the server hasn't seen yet: its presses sent less those seen (mod 256, as synced). */
 	public static int pending(int sent, int seen) {
 		return (sent - seen) & 0xFF;
