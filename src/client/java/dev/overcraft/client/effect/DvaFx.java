@@ -27,7 +27,12 @@ public final class DvaFx {
 		new EffectArt.Art("dva_solid", Palette.DVA_SD, false),
 		new EffectArt.Art("spark", Palette.DVA_SD, false),
 		new EffectArt.Art("dva_sd_smoke#4", Palette.DVA_SD, false),
-		new EffectArt.Art("dva_sd_scorch", Palette.DVA_SD, false));
+		new EffectArt.Art("dva_sd_scorch", Palette.DVA_SD, false),
+		new EffectArt.Art("dva_missile_flame", Palette.DVA_MISSILE, false),
+		new EffectArt.Art("dva_smoke", Palette.DVA_SMOKE, true),
+		new EffectArt.Art("dva_solid", Palette.DVA_MISSILE_HIT, false),
+		new EffectArt.Art("dva_missile_fire#12", Palette.DVA_MISSILE_HIT, false),
+		new EffectArt.Art("spark", Palette.DVA_MISSILE_HIT, false));
 	public static final java.util.List<EffectArt.Art> ART_ENEMY = java.util.List.of(
 		new EffectArt.Art("dva_matrix_field", Palette.DVA_MATRIX_TUBE, false),
 		new EffectArt.Art("dva_solid", Palette.DVA_MATRIX_ENEMY, false),
@@ -40,7 +45,12 @@ public final class DvaFx {
 		new EffectArt.Art("dva_solid", Palette.DVA_SD_ENEMY, false),
 		new EffectArt.Art("spark", Palette.DVA_SD_ENEMY, false),
 		new EffectArt.Art("dva_sd_smoke#4", Palette.DVA_SD_ENEMY, false),
-		new EffectArt.Art("dva_sd_scorch", Palette.DVA_SD_ENEMY, false));
+		new EffectArt.Art("dva_sd_scorch", Palette.DVA_SD_ENEMY, false),
+		new EffectArt.Art("dva_missile_flame", Palette.DVA_MISSILE_ENEMY, false),
+		new EffectArt.Art("dva_smoke", Palette.DVA_SMOKE, true),
+		new EffectArt.Art("dva_solid", Palette.DVA_MISSILE_HIT_ENEMY, false),
+		new EffectArt.Art("dva_missile_fire#12", Palette.DVA_MISSILE_HIT_ENEMY, false),
+		new EffectArt.Art("spark", Palette.DVA_MISSILE_HIT_ENEMY, false));
 
 	/** The field's ring frames D655 (2D61, H): their distance ahead (m), size and alpha (rows BC -> 59). */
 	private static final float[] RING_AT = {0.35f, 1, 2, 4, 6, 8, 9.5f};
@@ -243,10 +253,71 @@ public final class DvaFx {
 		}
 	}
 
+	/**
+	 * A missile in flight 1FA4 (H), fed each frame from its renderer: its exhaust flame 11C86 (0.2-0.4 m, 20 a second, 0.2 s, drifting
+	 * back at 1 m/s) and its grey smoke trail 11BFC (0.15-0.35 m, 0.4-0.6 s; 60 a second in the data, 20 here: ours). Both fade out within
+	 * 2 m of the camera: the missiles leave from her shoulders, and the glows drew big pale squares over her own view (found playing).
+	 */
+	public static void missileFlight(int id, Vec3 at, Vec3 velocity, float dt, boolean enemy) {
+		// nothing within 3 m of the camera: the missiles leave from her shoulders at 50 m/s, and their glows hung as big pale
+		// squares at the sides of her own view (found playing; they're past it in two frames)
+		if (at.distanceTo(Minecraft.getInstance().gameRenderer.mainCamera().position()) < 3) {
+			return;
+		}
+		Vec3 back = velocity.lengthSqr() < 1.0E-6 ? Vec3.ZERO : velocity.normalize().scale(-1);
+		int flames = Math.max(1, Math.round(20 * dt));
+		for (int i = 0; i < flames; i++) {
+			Particle flame = Fx.particle("dva_missile_flame", enemy ? Palette.DVA_MISSILE_ENEMY : Palette.DVA_MISSILE);
+			if (flame != null) {
+				Fx.add(flame.at(at.add(back.scale(0.06))).velocity(back).life(0.2f).size(0.4f, 0.2f).fade(0.02f, 0.6f).nearFade(2));
+			}
+		}
+		int puffs = Math.round(20 * dt);
+		for (int i = 0; i < puffs; i++) {
+			Particle smoke = Fx.soft("dva_smoke", Palette.DVA_SMOKE);
+			if (smoke != null) {
+				Fx.add(smoke.at(at.add(back.scale(0.15))).life(0.4f + 0.2f * Fx.RANDOM.nextFloat()).size(0.15f, 0.35f).alpha(0.5f)
+					.fade(0.05f, 0.7f).nearFade(2));
+			}
+		}
+	}
+
+	/** A missile's hit 1FA5 (H): the ball 7CDA about 2 m for 0.18 s, the fire flipbook 2291 at 1 m, 8 sparks at 4-8 m/s. */
+	private static void missileHit(Vec3 at, boolean enemy) {
+		Palette colour = enemy ? Palette.DVA_MISSILE_HIT_ENEMY : Palette.DVA_MISSILE_HIT;
+		float[] ball = Fx.mesh("dva_missile_ball");
+		Particle b = Fx.particle("dva_solid", colour);
+		if (b != null) {
+			if (ball != null) {
+				b.mesh(ball, new Vec3(1, 0, 0), new Vec3(0, 1, 0));
+				Fx.add(b.at(at.add(0, -1, 0)).life(0.18f).size(1.75f, 2.25f).alpha(0.6f).fade(0.02f, 0.6f).nearFade(1));
+			} else {
+				Fx.add(b.at(at).life(0.18f).size(1.75f, 2.25f).alpha(0.6f).fade(0.02f, 0.6f).nearFade(1));
+			}
+		}
+		Particle fire = Fx.particle("dva_missile_fire#12", colour);
+		if (fire != null) {
+			Fx.add(fire.at(at).life(0.2f).size(0.8f, 1.2f).loop(60).fade(0.02f, 0.4f).nearFade(0.8f));
+		}
+		for (int i = 0; i < 8; i++) {
+			Particle spark = Fx.particle("spark", colour);
+			if (spark == null) {
+				break;
+			}
+			Vec3 dir = new Vec3(Fx.RANDOM.nextGaussian(), Math.abs(Fx.RANDOM.nextGaussian()), Fx.RANDOM.nextGaussian()).normalize();
+			Fx.add(spark.at(at).shape(Fx.Shape.STREAK).velocity(dir.scale(4 + 4 * Fx.RANDOM.nextFloat())).gravity(9.8f)
+				.life(0.5f + 0.75f * Fx.RANDOM.nextFloat()).size(0.05f, 0.03f).fade(0.05f, 0.5f));
+		}
+	}
+
 	/** Her effects from the server; false for others' names. */
 	static boolean dispatch(EffectPayload e, boolean enemy) {
 		if (e.effect().equals("dva_sd_field")) {
 			FIELDS.put(e.entity(), new Field(Fx.now(), e.variant() / 20f, enemy));
+			return true;
+		}
+		if (e.effect().equals("dva_missile_hit")) {
+			missileHit(new Vec3(e.x(), e.y(), e.z()), enemy);
 			return true;
 		}
 		if (e.effect().equals("dva_sd_blast")) {

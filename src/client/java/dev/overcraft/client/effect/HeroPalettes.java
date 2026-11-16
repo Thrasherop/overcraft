@@ -19,6 +19,16 @@ final class HeroPalettes {
 	static final float[] DVA_SD = {0, 0, 0, 0, .5f, 0, .47f, .37f, .85f, 0, .95f, .74f, 1, .6f, 1, .9f};
 	/** The same for an enemy: AA5A r0 #F25E00 (H). */
 	static final float[] DVA_SD_ENEMY = {0, 0, 0, 0, .5f, .47f, .18f, 0, .85f, .95f, .37f, 0, 1, 1, .8f, .5f};
+	/** Micro Missiles' flame 11C86: team 593A r0, white to cyan (H; which pair is team, M). */
+	static final float[] DVA_MISSILE = {0, 0, 0, 0, .4f, .03f, .5f, .5f, .75f, .1f, 1, 1, 1, 1, 1, 1};
+	/** The enemy's: 4450 r0, white to orange (H). */
+	static final float[] DVA_MISSILE_ENEMY = {0, 0, 0, 0, .4f, .5f, .22f, .05f, .75f, 1, .45f, .1f, 1, 1, 1, 1};
+	/** Their smoke trail 11BFC: EE6C r6, grey #717171 (H), drawn soft. */
+	static final float[] DVA_SMOKE = {0, 0, 0, 0, 1, .44f, .44f, .44f};
+	/** Their hit 1FA5: team B908 r3, green to yellow (H). */
+	static final float[] DVA_MISSILE_HIT = {0, 0, 0, 0, .5f, .06f, .45f, .25f, .85f, .16f, .83f, .1f, 1, .93f, .83f, 0};
+	/** The enemy's: B908 r4, orange (H). */
+	static final float[] DVA_MISSILE_HIT_ENEMY = {0, 0, 0, 0, .5f, .45f, .2f, 0, .85f, .83f, .37f, 0, 1, .93f, .72f, 0};
 	static final float[] TR_SHOT = {0, 0, 0, 0, .3f, .2f, .29f, .45f, .7f, .445f, .645f, 1, 1, .85f, .95f, 1};
 	static final float[] TR_SHOT_ENEMY = {0, 0, 0, 0, .3f, .45f, .09f, .05f, .7f, 1, .194f, .103f, 1, 1, .75f, .6f};
 }

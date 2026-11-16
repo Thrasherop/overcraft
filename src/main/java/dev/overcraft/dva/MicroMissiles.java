@@ -196,8 +196,8 @@ public final class MicroMissiles {
 			}
 		}
 		// stand-in look and sound (hers: 1E8A's effects, step 11)
-		level.sendParticles(ParticleTypes.EXPLOSION, at.x, at.y, at.z, 1, 0, 0, 0, 0);
-		level.sendParticles(ParticleTypes.FLAME, at.x, at.y, at.z, 4, 0.2, 0.2, 0.2, 0.02);
+		// its burst 1FA5 (DvaFx)
+		Effects.play(level, "dva_missile_hit", at, Vec3.ZERO, null, 0, owner);
 		// its burst (1FA5: 4372, 200 m), and what it hit (contact sets 783 / 772)
 		DvaSounds.all(level, "missiles.burst", at, 200);
 		if (target != null) {

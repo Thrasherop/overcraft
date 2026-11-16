@@ -128,6 +128,8 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		switch (entity) {
 			case OfudaEntity ofuda -> KirikoFx.ofudaFlight(ofuda.getId(), at, ofuda.homing(), KirikoFx.enemyOf(ofuda.getOwner()));
 			case KunaiEntity kunai -> KirikoFx.kunaiFlight(kunai.getId(), at, dt, KirikoFx.enemyOf(kunai.getOwner()));
+			case dev.overcraft.entity.DvaMissileEntity missile -> dev.overcraft.client.effect.DvaFx.missileFlight(missile.getId(), at,
+				missile.getDeltaMovement(), dt, KirikoFx.enemyOf(missile.getOwner()));
 			case SuzuEntity suzu -> KirikoFx.suzuFlight(suzu.getId(), at, dt, KirikoFx.enemyOf(suzu.getOwner()));
 			case dev.overcraft.entity.SonicEntity sonic -> s.drawnByEffect = dev.overcraft.client.effect.LucioFx.sonicFlight(
 				sonic.getId(), at, sonic.getDeltaMovement(), dt, KirikoFx.enemyOf(sonic.getOwner()));

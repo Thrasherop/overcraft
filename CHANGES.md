@@ -4,7 +4,14 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-16: 0.3.64 on next (not on main yet)
+## 2026-11-16: 0.3.65 on next (not on main yet)
+
+- **D.Va's Micro Missiles from her data (#150):** the owner: "dva rockets" were Minecraft's explosion and flame. Each missile
+  now trails its own exhaust flame and grey smoke (1FA4, cyan for her side, orange for enemies), and bursts in her hit
+  1FA5 (a 2 m ball, the fire flipbook, sparks). The trail starts 3 m from the camera: at her shoulders its glows hung as
+  big pale squares over her own view (found playing). Played: a volley at a wall, from her view.
+
+## 2026-11-16: 0.3.64
 
 - **D.Va's mech first-person melee (#150):** the owner: "Dva does have a first person melee mech animation in game ... Its
   somewhere in the data." It is: her mech's 1P set 019B holds the melee alias D (tree 56B, a random pick of two clips,

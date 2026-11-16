@@ -433,6 +433,12 @@ public final class EffectArt {
 		/** D.Va's Self-Destruct, team and enemy (HeroPalettes). */
 		DVA_SD(HeroPalettes.DVA_SD),
 		DVA_SD_ENEMY(HeroPalettes.DVA_SD_ENEMY),
+		/** D.Va's Micro Missiles: flame, smoke, hit (HeroPalettes). */
+		DVA_MISSILE(HeroPalettes.DVA_MISSILE),
+		DVA_MISSILE_ENEMY(HeroPalettes.DVA_MISSILE_ENEMY),
+		DVA_SMOKE(HeroPalettes.DVA_SMOKE),
+		DVA_MISSILE_HIT(HeroPalettes.DVA_MISSILE_HIT),
+		DVA_MISSILE_HIT_ENEMY(HeroPalettes.DVA_MISSILE_HIT_ENEMY),
 		/**
 		 * Tracer's shot line 002C (tools/reference/tracer-effects.md): her team row, LUT 0967 row 4, a flat HDR (1.78, 2.58, 4.0), here
 		 * scaled to its brightest channel; the white top stands in for the HDR's bloom (ours).
