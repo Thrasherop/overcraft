@@ -4,7 +4,18 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-16: 0.3.58 on next (not on main yet)
+## 2026-11-16: 0.3.59 on next (not on main yet)
+
+- **The real match-end music (#155):** the owner: "wrong music", "No Play of the game music". Neither our victory sting
+  nor cue 5B1F plays under the owner's real Overwatch ending. Matching 57 extracted music banks against their clip
+  found bank 69C1's track under the whole ending (VICTORY through the POTG). VICTORY and the POTG intro now each start it
+  where that moment falls in it, so it plays on as one piece. Needs the asset pack rebuilt (the music's two files).
+- **VICTORY's entrance (#155):** the owner: "there is like a blue flash and animation as it comes on the screen". From
+  their clip, frame by frame: the white-blue flash, the white and gold rings opening out, the streak, the word pale then
+  gold, the glint along it, about 0.6 s. Played slowed and on a real dragon kill.
+- Not done yet (#155): the POTG replay without the scorer's hands and HUD.
+
+## 2026-11-16: 0.3.58
 
 - **Kiriko's climb goes straight up (#159):** the owner: "there should be no sideways movement. Once you attach to a
   wall, it is straight up." Reproduced: holding W+D+Space she slid 5 m along the wall while climbing (x -1.15 -> -6.06).
