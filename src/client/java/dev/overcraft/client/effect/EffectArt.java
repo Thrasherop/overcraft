@@ -444,6 +444,11 @@ public final class EffectArt {
 		 * scaled to its brightest channel; the white top stands in for the HDR's bloom (ours).
 		 */
 		TR_SHOT(HeroPalettes.TR_SHOT),
+		/** Tracer's Blink / Recall and her Pulse Bomb, team and enemy (HeroPalettes). */
+		TR_BLINK(HeroPalettes.TR_BLINK),
+		TR_BLINK_ENEMY(HeroPalettes.TR_BLINK_ENEMY),
+		TR_BOMB(HeroPalettes.TR_BOMB),
+		TR_BOMB_ENEMY(HeroPalettes.TR_BOMB_ENEMY),
 		/** The same for an enemy Tracer: LUT CDAD row 4, a flat HDR (3.2, 0.62, 0.33), scaled the same way. */
 		TR_SHOT_ENEMY(HeroPalettes.TR_SHOT_ENEMY),
 		/** The pistol's tracer 1998, warm orange #FF6236 (normalised; the ends ours): the effects reading's report (tools/reference/sombra-effects.md), sRGB to linear. */

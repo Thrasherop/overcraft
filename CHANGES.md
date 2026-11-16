@@ -4,7 +4,16 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-16: 0.3.65 on next (not on main yet)
+## 2026-11-16: 0.3.66 on next (not on main yet)
+
+- **Tracer's Pulse Bomb, Blink and Recall from her data (#150):** they drew Minecraft's sparks, portal particles and
+  explosion. From tools/reference/tracer-effects.md: the bomb's ribbon trail (0171) and glow pulses through its fuse, its
+  blast 0153 (the 8-frame flipbook, the flare, 100 sparks at 9-10 m/s, a 2.5 m scorch); Blink's streak flash, flash and
+  sparks (018F / 0190); Recall's flashes and in-drawn sparks where she leaves (00BA) and the glow and three rising rings
+  where she lands (00BB). Played: Recall's landing on screen; the bomb's blast checked live (all its parts spawned at the
+  fuse's end) but not caught clearly on a screenshot; Blink's 0.2 s flash not caught.
+
+## 2026-11-16: 0.3.65
 
 - **D.Va's Micro Missiles from her data (#150):** the owner: "dva rockets" were Minecraft's explosion and flame. Each missile
   now trails its own exhaust flame and grey smoke (1FA4, cyan for her side, orange for enemies), and bursts in her hit

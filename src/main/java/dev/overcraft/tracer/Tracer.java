@@ -189,7 +189,8 @@ public final class Tracer implements HeroKit {
 		player.resetFallDistance();
 		Combat.animate(player, "blink");
 		ServerLevel level = player.level();
-		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, player.getX(), player.getY() + 1, player.getZ(), 12, 0.25, 0.5, 0.25, 0.1);
+		// her Blink's look 018F / 0190 (TracerFx)
+		Effects.play(level, "tracer_blink", player.position(), Vec3.ZERO, player, 0, player);
 	}
 
 	// ---- Recall (001A) ----
@@ -247,7 +248,8 @@ public final class Tracer implements HeroKit {
 		Combat.animate(player, "recall");
 		TracerSounds.own(player, "recall.start");
 		TracerSounds.split(player, "recall.rewind", player.position(), 70);
-		player.level().sendParticles(ParticleTypes.REVERSE_PORTAL, player.getX(), player.getY() + 1, player.getZ(), 30, 0.3, 0.6, 0.3, 0.05);
+		// where she leaves (00BA: TracerFx)
+		Effects.play(player.level(), "tracer_recall_start", player.position(), Vec3.ZERO, player, 0, player);
 	}
 
 	private static void recall(ServerPlayer player, HeroState s, long now) {
@@ -276,7 +278,8 @@ public final class Tracer implements HeroKit {
 				// a tenth of what it gave back as ult charge (D #147 STU_008D30B1 x0.1, M)
 				Combat.addUltCharge(player, (Ow.toOw(player.getHealth()) - before) * RECALL_ULT_SHARE);
 			}
-			player.level().sendParticles(ParticleTypes.REVERSE_PORTAL, s.tracerRecallTo.x, s.tracerRecallTo.y + 1, s.tracerRecallTo.z, 30, 0.3, 0.6, 0.3, 0.05);
+			// where she arrives (00BB: TracerFx)
+			Effects.play(player.level(), "tracer_recall_end", s.tracerRecallTo, Vec3.ZERO, player, 0, player);
 		} else if (s.tracerHold != null && player.position().distanceToSqr(s.tracerHold) > 0.25) {
 			// held still (her client does it; this is for what moves her there anyway: water, a piston)
 			player.connection.teleport(new PositionMoveRotation(s.tracerHold, Vec3.ZERO, 0, 0), java.util.Set.of(Relative.X_ROT, Relative.Y_ROT));
@@ -454,8 +457,8 @@ public final class Tracer implements HeroKit {
 				killed |= !e.isAlive();
 			}
 		}
-		level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y, at.z, 1, 0, 0, 0, 0);
-		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, at.x, at.y, at.z, 40, 1.2, 1.2, 1.2, 0.3);
+		// the blast 0153 (TracerFx)
+		Effects.play(level, "tracer_bomb_blast", at, Vec3.ZERO, null, 0, owner);
 		TracerSounds.all(level, "pulse_bomb.explode", at, 200);
 		if (killed && owner.isAlive()) {
 			// "Kaboom!" (0034 #394 -> #372: a kill by the bomb)

@@ -29,6 +29,14 @@ final class HeroPalettes {
 	static final float[] DVA_MISSILE_HIT = {0, 0, 0, 0, .5f, .06f, .45f, .25f, .85f, .16f, .83f, .1f, 1, .93f, .83f, 0};
 	/** The enemy's: B908 r4, orange (H). */
 	static final float[] DVA_MISSILE_HIT_ENEMY = {0, 0, 0, 0, .5f, .45f, .2f, 0, .85f, .83f, .37f, 0, 1, .93f, .72f, 0};
+	/** Tracer's Blink and Recall: team 73D0 r0 #007ABC > #FFFFFF (H). */
+	static final float[] TR_BLINK = {0, 0, 0, 0, .5f, 0, .29f, .44f, .85f, 0, .48f, .74f, 1, 1, 1, 1};
+	/** The enemy's: r1 #BC0000 > #FF9500 (H). */
+	static final float[] TR_BLINK_ENEMY = {0, 0, 0, 0, .5f, .44f, 0, 0, .85f, .74f, 0, 0, 1, 1, .58f, 0};
+	/** Her Pulse Bomb: team 7179 r5 #0041FE > #FFFFFF (H). */
+	static final float[] TR_BOMB = {0, 0, 0, 0, .4f, 0, .13f, .5f, .75f, 0, .25f, 1, 1, 1, 1, 1};
+	/** The enemy's: r6 #FE0000 > #FFFFFF (H). */
+	static final float[] TR_BOMB_ENEMY = {0, 0, 0, 0, .4f, .5f, 0, 0, .75f, 1, 0, 0, 1, 1, 1, 1};
 	static final float[] TR_SHOT = {0, 0, 0, 0, .3f, .2f, .29f, .45f, .7f, .445f, .645f, 1, 1, .85f, .95f, 1};
 	static final float[] TR_SHOT_ENEMY = {0, 0, 0, 0, .3f, .45f, .09f, .05f, .7f, 1, .194f, .103f, 1, 1, .75f, .6f};
 }
