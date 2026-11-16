@@ -4,7 +4,22 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-16: 0.3.62 on next (not on main yet)
+## 2026-11-16: 0.3.63 on next (not on main yet)
+
+- **D.Va's Defense Matrix is her own (#150):** the owner: "dva matrix" was Minecraft's. From her effects' data
+  (tools/reference/dva-effects.md): while it's up, her field 2D61 along her aim, its seven hexagonal ring frames at
+  0.35-9.5 m (0.75-2 m, fading with distance) and two pulse rings a second flying out at 9 m/s, teal for her side,
+  orange-red for her enemies; each eaten projectile sends her absorb beam and flash (1506 / 1507). Played: the rings in
+  first person, at night, around a skeleton. Not caught on screen: the absorb flash (0.3 s; the eat itself checked by its
+  sound, three arrows, three absorbs).
+- **D.Va's pilot's quick melee plays for others (#150):** her pilot names it by stance (melee_stand / melee_move*), so the
+  action found no clip. Her mech's third-person swing and the pilot's first-person Light Gun swing already played.
+  Her mech's first-person melee: the owner has seen it in Overwatch; not found yet in the five sets her clip maps read.
+- **/changehero refuses a dead player:** a pick fills health, and on a dead player it brought them back on the server
+  while their screen still said they'd died, so Respawn was refused (found testing). Played: "Kiriko is dead: change
+  their hero once they respawn".
+
+## 2026-11-16: 0.3.62
 
 - **Tracer's bullets are her own (#150):** the owner: "tracer bullets are just minecraft particles". From her effects'
   data (tools/reference/tracer-effects.md, read offline 2026-11-16): each bullet draws her line 002C (Sombra's tracer

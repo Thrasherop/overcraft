@@ -47,6 +47,8 @@ public final class HeroModels {
 	 * torii, Jetpack Cat's rings and cones: Fx.mesh) load only from this list.
 	 */
 	private static final List<String> EXTRAS = List.of("kitsune", "projectile_kunai", "projectile_ofuda", "projectile_suzu", "torii",
+		// D.Va's Defense Matrix (dva-effects.md): the field's tube, its ring frame, the pulse ring
+		"dva_matrix_tube", "dva_matrix_frame", "dva_matrix_pulse",
 		"cat_torus", "cat_cone", "cat_sphere", "cat_purr_torus", "cat_purr_wall", "cat_half_ring", "cat_bubble",
 		// the rest of #59: her flame tube, the cast's bell, the head slash's arc and dome
 		"cat_flame", "cat_bell", "cat_slash_arc", "cat_dome",

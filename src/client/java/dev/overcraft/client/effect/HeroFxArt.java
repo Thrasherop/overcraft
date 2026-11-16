@@ -63,7 +63,8 @@ public final class HeroFxArt {
 			case SIGMA -> SigmaFx.ART;
 			case SOJOURN -> SojournFx.ART;
 			case TRACER -> TracerFx.ART;
-			// D.Va, Pharah, Cassidy, Junkrat: no effect art (none made on first use, every button)
+			case DVA -> DvaFx.ART;
+			// Pharah, Cassidy, Junkrat: no effect art (none made on first use, every button)
 			default -> List.of();
 		};
 	}
@@ -81,6 +82,7 @@ public final class HeroFxArt {
 			case SIGMA -> SigmaFx.ART_ENEMY;
 			case SOJOURN -> SojournFx.ART_ENEMY;
 			case TRACER -> TracerFx.ART_ENEMY;
+			case DVA -> DvaFx.ART_ENEMY;
 			default -> List.of();
 		};
 	}

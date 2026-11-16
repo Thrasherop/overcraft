@@ -148,6 +148,12 @@ public final class OvercraftCommand {
 		}
 		int done = 0;
 		for (ServerPlayer player : players) {
+			if (!player.isAlive()) {
+				// a pick fills the hero's health: on a dead player it brought them back on the server while their screen still
+				// said they'd died, and their Respawn was then refused (found testing, 2026-11-16): they respawn first
+				c.getSource().sendFailure(Component.translatable("overcraft.command.changehero.dead", player.getName()));
+				continue;
+			}
 			HeroManager.forceSelect(player, hero);
 			done++;
 		}

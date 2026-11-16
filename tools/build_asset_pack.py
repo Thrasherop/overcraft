@@ -903,6 +903,13 @@ EFFECT_MASKS = {
     "sojourn_spark_tail": ("Sojourn", "PowerSlide", "00000000023F", 1),
     "sojourn_dot": ("Sojourn", "Disruptor", "000000004A58", 1),
     "sojourn_swirl": ("Sojourn", "Disruptor", "000000003DB8", 1),
+    # D.Va's Defense Matrix (tools/reference/dva-effects.md; pass research/dva/fx as a source): the field's tube masks (edges dark
+    # across it, a soft hump along it), the solid ring mask, the absorb beam and its flash flipbook
+    "dva_matrix_edge": ("DVa", "DefenseMatrix", "000000020427", 1),
+    "dva_matrix_hump": ("DVa", "DefenseMatrix", "00000002042B", 1),
+    "dva_solid": ("DVa", "DefenseMatrix", "000000001298", 1),
+    "dva_absorb_beam": ("DVa", "DefenseMatrix", "000000011C54", 1),
+    "dva_absorb_flash": ("DVa", "DefenseMatrix", "000000004AAA", 8),
     "sojourn_field_noise": ("Sojourn", "Disruptor", "0000000299E5", 1),
     "sojourn_flames": ("Sojourn", "Disruptor", "000000029132", 1),
     # Sigma's (tools/reference/sigma-effects.md "Masks for the pack"; research\sigmax). Hyperspheres: the launch swirl,
@@ -971,6 +978,8 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
             "ana_tracer": ("ana_beam_line", "ana_fade_v"),
             # Sombra's pistol tracer (1998, tools/reference/sombra-effects.md): its line 510 x its edge 50C
             "sombra_tracer": ("sombra_tracer_line", "sombra_tracer_edge"),
+            # D.Va's matrix tube 2D61: its edge mask times its hump along it (dva-effects.md)
+            "dva_matrix_field": ("dva_matrix_edge", "dva_matrix_hump"),
             # Brigitte's (tools/reference/brigitte-effects.md): the swing arc's streak 14E13 x edge line 14E79 (26EB),
             # Rally's armour pattern 144E5 x 14486 (219D C104), the pack trail's spot 18B18 x flame wisps 44F7 (218D C13)
             "brigitte_swing_band": ("brigitte_swing_streak_0", "brigitte_swing_edge"),
@@ -1000,6 +1009,11 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
 STRETCHED = {"mercy_wing_glow", "cat_bubble_band", "cat_slash_band", "cat_dome_glow", "cat_shock_sphere", "cat_bell_band"}
 
 EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
+                 # D.Va's Defense Matrix (dva-effects.md): the field's tube (narrowing to the emitter), its hexagonal ring frame
+                 # and the pulse ring
+                 "dva_matrix_tube": ("DVa", "DefenseMatrix", "00000000D6D1"),
+                 "dva_matrix_frame": ("DVa", "DefenseMatrix", "00000000D655"),
+                 "dva_matrix_pulse": ("DVa", "DefenseMatrix", "00000000D653"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
                  # rings (a fat torus lying flat), the hook's cone, the towed ally's arcs, Purr's sphere, torus and wall
                  "cat_torus": ("JetpackCat", "Lifeline", "000000015A26"),

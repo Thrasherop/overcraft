@@ -338,6 +338,8 @@ public final class HeroState {
 	public long dvaPrecisionEndedAt = -1000;
 	/** When Defense Matrix's "ate something" line is due (game time, -1: none): 0.75 s after an absorb (02CC #343). */
 	public long dvaMatrixLineAt = -1;
+	/** Which arm her matrix's next absorb beam leaves from (DvaFx: 1506 alternates hp 003D / 003E). */
+	public int dvaAbsorbArm;
 	/** Whether the Fusion Cannons fired last tick (a burst's first volley and its end have their own sounds). */
 	public boolean dvaFusionBurst;
 	/** When Shield System's restore sound may play again (game time). */
