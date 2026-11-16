@@ -286,6 +286,12 @@ public final class DevServer {
 					new net.minecraft.client.multiplayer.ServerData("Dev", arg, net.minecraft.client.multiplayer.ServerData.Type.LAN), false, null);
 				out.addProperty("ok", true);
 			}
+			case "victory" -> {
+				// dev only: "victory [slow]": the VICTORY banner and its sounds now, its clock slowed to look at the entrance
+				dev.overcraft.client.hud.VictoryHud.devSlow = arg.isBlank() ? 1 : Float.parseFloat(arg.trim());
+				dev.overcraft.client.hud.VictoryHud.show();
+				out.addProperty("ok", true);
+			}
 			case "openworld" -> {
 				mc.createWorldOpenFlows().openWorld(arg, () -> mc.gui.setScreen(null));
 				out.addProperty("ok", true);

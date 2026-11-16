@@ -264,21 +264,26 @@ def sample_rate(f):
     return int(probe.stdout.strip() or 48000)
 
 
-def mix(inputs, out):
+def mix(inputs, out, stereo=False):
     """Mixes [(file, delay s, gain dB, pitch)] into one mono Ogg Vorbis file with ffmpeg; peaks kept under full scale.
-    A pitch other than 1 plays the file faster and higher (as Wwise's pitch does), by resampling."""
+    A pitch other than 1 plays the file faster and higher (as Wwise's pitch does), by resampling. A negative delay starts
+    the file that far in (the match-end music started where the moment it's played for falls in it: #155). {@code stereo}
+    keeps two channels (music, heard in the head)."""
     cmd = ["ffmpeg", "-y", "-loglevel", "error"]
     for f, _, _, _ in inputs:
         cmd += ["-i", str(f)]
     chains = []
+    layout = "stereo" if stereo else "mono"
     for k, (f, delay, gain, pitch) in enumerate(inputs):
-        ms = int(round(delay * 1000))
         rate = sample_rate(f)
         speed = f"asetrate={round(rate * pitch)},aresample={rate}," if pitch != 1 else ""
-        chains.append(f"[{k}:a]{speed}aformat=channel_layouts=mono,adelay={ms}:all=1,volume={gain}dB[a{k}]")
+        shift = (f"atrim=start={-delay},asetpts=PTS-STARTPTS" if delay < 0
+                 else f"adelay={int(round(delay * 1000))}:all=1")
+        chains.append(f"[{k}:a]{speed}aformat=channel_layouts={layout},{shift},volume={gain}dB[a{k}]")
     labels = "".join(f"[a{k}]" for k in range(len(inputs)))
     chains.append(f"{labels}amix=inputs={len(inputs)}:normalize=0:duration=longest,alimiter=limit=0.89[out]")
-    cmd += ["-filter_complex", ";".join(chains), "-map", "[out]", "-ac", "1", "-c:a", "libvorbis", "-q:a", "5", str(out)]
+    cmd += ["-filter_complex", ";".join(chains), "-map", "[out]", "-ac", "2" if stereo else "1", "-c:a", "libvorbis",
+            "-q:a", "5", str(out)]
     return subprocess.run(cmd, capture_output=True, text=True).returncode == 0
 
 
@@ -327,7 +332,7 @@ def add_sounds(source):
                 # Overwatch's weight (0.1-1) as Minecraft's (a whole number, at least 1)
                 weight = weights.get((layers[0][0], base))
                 entry = {"name": name, "weight": max(1, round(weight * 10))} if weight is not None else name
-                if have_ffmpeg and mix(picks, dest):
+                if have_ffmpeg and mix(picks, dest, stereo=event.startswith("music.")):
                     files.append(entry)
                 elif not have_ffmpeg or picks[0][0].suffix == ".ogg":
                     shutil.copyfile(picks[0][0], dest)
