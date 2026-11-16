@@ -4,7 +4,17 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-16: 0.3.57 on next (not on main yet)
+## 2026-11-16: 0.3.58 on next (not on main yet)
+
+- **Kiriko's climb goes straight up (#159):** the owner: "there should be no sideways movement. Once you attach to a
+  wall, it is straight up." Reproduced: holding W+D+Space she slid 5 m along the wall while climbing (x -1.15 -> -6.06).
+  On a wall her only level motion is now a hold against it. Played: x stayed -1.15 while she rose 8 m.
+- **Deployables lie on their surface (#154):** Junkrat's trap and mine were drawn along the way they flew (the trap
+  on its side, the mine tilted) and Illari's pylon stood straight up on a wall. Each now syncs the face it's on and is
+  drawn with its own up along that face's normal, its base on the face. Played: the trap flat on grass, the mine flat
+  on a wall, the pylon straight out of a wall.
+
+## 2026-11-16: 0.3.57
 
 - **D.Va's Boosters over real terrain (#148, again):** the owner on 0.3.55: "Dva is still having boosters cancelled".
   Reproduced in a generated desert: the first one-block rise stopped her 10 m in for the rest of the flight (the

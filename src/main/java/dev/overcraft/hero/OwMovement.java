@@ -407,7 +407,12 @@ public final class OwMovement {
 		int ticks;
 		boolean climbing;
 		boolean used;
+		/** The way into the wall she's on (unit, level), found when she takes hold. */
+		Vec3 into = Vec3.ZERO;
 	}
+
+	/** On a wall, her only level motion: this far a tick into it (m), so she stays against it (horizontalCollision) and never slides. */
+	private static final double CLIMB_HOLD = 0.02;
 
 	private OwMovement() {
 	}
@@ -685,6 +690,11 @@ public final class OwMovement {
 		double dy = vy;
 		if (climb(entity, input)) {
 			vy = dy = Ow.speed(KirikoStats.CLIMB_SPEED);
+			// straight up: no level motion but a hold against the wall (the owner, #159: "there should be no sideways
+			// movement. Once you attach to a wall, it is straight up")
+			Vec3 into = CLIMBS.get(entity).into;
+			horizontal = into.scale(CLIMB_HOLD);
+			end = Vec3.ZERO;
 		} else if (boots != null && gliding >= 0) {
 			entity.resetFallDistance();
 			if (boots.rising) {
@@ -875,6 +885,7 @@ public final class OwMovement {
 		if (wants && !climb.used) {
 			climb.climbing = true;
 			climb.ticks = 1;
+			climb.into = wallSide(entity);
 			return true;
 		}
 		return false;
@@ -1467,6 +1478,24 @@ public final class OwMovement {
 		}
 		Vec3 heading = shownHeading(entity, ride);
 		return (float) Math.toDegrees(Math.atan2(-heading.x, heading.z));
+	}
+
+	/** The level side a wall touches her on, the one most along her look (a corner has two): unit, or her look's if none is found. */
+	private static Vec3 wallSide(LivingEntity entity) {
+		Vec3 look = entity.getViewVector(1.0f);
+		Vec3 best = null;
+		double bestDot = -2;
+		for (net.minecraft.core.Direction d : net.minecraft.core.Direction.Plane.HORIZONTAL) {
+			Vec3 n = Vec3.atLowerCornerOf(d.getUnitVec3i());
+			if (!entity.level().noCollision(entity, entity.getBoundingBox().move(n.scale(0.05)))) {
+				double dot = n.x * look.x + n.z * look.z;
+				if (dot > bestDot) {
+					bestDot = dot;
+					best = n;
+				}
+			}
+		}
+		return best != null ? best : new Vec3(look.x, 0, look.z).normalize();
 	}
 
 	/** D.Va's Boosters: the lift (m) that takes this tick's move over what's in its way, up to BOOSTERS_CURB; 0 if none is needed or none will do. */
