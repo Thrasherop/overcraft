@@ -289,10 +289,15 @@ final class ActionTrack {
 			// a numbered variant the model doesn't have plays its first: the first-person model has one quick melee
 			// clip, so two melees in three (melee_2, melee_3) showed nothing in first person (#24)
 			int underscore = name.lastIndexOf('_');
-			if (!model.clips.containsKey(name) && underscore > 0 && name.substring(underscore + 1).chars().allMatch(Character::isDigit)) {
-				return name.substring(0, underscore);
+			String r = !model.clips.containsKey(name) && underscore > 0 && name.substring(underscore + 1).chars().allMatch(Character::isDigit)
+				? name.substring(0, underscore) : name;
+			// D.Va's pilot names her quick melee by stance (dva_pilot.txt, set 048A: "melee_stand" the default slot, "melee_move*" on
+			// the move): "melee" found nothing and her pilot never swung for others (#150, the owner: "dva melee" missing). The
+			// standing one (ours: the track doesn't know her speed)
+			if (r.equals("melee") && !model.clips.containsKey(r) && model.clips.containsKey("melee_stand")) {
+				return "melee_stand";
 			}
-			return name;
+			return r;
 		}
 		String base = name.substring(0, name.length() - 2);
 		int variants = 0;
