@@ -262,3 +262,25 @@ Up: [Techniques](../README.md) · from: [catnap_139](../testing/runs/catnap_139/
 - Speeds sent each tick (`syncVelocity`) don't land one per client tick: summed, they came up 1-1.7 m short.
 - What worked: lay the path out while she's held still (server and client agree), send it step by step, and end it with a
   `connection.teleport` to the end point (rotation relative) if the box there is free.
+
+## Dedicated servers, death, sounds and boss bars (2026-11-17)
+
+Found testing on a local dedicated server for the first time (`gradlew runServer` with RCON: see
+[harness](../testing/harness.md#a-local-dedicated-server)); single player hides all of the first:
+
+- **A dedicated server checks each tick's movement as one move from where the player was** (`handleMovePlayer`: it
+  re-runs `move` on the packet's delta and puts the player back past 0.0625, "moved wrongly"). A client that moves twice in a
+  tick (a slip, then the flight) can end where the server's single move doesn't, and is put back every tick: D.Va's Boosters
+  shook against a trunk. Move once per tick (the sum), so both resolve the same collision. The integrated server's host skips
+  this check, so single player never shows it.
+- **The dragon's `die()` runs at the killing blow**, not when it dies at the fountain: `handleKillingBlow` sets it to 1 health
+  and the DYING phase, it flies back, and its 200-tick `tickDeath` starts only once its health hits 0 there. AFTER_DEATH (and
+  so VICTORY) fires at the blow; anything timed off tick 199 drifts by the flight (#161).
+- **Every level change stops every sound** (`Minecraft.updateLevelInEngines(level, true)` -> `SoundManager.stop()`), the
+  replay's dimension too. To keep music through it, flip that boolean while it plays (MinecraftSoundKeepMixin), but only for
+  a new level: a disconnect passes null.
+- **A boss bar update for an id the client doesn't have crashes the packet handler** (`BossHealthOverlay` NPE ->
+  "Network Protocol Error", disconnected). Level changes clear the client's bars while the server still has the player on
+  one (the dying dragon after a POTG): drop updates for unknown ids (PotgBossBarMixin).
+- **Fields that aren't synced data don't reach clients**: a TurretEntity's owner UUID was server-only, so a client-side
+  "is this his turret?" never matched. Sync what the client needs (an owner entity id refreshed each tick: it changes on rejoin).
