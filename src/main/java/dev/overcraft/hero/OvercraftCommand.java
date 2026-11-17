@@ -64,8 +64,10 @@ public final class OvercraftCommand {
 					.executes(c -> ult(c, EntityArgument.getPlayers(c, "players"), IntegerArgumentType.getInteger(c, "percent"))))));
 		// /changehero <hero> [players]: an operator's hero change, anywhere and any time (#156, the owner): a free pick, then
 		// the select's own path (kit, perks, hero mode on), as the select screen does near a bed
+		// /changehero alone opens the select screen, a free pick anywhere (the owner: "/changehero should pull up the UI", #165)
 		dispatcher.register(Commands.literal("changehero")
 			.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+			.executes(c -> openSelect(c, List.of(c.getSource().getPlayerOrException())))
 			.then(Commands.argument("hero", StringArgumentType.word())
 				.suggests((c, b) -> SharedSuggestionProvider.suggest(heroIds(), b))
 				.executes(c -> changeHero(c, List.of(c.getSource().getPlayerOrException()), StringArgumentType.getString(c, "hero")))
@@ -159,6 +161,21 @@ public final class OvercraftCommand {
 		}
 		int count = done;
 		c.getSource().sendSuccess(() -> Component.translatable("overcraft.command.changehero", count, hero.id), true);
+		return done;
+	}
+
+	/** Opens the hero select on their screens, a free pick wherever they are (#165); not for the dead. */
+	private static int openSelect(CommandContext<CommandSourceStack> c, Collection<ServerPlayer> players) {
+		int done = 0;
+		for (ServerPlayer player : players) {
+			if (!player.isAlive()) {
+				c.getSource().sendFailure(Component.translatable("overcraft.command.changehero.dead", player.getName()));
+				continue;
+			}
+			HeroManager.allowFreePick(player);
+			net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, new dev.overcraft.net.OpenSelectPayload());
+			done++;
+		}
 		return done;
 	}
 
