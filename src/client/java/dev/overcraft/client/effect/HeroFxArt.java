@@ -65,6 +65,7 @@ public final class HeroFxArt {
 			case TRACER -> TracerFx.ART;
 			case DVA -> DvaFx.ART;
 			case ILLARI -> IllariFx.ART;
+			case TORBJORN -> TorbjornFx.ART;
 			// Pharah, Cassidy, Junkrat: no effect art (none made on first use, every button)
 			default -> List.of();
 		};
@@ -85,6 +86,7 @@ public final class HeroFxArt {
 			case TRACER -> TracerFx.ART_ENEMY;
 			case DVA -> DvaFx.ART_ENEMY;
 			case ILLARI -> IllariFx.ART_ENEMY;
+			case TORBJORN -> TorbjornFx.ART_ENEMY;
 			default -> List.of();
 		};
 	}

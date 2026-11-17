@@ -133,6 +133,11 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 			case dev.overcraft.entity.CaptiveSunEntity sun -> dev.overcraft.client.effect.IllariFx.ballFlight(sun.getId(), at);
 			case dev.overcraft.entity.DvaMissileEntity missile -> dev.overcraft.client.effect.DvaFx.missileFlight(missile.getId(), at,
 				missile.getDeltaMovement(), dt, KirikoFx.enemyOf(missile.getOwner()));
+			// Torbjorn's: the slag (2509) and his rivets and pellets (2653 / 1865) are their effects (no models in his data)
+			case dev.overcraft.entity.SlagEntity slag -> s.drawnByEffect = dev.overcraft.client.effect.TorbjornFx.slagFlight(slag.getId(), at,
+				slag.getDeltaMovement(), dt, KirikoFx.enemyOf(slag.getOwner()));
+			case dev.overcraft.entity.RivetEntity rivet -> s.drawnByEffect = dev.overcraft.client.effect.TorbjornFx.rivetFlight(rivet.getId(),
+				at, rivet.getDeltaMovement(), s.age, dt, rivet.pellet(), KirikoFx.enemyOf(rivet.getOwner()));
 			case SuzuEntity suzu -> KirikoFx.suzuFlight(suzu.getId(), at, dt, KirikoFx.enemyOf(suzu.getOwner()));
 			case dev.overcraft.entity.SonicEntity sonic -> s.drawnByEffect = dev.overcraft.client.effect.LucioFx.sonicFlight(
 				sonic.getId(), at, sonic.getDeltaMovement(), dt, KirikoFx.enemyOf(sonic.getOwner()));

@@ -96,6 +96,8 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 				case dev.overcraft.entity.TurretEntity.LEVEL3 -> clip(s, "l3_idle", t, true);
 				default -> clip(s, "l2_idle", t, true);
 			}
+			// its thrown ribbon and damaged smoke (TorbjornFx)
+			dev.overcraft.client.effect.TorbjornFx.turret(e, e.getPosition(s.partialTick), e.state() == dev.overcraft.entity.TurretEntity.FLYING);
 			float shot = (e.tickCount - e.shotAt() + s.partialTick) / 20f;
 			if (e.built() && shot >= 0 && shot < 0.3f) {
 				s.add = e.state() == dev.overcraft.entity.TurretEntity.LEVEL3 ? "add_l3_fire" : "add_l2_fire";
