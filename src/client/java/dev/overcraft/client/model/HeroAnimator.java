@@ -1325,7 +1325,10 @@ public final class HeroAnimator {
 				want = "run";
 			}
 			if (asheScope >= 1) {
-				want = want.equals("idle") ? "ads_hold" : model.clips.containsKey(want + "_ads") ? want + "_ads" : "ads_hold";
+				// scoped and standing is 5F47, the scoped move's clip: the set's 1P tree plays it for df18's default (stand) as for
+				// cat5 (move) (compact_08E1 lines 13-14, H). 60FF ("ads_hold", the scope machine's sm[1]) is a transition, not
+				// the held aim: played held, it lowered the Viper to the hip (found playing 2026-11-17)
+				want = want.equals("idle") ? "run_ads" : model.clips.containsKey(want + "_ads") ? want + "_ads" : "run_ads";
 			} else if (asheScope > 0) {
 				want = asheScopeWay < 0 && model.clips.containsKey("ads_out") ? "ads_out" : "ads_in";
 			}
