@@ -101,6 +101,23 @@ public final class HeroControls {
 	}
 
 	/** A hero key bound to this mouse button is down. */
+	/**
+	 * Whether a hero key bound to this mouse button was clicked since its clicks were last taken (taken here): a click
+	 * pressed and let go between two ticks, which {@link #mouseButtonHeld} never sees down.
+	 */
+	public static boolean mouseButtonClicked(int button) {
+		InputConstants.Key mouse = mouse(button);
+		boolean any = false;
+		for (Action action : Action.values()) {
+			if (action.key().equals(mouse)) {
+				while (action.mapping.consumeClick()) {
+					any = true;
+				}
+			}
+		}
+		return any;
+	}
+
 	public static boolean mouseButtonHeld(int button) {
 		InputConstants.Key mouse = mouse(button);
 		for (Action action : Action.values()) {

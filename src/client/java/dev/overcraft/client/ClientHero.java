@@ -480,8 +480,11 @@ public final class ClientHero {
 		boolean left = mc.mouseHandler.isLeftPressed() || HeroControls.mouseButtonHeld(InputConstants.MOUSE_BUTTON_LEFT);
 		boolean right = mc.mouseHandler.isRightPressed() || HeroControls.mouseButtonHeld(InputConstants.MOUSE_BUTTON_RIGHT);
 		if (open && perkMenu && mc.level != null && mc.level.getGameTime() - perkPickedAt > 10) {
-			// a press, not a button already held when the menu came up
-			int side = left && !perkLeftWas ? 0 : right && !perkRightWas ? 1 : -1;
+			// a press, not a button already held when the menu came up; or a click that came and went between two ticks (a
+			// quick click picked nothing: found playing 2026-11-17, a 20 ms click with the menu up)
+			boolean leftClick = HeroControls.mouseButtonClicked(InputConstants.MOUSE_BUTTON_LEFT);
+			boolean rightClick = HeroControls.mouseButtonClicked(InputConstants.MOUSE_BUTTON_RIGHT);
+			int side = left && !perkLeftWas || leftClick ? 0 : right && !perkRightWas || rightClick ? 1 : -1;
 			java.util.List<Perk> choices = Perk.of(hero(), tier == 1 ? Perk.Tier.MINOR : Perk.Tier.MAJOR);
 			if (side >= 0 && side < choices.size()) {
 				ClientPlayNetworking.send(new PickPerkPayload(choices.get(side).ordinal()));
