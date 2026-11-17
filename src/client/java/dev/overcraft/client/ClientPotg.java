@@ -96,6 +96,7 @@ public final class ClientPotg {
 			ClientPlayNetworking.send(new HighlightsPayload(HighlightsPayload.DONE, ""));
 		}
 		PotgCard.hide();
+		PotgMusic.stop();
 		mc.getSoundManager().stop();
 		mc.gui.toastManager().clear();
 		if (mc.gui.screen() instanceof PotgCard.Holder) {

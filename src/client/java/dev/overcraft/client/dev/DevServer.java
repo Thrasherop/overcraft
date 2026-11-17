@@ -157,6 +157,7 @@ public final class DevServer {
 					out.addProperty("mode", s.mode());
 					net.minecraft.world.phys.Vec3 aim = dev.overcraft.client.effect.JetpackCatFx.aimSeen;
 					out.addProperty("aimSeen", aim == null ? "" : aim.toString());
+					out.addProperty("potgMusic", dev.overcraft.client.PotgMusic.playing());
 					out.addProperty("perkLevel", s.perkLevel());
 					out.addProperty("perkProgress", s.perkProgress());
 					out.addProperty("primaryAmmo", s.primaryAmmo());

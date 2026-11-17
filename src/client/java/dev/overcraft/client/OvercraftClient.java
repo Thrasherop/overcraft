@@ -54,7 +54,12 @@ public class OvercraftClient implements ClientModInitializer {
 			(payload, context) -> dev.overcraft.client.hud.ConspiratorHud.receive(payload));
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.DeadeyePayload.TYPE,
 			(payload, context) -> dev.overcraft.client.hud.DeadeyeHud.receive(payload));
-		ClientPlayNetworking.registerGlobalReceiver(VictoryPayload.TYPE, (payload, context) -> VictoryHud.show());
+		// not during a showing: a replayed dragon kill carries its own VICTORY, which restarted the music mid-POTG (#161)
+		ClientPlayNetworking.registerGlobalReceiver(VictoryPayload.TYPE, (payload, context) -> {
+			if (!dev.overcraft.client.ClientPotg.active()) {
+				VictoryHud.show();
+			}
+		});
 		// a Mercy resurrected us: respawn as the death screen's button does (the server puts us back where we fell)
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.GripPayload.TYPE, (payload, context) ->
 			ClientLifeweaver.onGrip(payload));

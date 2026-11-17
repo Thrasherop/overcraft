@@ -251,13 +251,14 @@ public class Overcraft implements ModInitializer {
 				dev.overcraft.potg.MobStats.killed(player, source);
 			}
 		});
-		// killing the Ender Dragon wins the match: everyone in the End sees Overwatch's VICTORY as it starts to die (#18)
+		// killing the Ender Dragon wins the match: everyone sees Overwatch's VICTORY and hears its music at the killing blow (#18),
+		// wherever they are (the owner on 0.3.66, #161: a player in the Nether had no music); the music runs on into the POTG
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			if (entity instanceof EnderDragon && entity.level() instanceof ServerLevel level) {
-				for (ServerPlayer player : level.players()) {
+				for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
 					ServerPlayNetworking.send(player, new VictoryPayload());
 				}
-				// its Play of the Game waits for the death's tick 199 (PotgReplay.dragonAt199)
+				// its Play of the Game starts on the music's cue (PotgReplay.CARD_AFTER_KILL_MS)
 				dev.overcraft.potg.PotgReplay.dragonDied((EnderDragon) entity, source);
 			}
 		});
