@@ -30,8 +30,8 @@ public final class IllariFx {
 		new EffectArt.Art("illari_hit_glow", Palette.IL_SHOT, false),
 		new EffectArt.Art("illari_scorch", Palette.IL_SCORCH, false),
 		new EffectArt.Art("spark#4", Palette.IL_FIRE, false),
-		new EffectArt.Art("dva_solid", Palette.IL_SUN, false),
-		new EffectArt.Art("dva_solid", Palette.IL_MARK, false));
+		new EffectArt.Art("sojourn_dot", Palette.IL_SUN, false),
+		new EffectArt.Art("sojourn_dot", Palette.IL_MARK, false));
 	public static final java.util.List<EffectArt.Art> ART_ENEMY = ART;
 
 	private IllariFx() {
@@ -74,12 +74,19 @@ public final class IllariFx {
 		return eye.add(look.scale(0.8)).add(right.scale(0.25)).add(0, -0.22, 0);
 	}
 
-	/** Her hand (hp 000B, the orb at reload and the cast): left low in front of her (ours). */
+	/**
+	 * Her hand (hp 000B, the orb at reload and the cast): in her own first person beside the rifle, where her left hand works it
+	 * (played 2026-11-17: low left was off the hands), else left low in front of her (ours).
+	 */
 	private static Vec3 hand(Entity p, float partial) {
 		Vec3 eye = p.getEyePosition(partial);
 		Vec3 look = p.getViewVector(partial);
 		Vec3 right = look.cross(new Vec3(0, 1, 0));
 		right = right.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : right.normalize();
+		if (ownFirstPerson(p)) {
+			// the first-person hands and rifle draw over the world, so beside them, low centre (ours; played 2026-11-17: at the hand it hid)
+			return eye.add(look.scale(0.5)).add(right.scale(-0.04)).add(0, -0.17, 0);
+		}
 		return eye.add(look.scale(0.55)).add(right.scale(-0.18)).add(0, -0.3, 0);
 	}
 
@@ -123,7 +130,7 @@ public final class IllariFx {
 	private static void armed(Entity p, Vec3 at, float k) {
 		String key = "illari_armed/" + p.getId();
 		Fx.attach(key + "/orb", at, () -> {
-			Particle o = Fx.particle("dva_solid", SUN);
+			Particle o = Fx.particle("sojourn_dot", SUN);
 			return o == null ? null : o.life(4).size(0.18f * k, 0.18f * k).nearFade(0.1f);
 		});
 		Fx.attach(key + "/halo", at, () -> {
@@ -155,7 +162,7 @@ public final class IllariFx {
 	 */
 	private static void cast(Vec3 eye) {
 		Vec3 at = eye.add(0, -0.4, 0);
-		Particle o = Fx.particle("dva_solid", SUN);
+		Particle o = Fx.particle("sojourn_dot", SUN);
 		if (o != null) {
 			Fx.add(o.at(at).life(1.2f).size(0.08f, 0.15f).fade(0.05f, 0.4f).nearFade(0.3f));
 		}
@@ -223,7 +230,7 @@ public final class IllariFx {
 			return h == null ? null : h.life(12).size(4.2f, 4.2f).alpha(0.6f).nearFade(1);
 		});
 		Fx.attach(key + "/core", at, () -> {
-			Particle c = Fx.particle("dva_solid", SUN);
+			Particle c = Fx.particle("sojourn_dot", SUN);
 			return c == null ? null : c.life(12).size(0.5f, 0.5f).nearFade(0.5f);
 		});
 		int embers = Math.round(32 * Fx.since(id));
@@ -279,7 +286,7 @@ public final class IllariFx {
 				Fx.add(sun.at(at).life(1.25f).size(1.5f, 4f).spin(Fx.RANDOM.nextFloat() * 6.28f, 0.5f).alpha(0.8f).fade(0.03f, 0.6f).nearFade(1));
 			}
 		}
-		Particle orb = Fx.particle("dva_solid", Palette.IL_MARK);
+		Particle orb = Fx.particle("sojourn_dot", Palette.IL_MARK);
 		if (orb != null) {
 			Fx.add(orb.at(at).life(1.05f).size(0.2f + 0.1f * s, 0.2f + 0.1f * s).fade(0.05f, 0.1f).nearFade(0.3f));
 		}
@@ -301,7 +308,7 @@ public final class IllariFx {
 	 * the rays at 4.75 m, the 12 m shock (drawn as a glow, ours), embers rising (H).
 	 */
 	private static void sunstruck(Vec3 at) {
-		Particle core = Fx.particle("dva_solid", SUN);
+		Particle core = Fx.particle("sojourn_dot", SUN);
 		if (core != null) {
 			Fx.add(core.at(at).life(0.3f).size(0.7f, 0.85f).fade(0.02f, 0.6f).nearFade(0.5f));
 		}
@@ -343,7 +350,7 @@ public final class IllariFx {
 		String key = "illari_reload/" + p.getId();
 		if (t >= 0.4f) {
 			Fx.attach(key + "/orb", at, () -> {
-				Particle o = Fx.particle("dva_solid", SUN);
+				Particle o = Fx.particle("sojourn_dot", SUN);
 				return o == null ? null : o.life(0.65f).size(0.087f * k, 0.087f * k).nearFade(0.05f);
 			});
 			Fx.attach(key + "/swirl", at, () -> {
