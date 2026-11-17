@@ -145,6 +145,11 @@ public final class FusionCannons {
 		double pellet = FUSION_DAMAGE * (precise ? PRECISION_DAMAGE : 1);
 		double falloffScale = precise ? PRECISION_FALLOFF : 1;
 		List<Vec3> dirs = pattern(look, spread, player.getRandom().nextDouble() * Math.PI * 2);
+		// the volley's look (18FE's muzzle at the cannon, 10BB's tracers, 147A's hits: DvaFx), one message a volley; its spread in
+		// hundredths of a degree as the variant
+		s.dvaFusionSide = !s.dvaFusionSide;
+		dev.overcraft.hero.Effects.play(level, "dva_fusion", eye, look, player, (int) Math.round(spread * 100) * 2 + (s.dvaFusionSide ? 1 : 0),
+			player);
 		// the creatures any pellet could reach: one search a volley, not one a pellet
 		double widen = Math.tan(Math.toRadians(FUSION_SPREAD)) * FUSION_RANGE + 2;
 		AABB area = new AABB(eye, eye.add(look.scale(FUSION_RANGE))).inflate(widen);
@@ -174,8 +179,6 @@ public final class FusionCannons {
 			if (best == null && wall == null && block.distanceToSqr(eye) < (FUSION_RANGE - 0.01) * (FUSION_RANGE - 0.01)) {
 				wall = block;
 			}
-			// stand-in look: a spark where each pellet stops
-			level.sendParticles(best != null ? ParticleTypes.CRIT : ParticleTypes.SMOKE, stop.x, stop.y, stop.z, 1, 0, 0, 0, 0);
 			if (best == null) {
 				continue;
 			}

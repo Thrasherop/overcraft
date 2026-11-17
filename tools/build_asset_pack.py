@@ -924,6 +924,12 @@ EFFECT_MASKS = {
     "dva_smoke": ("DVa", "MicroMissiles", "000000011BFC", 1),
     "dva_flare": ("DVa", "MicroMissiles", "000000004B2E", 2),
     "dva_missile_fire": ("DVa", "MicroMissiles", "000000002291", 12),
+    # her Fusion Cannons' tracer, muzzle flash and glow; her Boosters' flame burst and trail
+    "dva_fusion_tracer": ("DVa", "FusionCannons", "000000004B20", 1),
+    "dva_fusion_flash": ("DVa", "FusionCannons", "000000004896", 4),
+    "dva_fusion_glow": ("DVa", "FusionCannons", "0000000021E2", 1),
+    "dva_boost_burst": ("DVa", "Boosters", "000000004C26", 7),
+    "dva_boost_trail": ("DVa", "Boosters", "0000000011D7", 1),
     # Tracer's (tools/reference/tracer-effects.md; pass research/tracer/fx as a source): Blink's streak flash, the bomb's blast
     # flipbook and scorch, Recall's glow
     "tracer_blink": ("Tracer", "Blink", "0000000214A5", 1),

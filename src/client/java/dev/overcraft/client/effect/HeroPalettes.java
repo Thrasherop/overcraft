@@ -37,6 +37,14 @@ final class HeroPalettes {
 	static final float[] TR_BOMB = {0, 0, 0, 0, .4f, 0, .13f, .5f, .75f, 0, .25f, 1, 1, 1, 1, 1};
 	/** The enemy's: r6 #FE0000 > #FFFFFF (H). */
 	static final float[] TR_BOMB_ENEMY = {0, 0, 0, 0, .4f, .5f, 0, 0, .75f, 1, 0, 0, 1, 1, 1, 1};
+	/** Her Fusion Cannons' tracer 10BB: team 07FE r4 #00FFBC (H). */
+	static final float[] DVA_FUSION = {0, 0, 0, 0, .5f, 0, .5f, .37f, .85f, 0, 1, .74f, 1, .8f, 1, .95f};
+	/** The enemy's: C2B9 r4 #FF4300 (H). */
+	static final float[] DVA_FUSION_ENEMY = {0, 0, 0, 0, .5f, .5f, .13f, 0, .85f, 1, .26f, 0, 1, 1, .8f, .6f};
+	/** Her Boosters' flames 1492: 3AEC r2 / 9190 r2 green (0.1, 3.7, 1) scaled (H). */
+	static final float[] DVA_BOOST = {0, 0, 0, 0, .5f, .015f, .5f, .14f, .85f, .03f, 1, .27f, 1, .8f, 1, .7f};
+	/** The same for an enemy: her flames' orange 54EA (3, 0.6, 0) scaled (H; which colour each side sees is M). */
+	static final float[] DVA_BOOST_ENEMY = {0, 0, 0, 0, .5f, .5f, .1f, 0, .85f, 1, .2f, 0, 1, 1, .7f, .4f};
 	static final float[] TR_SHOT = {0, 0, 0, 0, .3f, .2f, .29f, .45f, .7f, .445f, .645f, 1, 1, .85f, .95f, 1};
 	static final float[] TR_SHOT_ENEMY = {0, 0, 0, 0, .3f, .45f, .09f, .05f, .7f, 1, .194f, .103f, 1, 1, .75f, .6f};
 }
