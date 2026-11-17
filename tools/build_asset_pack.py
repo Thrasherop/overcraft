@@ -936,6 +936,11 @@ EFFECT_MASKS = {
     "tracer_blast": ("Tracer", "PulseBomb", "00000001D113", 8),
     "tracer_blast_decal": ("Tracer", "PulseBomb", "000000020CE6", 1),
     "tracer_glow": ("Tracer", "Recall", "00000000F767", 1),
+    # her Pulse Pistols' muzzle 0076 (tracer-effects.md): the soft glow, and the three flash flipbooks
+    "tracer_muzzle_glow": ("Tracer", "PulsePistols", "00000000A7B6", 1),
+    "tracer_muzzle_a": ("Tracer", "PulsePistols", "000000020848", 3),
+    "tracer_muzzle_b": ("Tracer", "PulsePistols", "0000000207C2", 4),
+    "tracer_muzzle_c": ("Tracer", "PulsePistols", "000000020847", 3),
     "sojourn_field_noise": ("Sojourn", "Disruptor", "0000000299E5", 1),
     "sojourn_flames": ("Sojourn", "Disruptor", "000000029132", 1),
     # Sigma's (tools/reference/sigma-effects.md "Masks for the pack"; research\sigmax). Hyperspheres: the launch swirl,

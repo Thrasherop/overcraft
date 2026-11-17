@@ -433,6 +433,9 @@ public final class EffectArt {
 		/** D.Va's Self-Destruct, team and enemy (HeroPalettes). */
 		DVA_SD(HeroPalettes.DVA_SD),
 		DVA_SD_ENEMY(HeroPalettes.DVA_SD_ENEMY),
+		/** Tracer's muzzle flash (HeroPalettes). */
+		TR_MUZZLE(HeroPalettes.TR_MUZZLE),
+		TR_MUZZLE_ENEMY(HeroPalettes.TR_MUZZLE_ENEMY),
 		/** D.Va's Micro Missiles: flame, smoke, hit (HeroPalettes). */
 		DVA_MISSILE(HeroPalettes.DVA_MISSILE),
 		/** D.Va's Fusion Cannons and Boosters (HeroPalettes). */
