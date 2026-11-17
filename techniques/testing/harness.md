@@ -226,3 +226,26 @@ login packet type 3, command type 2). `whitelist off` and `op <name>` first. Sto
 
 From Git Bash, `cmd //c "cd /d E:\... & gradlew.bat ..."` silently doesn't run Gradle (no output, no error): build and
 compile through PowerShell (`Set-Location ...; & .\gradlew.bat build`) and check `$LASTEXITCODE`.
+
+## Lessons, 2026-11-17 (Junkrat #153, Ashe #137, the rope #142)
+- **`tp ... facing entity X` turns from the feet, not the eyes:** at 18 m it aimed 5.5° high, over a husk's head, and
+  every "miss" was the setup. Set yaw and pitch directly (`tp @p x y z 0 0`) or compute them from y + 1.62.
+- **A computer-use click at coordinates moves the cursor first, and Minecraft reads that as mouse look:** the aim
+  drifted between shots. Fire with `left_mouse_down` / `left_mouse_up` (no coordinates) when the aim matters.
+- **Computer-use actions are ~0.25 s apart at best:** too slow for sub-0.25 s windows (a detonate during a mine's throw).
+  Time those through the harness from one script (`key ... down` / `up` with sleeps), and keep the real keys for the
+  look-and-feel pass.
+- **A harness `key ... tap` can be too short for a press the server reads as held:** hold it (`down`, 0.1 s, `up`).
+- **In hero mode the action names don't match the mouse:** `primary_fire` is the right button, `secondary_fire` the
+  left (the server's slots: Kiriko's kunai are "primary"). Check `key`'s reply, which names the physical key.
+- **Focus first, then hold:** Minecraft releases held keys when the window changes focus, so a harness `down` sent
+  before `AppActivate` is lost. The Gradle console (`cmd.exe`) pops in front after a launch; minimize it.
+- **`heard` counts a looping sound twice a second** (Minecraft re-announces looping sounds to listeners every 10 ticks
+  for subtitles, SoundEngine:256): 19 "plays" of a loop in 14 s weren't restarts.
+- **`/damage` and `/kill` on the dragon:** `/damage` without `by <player>` doesn't reach its health (it takes damage
+  through its parts, a quarter on the body); `/kill` removes it without its death (no VICTORY, no POTG). A `NoAI` dragon
+  took no hits from projectiles. End crystals heal it back. For a real kill, a flying dragon and a hero's own damage
+  (Deadeye locks on by itself).
+- **`publish` takes `[allowCommands] [port]`:** `publish false 25565`; a game mode there fails with "Expected integer".
+- **Leftover test builds block shots:** a pool's hollow stone walls stood between Ashe and the husk; clear arenas.
+- **The select screen doesn't pause:** left open through a relaunch at night, mobs killed the player behind it.
