@@ -44,6 +44,8 @@ public class VenomMineEntity extends OwProjectile implements SurfaceStuck {
 	/** Seeker Mine: ticks to its next volley (0 ready). */
 	public int seekerWait;
 	private boolean done;
+	/** Ticks it has spent stuck, all told: they don't count toward its flight life (it falls again if its block goes). */
+	private int heldTicks;
 
 	public VenomMineEntity(EntityType<? extends VenomMineEntity> type, Level level) {
 		super(type, level);
@@ -82,7 +84,7 @@ public class VenomMineEntity extends OwProjectile implements SurfaceStuck {
 	/** In flight 10 s at most (D volley life); stuck it stays (lifetime() isn't counted once it sticks). */
 	@Override
 	protected int lifetime() {
-		return Ow.ticks(WidowmakerStats.MINE_FLIGHT_LIFE);
+		return Ow.ticks(WidowmakerStats.MINE_FLIGHT_LIFE) + heldTicks;
 	}
 
 	@Override
@@ -115,9 +117,16 @@ public class VenomMineEntity extends OwProjectile implements SurfaceStuck {
 			discard();
 			return;
 		}
+		if (stuck() && behindGone()) {
+			// the block it was on went (mined, burnt): it falls and sticks again where it lands, still armed if it was (ours; it
+			// hung in the air: critique 2026-11-17)
+			entityData.set(STUCK, false);
+			setNoGravity(false);
+		}
 		if (stuck()) {
 			setDeltaMovement(Vec3.ZERO);
 			stuckTicks++;
+			heldTicks++;
 			if (!armed() && stuckTicks >= Ow.ticks(WidowmakerStats.MINE_ARM)) {
 				entityData.set(ARMED, true);
 				if (getOwner() instanceof ServerPlayer owner) {
@@ -130,6 +139,13 @@ public class VenomMineEntity extends OwProjectile implements SurfaceStuck {
 			return;
 		}
 		super.tick();
+	}
+
+	/** Whether the block it's stuck to is gone: the point just behind the face it's on has nothing solid. */
+	private boolean behindGone() {
+		net.minecraft.core.BlockPos behind = net.minecraft.core.BlockPos.containing(
+			getBoundingBox().getCenter().subtract(normal.scale(0.15 + getBbHeight() / 2)));
+		return level().getBlockState(behind).getCollisionShape(level(), behind).isEmpty();
 	}
 
 	/** Its middle, a little off the face it's on: where its burst and darts start (so a sight line doesn't begin in the block). */
@@ -165,7 +181,9 @@ public class VenomMineEntity extends OwProjectile implements SurfaceStuck {
 		setNoGravity(true);
 		setDeltaMovement(Vec3.ZERO);
 		setPos(at);
-		stuckTicks = 0;
+		if (!armed()) {
+			stuckTicks = 0;
+		}
 		if (getOwner() instanceof ServerPlayer owner) {
 			Widowmaker.mineStuck(owner, this);
 		}

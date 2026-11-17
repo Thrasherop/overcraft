@@ -30,6 +30,8 @@ public class GrappleHookEntity extends OwProjectile {
 	private static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(GrappleHookEntity.class, EntityDataSerializers.INT);
 	public static final int FLYING = 0, HELD = 1, REELING = 2;
 	private Vec3 start = Vec3.ZERO;
+	/** From the point it holds into the block it holds (a little behind the face it hit). */
+	private Vec3 into = new Vec3(0, -0.05, 0);
 
 	public GrappleHookEntity(EntityType<? extends GrappleHookEntity> type, Level level) {
 		super(type, level);
@@ -105,7 +107,15 @@ public class GrappleHookEntity extends OwProjectile {
 			return;
 		}
 		switch (state()) {
-			case HELD -> setDeltaMovement(Vec3.ZERO);
+			case HELD -> {
+				setDeltaMovement(Vec3.ZERO);
+				net.minecraft.core.BlockPos on = net.minecraft.core.BlockPos.containing(position().add(into));
+				if (level().getBlockState(on).getCollisionShape(level(), on).isEmpty()) {
+					// the block it holds went (mined, burnt): it lets go and the pull ends there, with its cooldown (ours; she was
+					// pulled on to the empty air: critique 2026-11-17)
+					discard();
+				}
+			}
 			case REELING -> {
 				commonTick();
 				if (reelStep()) {
@@ -163,6 +173,7 @@ public class GrappleHookEntity extends OwProjectile {
 			return;
 		}
 		entityData.set(STATE, HELD);
+		into = new Vec3(hit.getDirection().getStepX(), hit.getDirection().getStepY(), hit.getDirection().getStepZ()).scale(-0.05);
 		setNoGravity(true);
 		setDeltaMovement(Vec3.ZERO);
 		setPos(hit.getLocation());

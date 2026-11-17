@@ -26,7 +26,10 @@ Workshop recording of her: her movement is the data's default mover.
   #115, which her hero settings name): Widow's real slow is a +0.65 on the self-slow variable (1E5A). Ashe's not re-read.
 
 ## Ours (no source gives it)
-- Scoped fire on the press (L against holding); the pull's end keeps 0.35 of its speed (the data's 0.2 s end push, M); a 1.5 s cap on a
+- Scoped fire on the press or held (held fires at each recovery: Overwatch weapons fire while held; it was press-only and a held
+  button fired once in 2 s); a jump out of the pull keeps the same 0.35 of its speed plus one jump (was 0.8 of it and 0.3 up: ~13 m
+  of rise on a climb, now ~4.7 m); a stuck mine or a held hook whose block goes falls / lets go (the pull ends with its cooldown);
+  the pull's end keeps 0.35 of its speed (the data's 0.2 s end push, M); a 1.5 s cap on a
   pull; the ledge test (a standable top with two blocks of room within 3 m above the hook's point); Seeker Mine darts as timed hits drawn
   by her clients; a health potion (Minecraft's health pack) clears the poison (W); Infra-Sight ends on any way out of play (the data: on
   death); the charge's percent past 100 with Widow's Bite drawn 100 -> 125 over 10 -> 12.5.
@@ -34,8 +37,19 @@ Workshop recording of her: her movement is the data's default mover.
 - Her scope's lens is Ana's (not read from her data); the select screen has no pose of hers (her select clips C0C5 / C188 weren't extracted).
 
 ## Played
-**Not yet (2026-11-17).** `gradlew build` passes with `WidowmakerMathTest`. The client lock was held by another client (an Ashe world,
-paused, from the main checkout) the whole session, so neither the game nor the model exports (`research\widowmaker\ascripts\export_models.sh`,
-which rightly refuses while the lock exists) could run: **her models aren't in the pack yet** (sounds, icons and effect masks are). Owed:
-the exports, `build_asset_pack.py add` for each glb, `props` and `glows`, then the whole hand play (every ability against mobs, numbers
-read, the select screen, G, death, switch, rejoin) and the real mouse and keys.
+**2026-11-17, real mouse and keys** (world `widow1`, flat stone arena; damage read from husks' `Health`, a husk's 2 armor taken off):
+- Picked from the select screen on join, after a rejoin, and from H at her spawn point (Ashe and back: fresh kit). Respawned after two
+  deaths (a spider in the dark arena; a zombie rush at night) straight back as her. HUD: 225 health (18), 35 rounds, five buttons.
+- Hip fire: 14 a shot (1.0555 off a husk), 11 of 11 hit point blank. Scoped, full charge: 120 body (9.446), 5 rounds; a headshot killed
+  a husk in one. Melee 40. Reload R back to 35. Venom Mine: sticks to floor and wall, arms, a husk 2 m away took 125 over 5 s (9.28).
+  Grappling Hook: to a wall's top and over the ledge, from water to a wall, past a bar at head height (scrapes ~0.5 s, then slides over),
+  jump cancel. Infra-Sight at night: two zombies and a skeleton behind a dirt wall outlined in red; the charge was spent; it ended at 15 s.
+- Reproduced on the unfixed build, then replayed fixed (critic's list): G twice in the mine's throw gave a free mine at once (now its
+  15 s); a scoped button held 2 s fired once (now 5 times); the hook kept pulling into the air after its wall was removed (now lets go,
+  cooldown from there); the hook cooldown stood at 10.0 for 0.5 s after a pull (now runs at once); E and Q worked in a boat (now not).
+  The stuck mine with its block removed: my first test removed the wrong block (the mine's position is the bottom of its box: the block
+  is the one at its middle); the fix then showed the mine vanished as it fell, because OwProjectile expires anything older than its
+  flight life (10 s) and a stuck mine is. Now its stuck time doesn't count: after 12 s on a wall it fell, stuck to the floor and burst.
+- Not tried: a second player (her Infra-Sight shown to an ally, the pull with ping), the Nether, the perks (Seeker Mine's darts read as
+  a 10 m turret to the critic: unplayed), Toggle Zoom (not built). Not reproduced: one real-key run lost a mine after G twice; two
+  repeats didn't, and that window had a spider death in it.

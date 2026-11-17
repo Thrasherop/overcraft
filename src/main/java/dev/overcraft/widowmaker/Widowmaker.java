@@ -100,8 +100,9 @@ public final class Widowmaker implements HeroKit {
 		long now = level.getGameTime();
 		w.silenced = dev.overcraft.sombra.Hack.silenced(player);
 		double rate = Combat.cooldownRate(player);
-		if (w.hookPhase == 0 || w.hookPhase == 5) {
-			// the hook's cooldown is set when the pull ends (D 005A #160): nothing runs down meanwhile
+		if (w.hookPhase == 0 || w.hookPhase >= 4) {
+			// the hook's cooldown is set when the pull ends (D 005A #160): nothing runs down while it flies or pulls, and it runs from
+			// the pull's end, through the end's 0.5 s too (critique 2026-11-17: it stood still there)
 			s.ability1Cooldown = Math.max(0, s.ability1Cooldown - rate);
 		}
 		if (w.mineCast < 0 || w.mineCast >= Ow.ticks(MINE_COOLDOWN_AT)) {
@@ -232,8 +233,9 @@ public final class Widowmaker implements HeroKit {
 			return;
 		}
 		if (w.scope >= 1) {
-			// scoped: a shot on the press, once fully up and its recovery over (D #54; L the press against holding)
-			if (s.primaryFresh && w.recovery <= 0) {
+			// scoped: a shot once fully up and its recovery over, on the press or with the button held (D #54; held: as every
+			// Overwatch weapon fires while held, critique 2026-11-17: a held button fired once in 2 s)
+			if ((s.primaryFresh || s.primaryHeld) && w.recovery <= 0) {
 				scopedShot(player, s, w);
 			}
 		} else if (w.scope <= 0 && s.primaryHeld && w.hipWait <= 0) {
@@ -572,7 +574,10 @@ public final class Widowmaker implements HeroKit {
 			Vec3 keep = last.scale(PULL_KEEP);
 			player.setDeltaMovement(new Vec3(keep.x, Math.max(keep.y, 0.12), keep.z));
 		} else {
-			player.setDeltaMovement(last.scale(0.8).add(0, 0.3, 0));
+			// a jump out of the pull: the same share of its speed, and a jump on top (ours, no source gives it; 0.8 of it and 0.3
+			// up threw her ~13 m on a climb, critique 2026-11-17)
+			Vec3 keep = last.scale(PULL_KEEP);
+			player.setDeltaMovement(new Vec3(keep.x, Math.max(keep.y, 0) + Ow.speed(dev.overcraft.hero.OwMovement.JUMP_SPEED), keep.z));
 		}
 		Combat.send(player);
 		w.launchGrace = 4;
@@ -603,7 +608,7 @@ public final class Widowmaker implements HeroKit {
 
 	private static void startMine(ServerPlayer player, HeroState s, WidowmakerState w) {
 		if (w.mineCast >= 0 || s.ability2Cooldown > 0 || w.hookPhase != 0 && w.hookPhase != 5 || w.ultCast >= 0 || w.silenced
-			|| Sleep.asleep(player)) {
+			|| Sleep.asleep(player) || player.isPassenger()) {
 			return;
 		}
 		w.mineCast = 0;
@@ -833,7 +838,8 @@ public final class Widowmaker implements HeroKit {
 	// ---- Infra-Sight (0067) ----
 
 	private static void startUlt(ServerPlayer player, HeroState s, WidowmakerState w) {
-		if (w.ultCast >= 0 || w.ultUntil >= 0 || w.silenced || Sleep.asleep(player) || s.ultCharge < Combat.ultCost(s)) {
+		if (w.ultCast >= 0 || w.ultUntil >= 0 || w.silenced || Sleep.asleep(player) || player.isPassenger()
+			|| s.ultCharge < Combat.ultCost(s)) {
 			return;
 		}
 		// the charge is spent at the cast's start (D #105)
@@ -944,6 +950,10 @@ public final class Widowmaker implements HeroKit {
 		w.scope = 0;
 		w.charge = CHARGE_MIN;
 		w.reloadTicks = -1;
+		if (w.mineCast >= Ow.ticks(MINE_RELEASE) && w.mineCast < Ow.ticks(MINE_COOLDOWN_AT)) {
+			// the mine is already out: it costs its cooldown (critique 2026-11-17: G twice in the throw gave a free mine)
+			s.ability2Cooldown = Ow.ticks(MINE_COOLDOWN);
+		}
 		w.mineCast = -1;
 		w.ultCast = -1;
 		if (w.hookPhase == 3 || w.hookPhase == 4) {

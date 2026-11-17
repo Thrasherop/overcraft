@@ -249,3 +249,15 @@ compile through PowerShell (`Set-Location ...; & .\gradlew.bat build`) and check
 - **`publish` takes `[allowCommands] [port]`:** `publish false 25565`; a game mode there fails with "Expected integer".
 - **Leftover test builds block shots:** a pool's hollow stone walls stood between Ashe and the husk; clear arenas.
 - **The select screen doesn't pause:** left open through a relaunch at night, mobs killed the player behind it.
+
+## Lessons, 2026-11-17 (Widowmaker's play)
+- **A `mouse_move` leaves the OS cursor off centre, and Minecraft reads it as a look when it next takes focus:** a headshot went
+  7.6° wide after a fight where I'd moved the cursor. After a `tp ... facing` didn't turn her while she was scoped, `tp x y z <yaw>
+  <pitch>` did. Read `yaw`/`pitch` from `state` before a precise shot.
+- **A stuck projectile's position is the bottom of its box:** to remove "the block it's on", use the block at its middle
+  (`centre - normal * (half height + a little)`), not the one at its `Pos` (the first stuck-mine test removed the block below it).
+- **`OwProjectile` expires anything older than `lifetime()` ticks, counted from its spawn:** something that sits stuck and later moves
+  again needs its stuck time left out (Venom Mine's `heldTicks`), or it vanishes the moment it moves.
+- **A roofed test arena is dark enough for spiders even with `doMobSpawning` off** (mobs spawned before it): light it (a glowstone
+  ceiling) and clear hostiles, or the death screen eats the next input.
+- **H changes hero only at her bed:** set `/spawnpoint @p` where she stands to test H mid-game.

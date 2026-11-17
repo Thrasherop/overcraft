@@ -4,6 +4,19 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-17: 0.3.75 on next (not on main yet)
+
+- **Widowmaker (#138):** pick her from the select screen. Widow's Kiss from the hip (14, 10 a second) and scoped on the right
+  button (charges to 120 in 0.9 s, 5 rounds a shot, a slower walk); Grappling Hook (Shift) pulls her up and over ledges;
+  Venom Mine (E) sticks, arms and poisons enemies for 125 over 5 s; Infra-Sight (Q) shows every enemy through walls to her
+  and her side for 15 s; Sharpshooter, quick melee, four perks. Her model, gun, sounds and effects come from your install.
+  Played with the real mouse and keys against husks, zombies and skeletons, by day and at night, in water and in a boat;
+  picked on join, on rejoin, after a death and from H. Fixed from a critic's read and replayed: G during the mine's throw
+  gave a free mine; holding the scoped shot fired once; the hook pulled her on into the air when its block was mined; the
+  hook's cooldown stood still for half a second; E and Q worked in a boat; a mine whose block was mined hung in the air,
+  then vanished; the jump out of a pull threw her about 13 m up.
+  Not tried yet: a second player, the Nether, her perks.
+
 ## 2026-11-17: 0.3.74 on next (not on main yet)
 
 - **Ashe (#137):** pick her from the select screen. The Viper from the hip (35, spread building over sustained fire) and
