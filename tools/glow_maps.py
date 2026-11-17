@@ -60,6 +60,15 @@ HAIR_SHADE = 0xBCBE747D
 COLOURS = MODELS / "colour"
 HAIR_SHADE_FLOOR = 0.62
 HAIR_TINTS = {"000000008052": (74, 48, 44)}
+# Hair on the other hair shader ("OW2 Hair", 0x33) whose colour image is white with the strands in its alpha: the material's statics
+# give the colour, and our model drew it white (#144: Illari's gold fan D830). From her data (tools/reference/illari-effects.md):
+# static 842EEB86 sRGB #F9FF99 the hair's colour (it matches every hero's hair colour on the hair shader, H/M), shaded toward
+# EB3D0DAA #BC6800 at the dark end of the strand mask (M; D830 has no strand map, so the mask is BCBE747D when present, else its
+# own alpha's softness: ours).
+HAIR_SHADER_2 = 0x33
+WHITE_HAIR = {"00000000D830": ((249, 255, 153), (188, 104, 0))}
+# Its strands' image: the hair shader's own albedo slot 49E5C1E3 (D830: 44258), not the usual ALBEDO.
+HAIR_ALBEDO = 0x49E5C1E3
 # Screens whose image holds their states in its channels (Juno's gun 4E48C: red the frame, green the happy face, blue the angry; its look
 # by the ramp 800957B5CD42, a flat grey, so the colour is ours): written as the frame + one face, and the frame + the other as "alt".
 # Glass over a screen: a flat-colour shell on the screen's own bounds (Juno's gun FBC0, 85 v over FB30's 40 v; shader 0x26, its colour and
@@ -238,7 +247,19 @@ def bake(shader, textures, moved=None):
 
 
 def hair(name, shader, textures):
-    """A black hair card's colours (HAIR_SHADER above), or None."""
+    """A black hair card's colours (HAIR_SHADER above), a white one's (WHITE_HAIR), or None."""
+    if shader == HAIR_SHADER_2 and name in WHITE_HAIR and HAIR_ALBEDO in textures:
+        albedo = Image.open(textures[HAIR_ALBEDO]).convert("RGBA")
+        light, dark = WHITE_HAIR[name]
+        if HAIR_SHADE in textures:
+            shade = Image.open(textures[HAIR_SHADE]).convert("L").resize(albedo.size, Image.BILINEAR)
+        else:
+            shade = albedo.getchannel("A")
+        low, high = shade.getextrema()
+        t = shade.point(lambda v: int(255 * (0.35 + 0.65 * (v - low) / max(high - low, 1))))
+        out = Image.composite(Image.new("RGB", albedo.size, light), Image.new("RGB", albedo.size, dark), t).convert("RGBA")
+        out.putalpha(albedo.getchannel("A"))
+        return out
     if shader != HAIR_SHADER or name not in HAIR_TINTS or not all(k in textures for k in (HAIR_SHADE, ALBEDO[0])):
         return None
     albedo = Image.open(textures[ALBEDO[0]]).convert("RGBA")
