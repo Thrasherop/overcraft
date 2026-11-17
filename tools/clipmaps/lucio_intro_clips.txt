@@ -1,0 +1,12 @@
+# Lúcio's Play of the Game highlight intro: the clip only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/lucio.glb by bone name (HeroModels, from hero_models/lucio_intro_clips.glb), as Sigma's (sigma_intro_clips.txt).
+# From DataTool's extract-unlocks "Lúcio|highlightintro=*" (build 154088, archived: research\lucio\extract\unlocks\Heroes\Lúcio\
+# HighlightIntro; headers research\potg_intros\intro_clips_sigma_lucio.txt). The default Overwatch plays "Heroic" (his other base
+# intros: Drop the beat, Freestyle, In the Groove). Heroic holds three body clips (205 of their 220 bones his model's, DB3F): group 32
+# BC40 7.867 s (animation effect 464A), C1EB 5.5 s (effect 4636); group 36 BC3F 7.6 s (effect 4649). His intro set was not read (no
+# research set dump for him). BC40 taken as the opening (M: for the ten heroes whose set was read, the opening is a group 32 / 16-32
+# clip, never a group 36 one, and BC40 is the lowest such id). He stays in place (root travel 0.00 m in the export). 236 frames at
+# 30 fps. Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <DB3F.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/lucio_intro_clips.txt --clips-from=<...>\Heroes\Lúcio\HighlightIntro\Overwatch\Heroic
+emote_00000000BC40 = potg_intro

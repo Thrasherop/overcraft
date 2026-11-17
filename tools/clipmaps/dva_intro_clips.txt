@@ -1,0 +1,15 @@
+# D.Va's Play of the Game highlight intro: the MEKA's clip only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/dva.glb (the MEKA, FBB0) by bone name (HeroModels, from hero_models/dva_intro_clips.glb), as Sigma's (sigma_intro_clips.txt).
+# From DataTool's extract-unlocks "D.Va|highlightintro=*" (build 154088, archived: research\potg_intros\extract\Unlocks\Heroes\D.Va\
+# HighlightIntro; headers research\potg_intros\intro_clips_rest.txt). The default Overwatch plays "Heroic" (her other base intros:
+# Eject, Lying Around, MEKA Activated). Heroic animates both of her bodies, read by which skeleton each clip's bones are (bone names
+# against dva.glb / dva_pilot.glb): group 32 BC5D 6.833 s (effect 4663), BD93 / BDBD 3.867 s, BDBF 7.833 s are the PILOT's (201 of their
+# 234 bones hers, 163 the MEKA's); group 36 BC5C 6.833 s (effect 47B9, 191 bones: 167 the MEKA's, 93 the pilot's) is the MEKA's; BC5E
+# (9 bones) and BD94 (16-60, 66.7 s, nothing keyed) are props. Her intro set 42FF's alias B33 is a SEQUENCE (research\dva\work\
+# clipmap_dva\compact_42FF.txt, H tree): seq[0] 6.833 s p0/32 -> seq[1] 7.833 -> seq[2] 3.867 -> seq[3] 3.6 -> seq[4] ...: so BC5D, the
+# pilot, is the opening (H by length and group), and BC5C, the MEKA's clip of the same 6.833 s, plays with it (M: same length, same
+# intro). PotgCard draws the hero's model, the MEKA, so the MEKA's BC5C is kept as potg_intro (root travel 0.37 m in the export). The
+# pilot's BC5D is not exported: HeroModels merges no dva_pilot_intro_clips. 206 frames at 30 fps. Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <FBB0.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/dva_intro_clips.txt --clips-from=<...>\Heroes\D.Va\HighlightIntro\Overwatch\Heroic
+emote_00000000BC5C = potg_intro
