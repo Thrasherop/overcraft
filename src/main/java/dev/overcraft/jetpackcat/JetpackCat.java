@@ -586,6 +586,21 @@ public final class JetpackCat implements HeroKit {
 	}
 
 	/** The towed ally let go (Lifeline stays as it was): they land unhurt and can't be caught again for 2 s. */
+	/**
+	 * A player on a Jetpack Cat's rope used a movement ability: the rope lets go of them (W, Lifeline: "a movement ability ends
+	 * the tow"; #142), as when she switches it off, but her Lifeline stays on. Called from each hero's movement ability as it
+	 * starts (Blink, Jump Jet, Jet Dash, Combat Roll, Glide Boost, Power Slide, Swift Step, Rejuvenating Dash, Guardian Angel,
+	 * Translocator, Boosters).
+	 */
+	public static void letGo(ServerPlayer towed) {
+		for (ServerPlayer cat : towed.level().getServer().getPlayerList().getPlayers()) {
+			HeroState s = dev.overcraft.hero.HeroManager.state(cat);
+			if (s != null && s.hero == dev.overcraft.hero.Hero.JETPACK_CAT && s.lifelineTarget != null && s.lifelineTarget == towed.getId()) {
+				release(cat, s);
+			}
+		}
+	}
+
 	private static void release(ServerPlayer player, HeroState s) {
 		if (s.lifelineTarget == null) {
 			return;

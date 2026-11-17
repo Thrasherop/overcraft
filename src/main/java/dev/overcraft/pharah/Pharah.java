@@ -231,6 +231,8 @@ public final class Pharah implements HeroKit {
 		startJet(player, s, JUMP_JET, JET_FUEL);
 		// its look 00F2 at her jets (PharahFx: the flash, the ring under her, 0.33 s of flames, 0.67 s of smoke)
 		Effects.play(player.level(), "pharah_jump_jet", player.position(), Vec3.ZERO, player, 0, player);
+		// a movement ability lets go of a Jetpack Cat's rope (W; #142)
+		dev.overcraft.jetpackcat.JetpackCat.letGo(player);
 		Combat.animate(player, "jump_jet");
 		PharahSounds.split(player, "jump_jet", player.position(), 60);
 		Voice.say(player, "jump_jet", 1);
@@ -249,6 +251,8 @@ public final class Pharah implements HeroKit {
 		// way from her input: ours)
 		Effects.play(player.level(), "pharah_jet_dash", player.position(), new Vec3(0, 1, 0).cross(sideOf(player)), player, 0, player);
 		// the same clips as Jump Jet (D 4B92 #65 / #346 / #509)
+		// a movement ability lets go of a Jetpack Cat's rope (W; #142)
+		dev.overcraft.jetpackcat.JetpackCat.letGo(player);
 		Combat.animate(player, "jump_jet");
 		PharahSounds.split(player, "jet_dash", player.position(), 60);
 		Voice.say(player, "jet_dash", 1);

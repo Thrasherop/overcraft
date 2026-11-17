@@ -234,6 +234,8 @@ public final class Sojourn implements HeroKit {
 		s.sojournSlide = 0;
 		s.softLanding = true;
 		s.interruptReload(slideTime(player));
+		// a movement ability lets go of a Jetpack Cat's rope (W; #142)
+		dev.overcraft.jetpackcat.JetpackCat.letGo(player);
 		Combat.animate(player, "slide");
 		// 2905 / 28E8's start (5185 hers, 5186 others'), Dual Thrusters' own on top (65B6: C3C7), her exert 0B90; the loop, the
 		// scrape and the end are her clients' (SojournSounds); Friction Generators' fill (51EB #442 -> 32DC)

@@ -187,6 +187,8 @@ public final class Tracer implements HeroKit {
 		// her fall starts again where she lands (WS: the Blink zeroes her vertical speed); no reload cut, no fire cut (D: Blink
 		// takes no action-stack slot in the base kit)
 		player.resetFallDistance();
+		// a movement ability lets go of a Jetpack Cat's rope (W; #142)
+		dev.overcraft.jetpackcat.JetpackCat.letGo(player);
 		Combat.animate(player, "blink");
 		ServerLevel level = player.level();
 		// her Blink's look 018F / 0190 (TracerFx)

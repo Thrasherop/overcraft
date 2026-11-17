@@ -343,6 +343,8 @@ public final class Sombra implements HeroKit {
 		SombraSounds.own(player, "translocator.depart");
 		dev.overcraft.hero.HeroSounds.at(level, SombraSounds.of("translocator.depart_3p"), player.position(), 45, player);
 		dev.overcraft.hero.HeroSounds.at(level, SombraSounds.of("translocator.dest_3p"), to, 45, player);
+		// a movement ability lets go of a Jetpack Cat's rope (W; #142)
+		dev.overcraft.jetpackcat.JetpackCat.letGo(player);
 		player.teleportTo(level, to.x, to.y, to.z, java.util.Set.of(), player.getYRot(), player.getXRot(), true);
 		Effects.play(level, "sombra_teleport", to, Vec3.ZERO, player, 0, player);
 		SombraSounds.at(level, "translocator.arrive", to, 45);

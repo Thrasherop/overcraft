@@ -649,6 +649,8 @@ public final class Lifeweaver implements HeroKit {
 		if (s.ability3Cooldown > 0 || s.dashTicks >= 0 || player.onGround() || LifeGrip.gripped(player) || HeroManager.jumpIsNotAirborne(player)) {
 			return;
 		}
+		// a movement ability lets go of a Jetpack Cat's rope (W; #142)
+		dev.overcraft.jetpackcat.JetpackCat.letGo(player);
 		s.dashTicks = Ow.ticks(DASH_TIME);
 		s.softLanding = true;
 		Combat.animate(player, "dash");

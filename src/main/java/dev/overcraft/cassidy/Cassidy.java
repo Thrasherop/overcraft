@@ -479,6 +479,8 @@ public final class Cassidy implements HeroKit {
 		s.interruptReload(0);
 		// Silver Bullet's reset (D 01D2: Combat Roll)
 		c.silverCooldown = 0;
+		// a movement ability lets go of a Jetpack Cat's rope (W; #142)
+		dev.overcraft.jetpackcat.JetpackCat.letGo(player);
 		Combat.animate(player, "roll_s" + Math.clamp(direction, 0, 3));
 		CassidySounds.split(player, "roll", player.position(), 40);
 		Voice.say(player, "roll", 1);
