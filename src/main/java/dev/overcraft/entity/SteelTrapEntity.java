@@ -34,6 +34,8 @@ import org.jspecify.annotations.Nullable;
 public class SteelTrapEntity extends OwProjectile implements SurfaceStuck {
 	/** 0 in flight, 1 set down, 2 sprung (synced: its look). */
 	private static final EntityDataAccessor<Integer> STAGE = SynchedEntityData.defineId(SteelTrapEntity.class, EntityDataSerializers.INT);
+	/** What it holds, as an entity id (-1 none; synced: its chain and the root's look on the caught, JunkratFx). */
+	private static final EntityDataAccessor<Integer> CAUGHT = SynchedEntityData.defineId(SteelTrapEntity.class, EntityDataSerializers.INT);
 	private int landed = -1;
 	private int sprung = -1;
 	private @Nullable LivingEntity caught;
@@ -51,6 +53,7 @@ public class SteelTrapEntity extends OwProjectile implements SurfaceStuck {
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 		super.defineSynchedData(builder);
 		builder.define(STAGE, 0);
+		builder.define(CAUGHT, -1);
 	}
 
 	/** Set down, it's on the ground (it bounces off walls and ceilings): SurfaceStuck. */
@@ -67,8 +70,18 @@ public class SteelTrapEntity extends OwProjectile implements SurfaceStuck {
 		return stage() == 1 && landed >= Ow.ticks(JunkratStats.TRAP_ARM);
 	}
 
+	/** What it holds: the server's own, the synced id's on a client. */
 	public @Nullable LivingEntity caught() {
+		if (level().isClientSide()) {
+			int id = entityData.get(CAUGHT);
+			return id >= 0 && level().getEntity(id) instanceof LivingEntity e ? e : null;
+		}
 		return caught;
+	}
+
+	private void setCaught(@Nullable LivingEntity e) {
+		caught = e;
+		entityData.set(CAUGHT, e == null ? -1 : e.getId());
 	}
 
 	/** Its catch pulled out (Life Grip, #124): let go now, as at its time's end. */
@@ -76,7 +89,7 @@ public class SteelTrapEntity extends OwProjectile implements SurfaceStuck {
 		if (caught != null && getOwner() instanceof ServerPlayer owner) {
 			Junkrat.trapReleased(owner, this, caught);
 		}
-		caught = null;
+		setCaught(null);
 	}
 
 	@Override
@@ -136,7 +149,7 @@ public class SteelTrapEntity extends OwProjectile implements SurfaceStuck {
 				if (victim != null) {
 					entityData.set(STAGE, 2);
 					sprung = 0;
-					caught = victim;
+					setCaught(victim);
 					Junkrat.trapSprung(owner, this, victim);
 				}
 			}
@@ -145,7 +158,7 @@ public class SteelTrapEntity extends OwProjectile implements SurfaceStuck {
 		sprung++;
 		if (caught != null && (!caught.isAlive() || sprung >= Ow.ticks(Junkrat.rootSeconds(caught)))) {
 			Junkrat.trapReleased(owner, this, caught);
-			caught = null;
+			setCaught(null);
 		}
 		if (sprung >= Ow.ticks(JunkratStats.TRAP_ROOT + JunkratStats.TRAP_LINGER)) {
 			discard();
@@ -245,7 +258,7 @@ public class SteelTrapEntity extends OwProjectile implements SurfaceStuck {
 			if (getOwner() instanceof ServerPlayer owner) {
 				if (caught != null) {
 					Junkrat.trapReleased(owner, this, caught);
-					caught = null;
+					setCaught(null);
 				}
 				Junkrat.trapBroken(owner, this);
 			}

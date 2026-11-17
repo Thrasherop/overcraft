@@ -23,7 +23,6 @@ import dev.overcraft.hero.Voice;
 import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import dev.overcraft.registry.OcEntities;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -204,6 +203,8 @@ public final class Junkrat implements HeroKit {
 		player.level().addFreshEntity(frag);
 		Combat.animate(player, "fire");
 		JunkratSounds.split(player, "frag.fire", from, 80);
+		// the launch 1468 at his launcher's muzzle 0006 (JunkratFx)
+		Effects.play(player.level(), "jr_frag_launch", from, frag.getDeltaMovement(), player, 0, player);
 		if (s.has(Perk.JUNKRAT_FRAG_CANNON)) {
 			// its own sound on the shot (D #463 effect 6599)
 			JunkratSounds.all(player.level(), "frag.cannon", from, 60);
@@ -222,6 +223,10 @@ public final class Junkrat implements HeroKit {
 		}
 		Combat.animate(player, "reload");
 		JunkratSounds.split(player, "reload", player.getEyePosition(), 30);
+		// the reload's steam and sparks at his launcher's muzzle and drum (08AD in his view, 16AA for others: JunkratFx), its length in
+		// ticks as the variant
+		Effects.play(player.level(), "jr_reload", player.getEyePosition(), Vec3.ZERO, player,
+			(int) Math.round(reloadTicks(j.reloadFast) / Math.max(0.1, Combat.attackRate(player))), player);
 	}
 
 	/**
@@ -254,14 +259,15 @@ public final class Junkrat implements HeroKit {
 		ServerLevel level = (ServerLevel) frag.level();
 		if (frag.bomb()) {
 			blast(owner, frag, at, null, 0, MAYHEM_DAMAGE, MAYHEM_RADIUS, MAYHEM_RADIUS, 1, 0, 0, 1, 0, MAYHEM_BLOW);
-			level.sendParticles(ParticleTypes.EXPLOSION, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+			// its burst 14CC (JunkratFx)
+			Effects.play(level, "jr_bomb_burst", at, Vec3.ZERO, null, 0, owner);
 			JunkratSounds.all(level, "mayhem.bomb", at, 80);
 			return;
 		}
 		boolean hit = blast(owner, frag, at, direct, FRAG_DIRECT, FRAG_SPLASH, FRAG_SPLASH_FULL, FRAG_SPLASH_RADIUS,
 			FRAG_SPLASH_EDGE, FRAG_KNOCK_AWAY, FRAG_KNOCK_UP, FRAG_KNOCK_EDGE, FRAG_KNOCK_SELF, FRAG_BLOW);
-		level.sendParticles(ParticleTypes.EXPLOSION, at.x, at.y, at.z, 1, 0, 0, 0, 0);
-		level.sendParticles(ParticleTypes.FLAME, at.x, at.y, at.z, 6, 0.3, 0.3, 0.3, 0.02);
+		// its burst 13C6, the face it went off on as the direction (its scorch: JunkratFx)
+		Effects.play(level, "jr_frag_burst", at, frag.burstNormal(), null, 0, owner);
 		JunkratSounds.blast(owner, level, "frag.explode", at, 120);
 		if (hit) {
 			JunkratSounds.split(owner, "frag.hit_enemy", at, 80);
@@ -332,6 +338,8 @@ public final class Junkrat implements HeroKit {
 		j.reloadFast = false;
 		if (cut) {
 			net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, new dev.overcraft.net.HeroActionPayload(player.getId(), "reload_cut"));
+			// and its sparks still to come (JunkratFx)
+			Effects.play(player.level(), "jr_reload_cut", player.getEyePosition(), Vec3.ZERO, player, 0, player);
 		}
 		Combat.animate(player, "mine_detonate");
 		JunkratSounds.split(player, "mine.detonate", player.getEyePosition(), 30);
@@ -371,8 +379,9 @@ public final class Junkrat implements HeroKit {
 		ServerLevel level = (ServerLevel) mine.level();
 		blast(owner, mine, at, null, 0, MINE_DAMAGE, MINE_FULL, MINE_RADIUS_BLAST, MINE_EDGE_DAMAGE / MINE_DAMAGE,
 			MINE_KNOCK_AWAY, MINE_KNOCK_UP, 1, 0, MINE_BLOW);
-		level.sendParticles(ParticleTypes.EXPLOSION, at.x, at.y, at.z, 1, 0, 0, 0, 0);
-		level.sendParticles(ParticleTypes.CLOUD, at.x, at.y, at.z, 12, 0.8, 0.5, 0.8, 0.08);
+		// its blast 151A, the face it was stuck to as the direction (its scorch: JunkratFx)
+		net.minecraft.core.Direction face = mine.stuckFace();
+		Effects.play(level, "jr_mine_blast", at, face == null ? Vec3.ZERO : Vec3.atLowerCornerOf(face.getUnitVec3i()), null, 0, owner);
 		JunkratSounds.blast(owner, level, "mine.explode", at, 120);
 	}
 
@@ -430,6 +439,8 @@ public final class Junkrat implements HeroKit {
 		float dealt = Combat.damage(victim, source, TRAP_DAMAGE, TRAP_BLOW);
 		dealt(owner, dealt, victim);
 		root(victim, rootSeconds(victim));
+		// its snap 16E0 (JunkratFx; the chain and the root's look are drawn from the trap: SteelTrapEntity.caught)
+		Effects.play(level, "jr_trap_snap", trap.position(), Vec3.ZERO, null, 0, owner);
 		JunkratSounds.all(level, "trap.trigger", trap.position(), 40);
 		JunkratSounds.split(owner, "trap.caught", trap.position(), 40);
 		Voice.say(owner, "trap", 1);
@@ -486,6 +497,8 @@ public final class Junkrat implements HeroKit {
 
 	public static void trapBroken(ServerPlayer owner, SteelTrapEntity trap) {
 		HeroState s = HeroManager.state(owner);
+		// broken: the snap's burst at a third (ours: the data has no own effect for it, M)
+		Effects.play((ServerLevel) trap.level(), "jr_trap_broken", trap.position(), Vec3.ZERO, null, 0, owner);
 		if (s != null && trap.getUUID().equals(s.junkrat.trap)) {
 			s.junkrat.trap = null;
 		}
@@ -518,6 +531,8 @@ public final class Junkrat implements HeroKit {
 		s.primaryReload = -1;
 		Combat.animate(player, "tire_cast");
 		JunkratSounds.split(player, "tire.cast", player.getEyePosition(), 60);
+		// the cast 1749 (the fuse's sparks at his hand 1.3 s in) and the tire set down 4557 (JunkratFx)
+		Effects.play(level, "jr_tire_cast", tire.position(), Vec3.ZERO, player, 0, player);
 		JunkratSounds.split(player, "tire.loop", at, 60);
 		ultLine(player);
 	}
@@ -618,8 +633,8 @@ public final class Junkrat implements HeroKit {
 		Vec3 at = tire.position().add(0, TIRE_HEIGHT / 2, 0);
 		double share = s.junkrat.nitroUsed ? NITRO_DAMAGE : 1;
 		boolean killed = blastKills(owner, tire, at, share);
-		level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y, at.z, 1, 0, 0, 0, 0);
-		level.sendParticles(ParticleTypes.FLAME, at.x, at.y, at.z, 40, 2, 1, 2, 0.1);
+		// its blast 15D2 + 35DC (JunkratFx); variant 1: on the ground (its scorch)
+		Effects.play(level, "jr_tire_blast", at, Vec3.ZERO, null, tire.onGround() ? 1 : 0, owner);
 		JunkratSounds.blast(owner, level, "tire.explode", at, 200);
 		endTire(owner, s, s.junkrat, tire);
 		if (killed && owner.isAlive()) {
@@ -636,6 +651,8 @@ public final class Junkrat implements HeroKit {
 	public static void tireBroken(ServerPlayer owner, RipTireEntity tire) {
 		HeroState s = HeroManager.state(owner);
 		JunkratSounds.all((ServerLevel) tire.level(), "tire.destroyed", tire.position(), 60);
+		// shot down: 1994 (JunkratFx)
+		Effects.play((ServerLevel) tire.level(), "jr_tire_broken", tire.position(), Vec3.ZERO, null, 0, owner);
 		if (s != null && tire.getUUID().equals(s.junkrat.tire)) {
 			endTire(owner, s, s.junkrat, tire);
 		} else {
@@ -675,6 +692,8 @@ public final class Junkrat implements HeroKit {
 				j.nitroUsed = true;
 				j.nitroAt = player.level().getGameTime();
 				JunkratSounds.all(player.level(), "nitro.boost", tire.position(), 60);
+				// its flare and the driver's speed lines 6740 (JunkratFx)
+				Effects.play(player.level(), "jr_nitro", tire.position(), Vec3.ZERO, tire, 0, player);
 			}
 			return;
 		}

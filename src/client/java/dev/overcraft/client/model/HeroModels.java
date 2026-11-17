@@ -85,7 +85,9 @@ public final class HeroModels {
 		// Torbjorn's effects' meshes (TorbjornFx): the rivet and pellet slugs, the pellet hit's shard, the pool's lava blobs, the slag's
 		// blob, the burn's rings, the forming dome, the cast's hemisphere
 		"torb_rivet", "torb_pellet", "torb_hit_shard_mesh", "torb_lava_a", "torb_lava_b_mesh", "torb_lava_c", "torb_slag_blob",
-		"torb_burn_ring_mesh", "torb_burn_ring_b", "torb_dome", "torb_hemisphere");
+		"torb_burn_ring_mesh", "torb_burn_ring_b", "torb_dome", "torb_hemisphere",
+		// Junkrat's effects' meshes (JunkratFx): the launch's burst, Nitro Boost's flare
+		"jr_muzzle_burst", "jr_nitro_flare");
 	private static final Map<String, Loaded> EXTRA_MODELS = new HashMap<>();
 	private static final List<Identifier> REGISTERED = new ArrayList<>();
 	/** Bigger images are halved until they fit: a 4096 texture per material is a lot of video memory for a player. */

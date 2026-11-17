@@ -164,6 +164,14 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 			// Cyberspace's 7763 has no model (sombra-effects): the cube is its effect (SombraFx.tick), and no shard with it (it fell back to the item)
 			case dev.overcraft.entity.CyberspaceEntity cube -> s.drawnByEffect = dev.overcraft.client.effect.EffectArt.get("sombra_cube_glow",
 				dev.overcraft.client.effect.EffectArt.Palette.SOMBRA_CYBER_CUBE, false) != null;
+			// Junkrat's: the frag's and the bombs' flight (051B / 1792), the mine's blinks (156A), the trap's ribbon and chain (6705 /
+			// 16D5) beside their models (JunkratFx)
+			case dev.overcraft.entity.FragEntity frag -> dev.overcraft.client.effect.JunkratFx.fragFlight(frag, at, dt,
+				KirikoFx.enemyOf(frag.getOwner()));
+			case dev.overcraft.entity.ConcussionMineEntity mine -> dev.overcraft.client.effect.JunkratFx.mineFlight(mine, at,
+				KirikoFx.enemyOf(mine.getOwner()));
+			case dev.overcraft.entity.SteelTrapEntity trap -> dev.overcraft.client.effect.JunkratFx.trapFlight(trap, at,
+				KirikoFx.enemyOf(trap.getOwner()));
 			default -> {
 			}
 		}

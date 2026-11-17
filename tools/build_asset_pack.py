@@ -1004,6 +1004,20 @@ EFFECT_MASKS = {
     "torb_ray": ("Torbjorn", "Turret", "000000002662", 1),
     "torb_ray_edge": ("Torbjorn", "Turret", "0000000193BE", 1),
     "torb_glare": ("Torbjorn", "Turret", "00000000098D", 1),
+    # Junkrat's (tools/reference/junkrat-effects.md "For the asset pack"; pass research/junkrat/fx as a source): the blasts'
+    # fireball flipbook (a colour sprite coloured by its brightness), flash, spark streak and scorch (frag, mine, tire, bombs),
+    # the launch's muzzle burst, the frag's glow, the tire blast's ground ring noise, the metal bits (a colour sprite: NATURAL),
+    # the tire's glow ball, the trap's chain
+    "jr_fireball": ("Junkrat", "FragLauncher", "0000000047C4", 11),
+    "jr_flash": ("Junkrat", "FragLauncher", "00000002613A", 1),
+    "jr_spark_streak": ("Junkrat", "FragLauncher", "00000002C009", 1),
+    "jr_scorch": ("Junkrat", "FragLauncher", "0000000031E8", 1),
+    "jr_muzzle_flash": ("Junkrat", "FragLauncher", "000000011F7F", 2),
+    "jr_frag_glow": ("Junkrat", "FragLauncher", "000000018BAD", 4),
+    "jr_ring_noise": ("Junkrat", "RIPTire", "000000004CB7", 1),
+    "jr_debris": ("Junkrat", "RIPTire", "0000000022FD", 8),
+    "jr_glow_ball": ("Junkrat", "RIPTire", "00000003699E", 1),
+    "jr_chain": ("Junkrat", "SteelTrap", "000000002A90", 1),
 }
 
 
@@ -1106,6 +1120,9 @@ EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  "torb_burn_ring_b": ("Torbjorn", "MoltenCore", "000000005708"),
                  "torb_dome": ("Torbjorn", "MoltenCore", "000000000DAF"),
                  "torb_hemisphere": ("Torbjorn", "MoltenCore", "00000000963D"),
+                 # Junkrat's (junkrat-effects.md): the launch's burst (1468, 0.2 x 0.17 x 0.2) and Nitro Boost's flare (6740)
+                 "jr_muzzle_burst": ("Junkrat", "FragLauncher", "0000000027B3"),
+                 "jr_nitro_flare": ("Junkrat", "Perks", "000000014346"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
                  # rings (a fat torus lying flat), the hook's cone, the towed ally's arcs, Purr's sphere, torus and wall
                  "cat_torus": ("JetpackCat", "Lifeline", "000000015A26"),
