@@ -53,6 +53,12 @@ Workshop recording of her: her movement is the data's default mover.
 - Perks (picked from the perk menu: Alt held, a click): Scoped Efficiency, a scoped shot 3 rounds (35 -> 32) at full 120; Seeker Mine,
   a husk 6.6 m from the mine (outside the plain mine's 3 m) took 75 over 5 s (5.55) and the mine stayed. The critic read W's prose as
   "trigger at 3 m, then darts within 10 m"; the data's 59BF has a 10 m radius and no burst, so the data's reading stands.
-- Not tried: a second player (her Infra-Sight shown to an ally, the pull with ping), the Nether, Sniper's Instinct and Widow's Bite,
+- **The other two perks, 2026-11-17** (picked in the Left Alt menu with the real mouse; the hero by the dev command, her picking paths
+  played before). **Widow's Bite:** two husks 2 m apart in a line, the scope held 2 s, one real left click: both 20 -> 8.192, 150 each
+  through the husk's 2 armor, so it pierced and stopped at 12.5. **Sniper's Instinct** (the harness's keys for the timing: the scope
+  held 0.8 s then `attack`): without a pull 90 and 102 (charge ~7.5-8.5); right after a hook pull 150 (the doubled rate reaching 12.5);
+  3 s after the pull 90 again (expired). A first run missed: the pull had moved her 0.3 m sideways and yaw 0 passed the husk (aimed
+  from her real position after that), not a bug.
+- Not tried: a second player (her Infra-Sight shown to an ally, the pull with ping), the Nether,
   Toggle Zoom (not built). Not reproduced: one real-key run lost a mine after G twice; two
   repeats didn't, and that window had a spider death in it.
