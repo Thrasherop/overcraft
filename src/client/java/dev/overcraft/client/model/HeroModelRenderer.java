@@ -358,6 +358,29 @@ public final class HeroModelRenderer {
 				dev.overcraft.client.effect.TorbjornFx.posed(entity, points);
 			}
 		}
+		if (hero == Hero.CASSIDY && !previewing && entity.isAlive()) {
+			// his revolver's muzzle (hp 0006) as held and his head, chest and right wrist, as posed, in the world (CassidyFx.POINTS:
+			// the muzzle and the reload's smoke, Deadeye's glint and glow, Silver Bullet's armed glow)
+			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
+			if (pose != null) {
+				net.minecraft.world.phys.Vec3 base = entity.getPosition(partialTicks);
+				float turn = (float) Math.toRadians(-facing);
+				String[] names = dev.overcraft.client.effect.CassidyFx.POINTS;
+				net.minecraft.world.phys.Vec3[] points = new net.minecraft.world.phys.Vec3[names.length];
+				for (int i = 0; i < names.length; i++) {
+					if (i >= dev.overcraft.client.effect.CassidyFx.GUN_POINTS) {
+						points[i] = bone(loaded.model(), pose, names[i], base, facing, state.scale);
+						continue;
+					}
+					Vector3f held = weaponShown ? HeroWeapon.point(hero, animator, loaded.model(), false, now, names[i]) : null;
+					if (held != null) {
+						held.mul(state.scale).rotateY(turn);
+						points[i] = base.add(held.x, held.y, held.z);
+					}
+				}
+				dev.overcraft.client.effect.CassidyFx.posed(entity, points);
+			}
+		}
 		if (hero == Hero.JETPACK_CAT && !previewing && entity.isAlive()) {
 			// her jetpack's flames and her paws' points, as posed, in the world (JetpackCatFx)
 			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
