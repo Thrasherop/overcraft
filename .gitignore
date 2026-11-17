@@ -20,3 +20,5 @@ __pycache__/
 run3/
 logs/
 run_client.out
+.kotlin/
+client_console.log
