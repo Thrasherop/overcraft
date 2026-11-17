@@ -127,6 +127,12 @@ public final class DvaStats {
 	public static final double BOOSTERS_SPEED = 5.5 * (1 + 1.18);
 	/** Ours (#148, the owner on 0.3.55): Boosters lift her over a rise this high (a block and a little), as a curb; Overwatch's maps have no blocks. */
 	public static final double BOOSTERS_CURB = 1.05;
+	/**
+	 * Ours (the owner on 0.3.66, "dva's boosters ... still are broken"): the most she slips sideways past an edge her box catches
+	 * (her 1.4 m width: a lone trunk dead centre took 0.95 m, reproduced 2026-11-16), so a tree, a post or a ledge's corner turns
+	 * her flight aside the way Overwatch's rounded geometry would, instead of stopping it; a wall still stops her, as in Overwatch.
+	 */
+	public static final double BOOSTERS_SLIP = 1.4;
 	/** Its length: 2 s at most, ended by a second press from 0.4 s on (D 03AF 2 at #166, #179 0.4 s; W) M. */
 	public static final double BOOSTERS_TIME = 2, BOOSTERS_MIN = 0.4;
 	/** Its cooldown starts 0.3 s after the flight ends (D 047E #168 -> #171) M. */
