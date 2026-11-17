@@ -507,6 +507,8 @@ public final class Mercy implements HeroKit {
 	}
 
 	private static void begin(ServerPlayer player, HeroState s, @Nullable Integer target, java.util.@Nullable UUID soul, Vec3 at) {
+		// a movement ability lets go of a Jetpack Cat's rope (W; #142)
+		dev.overcraft.jetpackcat.JetpackCat.letGo(player);
 		s.gaPhase = GA_FLY;
 		s.gaTarget = target;
 		s.gaSoul = soul;

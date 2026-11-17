@@ -217,6 +217,8 @@ public final class Juno implements HeroKit {
 		}
 		s.junoGlide = 0;
 		s.lastDamagedTick = Math.min(s.lastDamagedTick, Combat.now(player) - Combat.REGEN_DELAY);
+		// a movement ability lets go of a Jetpack Cat's rope (W; #142)
+		dev.overcraft.jetpackcat.JetpackCat.letGo(player);
 		Combat.animate(player, "glide");
 	}
 

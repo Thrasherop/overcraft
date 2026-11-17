@@ -52,6 +52,7 @@ public final class Boosters {
 			return;
 		}
 		s.dvaBoost = 0;
+		dev.overcraft.jetpackcat.JetpackCat.letGo(player);
 		s.dvaBoostExtra = 0;
 		s.dvaBoostHit.clear();
 		s.softLanding = true;
