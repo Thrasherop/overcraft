@@ -99,6 +99,12 @@ public class DynamiteEntity extends OwProjectile {
 			explode();
 			return;
 		}
+		if (landed() && level().getBlockState(net.minecraft.core.BlockPos.containing(position().subtract(0, 0.05, 0)))
+			.getCollisionShape(level(), net.minecraft.core.BlockPos.containing(position().subtract(0, 0.05, 0))).isEmpty()) {
+			// the block under it went (mined, burnt): it falls again, still lit (ours; it floated in the air: critique 2026-11-17)
+			entityData.set(LANDED, false);
+			setNoGravity(false);
+		}
 		if (landed()) {
 			setDeltaMovement(Vec3.ZERO);
 			if (tickCount >= lifetime()) {

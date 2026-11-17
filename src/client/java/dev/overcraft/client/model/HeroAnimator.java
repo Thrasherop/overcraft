@@ -455,7 +455,7 @@ public final class HeroAnimator {
 			// the fade back never cuts what ended her stealth: EMP's or Cyberspace's cast plays on (0487's priority 0xDD: M)
 			return;
 		}
-		boolean layerOnly = action.equals("fire") || action.equals("charged_shot") || action.equals("soundwave") || action.equals("fire_blaster")
+		boolean layerOnly = action.equals("fire") || action.equals("ads_fire") || action.equals("charged_shot") || action.equals("soundwave") || action.equals("fire_blaster")
 			|| action.startsWith("flash_heal") || action.equals("ga_start") || action.equals("fire_thorn") || action.equals("charge");
 		if (!layerOnly) {
 			// (those are additive layers or base states only: they don't cut a reload's clip)
@@ -1324,7 +1324,10 @@ public final class HeroAnimator {
 			} else if (base.startsWith("run") || base.startsWith("strafe") || base.startsWith("crouch_walk")) {
 				want = "run";
 			}
-			if (asheScope >= 1) {
+			if (asheScope >= 1 && base.startsWith("crouch") && model.clips.containsKey("a86_crouch_move")) {
+				// scoped and crouched, still or moving: 5FE2 (df18 cat65 / cat66, compact_08E1 lines 11-12, H)
+				want = "a86_crouch_move";
+			} else if (asheScope >= 1) {
 				// scoped and standing is 5F47, the scoped move's clip: the set's 1P tree plays it for df18's default (stand) as for
 				// cat5 (move) (compact_08E1 lines 13-14, H). 60FF ("ads_hold", the scope machine's sm[1]) is a transition, not
 				// the held aim: played held, it lowered the Viper to the hip (found playing 2026-11-17)
@@ -1581,6 +1584,8 @@ public final class HeroAnimator {
 			additive(model, pose, flier && fireSide ? "add_fire_2" : "add_fire", "fire", now);
 		}
 		additive(model, pose, "add_charged_shot", "charged_shot", now);
+		// Ashe's scoped shot's recoil (ashe.txt 5F77, dfE5 cat81)
+		additive(model, pose, "add_ads_fire", "ads_fire", now);
 		if (flier) {
 			flierLayers(model, entity, pose, now);
 		}

@@ -8,6 +8,8 @@ public final class AsheState {
 	public double scope;
 	/** The hip spread's share now (0 .. 1). */
 	public double spread;
+	/** Ticks before the hip spread starts to recover (HIP_SPREAD_WAIT from the last hip shot). */
+	public int spreadWait;
 	/** Ticks to the next hip shot, to the next scoped shot (the scoped one waits while the scope moves). */
 	public double hipWait, adsWait;
 	/** The reload's phase: -1 none, 0 its start, 1 shells, 2 its end; ticks into that phase. */

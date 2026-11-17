@@ -31,6 +31,8 @@ public final class AsheStats {
 	public static final double HIP_FALLOFF_START = 20, HIP_FALLOFF_END = 40;
 	/** Hip spread 0 -> 2 degrees (D 1C9A / 1C99; W) H; +1/6 of it a shot (D m_AC20B1C1 6, L), back at 2 a second (D #677) M. */
 	public static final double HIP_SPREAD = 2, HIP_SPREAD_PER_SHOT = 1 / 6.0, HIP_SPREAD_RECOVERY = 2;
+	/** The recovery waits 1.5 s after each hip shot before it starts (D #676, a Wait restarted by each shot) H. */
+	public static final double HIP_SPREAD_WAIT = 1.5;
 	/** Scoped: 75 a shot (D 0541, 14FC #555; W 75 - 22.5) H; no spread (D #668) H. */
 	public static final double ADS_DAMAGE = 75;
 	/** 0.65 s from a scoped shot to the next, paused while scoping in or out (D 14FC #773 v30009, #729; W 0.656 s) H/M. */

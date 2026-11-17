@@ -20,8 +20,8 @@ retargeted (`scripts\*_ashe.py`, `scripts\kit\`, `scripts\sounds\`). No Workshop
   Double-Barreled recast #515), ABILITY 2 x2ADDA7B1 (Dynamite 14FD #84 / #301; Remote Detonator 51E3 #368), ULTIMATE x2DFEDC52 (B.O.B.
   1536 #101).
 - Loadouts: 020A The Viper, 0209 Take Aim, 020D Coach Gun, 020B Dynamite, 020C B.O.B., 0DB2 Hero Stats, 0DDD Sub-role Sharpshooter.
-  Perks (004F.177 / loadouts): **2566** Viper's Sting (0B3E), **2565** Airburst (0B40) (minor); **2686** Remote Detonator (0CCF), **28B4**
-  Double-Barreled (0E4F) (major).
+  Perks (004F.177 / loadouts): **2686** Remote Detonator (0CCF), **28B4** Double-Barreled (0E4F) (minor); **2566** Viper's Sting
+  (0B3E), **2565** Airburst (0B40) (major) (the wiki and Perk.java; this line had the tiers swapped: critique 2026-11-17).
 - Models (skin Overwatch): body **105D5.00C** 3P (base 7C02, look A49D, set 08E2), **105CE.00C** 1P (base 7C04, set 08E1); **The Viper
   1079F.00C** (entity 2523, base 7B28, set 0979) on hardpoint 00C9, var 4082; **Coach Gun 107A0.00C** (entity 2560, base 7B59, set 09AC)
   on 000B, var 40C1; **Dynamite 107A8.00C** (base 7C61): in her hand entity 2B66 on 000B, var 41F4; thrown entity **2533** (projectile,

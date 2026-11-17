@@ -82,7 +82,8 @@ public final class Ashe implements HeroKit {
 		long now = player.level().getGameTime();
 		a.silenced = dev.overcraft.sombra.Hack.silenced(player);
 		double rate = Combat.cooldownRate(player);
-		if (a.coachCast < 0) {
+		{
+			// (it runs through the cast too: 10 s from the cast, D 131F / 1513 #124; it's set at the blast less the 0.165 s before it)
 			if (a.doubleUntil >= 0) {
 				// Double-Barreled's window: the cooldown shows nothing while the real one runs underneath (D 1513 #87 / #545)
 				a.heldCooldown = Math.max(0, a.heldCooldown - rate);
@@ -105,6 +106,13 @@ public final class Ashe implements HeroKit {
 		weapon(player, s, a, able, now);
 		if (a.checkTick++ % 20 == 0 && a.bob != null && bob(player, a) == null) {
 			a.bob = null;
+		}
+		// the ult is on while B.O.B. is (no charge meanwhile), not for a fixed time: he can outlast 14.5 s (a timed-out charge) or die
+		// early (critique 2026-11-17)
+		if (a.bob != null || a.bobCast >= 0) {
+			s.ultActive = Math.max(s.ultActive, 2);
+		} else if (s.ultActive > 0) {
+			s.ultActive = 0;
 		}
 		if (a.dynamite != null && dynamite(player, a) == null) {
 			a.dynamite = null;
@@ -138,7 +146,13 @@ public final class Ashe implements HeroKit {
 			// the scoped shot's timer waits while the scope moves (D #729 / #802)
 			a.adsWait = Math.max(0, a.adsWait - attack);
 		}
-		a.spread = Math.max(0, a.spread - HIP_SPREAD_RECOVERY / 20.0);
+		// the spread recovers only once 1.5 s have passed since the last hip shot (D #676 then #677; critique 2026-11-17: without the
+		// wait it was back to 0 before every next shot, so sustained hip fire never spread)
+		if (a.spreadWait > 0) {
+			a.spreadWait--;
+		} else {
+			a.spread = Math.max(0, a.spread - HIP_SPREAD_RECOVERY / 20.0);
+		}
 		boolean busy = !able || a.coachCast >= 0 || a.bobCast >= 0;
 		reload(player, s, a, able, attack);
 		// the scope: held on the right button, not while reloading or casting (D #580)
@@ -169,7 +183,8 @@ public final class Ashe implements HeroKit {
 			a.adsWait = Ow.ticks(ADS_INTERVAL);
 			a.hipWait = Ow.ticks(HIP_INTERVAL);
 			AsheSounds.split(player, "viper.fire_ads", player.getEyePosition(), 200);
-			Combat.animate(player, "fire_ads");
+			// a layer (her add_ads_fire 5F77, the Viper's lever 5F78 / 5E8E: WeaponClips by "ads_fire"), not a clip that cuts the action playing
+			Combat.animate(player, "ads_fire");
 			boolean hit = shot(player, s, player.getEyePosition(), player.getViewVector(1.0f), ADS_DAMAGE, ADS_FALLOFF_START, ADS_FALLOFF_END,
 				true, true);
 			if (!hit) {
@@ -181,6 +196,7 @@ public final class Ashe implements HeroKit {
 			a.hipWait = Ow.ticks(HIP_INTERVAL);
 			Vec3 dir = dev.overcraft.sombra.Sombra.cone(player.getViewVector(1.0f), HIP_SPREAD * a.spread, player.getRandom());
 			a.spread = Math.min(1, a.spread + HIP_SPREAD_PER_SHOT);
+			a.spreadWait = Ow.ticks(HIP_SPREAD_WAIT);
 			AsheSounds.split(player, "viper.fire", player.getEyePosition(), 200);
 			Combat.animate(player, "fire");
 			shot(player, s, player.getEyePosition(), dir, HIP_DAMAGE, HIP_FALLOFF_START, HIP_FALLOFF_END, true, false);
@@ -341,7 +357,10 @@ public final class Ashe implements HeroKit {
 			}
 			if (crit) {
 				s.critAt = level.getGameTime();
-				sharpshooter(s, dealt);
+				if (Allies.isEnemy(player, target)) {
+					// on an enemy only (D #2830's filter; a cow's head cut the Coach Gun's cooldown)
+					sharpshooter(s, dealt);
+				}
 			}
 			if (scoped && s.has(Perk.ASHE_VIPERS_STING) && target.isAlive() && Allies.isEnemy(player, target)) {
 				sting(player, s.ashe, target, level.getGameTime());
@@ -440,7 +459,8 @@ public final class Ashe implements HeroKit {
 
 	private static void startCoach(ServerPlayer player, HeroState s, AsheState a) {
 		boolean second = a.doubleUntil >= 0 && player.level().getGameTime() < a.doubleUntil;
-		if (a.coachCast >= 0 || (!second && s.ability1Cooldown > 0) || a.bobCast >= 0 || a.silenced || Sleep.asleep(player)) {
+		if (a.coachCast >= 0 || (!second && s.ability1Cooldown > 0) || a.bobCast >= 0 || a.silenced || Sleep.asleep(player) || player.isPassenger()) {
+			// (riding, the launch can't move her: not spent on nothing)
 			return;
 		}
 		a.coachCast = 0;
@@ -581,10 +601,10 @@ public final class Ashe implements HeroKit {
 		} else if (enemyPushed && s.has(Perk.ASHE_DOUBLE_BARRELED)) {
 			// Double-Barreled: one more within 2 s (D 28B4, #511)
 			a.doubleUntil = now + Ow.ticks(DOUBLE_WINDOW);
-			a.heldCooldown = Ow.ticks(COACH_COOLDOWN);
+			a.heldCooldown = Ow.ticks(COACH_COOLDOWN - COACH_FIRE_AT);
 			s.ability1Cooldown = 0;
 		} else {
-			s.ability1Cooldown = Ow.ticks(COACH_COOLDOWN);
+			s.ability1Cooldown = Ow.ticks(COACH_COOLDOWN - COACH_FIRE_AT);
 		}
 	}
 
@@ -967,6 +987,10 @@ public final class Ashe implements HeroKit {
 		a.coachCast = -1;
 		a.dynamiteCast = -1;
 		a.bobCast = -1;
+		if (a.doubleUntil >= 0) {
+			// Double-Barreled's window ends: the real cooldown comes back (G twice reset the Coach Gun: critique 2026-11-17)
+			s.ability1Cooldown = Math.min(a.heldCooldown, Ow.ticks(COACH_COOLDOWN - DOUBLE_WINDOW));
+		}
 		a.doubleUntil = -1;
 		speed(player, 0);
 		player.setAttached(HeroManager.ASHE_LOOK, 0);
