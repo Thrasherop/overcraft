@@ -129,6 +129,7 @@ public final class ReticleHud {
 		boolean reticle = atReticle();
 		switch (hero) {
 			case SOJOURN -> sojourn(g, s, cx, cy, reticle);
+			case ILLARI -> illari(g, s, cx, cy, reticle);
 			case SIGMA -> sigma(g, hero, s, cx, cy, reticle);
 			case BRIGITTE -> brigitte(g, player, hero, s, cx, cy, w, h, partial, reticle);
 			case MERCY -> mercy(g, player, hero, s, cx, cy, w, h, reticle);
@@ -226,6 +227,39 @@ public final class ReticleHud {
 			timedBar(g, HeroArt.ultimate(Hero.SOJOURN), left / time, left, cy);
 		}
 	}
+
+	/**
+	 * Illari (#144: "no reticle widget"). Ours, in Sojourn's layout, until her data's widget is read: her healing beam's energy
+	 * (the sync's meter: 0-1 of 100) as an arc on the left, the Solar Rifle's charge (the sync's secondary reload slot: 0-1) on
+	 * the right, both gold, white when full; the energy's number under it, red once she has emptied it (the beam's lockout).
+	 */
+	private static void illari(GuiGraphicsExtractor g, HeroSyncPayload s, float cx, float cy, boolean reticle) {
+		if (!reticle) {
+			return;
+		}
+		float energy = Math.clamp(s.meter(), 0, 1);
+		float charge = Math.clamp(s.secondaryReload(), 0, 1);
+		boolean emptied = (s.mode() & dev.overcraft.illari.Illari.MODE_EMPTIED) != 0;
+		float r = 34;
+		float sweep = 140;
+		float[] shares = {energy, charge};
+		for (int side = -1; side <= 1; side += 2) {
+			float low = side < 0 ? 196 : 164 - sweep;
+			float high = low + sweep;
+			HeroHud.arc(g, cx, cy, r + 1, 7, low, high, 0x59000000);
+			float share = shares[side < 0 ? 0 : 1];
+			int colour = side < 0 && emptied ? 0xFFE04040 : share >= 0.999f ? WHITE : ILLARI_GOLD;
+			if (share > 0) {
+				HeroHud.arc(g, cx, cy, r, 4, side < 0 ? low : high - sweep * share, side < 0 ? low + sweep * share : high, colour);
+			}
+		}
+		mark(cy + 40);
+		platedNumber(g, String.valueOf((int) Math.ceil(energy * 100)), cx, cy + 70, 22, emptied ? 0xFFE04040 : WHITE);
+		y = cy + 78;
+	}
+
+	/** Illari's gold (her rifle's charge glow, 5FAC r1 #FAA956: tools/reference/illari-effects.md). */
+	private static final int ILLARI_GOLD = 0xFFFAA956;
 
 	/**
 	 * Sigma. His barrier's health, 0275 on the centre layer (2155 #12: the bar's share C7, the health v586 in the text 5FCE, a whole
