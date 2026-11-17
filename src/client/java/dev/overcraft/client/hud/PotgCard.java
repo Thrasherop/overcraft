@@ -203,7 +203,7 @@ public final class PotgCard {
 		if (!soundsPlayed && t >= introAt) {
 			// the announcer's line and the music start with the intro's first frames (the clip: 13.05 s, §5)
 			soundsPlayed = true;
-			if (dev.overcraft.client.PotgMusic.playing()) {
+			if (potg && dev.overcraft.client.PotgMusic.playing()) {
 				// VICTORY's track reaches this cue now (PotgReplay.CARD_AFTER_KILL_MS): it runs on, the world goes quiet
 				dev.overcraft.client.PotgMusic.stopAllButInterface();
 			} else {

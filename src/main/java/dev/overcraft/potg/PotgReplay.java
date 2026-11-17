@@ -201,6 +201,9 @@ public final class PotgReplay {
 		}, CARD_AFTER_KILL_MS);
 	}
 
+	/** When the POTG being shown began, set as the world's last POTG once its replay starts; 0 when none waits. */
+	private static long potgShownFrom;
+
 	/** Each dragon's kill; a cue for an earlier one (a second dragon killed within the 7 s) does nothing. */
 	private static int dragonToken;
 
@@ -404,7 +407,9 @@ public final class PotgReplay {
 		}
 		int lead = LINEUP_MS + DIP_MS + INTRO_MS;
 		begin(server, viewers, true, lead);
-		PotgState.setLastPotg(server, System.currentTimeMillis());
+		// the plays count as shown once the replay starts (replay()): a missing segment left them spent (the critique's 6)
+		long shownFrom = System.currentTimeMillis();
+		potgShownFrom = shownFrom;
 		String data = showData(server, show, viewers, true).toString();
 		for (ServerPlayer p : viewers) {
 			ServerPlayNetworking.send(p, new PotgPayload(PotgPayload.CARD, show.player(), show.hero(), show.category(), lead / 1000f, data));
@@ -470,6 +475,10 @@ public final class PotgReplay {
 			}
 		}
 		List<ServerPlayer> started = backend.play(server, show, online);
+		if (!started.isEmpty() && holdsWorld && potgShownFrom > 0) {
+			PotgState.setLastPotg(server, potgShownFrom);
+			potgShownFrom = 0;
+		}
 		for (ServerPlayer p : started) {
 			WATCHING.add(p.getUUID());
 		}

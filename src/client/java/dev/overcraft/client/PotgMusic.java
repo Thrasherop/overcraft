@@ -17,6 +17,10 @@ import org.jspecify.annotations.Nullable;
  */
 public final class PotgMusic {
 	private static @Nullable SoundInstance music;
+	/** When VICTORY started the track (ms), or -1: it gives way if no POTG card comes by its cue. */
+	private static long victoryAt = -1;
+	/** The card is due 10.35 s after VICTORY (PotgReplay.CARD_AFTER_KILL_MS + the card's lineup and dip); the slack is ours. */
+	private static final long NO_CARD_MS = 15280 - 4930 + 1500;
 
 	private PotgMusic() {
 	}
@@ -32,12 +36,35 @@ public final class PotgMusic {
 		mc.getSoundManager().play(music);
 	}
 
+	/** VICTORY's track, which a POTG card picks up on its cue. */
+	public static void victory(SoundEvent event) {
+		start(event);
+		victoryAt = net.minecraft.util.Util.getMillis();
+	}
+
+	/**
+	 * Each client tick: VICTORY's track stops if no POTG came by its cue (no play since the last one, a Minecraft-mode
+	 * killer), rather than playing the POTG's part over nothing (the critique's 5).
+	 */
+	public static void tick() {
+		if (victoryAt < 0) {
+			return;
+		}
+		if (ClientPotg.active()) {
+			victoryAt = -1;
+		} else if (net.minecraft.util.Util.getMillis() - victoryAt > NO_CARD_MS) {
+			victoryAt = -1;
+			stop();
+		}
+	}
+
 	/** The track is still playing. */
 	public static boolean playing() {
 		return music != null && Minecraft.getInstance().getSoundManager().isActive(music);
 	}
 
 	public static void stop() {
+		victoryAt = -1;
 		if (music != null) {
 			Minecraft.getInstance().getSoundManager().stop(music);
 			music = null;

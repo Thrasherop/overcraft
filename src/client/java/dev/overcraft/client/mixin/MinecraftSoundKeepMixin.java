@@ -14,8 +14,9 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 @Mixin(Minecraft.class)
 public abstract class MinecraftSoundKeepMixin {
 	@ModifyVariable(method = "updateLevelInEngines(Lnet/minecraft/client/multiplayer/ClientLevel;Z)V", at = @At("HEAD"), argsOnly = true)
-	private boolean overcraft$keepPotgMusic(boolean stopSound) {
-		if (stopSound && PotgMusic.playing()) {
+	private boolean overcraft$keepPotgMusic(boolean stopSound, @com.llamalad7.mixinextras.sugar.Local(argsOnly = true) net.minecraft.client.multiplayer.ClientLevel level) {
+		// a new level (the replay's, the way back), not leaving the world (disconnect passes none: the critique's 4)
+		if (stopSound && level != null && PotgMusic.playing()) {
 			PotgMusic.stopAllButInterface();
 			return false;
 		}
