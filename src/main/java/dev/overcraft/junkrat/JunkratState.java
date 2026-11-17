@@ -18,6 +18,8 @@ public final class JunkratState {
 	/** The mine out (one at a time), and when it was thrown (game time). */
 	public @Nullable UUID mine;
 	public long mineThrownAt = -1000;
+	/** A detonate pressed before the mine could go (mid-throw, or under its 0.1 s arm): it goes the first tick it can (#153). */
+	public boolean detonateQueued;
 	/** Steel Trap: the trap out (one at a time), ticks until its cooldown starts (-1 none). */
 	public @Nullable UUID trap;
 	public int trapCooldownIn = -1;
@@ -49,6 +51,7 @@ public final class JunkratState {
 		mineCast = -1;
 		mine = null;
 		mineThrownAt = -1000;
+		detonateQueued = false;
 		trap = null;
 		trapCooldownIn = -1;
 		tire = null;

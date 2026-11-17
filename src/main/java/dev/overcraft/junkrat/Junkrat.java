@@ -142,8 +142,25 @@ public final class Junkrat implements HeroKit {
 			}
 		} else {
 			weapon(player, s, j, able, now);
+			// a press while the mine is still leaving his hand, or under its 0.1 s arm, isn't lost: it's held and goes the first tick
+			// the mine can (the owner, #153: "Clicking detonate should immediately fire it and override the other animations";
+			// reproduced 2026-11-17: a right click 0.15 s after the throw key did nothing, and the press was spent)
 			if (rightPress && able && !j.silenced) {
-				detonateMine(player, s, j, now);
+				j.detonateQueued = true;
+			}
+			if (!able || j.silenced) {
+				j.detonateQueued = false;
+			}
+			if (j.detonateQueued) {
+				ConcussionMineEntity out = mine(player, j);
+				boolean live = out != null && !out.detonating();
+				if (canDetonate(live, now - j.mineThrownAt)) {
+					j.detonateQueued = false;
+					detonateMine(player, s, j, now);
+				} else if (j.mineCast < 0 && !live) {
+					// nothing out and nothing coming: the press was for nothing
+					j.detonateQueued = false;
+				}
 			}
 		}
 		// a launch of his own (the mine's, his frag's push) lands him unhurt (CLAUDE.md, #35): it counts as moving until the server
