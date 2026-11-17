@@ -87,7 +87,8 @@ final class ActionTrack {
 			// Amp It Up is one clip, Sound Barrier the leap then the slam
 			// Sojourn's Charged Shot is a layer too (add_charged_shot alone: tools/clipmaps/sojourn*.txt): started as a step with no clip, it
 			// ended whatever played in one frame, a melee, Disruptor's cast (found by the second critique, #126)
-			case "fire", "soundwave", "charged_shot" -> {
+			// (Ashe's scoped shot too: add_ads_fire over her pose, the Viper's lever by WeaponClips)
+			case "fire", "soundwave", "charged_shot", "ads_fire" -> {
 			}
 			case "amp_it_up" -> start(now, "amp");
 			case "sound_barrier" -> start(now, "ult_cast", "ult_end");

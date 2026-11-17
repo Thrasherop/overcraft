@@ -78,6 +78,7 @@ public final class HeroArt {
 			case JUNKRAT -> "rip_tire";
 			case TORBJORN -> "molten_core";
 			case ILLARI -> "captive_sun";
+			case ASHE -> "b_o_b";
 		});
 	}
 
@@ -88,7 +89,8 @@ public final class HeroArt {
 
 	/** A perk's icon (a white glyph on clear), by its id ("urgent_care"). */
 	public static @Nullable Identifier perk(Hero hero, String perk) {
-		return art(hero, "perks/" + perk);
+		// Ashe's Viper's Sting: the pack names it from its display name (viper_s_sting)
+		return art(hero, "perks/" + (perk.equals("vipers_sting") ? "viper_s_sting" : perk));
 	}
 
 	/** One of the kill feed's own icons ("melee": Overwatch's Quick Melee fist), when the local pack has it. */

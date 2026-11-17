@@ -87,6 +87,7 @@ public class OvercraftClient implements ClientModInitializer {
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.CassidyFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.PharahFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.JunkratFx.frame());
+		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.AsheFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.LifeweaverFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(Fx::render);
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.hero.PressTrace.frame());
@@ -272,6 +273,10 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.HEALING_PYLON, dev.overcraft.client.model.LifeweaverPropRenderer::pylon);
 		EntityRendererRegistry.register(OcEntities.CAPTIVE_SUN, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"illari_sun", 1f, false, 1, false));
+		// Ashe's Dynamite (107A8) and B.O.B. (10800)
+		EntityRendererRegistry.register(OcEntities.DYNAMITE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"ashe_dynamite", 1f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.BOB, dev.overcraft.client.model.LifeweaverPropRenderer::bob);
 		EntityRendererRegistry.register(OcEntities.PULSE_BOMB, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"tracer_bomb", 0.4f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PHARAH_ROCKET, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,

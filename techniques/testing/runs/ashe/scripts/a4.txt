@@ -1,0 +1,49 @@
+MARK A4 B.O.B.: NoAI husk 12 m ahead in his path, a zombie (AI) 20 m off to the side, a villager ally 6 m ahead-left, a cow 8 m ahead-right; Q
+cmd /kill @e[type=!player]
+cmd /difficulty normal
+cmd /tp @s 0.5 150 0.5 0 0
+cmd /summon husk 0.5 150 12.5 {NoAI:1b,Tags:["b1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:200}],Health:200f}
+cmd /summon zombie 9.5 150 20.5 {Tags:["b2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:200}],Health:200f}
+cmd /summon villager -3.5 150 6.5 {NoAI:1b,Tags:["v1"]}
+cmd /summon cow 4.5 150 8.5 {NoAI:1b,Tags:["c1"]}
+cmd /tp @s 0.5 150 0.5 0 0
+sleep 1
+key ultimate down
+sleep 0.05
+key ultimate up
+sleep 0.3
+state
+screenshot ashe_bob_cast.png
+sleep 0.5
+ents
+sleep 0.4
+ents
+sleep 0.4
+ents
+hp @e[tag=b1,limit=1]
+hp @e[tag=b1,limit=1] Pos
+sleep 0.6
+screenshot ashe_bob_uppercut.png
+hp @e[tag=b1,limit=1] Pos
+sleep 1
+ents
+hp @e[tag=b1,limit=1]
+hp @e[tag=b2,limit=1]
+hp @e[tag=v1,limit=1]
+hp @e[tag=c1,limit=1]
+cmd /tp @s 0.5 150 -4.5 0 0
+sleep 2
+screenshot ashe_bob_fire.png
+hp @e[tag=b1,limit=1]
+hp @e[tag=b2,limit=1]
+hp @e[tag=b2,limit=1] Pos
+hp @e[tag=v1,limit=1]
+hp @e[tag=c1,limit=1]
+sleep 4
+hp @e[tag=b2,limit=1]
+hp @e[tag=b2,limit=1] Pos
+hp @e[type=overcraft:bob,limit=1]
+sleep 6
+ents
+hp @e[type=overcraft:bob,limit=1]
+state

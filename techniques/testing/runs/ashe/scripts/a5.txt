@@ -1,0 +1,35 @@
+MARK A5 B.O.B. and walking mobs: 3 zombies (AI, 60 MC) 14 m ahead, Ashe on a 3-high pillar out of their reach; Q; do they turn on B.O.B.? his health over time; knock-up height
+cmd /kill @e[type=!player]
+cmd /difficulty normal
+cmd /time set midnight
+cmd /fill 0 150 -2 0 152 -2 stone
+cmd /tp @s 0.5 153 -1.5 0 0
+cmd /summon zombie 0.5 150 13.5 {Tags:["z"],attributes:[{id:"minecraft:max_health",base:60}],Health:60f}
+cmd /summon zombie -1.5 150 14.5 {Tags:["z"],attributes:[{id:"minecraft:max_health",base:60}],Health:60f}
+cmd /summon zombie 2.5 150 15.5 {Tags:["z"],attributes:[{id:"minecraft:max_health",base:60}],Health:60f}
+cmd /ult 100
+ult 100
+sleep 1
+key ultimate down
+sleep 0.05
+key ultimate up
+sleep 1.3
+hp @e[tag=z,limit=1,sort=nearest] Pos
+sleep 0.2
+hp @e[tag=z,limit=1,sort=nearest] Pos
+sleep 0.3
+hp @e[tag=z,limit=1,sort=nearest] Pos
+screenshot ashe_bob_knockup.png
+sleep 2
+hp @e[type=overcraft:bob,limit=1]
+hp @e[type=overcraft:bob,limit=1] Pos
+hp @e[tag=z,limit=3]
+sleep 3
+hp @e[type=overcraft:bob,limit=1]
+screenshot ashe_bob_mobs.png
+sleep 3
+hp @e[type=overcraft:bob,limit=1]
+hp @e[tag=z,limit=3]
+sleep 4
+hp @e[type=overcraft:bob,limit=1]
+state

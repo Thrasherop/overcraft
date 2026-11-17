@@ -1,0 +1,5 @@
+hp @e[tag=vf,limit=1]
+hp @e[tag=wf,limit=1]
+ents Zombie
+state
+screenshot ashe_night.png

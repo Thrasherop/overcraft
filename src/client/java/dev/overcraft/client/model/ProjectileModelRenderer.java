@@ -177,6 +177,9 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 				KirikoFx.enemyOf(mine.getOwner()));
 			case dev.overcraft.entity.SteelTrapEntity trap -> dev.overcraft.client.effect.JunkratFx.trapFlight(trap, at,
 				KirikoFx.enemyOf(trap.getOwner()));
+			// Ashe's stick: its fuse in flight (25C7) and lit on the ground (25C8) (AsheFx)
+			case dev.overcraft.entity.DynamiteEntity stick -> dev.overcraft.client.effect.AsheFx.dynamite(stick, at,
+				KirikoFx.enemyOf(stick.getOwner()));
 			default -> {
 			}
 		}

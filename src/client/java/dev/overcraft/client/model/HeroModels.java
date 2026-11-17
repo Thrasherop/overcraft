@@ -82,6 +82,8 @@ public final class HeroModels {
 		"torbjorn_hammer", "torbjorn_turret",
 		// Illari's Healing Pylon (134D8) and Captive Sun's ball (10BAE)
 		"illari_pylon", "projectile_illari_sun",
+		// Ashe's Viper (1079F, her held weapon: weapon()), Coach Gun (107A0), Dynamite (107A8) and B.O.B. (10800)
+		"ashe_viper", "ashe_coach_gun", "projectile_ashe_dynamite", "ashe_bob",
 		// Torbjorn's effects' meshes (TorbjornFx): the rivet and pellet slugs, the pellet hit's shard, the pool's lava blobs, the slag's
 		// blob, the burn's rings, the forming dome, the cast's hemisphere
 		"torb_rivet", "torb_pellet", "torb_hit_shard_mesh", "torb_lava_a", "torb_lava_b_mesh", "torb_lava_c", "torb_slag_blob",
@@ -91,7 +93,9 @@ public final class HeroModels {
 		// Pharah's effects' meshes (PharahFx): Concussive's swirl, ground wave disc and shell, the jumps' ring disc
 		"pharah_conc_swirl", "pharah_disc", "pharah_sphere", "pharah_jet_disc",
 		// Junkrat's effects' meshes (JunkratFx): the launch's burst, Nitro Boost's flare
-		"jr_muzzle_burst", "jr_nitro_flare");
+		"jr_muzzle_burst", "jr_nitro_flare",
+		// Ashe's effects' meshes (AsheFx): B.O.B.'s charge glow (25CC)
+		"ashe_charge_dome");
 	private static final Map<String, Loaded> EXTRA_MODELS = new HashMap<>();
 	private static final List<Identifier> REGISTERED = new ArrayList<>();
 	/** Bigger images are halved until they fit: a 4096 texture per material is a lot of video memory for a player. */
@@ -130,7 +134,8 @@ public final class HeroModels {
 
 	/** The hero's weapon when it's a model of its own (hero_models/<hero>_weapon.glb: Lúcio's Sonic Amplifier), or null. */
 	public static @Nullable Loaded weapon(Hero hero) {
-		return EXTRA_MODELS.get(hero.id + "_weapon");
+		// Ashe's is named for its weapon, The Viper (ashe-map.md)
+		return EXTRA_MODELS.get(hero == Hero.ASHE ? "ashe_viper" : hero.id + "_weapon");
 	}
 
 	/** A model that isn't a hero's (see {@link #EXTRAS}). */

@@ -36,6 +36,10 @@ public final class ClientAna {
 	/** How far the local player is scoped in first person (0-1), 0 when not Ana or not in first person. */
 	private static float viewScope() {
 		Minecraft mc = Minecraft.getInstance();
+		if (ClientHero.hero() == dev.overcraft.hero.Hero.ASHE) {
+			// Ashe's Take Aim: her scope synced in the meter (Ashe.sync); full zoom at half the scope-in (D 14FC #552: clamp(v169 x 2))
+			return !mc.options.getCameraType().isFirstPerson() || !ClientHero.heroView() ? 0 : Math.min(1, ClientHero.sync().meter() * 2);
+		}
 		State s = state(mc.player);
 		return s == null || !mc.options.getCameraType().isFirstPerson() || !ClientHero.heroView() ? 0 : s.scope();
 	}
@@ -87,7 +91,9 @@ public final class ClientAna {
 			return 1;
 		}
 		float fov = Minecraft.getInstance().options.fov().get();
-		return 1 - scope * (1 - (float) AnaStats.SCOPED_FOV / Math.max(fov, 1));
+		// Ashe's 40 degrees (D 14FC #554 v172, M as a vertical field of view, as Ana's 30)
+		double scoped = ClientHero.hero() == dev.overcraft.hero.Hero.ASHE ? dev.overcraft.ashe.AsheStats.ADS_FOV : AnaStats.SCOPED_FOV;
+		return 1 - scope * (1 - (float) scoped / Math.max(fov, 1));
 	}
 
 	/** The mouse's turn while fully scoped: 30%. */

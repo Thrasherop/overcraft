@@ -86,11 +86,12 @@ DIM = 12
 # by the pattern, the parts from weapon_parts.json, and these.
 MODELS_BY_NAME = {"mercy_staff", "mercy_blaster", "ana_pistol", "brigitte_flail_head", "brigitte_shield", "sombra_beacon", "sigma_barrier_orb",
                   "lifeweaver_platform", "lifeweaver_seed", "lifeweaver_tree", "projectile_kunai", "projectile_ofuda", "projectile_suzu",
-                  "projectile_lifeweaver_seed", "tracer_weapon", "illari_pylon", "projectile_illari_sun", "torbjorn_hammer", "torbjorn_turret"}
+                  "projectile_lifeweaver_seed", "tracer_weapon", "illari_pylon", "projectile_illari_sun",
+                  "ashe_viper", "ashe_coach_gun", "ashe_bob", "projectile_ashe_dynamite", "torbjorn_hammer", "torbjorn_turret"}
 HERO_IDS = {"kiriko", "lucio", "jetpack_cat", "mercy", "lifeweaver", "ana", "sombra", "brigitte", "juno", "sojourn", "sigma", "dva", "dva_pilot",
             # the heroes after D.Va were never listed, so the glows run wrote no table for them (Junkrat's build report, #91). Tracer's
             # body 7E12 lit her face, arms and chest until its mask was read on its own UV layer (EMISSION_UV, #91)
-            "pharah", "cassidy", "junkrat", "tracer", "illari", "torbjorn"}
+            "pharah", "cassidy", "junkrat", "tracer", "illari", "ashe", "torbjorn"}
 
 
 def glowing_model(stem):

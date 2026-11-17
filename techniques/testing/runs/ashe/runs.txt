@@ -1,0 +1,527 @@
+
+=== S0 2026-11-14 23:05:55
+23:06:15.787 state -> {"screen": "GenericMessageScreen"}
+23:06:15.795 window 1920 1080 -> {"ok":true}
+23:06:22.864 newworld ashe1 -> {"ok":true}
+23:06:52.897 state -> {"screen": "LevelLoadingScreen"}
+23:06:55.580 screenshot ashe_select.png -> {"file":"E:\\claude\\mods\\overcraft_ashe\\run\\screenshots\\ashe_select.png"}
+
+=== A1 2026-11-14 23:08:52
+23:08:52.307 MARK A1 ready as Ashe, then HUD
+23:08:52.321 press key.keyboard.enter -> {"key":"key.keyboard.enter"}
+23:08:55.339 state -> {"screen": "", "x": -1.5, "y": -60.0, "z": -4.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 15.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:08:55.346 screenshot ashe_hud0.png -> {"file":"E:\\claude\\mods\\overcraft_ashe\\run\\screenshots\\ashe_hud0.png"}
+23:08:55.380 cmd /gamerule spawn_monsters false -> {"ok":true}
+23:08:55.592 cmd /difficulty easy -> {"ok":true}
+23:08:55.607 cmd /time set noon -> {"ok":true}
+23:08:55.641 cmd /kill @e[type=!player] -> {"ok":true}
+23:08:55.656 cmd /fill -10 149 -10 10 149 40 stone -> {"ok":true}
+23:08:55.664 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:08:56.665 MARK A1a hip: husk 100 MC 10 m ahead, chest; one tap (expected 35 OW = 2.8 MC; ammo 12 -> 11)
+23:08:56.700 cmd /summon husk 0.5 150 10.5 {NoAI:1b,Tags:["h1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:08:56.704 cmd /execute as @s at @s anchored eyes facing 0.5 151.0 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:08:58.125 hp @e[tag=h1,limit=1] -> Husk has the following entity data: 100.0f
+23:08:58.135 key secondary_fire down -> {"key":"key.mouse.left"}
+23:08:58.239 key secondary_fire up -> {"key":"key.mouse.left"}
+23:08:59.148 hp @e[tag=h1,limit=1] -> Husk has the following entity data: 97.2f
+23:08:59.151 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 69.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 11, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:08:59.151 MARK A1b hip held 2 s (expected 8 shots at 0.25 s, ammo 11 -> 3, ~ 280 OW = 22.4 MC some missed with spread)
+23:08:59.158 key secondary_fire down -> {"key":"key.mouse.left"}
+23:09:01.162 key secondary_fire up -> {"key":"key.mouse.left"}
+23:09:01.887 hp @e[tag=h1,limit=1] -> Husk has the following entity data: 74.79997f
+23:09:01.895 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 363.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 3, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:09:01.895 MARK A1c scoped: hold right 0.5 s, tap left (expected 75 = 6 MC), then held left 2 s scoped (0.65 s apart: ~3-4 shots)
+23:09:01.903 cmd /data merge entity @e[tag=h1,limit=1] {Health:100f} -> {"ok":true}
+23:09:01.911 key primary_fire down -> {"key":"key.mouse.right"}
+23:09:02.414 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 365.5, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 3, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:09:02.422 screenshot ashe_scoped.png -> {"file":"E:\\claude\\mods\\overcraft_ashe\\run\\screenshots\\ashe_scoped.png"}
+23:09:02.431 key secondary_fire down -> {"key":"key.mouse.left"}
+23:09:02.619 key secondary_fire up -> {"key":"key.mouse.left"}
+23:09:03.341 hp @e[tag=h1,limit=1] -> Husk has the following entity data: 94.0f
+23:09:03.345 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 445.25, "shield": 0.0, "mode": 1, "perkLevel": 1, "primaryAmmo": 2, "primaryReload": -1.0, "meter": 1.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:09:03.353 key secondary_fire down -> {"key":"key.mouse.left"}
+23:09:05.363 key secondary_fire up -> {"key":"key.mouse.left"}
+23:09:05.372 key primary_fire up -> {"key":"key.mouse.right"}
+23:09:06.093 hp @e[tag=h1,limit=1] -> Husk has the following entity data: 82.0f
+23:09:06.099 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 609.0, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": 0.5, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload_loop"}
+23:09:06.099 MARK A1d head scoped (expected 150 = 12 MC)
+23:09:06.107 cmd /data merge entity @e[tag=h1,limit=1] {Health:100f} -> {"ok":true}
+23:09:06.115 cmd /execute as @s at @s anchored eyes facing 0.5 151.75 10.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:09:06.124 key primary_fire down -> {"key":"key.mouse.right"}
+23:09:06.927 key secondary_fire down -> {"key":"key.mouse.left"}
+23:09:07.031 key secondary_fire up -> {"key":"key.mouse.left"}
+23:09:07.336 key primary_fire up -> {"key":"key.mouse.right"}
+23:09:07.752 hp @e[tag=h1,limit=1] -> Husk has the following entity data: 88.0f
+23:09:07.758 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 767.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+ads_out"}
+23:09:07.758 MARK A1e reload from current: R, sample ammo every 0.25 s for 3.6 s
+23:09:07.766 key reload down -> {"key":"key.keyboard.r"}
+23:09:07.817 key reload up -> {"key":"key.keyboard.r"}
+23:09:07.826 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 767.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:09:08.337 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 770.25, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": 0.5, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload_loop"}
+23:09:08.594 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 771.5, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 7, "primaryReload": 0.583, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload_loop"}
+23:09:08.852 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 772.75, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 8, "primaryReload": 0.667, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload_loop"}
+23:09:09.354 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 775.25, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 10, "primaryReload": 0.833, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload_loop"}
+23:09:10.360 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 780.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:09:11.370 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 785.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:09:11.370 MARK A1f empty and reload: hold fire to empty, then R; at 1.2 s press left to cut (expected the shells in stay)
+23:09:11.378 key secondary_fire down -> {"key":"key.mouse.left"}
+23:09:14.885 key secondary_fire up -> {"key":"key.mouse.left"}
+23:09:14.893 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 1643.0, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 1, "primaryReload": 0.083, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload_loop"}
+23:09:14.902 key reload down -> {"key":"key.keyboard.r"}
+23:09:14.960 key reload up -> {"key":"key.keyboard.r"}
+23:09:16.168 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 1649.25, "shield": 0.0, "mode": 2, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": 0.5, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+reload_loop"}
+23:09:16.175 key secondary_fire down -> {"key":"key.mouse.left"}
+23:09:16.284 key secondary_fire up -> {"key":"key.mouse.left"}
+23:09:16.791 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 1652.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== A2 2026-11-14 23:10:29
+23:10:29.868 MARK A2a Coach Gun at a NoAI husk 4 m ahead, chest (expected up to 90 OW = 7.2 MC; husk pushed? NoAI stays; Ashe launched back ~18 m/s; cooldown 10)
+23:10:29.876 cmd /kill @e[type=!player] -> {"ok":true}
+23:10:29.912 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:10:29.944 cmd /summon husk 0.5 150 4.5 {NoAI:1b,Tags:["h2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:10:29.977 cmd /execute as @s at @s anchored eyes facing 0.5 151.0 4.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:10:31.420 hp @e[tag=h2,limit=1] -> Husk has the following entity data: 100.0f
+23:10:31.445 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:10:31.512 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:10:31.620 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 2026.25, "shield": 0.0, "mode": 32, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+coach_gun"}
+23:10:31.781 state -> {"screen": "", "x": 0.5, "y": 150.473, "z": -1.842, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "ashe", "ult": 2051.25, "shield": 0.0, "mode": 32, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 10.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.092, "vz": -0.715, "anim": "jump+coach_gun"}
+23:10:32.215 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": -6.41, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 2053.5, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 9.8, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": -0.47, "anim": "run_back+coach_gun"}
+23:10:32.656 hp @e[tag=h2,limit=1] -> Husk has the following entity data: 98.08f
+23:10:33.685 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": -6.742, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 2061.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 8.3, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:10:33.685 MARK A2b Coach Gun at a walking zombie 4 m ahead (AI): pushed ~?
+23:10:33.718 cmd /kill @e[type=!player] -> {"ok":true}
+23:10:33.772 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:10:33.860 cmd /summon zombie 0.5 150 4.5 {Tags:["z2"],attributes:[{id:"minecraft:armor",base:0}]} -> {"ok":true}
+23:10:33.892 cmd /execute as @s at @s anchored eyes facing 0.5 151.0 4.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:10:34.425 cmd /cooldown -> {"ok":true}
+23:10:34.459 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:10:34.525 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:10:35.768 hp @e[tag=z2,limit=1] Pos -> Zombie has the following entity data: [0.5409882366726898d, 150.0d, 3.594925048947271d]
+23:10:36.202 hp @e[tag=z2,limit=1] -> Zombie has the following entity data: 19.0f
+23:10:36.230 state -> {"screen": "", "x": 0.498, "y": 150.292, "z": 0.282, "yaw": -0.0, "health": 17.5, "onGround": false, "heroMode": true, "hero": "ashe", "ult": 2450.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 5.8, "ability2Cooldown": 0.0, "vx": -0.002, "vy": 0.27, "vz": -0.218, "anim": "jump"}
+23:10:36.230 MARK A2c Coach Gun jump: look straight down, press; expect launched ~up; land unhurt
+23:10:36.263 cmd /kill @e[type=!player] -> {"ok":true}
+23:10:36.298 cmd /tp @s 0.5 150 0.5 0 90 -> {"ok":true}
+23:10:46.325 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:10:46.392 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:10:46.794 state -> {"screen": "", "x": 0.5, "y": 154.613, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "ashe", "ult": 2450.0, "shield": 0.0, "mode": 32, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 10.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.638, "vz": 0.0, "anim": "jump+coach_gun"}
+23:10:47.428 state -> {"screen": "", "x": 0.5, "y": 159.203, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "ashe", "ult": 2450.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 9.5, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.069, "vz": 0.0, "anim": "jump+coach_gun"}
+23:10:49.932 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 2450.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 7.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== A3 2026-11-14 23:11:17
+23:11:17.574 MARK A3a Coach Gun at a walking zombie 3 m ahead after the cooldown (expected pushed away ~+z, damage; Ashe back)
+23:11:17.600 cmd /kill @e[type=!player] -> {"ok":true}
+23:11:17.633 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:11:25.644 cmd /summon zombie 0.5 150 3.5 {Tags:["z2"],attributes:[{id:"minecraft:armor",base:0}]} -> {"ok":true}
+23:11:25.678 cmd /execute as @s at @s anchored eyes facing 0.5 151.0 3.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:11:26.019 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 2450.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:11:26.044 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:11:26.112 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:11:26.692 hp @e[tag=z2,limit=1] Pos -> Zombie has the following entity data: [0.5d, 150.2613679987259d, 5.046000063419342d]
+23:11:27.626 hp @e[tag=z2,limit=1] Pos -> Zombie has the following entity data: [0.5342608161564635d, 150.0d, 6.626693725280974d]
+23:11:28.060 hp @e[tag=z2,limit=1] -> Zombie has the following entity data: 16.12f
+23:11:28.085 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": -7.516, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 2450.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 8.5, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:11:28.085 MARK A3b Dynamite: NoAI husks at 6 m and at 9 m (2 m apart), throw at the ground near the first; expected land, 2 s fuse, 50 to the near one, falloff on the other, burn 100 over 5 s
+23:11:28.119 cmd /kill @e[type=!player] -> {"ok":true}
+23:11:28.153 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:11:28.188 cmd /summon husk 0.5 150 6.5 {NoAI:1b,Tags:["d1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:11:28.220 cmd /summon husk 3.5 150 6.5 {NoAI:1b,Tags:["d2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:11:28.253 cmd /execute as @s at @s anchored eyes facing 0.5 150.0 5.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:11:28.754 key ability_2 down -> {"key":"key.keyboard.e"}
+23:11:28.821 key ability_2 up -> {"key":"key.keyboard.e"}
+23:11:29.455 ents -> {"ents":"1 0.50 150.00 0.50 v 0.00 0.00 0.00 t4092 | 411 1.75 150.00 4.36 v -0.01 0.00 -0.03 t26 | 412 1.98 150.00 3.24 v -0.02 0.00 -0.04 t26 | 413 0.50 150.00 6.50 v 0.00 0.00 0.00 t25 | 414 3.50 150.00 6.50 v 0.00 0.00 0.00 t24 | 415 0.75 150.01 4.75 v 0.00 0.00 0.00 t17 | "}
+23:11:29.489 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 2450.0, "shield": 0.0, "mode": 4, "perkLevel": 1, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 7.1, "ability2Cooldown": 11.8, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+dynamite_throw"}
+23:11:29.523 screenshot ashe_dynamite.png -> {"file":"E:\\claude\\mods\\overcraft_ashe\\run\\screenshots\\ashe_dynamite.png"}
+23:11:31.947 hp @e[tag=d1,limit=1] -> Husk has the following entity data: 95.36f
+23:11:32.378 hp @e[tag=d2,limit=1] -> Husk has the following entity data: 95.64188f
+23:11:35.320 hp @e[tag=d1,limit=1] -> Husk has the following entity data: 89.920006f
+23:11:35.759 hp @e[tag=d2,limit=1] -> Husk has the following entity data: 90.20188f
+23:11:39.202 hp @e[tag=d1,limit=1] -> Husk has the following entity data: 88.00001f
+23:11:39.633 hp @e[tag=d2,limit=1] -> Husk has the following entity data: 88.92188f
+23:11:39.658 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": -0.0, "health": 14.842, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 2450.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 1.65, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== A4 2026-11-14 23:11:58
+23:11:58.829 MARK A4 B.O.B.: NoAI husk 12 m ahead in his path, a zombie (AI) 20 m off to the side, a villager ally 6 m ahead-left, a cow 8 m ahead-right; Q
+23:11:58.852 cmd /kill @e[type=!player] -> {"ok":true}
+23:11:58.885 cmd /difficulty normal -> {"ok":true}
+23:11:58.918 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:11:58.952 cmd /summon husk 0.5 150 12.5 {NoAI:1b,Tags:["b1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:200}],Health:200f} -> {"ok":true}
+23:11:58.985 cmd /summon zombie 9.5 150 20.5 {Tags:["b2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:200}],Health:200f} -> {"ok":true}
+23:11:59.018 cmd /summon villager -3.5 150 6.5 {NoAI:1b,Tags:["v1"]} -> {"ok":true}
+23:11:59.053 cmd /summon cow 4.5 150 8.5 {NoAI:1b,Tags:["c1"]} -> {"ok":true}
+23:11:59.087 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:12:00.121 key ultimate down -> {"key":"key.keyboard.q"}
+23:12:00.208 key ultimate up -> {"key":"key.keyboard.q"}
+23:12:00.551 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 0.0, "shield": 0.0, "mode": 40, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+ult_cast"}
+23:12:00.576 screenshot ashe_bob_cast.png -> {"file":"E:\\claude\\mods\\overcraft_ashe\\run\\screenshots\\ashe_bob_cast.png"}
+23:12:01.090 ents -> {"ents":"1 0.50 150.00 0.50 v 0.00 0.00 0.00 t4725 | 429 1.37 150.00 7.44 v 0.00 -0.04 0.00 t44 | 430 3.05 150.00 5.66 v 0.00 -0.08 -0.00 t44 | 431 -70.25 -60.00 48.69 v -0.00 -0.12 0.00 t44 | 433 -73.62 -60.00 48.42 v -0.00 -0.04 0.00 t44 | 434 -75.63 -60.00 41.47 v -0.00 -0.08 0.00 t44 | 435 -69.04 -60.00 0.26 v 0.00 -0.12 0.00 t44 | 436 -68.38 -60.00 -0.01 v 0.00 0.00 0.00 t44 | 437 -67.78 -60.00 -2.60 v 0.00 -0.04 0.00 t44 | 438 -67.51 -60.00 -2.47 v 0.00 -0.08 0.00 t44 | 439 -67.29 -60.00 -8.93 v 0.00 -0.12 0.00 t44 | 440 -68.96 -60.00 -9.46 v -0.00 0.00 -0.00 t44 | 441 -65.40 -60.00 -6.72 v 0.00 -0.04 0.00 t44 | 442 -65.72 -60.00 -6.69 v 0.00 -0.08 -0.00 t44 | 445 6.17 -60.00 -88.63 v 0.00 -0.04 0.00 t44 | 446 5.75 -60.00 -89.30 v 0.00 -0.08 -0.00 t44 | 451 0.50 150.00 12.50 v 0.00 0.00 0.00 t42 | 452 8.21 150.00 19.24 v -0.04 -0.08 -0.04 t42 | 453 -3.50 150.00 6.50 v 0.00 0.00 0.00 t41 | 454 4.50 150.00 8.50 v 0.00 0.00 0.00 t40 | 455 0.50 150.00 6.50 v 0.00 -0.07 0.35 t19 | "}
+23:12:01.492 ents -> {"ents":"1 0.50 150.00 0.50 v 0.00 0.00 0.00 t4733 | 429 1.37 150.00 7.44 v 0.00 -0.04 0.00 t52 | 430 3.05 150.00 5.66 v 0.00 -0.08 -0.00 t52 | 431 -70.25 -60.00 48.69 v -0.00 -0.12 0.00 t52 | 433 -73.62 -60.00 48.42 v -0.00 -0.04 0.00 t52 | 434 -75.63 -60.00 41.47 v -0.00 -0.08 0.00 t52 | 435 -69.04 -60.00 0.26 v 0.00 -0.12 0.00 t52 | 436 -68.38 -60.00 -0.01 v 0.00 0.00 0.00 t52 | 437 -67.78 -60.00 -2.60 v 0.00 -0.04 0.00 t52 | 438 -67.51 -60.00 -2.47 v 0.00 -0.08 0.00 t52 | 439 -67.29 -60.00 -8.93 v 0.00 -0.12 0.00 t52 | 440 -68.96 -60.00 -9.46 v -0.00 0.00 -0.00 t52 | 441 -65.40 -60.00 -6.72 v 0.00 -0.04 0.00 t52 | 442 -65.72 -60.00 -6.69 v 0.00 -0.08 -0.00 t52 | 445 6.17 -60.00 -88.63 v 0.00 -0.04 0.00 t52 | 446 5.75 -60.00 -89.30 v 0.00 -0.08 -0.00 t52 | 451 0.50 150.00 12.50 v 0.00 0.00 0.00 t50 | 452 7.64 150.00 18.65 v -0.04 -0.08 -0.05 t50 | 453 -3.50 150.00 6.50 v 0.00 0.00 0.00 t49 | 454 4.50 150.00 8.50 v 0.00 0.00 0.00 t48 | 455 0.50 150.00 11.00 v 0.00 -0.08 0.00 t27 | "}
+23:12:01.893 ents -> {"ents":"1 0.50 150.00 0.50 v 0.00 0.00 0.00 t4741 | 429 1.37 150.00 7.44 v 0.00 -0.04 0.00 t60 | 430 3.05 150.00 5.66 v 0.00 -0.08 0.00 t60 | 431 -70.25 -60.00 48.69 v 0.00 -0.12 0.00 t60 | 433 -73.62 -60.00 48.42 v 0.00 -0.04 0.00 t60 | 434 -75.63 -60.00 41.47 v 0.00 -0.08 0.00 t60 | 435 -69.04 -60.00 0.26 v 0.00 -0.12 0.00 t60 | 436 -68.38 -60.00 -0.01 v 0.00 0.00 0.00 t60 | 437 -67.78 -60.00 -2.60 v 0.00 -0.04 0.00 t60 | 438 -67.51 -60.00 -2.47 v 0.00 -0.08 0.00 t60 | 439 -67.29 -60.00 -8.93 v 0.00 -0.12 0.00 t60 | 440 -68.96 -60.00 -9.46 v -0.00 0.00 -0.00 t60 | 441 -65.40 -60.00 -6.72 v 0.00 -0.04 0.00 t60 | 442 -65.72 -60.00 -6.69 v 0.00 -0.08 0.00 t60 | 445 6.17 -60.00 -88.63 v 0.00 -0.04 0.00 t60 | 446 5.75 -60.00 -89.30 v 0.00 -0.08 0.00 t60 | 451 0.50 150.00 12.50 v 0.00 0.00 0.00 t58 | 452 6.93 150.00 17.94 v -0.04 -0.08 -0.05 t58 | 453 -3.50 150.00 6.50 v 0.00 0.00 0.00 t57 | 454 4.50 150.00 8.50 v 0.00 0.00 0.00 t56 | 455 0.50 150.00 11.00 v 0.00 -0.06 0.00 t35 | "}
+23:12:02.336 hp @e[tag=b1,limit=1] -> Husk has the following entity data: 190.4f
+23:12:02.769 hp @e[tag=b1,limit=1] Pos -> Husk has the following entity data: [0.5d, 150.0d, 12.5d]
+23:12:03.395 screenshot ashe_bob_uppercut.png -> {"file":"E:\\claude\\mods\\overcraft_ashe\\run\\screenshots\\ashe_bob_uppercut.png"}
+23:12:03.839 hp @e[tag=b1,limit=1] Pos -> Husk has the following entity data: [0.5d, 150.0d, 12.5d]
+23:12:04.842 ents -> {"ents":"1 0.50 150.00 0.50 v 0.00 0.00 0.00 t4800 | 429 1.37 150.00 7.44 v 0.00 0.00 0.00 t119 | 430 3.05 150.00 5.66 v 0.00 -0.04 0.00 t119 | 431 -70.25 -60.00 48.69 v 0.00 -0.08 0.00 t119 | 433 -73.62 -60.00 48.42 v 0.00 0.00 0.00 t119 | 434 -75.63 -60.00 41.47 v 0.00 -0.04 0.00 t119 | 435 -69.04 -60.00 0.26 v 0.00 -0.08 0.00 t119 | 436 -68.38 -60.00 -0.01 v 0.00 -0.12 0.00 t119 | 437 -67.78 -60.00 -2.60 v 0.00 0.00 0.00 t119 | 438 -67.51 -60.00 -2.47 v 0.00 -0.04 0.00 t119 | 439 -67.29 -60.00 -8.93 v 0.00 -0.08 0.00 t119 | 440 -68.96 -60.00 -9.46 v -0.00 -0.12 -0.00 t119 | 441 -65.40 -60.00 -6.72 v 0.00 0.00 0.00 t119 | 442 -65.72 -60.00 -6.69 v 0.00 -0.04 0.00 t119 | 445 6.17 -60.00 -88.63 v 0.00 0.00 0.00 t119 | 446 5.75 -60.00 -89.30 v 0.00 -0.04 0.00 t119 | 451 0.50 150.00 12.50 v 0.00 0.00 0.00 t117 | 452 3.61 150.00 12.21 v -0.01 -0.08 -0.06 t117 | 453 -3.50 150.00 6.50 v 0.00 0.00 0.00 t116 | 454 4.50 150.00 8.50 v 0.00 0.00 0.00 t115 | 455 0.50 150.00 11.00 v 0.00 -0.02 0.00 t94 | 456 -42.50 -60.00 92.50 v 0.00 0.00 0.00 t0 | 458 -39.50 -60.00 95.50 v 0.00 0.00 0.00 t0 | 459 -36.50 -60.00 95.50 v 0.00 0.00 0.00 t0 | 460 -35.50 -60.00 98.50 v 0.00 0.00 0.00 t0 | 461 -40.50 -60.00 93.50 v 0.00 0.00 0.00 t0 | 466 -34.50 -60.00 103.50 v 0.00 0.00 0.00 t0 | 467 73.50 -60.00 28.50 v 0.00 0.00 0.00 t0 | 469 80.50 -60.00 23.50 v 0.00 0.00 0.00 t0 | 470 79.50 -60.00 20.50 v 0.00 0.00 0.00 t0 | 471 84.50 -60.00 23.50 v 0.00 0.00 0.00 t0 | "}
+23:12:05.281 hp @e[tag=b1,limit=1] -> Husk has the following entity data: 160.47998f
+23:12:05.720 hp @e[tag=b2,limit=1] -> Zombie has the following entity data: 193.0f
+23:12:06.152 hp @e[tag=v1,limit=1] -> Villager has the following entity data: 20.0f
+23:12:06.587 hp @e[tag=c1,limit=1] -> Cow has the following entity data: 10.0f
+23:12:06.611 cmd /tp @s 0.5 150 -4.5 0 0 -> {"ok":true}
+23:12:08.618 screenshot ashe_bob_fire.png -> {"file":"E:\\claude\\mods\\overcraft_ashe\\run\\screenshots\\ashe_bob_fire.png"}
+23:12:09.058 hp @e[tag=b1,limit=1] -> Husk has the following entity data: 119.67996f
+23:12:09.467 hp @e[tag=b2,limit=1] -> Zombie has the following entity data: 190.0f
+23:12:09.905 hp @e[tag=b2,limit=1] Pos -> Zombie has the following entity data: [2.1590356727328412d, 150.0d, 1.3158881214391527d]
+23:12:10.341 hp @e[tag=v1,limit=1] -> Villager has the following entity data: 20.0f
+23:12:10.771 hp @e[tag=c1,limit=1] -> Cow has the following entity data: 10.0f
+23:12:15.221 hp @e[tag=b2,limit=1] -> Zombie has the following entity data: 184.0f
+23:12:15.655 hp @e[tag=b2,limit=1] Pos -> Zombie has the following entity data: [-0.48704288315500815d, 150.0d, -9.247543298026896d]
+23:12:16.088 hp @e[type=overcraft:bob,limit=1] -> No entity was found
+23:12:22.105 ents -> {"ents":"1 1.14 -60.00 -45.31 v 0.00 -0.08 0.00 t5145 | 429 1.37 150.00 7.44 v 0.00 -0.04 0.00 t464 | 430 3.05 150.00 5.66 v 0.00 -0.08 0.00 t464 | 435 -69.04 -60.00 0.26 v 0.00 -0.12 0.00 t464 | 436 -68.38 -60.00 -0.01 v 0.00 0.00 0.00 t464 | 437 -67.78 -60.00 -2.60 v 0.00 -0.04 0.00 t464 | 438 -67.51 -60.00 -2.47 v 0.00 -0.08 0.00 t464 | 439 -67.29 -60.00 -8.93 v 0.00 -0.12 0.00 t464 | 440 -68.96 -60.00 -9.46 v -0.00 0.00 -0.00 t464 | 441 -65.40 -60.00 -6.72 v 0.00 -0.04 0.00 t464 | 442 -65.72 -60.00 -6.69 v 0.00 -0.08 0.00 t464 | 445 6.17 -60.00 -88.63 v 0.00 -0.04 0.00 t464 | 446 5.75 -60.00 -89.30 v 0.00 -0.08 0.00 t464 | 453 -3.50 150.00 6.50 v 0.00 0.00 0.00 t461 | 454 4.50 150.00 8.50 v 0.00 0.00 0.00 t460 | 456 -42.50 -60.00 92.50 v 0.00 0.00 0.00 t345 | 458 -36.77 -60.00 98.21 v 0.00 0.00 0.00 t345 | 459 -36.38 -60.00 99.01 v 0.00 0.00 0.00 t345 | 460 -34.88 -60.00 99.26 v 0.00 0.00 0.00 t345 | 461 -35.65 -60.00 98.06 v 0.00 0.00 0.00 t345 | 466 -34.50 -60.00 103.50 v 0.00 0.00 0.00 t345 | 467 71.14 -60.00 23.15 v 0.00 -0.00 0.00 t345 | 469 85.26 -60.00 25.28 v 0.00 0.00 0.00 t345 | 470 85.23 -60.00 6.82 v 0.00 0.00 0.00 t345 | 471 82.72 -60.00 28.26 v 0.00 0.00 0.00 t345 | 449 10.21 -60.00 -99.95 v 0.00 -0.04 0.00 t309 | 450 10.10 -60.00 -98.81 v 0.00 -0.08 0.00 t309 | 447 9.37 -60.00 -96.96 v 0.00 0.00 0.00 t309 | 448 7.91 -60.00 -97.51 v -0.00 -0.04 0.00 t309 | 443 -3.66 -60.00 -107.69 v 0.00 -0.04 0.00 t158 | 444 -2.41 -60.00 -108.54 v 0.00 -0.08 -0.00 t154 | 47...
+23:12:22.546 hp @e[type=overcraft:bob,limit=1] -> No entity was found
+23:12:22.572 state -> {"screen": "DeathScreen", "x": 1.141, "y": -60.0, "z": -45.312, "yaw": 0.0, "health": 0.0, "onGround": true, "heroMode": false, "hero": "ashe", "ult": 36.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 6, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "death"}
+
+=== A5 2026-11-14 23:12:57
+23:12:57.683 MARK A5 B.O.B. and walking mobs: 3 zombies (AI, 60 MC) 14 m ahead, Ashe on a 3-high pillar out of their reach; Q; do they turn on B.O.B.? his health over time; knock-up height
+23:12:57.714 cmd /kill @e[type=!player] -> {"ok":true}
+23:12:57.748 cmd /difficulty normal -> {"ok":true}
+23:12:57.781 cmd /time set midnight -> {"ok":true}
+23:12:57.814 cmd /fill 0 150 -2 0 152 -2 stone -> {"ok":true}
+23:12:57.849 cmd /tp @s 0.5 153 -1.5 0 0 -> {"ok":true}
+23:12:57.881 cmd /summon zombie 0.5 150 13.5 {Tags:["z"],attributes:[{id:"minecraft:max_health",base:60}],Health:60f} -> {"ok":true}
+23:12:57.914 cmd /summon zombie -1.5 150 14.5 {Tags:["z"],attributes:[{id:"minecraft:max_health",base:60}],Health:60f} -> {"ok":true}
+23:12:57.947 cmd /summon zombie 2.5 150 15.5 {Tags:["z"],attributes:[{id:"minecraft:max_health",base:60}],Health:60f} -> {"ok":true}
+23:12:57.982 cmd /ult 100 -> {"ok":true}
+23:12:58.015 ult 100 -> {"ok":true}
+23:12:59.017 key ultimate down -> {"key":"key.keyboard.q"}
+23:12:59.083 key ultimate up -> {"key":"key.keyboard.q"}
+23:13:00.829 hp @e[tag=z,limit=1,sort=nearest] Pos -> Zombie has the following entity data: [0.5127483242571657d, 150.0d, 10.83363041782114d]
+23:13:01.463 hp @e[tag=z,limit=1,sort=nearest] Pos -> Zombie has the following entity data: [0.5127483242571657d, 150.0d, 10.858423310369348d]
+23:13:02.198 hp @e[tag=z,limit=1,sort=nearest] Pos -> Zombie has the following entity data: [0.5122513025998793d, 150.0d, 10.805525644886673d]
+23:13:02.224 screenshot ashe_bob_knockup.png -> {"file":"E:\\claude\\mods\\overcraft_ashe\\run\\screenshots\\ashe_bob_knockup.png"}
+23:13:04.676 hp @e[type=overcraft:bob,limit=1] -> B.O.B. has the following entity data: 77.0f
+23:13:05.113 hp @e[type=overcraft:bob,limit=1] Pos -> B.O.B. has the following entity data: [0.5d, 150.0d, 9.75d]
+23:13:05.547 hp @e[tag=z,limit=3] -> data get entity @e[tag=z,limit=3] Health<--[HERE]
+23:13:08.989 hp @e[type=overcraft:bob,limit=1] -> B.O.B. has the following entity data: 65.0f
+23:13:09.003 screenshot ashe_bob_mobs.png -> {"file":"E:\\claude\\mods\\overcraft_ashe\\run\\screenshots\\ashe_bob_mobs.png"}
+23:13:12.421 hp @e[type=overcraft:bob,limit=1] -> No entity was found
+23:13:12.856 hp @e[tag=z,limit=3] -> data get entity @e[tag=z,limit=3] Health<--[HERE]
+23:13:17.297 hp @e[type=overcraft:bob,limit=1] -> No entity was found
+23:13:17.331 state -> {"screen": "", "x": 0.5, "y": 153.0, "z": -1.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 19.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== A6 2026-11-14 23:13:42
+23:13:42.609 MARK A6a G with B.O.B. out (expected: Minecraft mode, B.O.B. stays and fights on), then G back
+23:13:42.614 cmd /kill @e[type=!player] -> {"ok":true}
+23:13:42.648 cmd /time set noon -> {"ok":true}
+23:13:42.681 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:13:42.715 cmd /summon husk 0.5 150 25.5 {NoAI:1b,Tags:["g1"],attributes:[{id:"minecraft:max_health",base:200}],Health:200f} -> {"ok":true}
+23:13:42.750 ult 100 -> {"ok":true}
+23:13:43.283 key ultimate down -> {"key":"key.keyboard.q"}
+23:13:43.350 key ultimate up -> {"key":"key.keyboard.q"}
+23:13:44.852 key hero_mode down -> {"key":"key.keyboard.g"}
+23:13:44.918 key hero_mode up -> {"key":"key.keyboard.g"}
+23:13:45.960 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": false, "hero": "ashe", "ult": 123.58, "shield": 0.0, "mode": 8, "perkLevel": 2, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "idle"}
+23:13:46.397 hp @e[type=overcraft:bob,limit=1] Pos -> B.O.B. has the following entity data: [0.5d, 150.0d, 24.5d]
+23:13:48.835 hp @e[tag=g1,limit=1] -> Husk has the following entity data: 168.65433f
+23:13:48.859 key hero_mode down -> {"key":"key.keyboard.g"}
+23:13:48.926 key hero_mode up -> {"key":"key.keyboard.g"}
+23:13:49.929 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 610.3, "shield": 0.0, "mode": 8, "perkLevel": 2, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:13:49.929 MARK A6b dynamite and B.O.B. out, switch hero (H, Junkrat via select payload), expected both gone
+23:13:49.962 key ability_2 down -> {"key":"key.keyboard.e"}
+23:13:50.029 key ability_2 up -> {"key":"key.keyboard.e"}
+23:13:50.330 hero junkrat -> {"ok":true}
+23:13:52.276 hp @e[type=overcraft:bob,limit=1] -> B.O.B. has the following entity data: 92.0f
+23:13:52.711 hp @e[type=overcraft:dynamite,limit=1] -> Found no elements matching Health
+23:13:52.737 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 994.905, "shield": 0.0, "mode": 8, "perkLevel": 2, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 9.75, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:13:52.770 hero ashe -> {"ok":true}
+23:13:54.272 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 1195.634, "shield": 0.0, "mode": 8, "perkLevel": 2, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 8.25, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== A7 2026-11-14 23:14:04
+23:14:04.638 MARK A7 switch in the spawn area with B.O.B. and dynamite out (expected both gone, Junkrat), then back to Ashe (12 rounds)
+23:14:04.665 cmd /kill @e[type=!player] -> {"ok":true}
+23:14:04.699 cmd /tp @s -1.5 -60 -4.5 0 0 -> {"ok":true}
+23:14:04.733 cmd /summon husk -1.5 -60 20.5 {NoAI:1b,Tags:["g1"],attributes:[{id:"minecraft:max_health",base:200}],Health:200f} -> {"ok":true}
+23:14:04.766 ult 100 -> {"ok":true}
+23:14:05.267 key ultimate down -> {"key":"key.keyboard.q"}
+23:14:05.334 key ultimate up -> {"key":"key.keyboard.q"}
+23:14:06.136 cmd /execute as @s at @s run tp @s ~ ~ ~ ~ 60 -> {"ok":true}
+23:14:06.169 key ability_2 down -> {"key":"key.keyboard.e"}
+23:14:06.236 key ability_2 up -> {"key":"key.keyboard.e"}
+23:14:07.086 hp @e[type=overcraft:bob,limit=1] -> B.O.B. has the following entity data: 92.0f
+23:14:07.513 hp @e[type=overcraft:dynamite,limit=1] Pos -> Dynamite has the following entity data: [-1.25d, -59.99d, -3.6922875075399717d]
+23:14:07.547 state -> {"screen": "", "x": -1.5, "y": -60.0, "z": -4.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 0.0, "shield": 0.0, "mode": 12, "perkLevel": 2, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 11.15, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:14:07.573 hero junkrat -> {"ok":true}
+23:14:09.484 hp @e[type=overcraft:bob,limit=1] -> No entity was found
+23:14:09.918 hp @e[type=overcraft:dynamite,limit=1] Pos -> No entity was found
+23:14:09.945 state -> {"screen": "", "x": -1.5, "y": -60.0, "z": -4.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "junkrat", "ult": 12.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 5, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 2, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:14:09.978 hero ashe -> {"ok":true}
+23:14:11.982 state -> {"screen": "", "x": -1.5, "y": -60.0, "z": -4.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 10.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+
+=== A8 2026-11-14 23:18:10
+23:18:10.282 MARK A8 after the fix build (rejoined world ashe1): ready
+23:18:10.334 press key.keyboard.enter -> {"key":"key.keyboard.enter"}
+23:18:12.384 cmd /time set noon -> {"ok":true}
+23:18:12.391 cmd /difficulty easy -> {"ok":true}
+23:18:12.425 cmd /kill @e[type=!player] -> {"ok":true}
+23:18:12.444 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:18:12.450 cmd /overcraft reset -> {"ok":true}
+23:18:13.450 MARK A8a Coach Gun at a NoAI husk 4 m (expected most of 90 = up to 7.2 MC)
+23:18:13.494 cmd /summon husk 0.5 150 4.5 {NoAI:1b,Tags:["h2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:18:13.500 cmd /execute as @s at @s anchored eyes facing 0.5 151.0 4.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:18:14.003 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:18:14.064 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:18:15.088 hp @e[tag=h2,limit=1] -> Husk has the following entity data: 95.68f
+23:18:15.098 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": -0.7, "yaw": -0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 233.25, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 9.5, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+coach_gun"}
+23:18:15.098 MARK A8b uppercut on a walking zombie 12 m ahead (AI): its height sampled each 0.15 s
+23:18:15.109 cmd /kill @e[type=!player] -> {"ok":true}
+23:18:15.117 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:18:15.126 cmd /summon zombie 0.5 150 12.5 {Tags:["zu"],attributes:[{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:18:15.137 ult 100 -> {"ok":true}
+23:18:15.444 key ultimate down -> {"key":"key.keyboard.q"}
+23:18:15.561 key ultimate up -> {"key":"key.keyboard.q"}
+23:18:16.778 hp @e[tag=zu,limit=1] Pos -> Zombie has the following entity data: [0.5929999102464604d, 150.0d, 12.365512962790628d]
+23:18:17.241 hp @e[tag=zu,limit=1] Pos -> Zombie has the following entity data: [0.5470368614208238d, 152.44703470860358d, 12.136951109896794d]
+23:18:17.711 hp @e[tag=zu,limit=1] Pos -> Zombie has the following entity data: [0.5470368614208238d, 152.973272573771d, 13.05375490752893d]
+23:18:18.174 hp @e[tag=zu,limit=1] Pos -> Zombie has the following entity data: [0.5470368614208238d, 150.0d, 13.414748350741643d]
+23:18:18.182 screenshot ashe_knockup2.png -> {"file":"E:\\claude\\mods\\overcraft_ashe\\run\\screenshots\\ashe_knockup2.png"}
+23:18:18.601 hp @e[tag=zu,limit=1] Pos -> Zombie has the following entity data: [0.5470368614208238d, 150.0d, 13.42356854611054d]
+23:18:19.021 hp @e[tag=zu,limit=1] -> Zombie has the following entity data: 78.95987f
+23:18:21.448 hp @e[tag=zu,limit=1] -> Zombie has the following entity data: 49.484207f
+23:18:21.870 hp @e[type=overcraft:bob,limit=1] Pos -> B.O.B. has the following entity data: [0.5d, 150.0d, 11.0d]
+23:18:21.870 MARK A8c shoot her own dynamite in flight/landed: throw ahead, 0.6 s later hip-shot at it (expected it goes off at once)
+23:18:21.874 cmd /kill @e[type=!player] -> {"ok":true}
+23:18:21.884 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:18:21.892 cmd /summon husk 0.5 150 8.5 {NoAI:1b,Tags:["d1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:18:21.900 cmd /execute as @s at @s anchored eyes facing 0.5 150.0 6.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:18:22.202 key ability_2 down -> {"key":"key.keyboard.e"}
+23:18:22.256 key ability_2 up -> {"key":"key.keyboard.e"}
+23:18:23.479 hp @e[type=overcraft:dynamite,limit=1] Pos -> Dynamite has the following entity data: [0.75d, 150.01d, 5.457039559794158d]
+
+=== A9 2026-11-14 23:18:34
+23:18:34.657 MARK A9a hip-shoot the landed stick at 0.75 150.05 5.46 (fuse 2 s from landing ~0.4 s in; expected at once)
+23:18:34.663 cmd /execute as @s at @s anchored eyes facing 0.75 150.08 5.46 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:18:35.080 hp @e[tag=d1,limit=1] -> Husk has the following entity data: 79.33232f
+23:18:35.084 key secondary_fire down -> {"key":"key.mouse.left"}
+23:18:35.142 key secondary_fire up -> {"key":"key.mouse.left"}
+23:18:35.756 hp @e[type=overcraft:dynamite,limit=1] Pos -> No entity was found
+23:18:36.171 hp @e[tag=d1,limit=1] -> Husk has the following entity data: 79.33232f
+23:18:36.171 MARK A9b Coach Gun self push repeat (flat aim), x/z every 0.25 s
+23:18:36.176 cmd /kill @e[type=!player] -> {"ok":true}
+23:18:36.184 cmd /overcraft reset -> {"ok":true}
+23:18:36.193 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:18:37.200 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:18:37.259 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:18:37.524 state -> {"screen": "", "x": 0.5, "y": 150.07, "z": -0.7, "yaw": 0.0, "health": 18.592, "onGround": false, "heroMode": true, "hero": "ashe", "ult": 37.75, "shield": 0.0, "mode": 32, "perkLevel": 1, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 10.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.044, "vz": 0.0, "anim": "fall+coach_gun"}
+23:18:37.778 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": -0.7, "yaw": 0.0, "health": 19.042, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 39.0, "shield": 0.0, "mode": 32, "perkLevel": 1, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 10.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+coach_gun"}
+23:18:38.285 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": -0.7, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 41.75, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 9.5, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+coach_gun"}
+
+=== A10 2026-11-14 23:18:48
+23:18:48.686 MARK A10 throw, then at 0.9 s hip-shoot the stick where A8c landed (0.75 150.05 5.46); expected blast at once (before the 2 s fuse); husk 2 m past it hurt
+23:18:48.695 cmd /kill @e[type=!player] -> {"ok":true}
+23:18:48.719 cmd /fill 0 150 -2 0 152 -2 air -> {"ok":true}
+23:18:48.722 cmd /overcraft reset -> {"ok":true}
+23:18:48.732 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:18:48.742 cmd /summon husk 0.5 150 7.5 {NoAI:1b,Tags:["d1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:18:48.749 cmd /execute as @s at @s anchored eyes facing 0.5 150.0 6.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:18:49.259 key ability_2 down -> {"key":"key.keyboard.e"}
+23:18:49.317 key ability_2 up -> {"key":"key.keyboard.e"}
+23:18:50.446 hp @e[type=overcraft:dynamite,limit=1] Pos -> Dynamite has the following entity data: [0.75d, 150.01d, 5.457039559794158d]
+23:18:50.447 cmd /execute as @s at @s anchored eyes facing 0.75 150.08 5.46 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:18:50.456 key secondary_fire down -> {"key":"key.mouse.left"}
+23:18:50.509 key secondary_fire up -> {"key":"key.mouse.left"}
+23:18:51.076 hp @e[type=overcraft:dynamite,limit=1] Pos -> No entity was found
+23:18:51.490 hp @e[tag=d1,limit=1] -> Husk has the following entity data: 95.5266f
+23:18:51.490 MARK A10b Coach Gun self push, flat aim, nothing behind (x/z every 0.25 s)
+23:18:51.495 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:19:01.498 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:19:01.549 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:19:02.064 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": -3.777, "yaw": 0.0, "health": 15.982, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 338.417, "shield": 0.0, "mode": 32, "perkLevel": 1, "primaryAmmo": 11, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 10.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+coach_gun"}
+23:19:02.567 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": -3.777, "yaw": 0.0, "health": 16.882, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 340.917, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 11, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 9.55, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle+coach_gun"}
+
+=== N1 2026-11-14 23:19:32
+23:19:32.405 MARK N1 night fight: normal, midnight, monsters on; 3 zombies, 2 skeletons, a spider, a creeper, a tamed wolf and a villager beside her; ult full; 75 s of fight.py
+23:19:32.417 cmd /kill @e[type=!player] -> {"ok":true}
+23:19:32.452 cmd /difficulty normal -> {"ok":true}
+23:19:32.484 cmd /time set midnight -> {"ok":true}
+23:19:32.522 cmd /gamerule spawn_monsters true -> {"ok":true}
+23:19:32.552 cmd /tp @s 0.5 -60 0.5 0 0 -> {"ok":true}
+23:19:32.584 cmd /summon villager 1.5 -60 0.5 {NoAI:1b,Tags:["vf"]} -> {"ok":true}
+23:19:32.618 cmd /summon wolf -1.5 -60 0.5 {Owner:"Kiriko",Tags:["wf"]} -> {"ok":true}
+23:19:32.655 cmd /summon zombie 0.5 -60 14.5 -> {"ok":true}
+23:19:32.684 cmd /summon zombie 6.5 -60 12.5 -> {"ok":true}
+23:19:32.718 cmd /summon zombie -6.5 -60 13.5 -> {"ok":true}
+23:19:32.752 cmd /summon skeleton 10.5 -60 18.5 -> {"ok":true}
+23:19:32.786 cmd /summon skeleton -10.5 -60 18.5 -> {"ok":true}
+23:19:32.821 cmd /summon spider 0.5 -60 -14.5 -> {"ok":true}
+23:19:32.854 cmd /summon creeper 14.5 -60 0.5 -> {"ok":true}
+23:19:32.888 ult 100 -> {"ok":true}
+
+=== N1-fight 2026-11-14 23:19:33
+23:19:33.625 BOB with 5 within 20 m
+23:19:34.863 DYNAMITE at Zombie 12.7
+23:19:35.263 t 2 hp 20.00 ammo 11 mode 8 a1 0.0 a2 0.0 ult 0 | Zombie 12.7, Creeper 13.1, Zombie 13.3, Zombie 14.2
+23:19:37.367 t 4 hp 20.00 ammo 4 mode 12 a1 0.0 a2 10.3 ult 0 | Spider 6.6, Zombie 7.0, Creeper 7.2, Zombie 8.3
+23:19:38.980 COACH GUN at Spider 1.1
+23:19:39.718 t 7 hp 18.00 ammo 2 mode 40 a1 10.0 a2 8.1 ult 0 | Zombie 2.3, Zombie 2.5, Spider 7.3, Skeleton 13.4
+23:19:41.888 t 9 hp 14.00 ammo 4 mode 10 a1 8.0 a2 5.9 ult 0 | Spider 3.6, Zombie 4.4, Skeleton 11.8, Skeleton 19.6
+23:19:43.993 t 11 hp 14.00 ammo 0 mode 8 a1 5.8 a2 3.8 ult 0 | Zombie 9.6, Skeleton 14.9, Skeleton 19.4, Zombie 22.8
+23:19:46.095 t 13 hp 14.00 ammo 7 mode 10 a1 3.8 a2 1.6 ult 0 | Zombie 2.7, Zombie 12.0, Zombie 18.9, Skeleton 20.8
+23:19:48.234 t 15 hp 13.16 ammo 9 mode 0 a1 1.6 a2 0.0 ult 0 | Zombie 1.8, Zombie 14.5, Zombie 18.0, Skeleton 20.9
+23:19:50.542 COACH GUN at Zombie 2.0
+23:19:50.542 t 18 hp 10.16 ammo 3 mode 0 a1 0.0 a2 0.0 ult 148 | Zombie 2.0, Zombie 7.5, Zombie 17.2, Skeleton 22.0
+23:19:52.111 DYNAMITE at Zombie 6.7
+23:19:53.215 t 20 hp 7.84 ammo 0 mode 2 a1 8.2 a2 11.8 ult 179 | Zombie 7.2, Zombie 17.8, Skeleton 20.1, Zombie 22.0
+23:19:55.317 t 22 hp 6.24 ammo 8 mode 2 a1 6.0 a2 9.7 ult 189 | Zombie 2.3, Zombie 7.7, Zombie 17.1, Skeleton 18.8
+23:19:57.043 DEATH 1 at 11.8 22.4
+23:20:01.689 respawned: {"hero": "ashe", "heroMode": true, "screen": ""}
+23:20:02.123 t 29 hp 20.00 ammo 12 mode 0 a1 0.0 a2 0.0 ult 313 | 
+23:20:04.127 t 31 hp 20.00 ammo 12 mode 0 a1 0.0 a2 0.0 ult 323 | 
+23:20:06.132 t 33 hp 20.00 ammo 12 mode 0 a1 0.0 a2 0.0 ult 333 | 
+23:20:08.137 t 35 hp 20.00 ammo 12 mode 0 a1 0.0 a2 0.0 ult 343 | 
+23:20:10.141 t 37 hp 20.00 ammo 12 mode 0 a1 0.0 a2 0.0 ult 353 | 
+23:20:12.147 t 39 hp 20.00 ammo 12 mode 0 a1 0.0 a2 0.0 ult 363 | 
+23:20:14.221 t 41 hp 20.00 ammo 12 mode 0 a1 0.0 a2 0.0 ult 373 | Creeper 30.1, Spider 31.3
+23:20:16.328 t 43 hp 20.00 ammo 5 mode 0 a1 0.0 a2 0.0 ult 545 | Creeper 30.1, Spider 31.3
+23:20:18.433 t 45 hp 20.00 ammo 2 mode 2 a1 0.0 a2 0.0 ult 645 | Spider 31.6, Creeper 38.6, Spider 45.2
+23:20:20.538 t 48 hp 20.00 ammo 10 mode 2 a1 0.0 a2 0.0 ult 655 | Spider 31.6, Creeper 38.6, Creeper 45.0, Spider 46.0
+23:20:22.646 t 50 hp 20.00 ammo 5 mode 0 a1 0.0 a2 0.0 ult 823 | Spider 27.3, Spider 31.6, Creeper 38.6, Creeper 45.0
+23:20:24.952 DYNAMITE at Spider 19.9
+23:20:25.354 t 52 hp 20.00 ammo 1 mode 2 a1 0.0 a2 0.0 ult 888 | Spider 19.9, Spider 31.6, Creeper 38.6, Creeper 45.0
+23:20:27.461 t 54 hp 17.36 ammo 5 mode 2 a1 0.0 a2 10.3 ult 1020 | Spider 31.6, Creeper 38.6, Creeper 45.0, Spider 47.1
+23:20:29.569 t 57 hp 15.60 ammo 11 mode 0 a1 0.0 a2 8.2 ult 1052 | Spider 31.6, Creeper 38.6, Creeper 45.0, Spider 47.1
+23:20:31.675 t 59 hp 14.80 ammo 3 mode 0 a1 0.0 a2 6.1 ult 1111 | Creeper 38.6, Creeper 45.0, Spider 47.1
+23:20:33.784 t 61 hp 14.80 ammo 4 mode 2 a1 0.0 a2 4.0 ult 1134 | Creeper 38.4, Creeper 45.0, Spider 47.1
+23:20:35.888 t 63 hp 14.80 ammo 12 mode 2 a1 0.0 a2 1.9 ult 1144 | Creeper 38.4, Creeper 45.0, Spider 47.1
+23:20:37.991 t 65 hp 17.41 ammo 3 mode 0 a1 0.0 a2 0.0 ult 1274 | Creeper 37.8, Spider 41.4, Spider 42.0, Creeper 45.0
+23:20:40.095 t 67 hp 20.00 ammo 4 mode 2 a1 0.0 a2 0.0 ult 1326 | Creeper 37.6, Spider 41.4, Spider 41.7, Creeper 45.0
+23:20:42.201 t 69 hp 20.00 ammo 12 mode 2 a1 0.0 a2 0.0 ult 1337 | Spider 37.4, Creeper 37.6, Spider 41.4, Creeper 45.0
+23:20:44.306 t 71 hp 20.00 ammo 4 mode 0 a1 0.0 a2 0.0 ult 1499 | Spider 36.7, Creeper 37.5, Spider 41.4, Creeper 45.0
+23:20:46.412 t 73 hp 20.00 ammo 3 mode 2 a1 0.0 a2 0.0 ult 1585 | Creeper 34.1, Spider 34.8, Skeleton 37.1, Skeleton 37.6
+23:20:48.083 END: 1 deaths, 2 coach guns, 3 sticks, 1 B.O.B.s
+
+=== N1b 2026-11-14 23:20:51
+23:20:52.399 hp @e[tag=vf,limit=1] -> Villager has the following entity data: 20.0f
+23:20:52.835 hp @e[tag=wf,limit=1] -> Wolf has the following entity data: 1.0f
+23:20:52.860 ents Zombie -> {"ents":""}
+23:20:52.900 state -> {"screen": "", "x": 10.5, "y": 150.0, "z": -5.5, "yaw": 9.7, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 1620.157, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:20:52.928 screenshot ashe_night.png -> {"file":"E:\\claude\\mods\\overcraft_ashe\\run\\screenshots\\ashe_night.png"}
+
+=== N1c 2026-11-14 23:20:58
+23:20:58.964 hp @e[tag=wf,limit=1] Owner -> Wolf has the following entity data: [I; -956929499, 1598895909, -1851285478, -1767186058]
+23:20:59.401 hp @e[tag=wf,limit=1] Pos -> Wolf has the following entity data: [8.90143088019884d, 150.0d, -6.122687016807308d]
+
+=== W1 2026-11-14 23:21:24
+23:21:24.803 MARK W1a B.O.B. into a wall: a 2-high stone wall 8 m ahead; Q (expected stops at the wall ~7 m, then fires 10 s)
+23:21:24.805 cmd /gamerule spawn_monsters false -> {"ok":true}
+23:21:24.838 cmd /kill @e[type=!player] -> {"ok":true}
+23:21:24.873 cmd /time set noon -> {"ok":true}
+23:21:24.906 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:21:24.939 cmd /fill -3 150 9 3 151 9 stone -> {"ok":true}
+23:21:24.975 cmd /summon husk 0.5 150 14.5 {NoAI:1b,Tags:["w"],attributes:[{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:21:25.013 ult 100 -> {"ok":true}
+23:21:25.541 key ultimate down -> {"key":"key.keyboard.q"}
+23:21:25.608 key ultimate up -> {"key":"key.keyboard.q"}
+23:21:28.056 hp @e[type=overcraft:bob,limit=1] Pos -> No entity was found
+23:21:30.496 hp @e[type=overcraft:bob,limit=1] Pos -> No entity was found
+23:21:30.928 hp @e[tag=w,limit=1] -> No entity was found
+23:21:30.954 cmd /fill -3 150 9 3 151 9 air -> {"ok":true}
+23:21:30.954 MARK W1b in water: a 3x3 pool 2 deep under her; hip fire at a husk, Coach Gun, Dynamite into the water
+23:21:30.987 cmd /kill @e[type=!player] -> {"ok":true}
+23:21:31.021 cmd /fill -1 148 -1 1 149 1 water -> {"ok":true}
+23:21:31.055 cmd /tp @s 0.5 149 0.5 0 0 -> {"ok":true}
+23:21:31.088 cmd /summon husk 0.5 150 8.5 {NoAI:1b,Tags:["w2"],attributes:[{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:21:31.121 cmd /execute as @s at @s anchored eyes facing 0.5 151.0 8.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:21:31.155 cmd /overcraft reset -> {"ok":true}
+23:21:32.157 key secondary_fire down -> {"key":"key.mouse.left"}
+23:21:32.224 key secondary_fire up -> {"key":"key.mouse.left"}
+23:21:32.965 hp @e[tag=w2,limit=1] -> No entity was found
+23:21:32.991 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:21:33.059 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:21:33.668 state -> {"screen": "DeathScreen", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": 0.0, "health": 0.0, "onGround": true, "heroMode": false, "hero": "ashe", "ult": 2450.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "death"}
+23:21:33.694 cmd /tp @s 0.5 150 -3.5 0 50 -> {"ok":true}
+23:21:34.029 key ability_2 down -> {"key":"key.keyboard.e"}
+23:21:34.100 key ability_2 up -> {"key":"key.keyboard.e"}
+23:21:35.541 hp @e[type=overcraft:dynamite,limit=1] Pos -> No entity was found
+23:21:38.481 hp @e[type=overcraft:dynamite,limit=1] Pos -> No entity was found
+23:21:38.506 state -> {"screen": "DeathScreen", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": 0.0, "health": 0.0, "onGround": true, "heroMode": false, "hero": "ashe", "ult": 2450.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "death"}
+23:21:38.539 cmd /fill -1 148 -1 1 149 1 stone -> {"ok":true}
+
+=== W1-retry 2026-11-14 23:21:46
+23:21:46.456 MARK W1a B.O.B. into a wall: a 2-high stone wall 8 m ahead; Q (expected stops at the wall ~7 m, then fires 10 s)
+23:21:46.490 cmd /gamerule spawn_monsters false -> {"ok":true}
+23:21:46.525 cmd /kill @e[type=!player] -> {"ok":true}
+23:21:46.557 cmd /time set noon -> {"ok":true}
+23:21:46.591 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:21:46.624 cmd /fill -3 150 9 3 151 9 stone -> {"ok":true}
+23:21:46.658 cmd /summon husk 0.5 150 14.5 {NoAI:1b,Tags:["w"],attributes:[{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:21:46.691 ult 100 -> {"ok":true}
+23:21:47.192 key ultimate down -> {"key":"key.keyboard.q"}
+23:21:47.259 key ultimate up -> {"key":"key.keyboard.q"}
+23:21:49.705 hp @e[type=overcraft:bob,limit=1] Pos -> B.O.B. has the following entity data: [0.5d, 150.0d, 8.300000011920929d]
+23:21:52.143 hp @e[type=overcraft:bob,limit=1] Pos -> B.O.B. has the following entity data: [0.5d, 150.0d, 8.300000011920929d]
+23:21:52.576 hp @e[tag=w,limit=1] -> Husk has the following entity data: 100.0f
+23:21:52.580 cmd /fill -3 150 9 3 151 9 air -> {"ok":true}
+23:21:52.580 MARK W1b in water: a 3x3 pool 2 deep under her; hip fire at a husk, Coach Gun, Dynamite into the water
+23:21:52.613 cmd /kill @e[type=!player] -> {"ok":true}
+23:21:52.646 cmd /fill -1 148 -1 1 149 1 water -> {"ok":true}
+23:21:52.679 cmd /tp @s 0.5 149 0.5 0 0 -> {"ok":true}
+23:21:52.723 cmd /summon husk 0.5 150 8.5 {NoAI:1b,Tags:["w2"],attributes:[{id:"minecraft:max_health",base:100}],Health:100f} -> {"ok":true}
+23:21:52.760 cmd /execute as @s at @s anchored eyes facing 0.5 151.0 8.5 run tp @s ~ ~ ~ ~ ~ -> {"ok":true}
+23:21:52.794 cmd /overcraft reset -> {"ok":true}
+23:21:53.828 key secondary_fire down -> {"key":"key.mouse.left"}
+23:21:53.896 key secondary_fire up -> {"key":"key.mouse.left"}
+23:21:54.637 hp @e[tag=w2,limit=1] -> Husk has the following entity data: 97.2672f
+23:21:54.664 key ability_1 down -> {"key":"key.keyboard.left.shift"}
+23:21:54.731 key ability_1 up -> {"key":"key.keyboard.left.shift"}
+23:21:55.339 state -> {"screen": "", "x": 0.5, "y": 148.135, "z": -0.7, "yaw": -0.0, "health": 20.0, "onGround": false, "heroMode": true, "hero": "ashe", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 11, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 9.85, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.018, "vz": 0.0, "anim": "fall+coach_gun"}
+23:21:55.366 cmd /tp @s 0.5 150 -3.5 0 50 -> {"ok":true}
+23:21:55.699 key ability_2 down -> {"key":"key.keyboard.e"}
+23:21:55.765 key ability_2 up -> {"key":"key.keyboard.e"}
+23:21:57.210 hp @e[type=overcraft:dynamite,limit=1] Pos -> Dynamite has the following entity data: [0.75d, 150.01d, -2.2944925622122625d]
+23:22:00.154 hp @e[type=overcraft:dynamite,limit=1] Pos -> No entity was found
+23:22:00.178 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": -3.5, "yaw": 0.0, "health": 16.24, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 2, "primaryAmmo": 11, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 5.05, "ability2Cooldown": 8.1, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:22:00.212 cmd /fill -1 148 -1 1 149 1 stone -> {"ok":true}
+
+=== V1 2026-11-14 23:25:20
+23:25:20.428 MARK V1 fix build: B.O.B.'s line through her allies. A villager and her tamed wolf (NoAI) 2 m in front of a NoAI husk, all on his line, 14 m off to the side of his charge
+23:25:20.452 press key.keyboard.enter -> {"key":"key.keyboard.enter"}
+23:25:23.503 cmd /gamerule spawn_monsters false -> {"ok":true}
+23:25:23.537 cmd /kill @e[type=!player] -> {"ok":true}
+23:25:23.543 cmd /time set noon -> {"ok":true}
+23:25:23.570 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:25:23.605 cmd /summon husk 10.5 150 12.5 {NoAI:1b,Tags:["vh"],attributes:[{id:"minecraft:max_health",base:200}],Health:200f} -> {"ok":true}
+23:25:23.657 cmd /summon villager 8.5 150 9.5 {NoAI:1b,Tags:["vv"]} -> {"ok":true}
+23:25:23.713 cmd /summon wolf 7.5 150 8.0 {NoAI:1b,Tags:["vw"]} -> {"ok":true}
+23:25:23.743 cmd /execute as @e[tag=vw] run data merge entity @s {Owner:[I; -956929499, 1598895909, -1851285478, -1767186058]} -> {"ok":true}
+23:25:23.751 ult 100 -> {"ok":true}
+23:25:24.256 key ultimate down -> {"key":"key.keyboard.q"}
+23:25:24.307 key ultimate up -> {"key":"key.keyboard.q"}
+23:25:32.738 hp @e[tag=vh,limit=1] -> Husk has the following entity data: 200.0f
+23:25:33.149 hp @e[tag=vv,limit=1] -> Villager has the following entity data: 20.0f
+23:25:33.574 hp @e[tag=vw,limit=1] -> Wolf has the following entity data: 8.0f
+23:25:33.989 hp @e[type=overcraft:bob,limit=1] Pos -> No entity was found
+23:25:34.005 screenshot ashe_bob_allies.png -> {"file":"E:\\claude\\mods\\overcraft_ashe\\run\\screenshots\\ashe_bob_allies.png"}
+23:25:34.005 MARK V2 death: /kill, then respawn (expected the select screen with Ashe chosen, or straight back as Ashe)
+23:25:34.010 cmd /kill @s -> {"ok":true}
+23:25:36.022 state -> {"screen": "DeathScreen", "x": 0.5, "y": 150.0, "z": 0.5, "yaw": 0.0, "health": 0.0, "onGround": true, "heroMode": false, "hero": "ashe", "ult": 0.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": -0.078, "vz": 0.0, "anim": "death"}
+23:25:36.030 respawn -> {"ok":true}
+23:25:39.036 state -> {"screen": "", "x": 0.5, "y": 150.0, "z": -7.5, "yaw": 0.0, "health": 20.0, "onGround": true, "heroMode": true, "hero": "ashe", "ult": 15.0, "shield": 0.0, "mode": 0, "perkLevel": 1, "primaryAmmo": 12, "primaryReload": -1.0, "meter": 0.0, "secondaryAmmo": 0, "ability1Cooldown": 0.0, "ability2Cooldown": 0.0, "vx": 0.0, "vy": 0.0, "vz": 0.0, "anim": "idle"}
+23:25:39.044 screenshot ashe_after_death.png -> {"file":"E:\\claude\\mods\\overcraft_ashe\\run\\screenshots\\ashe_after_death.png"}
+
+=== V3 2026-11-14 23:25:53
+23:25:53.206 MARK V3 B.O.B. stopped by a wall at z 13; a villager and her wolf (NoAI) between him and a NoAI husk on the line x 0.5 -> 9.5 at z 11.5
+23:25:53.225 cmd /kill @e[type=!player] -> {"ok":true}
+23:25:53.234 cmd /tp @s 0.5 150 0.5 0 0 -> {"ok":true}
+23:25:53.265 cmd /fill -3 150 13 3 151 13 stone -> {"ok":true}
+23:25:53.271 cmd /summon husk 9.5 150 11.5 {NoAI:1b,Tags:["vh"],attributes:[{id:"minecraft:max_health",base:200}],Health:200f} -> {"ok":true}
+23:25:53.283 cmd /summon villager 4.5 150 11.5 {NoAI:1b,Tags:["vv"]} -> {"ok":true}
+23:25:53.291 cmd /summon wolf 6.5 150 11.5 {NoAI:1b,Tags:["vw"],Owner:[I; -956929499, 1598895909, -1851285478, -1767186058]} -> {"ok":true}
+23:25:53.301 ult 100 -> {"ok":true}
+23:25:53.807 key ultimate down -> {"key":"key.keyboard.q"}
+23:25:53.866 key ultimate up -> {"key":"key.keyboard.q"}
+23:26:00.293 hp @e[type=overcraft:bob,limit=1] Pos -> B.O.B. has the following entity data: [0.5d, 150.0d, 12.300000011920929d]
+23:26:00.705 hp @e[tag=vh,limit=1] -> Husk has the following entity data: 153.62506f
+23:26:01.118 hp @e[tag=vv,limit=1] -> Villager has the following entity data: 20.0f
+23:26:01.531 hp @e[tag=vw,limit=1] -> Wolf has the following entity data: 8.0f
+23:26:01.941 hp @e[tag=vw,limit=1] Owner -> Wolf has the following entity data: [I; -956929499, 1598895909, -1851285478, -1767186058]
+23:26:01.944 screenshot ashe_bob_allies.png -> {"file":"E:\\claude\\mods\\overcraft_ashe\\run\\screenshots\\ashe_bob_allies.png"}
+23:26:01.953 cmd /fill -3 150 13 3 151 13 air -> {"ok":true}

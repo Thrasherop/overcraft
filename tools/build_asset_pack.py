@@ -39,12 +39,12 @@ ROOT = Path(__file__).resolve().parent.parent
 PACK = Path(os.environ["OC_ASSET_PACK"]) if os.environ.get("OC_ASSET_PACK") else ROOT / "local-assets" / "pack"
 LOCAL = PACK.parent
 MODELS = PACK / "assets" / "overcraft" / "hero_models"
-HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver", "sigma", "ana", "dva", "pharah", "tracer", "cassidy", "junkrat", "torbjorn"}
+HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver", "sigma", "ana", "dva", "pharah", "tracer", "cassidy", "junkrat", "ashe", "torbjorn"}
 # DataTool's folder for each hero (its in-game name)
 HERO_FOLDERS = {"kiriko": "Kiriko", "lucio": "Lúcio", "sombra": "Sombra", "illari": "Illari", "juno": "Juno",
                 "sojourn": "Sojourn", "jetpack_cat": "Jetpack Cat", "mercy": "Mercy", "lifeweaver": "Lifeweaver",
                 "ana": "Ana", "brigitte": "Brigitte", "sigma": "Sigma",
-                "dva": "D.Va", "pharah": "Pharah", "tracer": "Tracer", "cassidy": "Cassidy", "junkrat": "Junkrat", "torbjorn": "Torbjörn"}
+                "dva": "D.Va", "pharah": "Pharah", "tracer": "Tracer", "cassidy": "Cassidy", "junkrat": "Junkrat", "ashe": "Ashe", "torbjorn": "Torbjörn"}
 GUI = PACK / "assets" / "overcraft" / "textures" / "gui" / "heroes"
 # extract-hero-icons names files by id only; each hero has one of each kind, told apart by size (the same for every
 # hero checked: Kiriko, Reaper). Two kinds are 256x256: the lower id is the portrait, the higher a closer crop.
@@ -396,7 +396,7 @@ def add_sounds(source, only=None):
 
 # heroes whose collectible voice lines go in the pack: our id -> DataTool's hero folder name
 VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio", "mercy": "Mercy", "juno": "Juno", "ana": "Ana", "sombra": "Sombra",
-                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn", "sigma": "Sigma", "dva": "D.Va", "pharah": "Pharah", "tracer": "Tracer", "cassidy": "Cassidy", "junkrat": "Junkrat", "illari": "Illari", "torbjorn": "Torbjörn"}
+                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn", "sigma": "Sigma", "dva": "D.Va", "pharah": "Pharah", "tracer": "Tracer", "cassidy": "Cassidy", "junkrat": "Junkrat", "illari": "Illari", "ashe": "Ashe", "torbjorn": "Torbjörn"}
 # a hero whose extraction (Unlocks/ and HeroVoice/) isn't under the build root: its folder relative to it, as the hero's
 # soundmap reads her voice (Juno's DataTool extract-unlocks "Juno|voiceline=*" went to research\juno\extract, 27 unlocks)
 VOICELINE_ROOTS = {"juno": "../../research/juno/extract", "ana": "../../research/ana/extract",
@@ -410,7 +410,8 @@ VOICELINE_ROOTS = {"juno": "../../research/juno/extract", "ana": "../../research
                    "cassidy": "../../research/cassidy/extract",
                    "junkrat": "../../research/junkrat/extract",
                    "illari": "../../research/illari/extract",
-                   "torbjorn": "../../research/torbjorn/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
+                   "torbjorn": "../../research/torbjorn/extract",
+                   "ashe": "../../research/ashe/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
 # Heroes whose voice-line unlocks DataTool doesn't export (Jetpack Cat's: each is an effect with one voice stimulus that
 # names one meow), listed from the data instead (E:\Overwatch Archive\research\jetpack_cat\gaps.md 1c, H): unlock name
 # -> (group, the meow under HeroVoice/<folder>/Voicelines/(cat sounds), our subtitle: DataTool names them only "(cat
@@ -1094,6 +1095,18 @@ EFFECT_MASKS = {
     "jr_debris": ("Junkrat", "RIPTire", "0000000022FD", 8),
     "jr_glow_ball": ("Junkrat", "RIPTire", "00000003699E", 1),
     "jr_chain": ("Junkrat", "SteelTrap", "000000002A90", 1),
+    # Ashe's (tools/reference/ashe-effects.md "For the asset pack"; pass research/ashe/fx as a source): the flame-shaped flash, the
+    # Coach Gun's round flash and spikes, the fire balls' fade, B.O.B.'s colour smoke and charge gradient, the held target's ring and
+    # bits, Remote Detonator's glow
+    "ashe_flash": ("Ashe", "Viper", "000000018BAC", 4),
+    "ashe_coach_glow": ("Ashe", "CoachGun", "0000000008CF", 1),
+    "ashe_coach_spike": ("Ashe", "CoachGun", "000000018D9B", 4),
+    "ashe_ball_fade": ("Ashe", "Dynamite", "00000001909A", 1),
+    "ashe_smoke_puff": ("Ashe", "BOB", "000000013F75", 2),
+    "ashe_charge_strip": ("Ashe", "BOB", "00000001B1C9", 1),
+    "ashe_dazed_ring": ("Ashe", "BOB", "00000000176B", 1),
+    "ashe_dazed_bits": ("Ashe", "BOB", "0000000030F5", 16),
+    "ashe_detonator_glow": ("Ashe", "Perks", "000000003253", 2),
 }
 
 
@@ -1202,6 +1215,8 @@ EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  # Junkrat's (junkrat-effects.md): the launch's burst (1468, 0.2 x 0.17 x 0.2) and Nitro Boost's flare (6740)
                  "jr_muzzle_burst": ("Junkrat", "FragLauncher", "0000000027B3"),
                  "jr_nitro_flare": ("Junkrat", "Perks", "000000014346"),
+                 # Ashe's (ashe-effects.md): B.O.B.'s charge front glow (25CC), a half dome 0.99 x 0.50 x 0.99
+                 "ashe_charge_dome": ("Ashe", "BOB", "0000000085D0"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
                  # rings (a fat torus lying flat), the hook's cone, the towed ally's arcs, Purr's sphere, torus and wall
                  "cat_torus": ("JetpackCat", "Lifeline", "000000015A26"),

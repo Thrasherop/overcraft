@@ -46,7 +46,9 @@ public enum Hero {
 	JUNKRAT("junkrat", "Junkrat", Role.DAMAGE, "specialist", dev.overcraft.junkrat.JunkratStats.HEALTH, true, 0xFFE8B51F),
 	// the sixth Damage hero (#136), Specialist (D tag 116F, 01C7 #2567; BZ 2026-02-10): 225 + 75 armor; colour ours (his forge's orange)
 	TORBJORN("torbjorn", "Torbjörn", Role.DAMAGE, "specialist",
-		dev.overcraft.torbjorn.TorbjornStats.HEALTH + dev.overcraft.torbjorn.TorbjornStats.ARMOR, true, 0xFFD9752B);
+		dev.overcraft.torbjorn.TorbjornStats.HEALTH + dev.overcraft.torbjorn.TorbjornStats.ARMOR, true, 0xFFD9752B),
+	// the sixth Damage hero (#137), Sharpshooter (D tag 1188, loadout 0DDD; BZ 2026-02-10; W); colour ours (her white hair's silver)
+	ASHE("ashe", "Ashe", Role.DAMAGE, "sharpshooter", dev.overcraft.ashe.AsheStats.HEALTH, true, 0xFFC9C3B8);
 
 	public enum Role { TANK, DAMAGE, SUPPORT }
 

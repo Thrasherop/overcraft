@@ -203,7 +203,8 @@ public final class HeroModelRenderer {
 			// Illari's map names her hero file's select alias 0x477 "select" (DB91, its intro, cat 6E) and "select_2" (DB92, the
 			// default slot: its hold), as Junkrat's; read as the showcase's intro and hold for her (the critic, 2026-11-14: she stood
 			// side-on in her idle, unlike the others)
-			showcase = preview == Hero.ILLARI ? HeroAnimator.showcasePose(loaded.model(), showcaseAt, "select", "select_2")
+			// Ashe's the same (ashe.txt: select C1AB, cat 6E, and select_2 C1AC on her hero file's 0x477, set 0F60), the Viper on its 00C9
+			showcase = preview == Hero.ILLARI || preview == Hero.ASHE ? HeroAnimator.showcasePose(loaded.model(), showcaseAt, "select", "select_2")
 				: HeroAnimator.showcasePose(loaded.model(), showcaseAt);
 		}
 		Matrix4f[] skin = showcase != null ? Skeleton.skin(loaded.model(), showcase, -1, null) : null;
@@ -426,6 +427,21 @@ public final class HeroModelRenderer {
 				}
 				dev.overcraft.client.effect.JunkratFx.posed(entity, points);
 			}
+		}
+		if (hero == Hero.ASHE && !previewing && entity.isAlive() && weaponShown) {
+			// the Viper's muzzle (hp 0006) as held, in the world (AsheFx.POINTS: her shots' muzzle and line)
+			net.minecraft.world.phys.Vec3 base = entity.getPosition(partialTicks);
+			float turn = (float) Math.toRadians(-facing);
+			String[] names = dev.overcraft.client.effect.AsheFx.POINTS;
+			net.minecraft.world.phys.Vec3[] points = new net.minecraft.world.phys.Vec3[names.length];
+			for (int i = 0; i < names.length; i++) {
+				Vector3f held = HeroWeapon.point(hero, animator, loaded.model(), false, now, names[i]);
+				if (held != null) {
+					held.mul(state.scale).rotateY(turn);
+					points[i] = base.add(held.x, held.y, held.z);
+				}
+			}
+			dev.overcraft.client.effect.AsheFx.posed(entity, points);
 		}
 		if (hero == Hero.JETPACK_CAT && !previewing && entity.isAlive()) {
 			// her jetpack's flames and her paws' points, as posed, in the world (JetpackCatFx)

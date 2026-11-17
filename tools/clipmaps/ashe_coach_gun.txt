@@ -1,0 +1,10 @@
+# Ashe's Coach Gun (entity 2560, model 0000000107A0.00C, base 7B59; set 09AC), on her hardpoint 000B, var 40C1.
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archiveesearchshe\scripts\clipmaps_ashe.py from the
+# compacted blend-tree sets (researchshe\work\clipmap_ashe\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+4-0_000000005AAA = add_coach_gun_1p   # 0.5667 s; set 09AC alias 1E ((was add_coach_gun_sm0: sm[0] (1P)) Coach Gun (1513 #419, 0.55 s; 1D by aim pitch) (H)); sm[0] @826B0037
+0-48_000000006179 = coach_gun   # 0.9333 s; set 09AC alias 1E ((was coach_gun_sm1: sm[1] (0.93 s, the 3P blast)) Coach Gun (1513 #419, 0.55 s; 1D by aim pitch) (H)); sm[1] @826B0031
+0-32_00000000D076 = coach_gun_extra   # 0.6667 s; set 09AC alias 95D (Coach Gun model's second clip (L)); -

@@ -471,7 +471,7 @@ public class HeroSelectScreen extends OwScreen {
 		// Ana's showcase stands with her hood up and cape out: Lifeweaver's size kept her whole (ours, by eye)
 		// Torbjörn: short and broad, his select pose bent forward with the gun at the camera: at 0.72 he filled the frame (the critic of
 		// 385d464; ours, by eye)
-		return hero == Hero.TORBJORN ? 0.6f : hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN || hero == Hero.PHARAH || hero == Hero.TRACER || hero == Hero.CASSIDY || hero == Hero.JUNKRAT || hero == Hero.TORBJORN || hero == Hero.ILLARI ? 0.72f
+		return hero == Hero.TORBJORN ? 0.6f : hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN || hero == Hero.PHARAH || hero == Hero.TRACER || hero == Hero.CASSIDY || hero == Hero.JUNKRAT || hero == Hero.TORBJORN || hero == Hero.ILLARI || hero == Hero.ASHE ? 0.72f
 			// Sigma floats with his head 2.1 m up and his hands out at his sides (ours, by eye)
 			: hero == Hero.SIGMA ? SIGMA_FRAME[0] : hero == Hero.DVA ? DVA_FRAME[0] : 1;
 	}
@@ -601,6 +601,14 @@ public class HeroSelectScreen extends OwScreen {
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "pulse_bomb"));
 			// his data's loadouts: Peacekeeper (the left button), Fan the Hammer (the right), Combat Roll, Flashbang, Deadeye; no other
 			// passive (Sharpshooter is the sub-role's)
+			// her data's loadouts: The Viper (the left button), Take Aim (the right), Coach Gun, Dynamite, B.O.B.; no passive of her own
+			// (Sharpshooter is the sub-role's)
+			case ASHE -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "the_viper"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "take_aim"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "coach_gun"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "dynamite"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "b_o_b"));
 			case CASSIDY -> List.of(
 				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "peacekeeper"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "fan_the_hammer"),

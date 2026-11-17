@@ -126,6 +126,30 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 		});
 	}
 
+	/**
+	 * Ashe's B.O.B. (model 10800, set 0966: tools/clipmaps/ashe_bob.txt): his drop (spawn_drop, L), the charge looped (charge, the 8-way
+	 * run's forward slot: no alias plays the charge, his mover's 15 m/s drives his locomotion, D 1537 #409; the data's run is in no set,
+	 * L), the uppercut and its end (04AB -> 0502), the stop on a wall (05AE) or the charge's 4 s out (0492), his firing stance looped,
+	 * his going (0578: a random pick of three, D 1537 #375; ours by his id).
+	 */
+	public static LifeweaverPropRenderer<dev.overcraft.entity.BobEntity> bob(EntityRendererProvider.Context context) {
+		return new LifeweaverPropRenderer<>(context, "ashe_bob", (e, s) -> {
+			float t = e.phaseSeconds(s.partialTick);
+			switch (e.phase()) {
+				case dev.overcraft.entity.BobEntity.DROP -> clip(s, "spawn_drop", t, false);
+				case dev.overcraft.entity.BobEntity.CHARGE -> clip(s, "charge", t, true);
+				case dev.overcraft.entity.BobEntity.UPPERCUT -> clip(s, t < 0.5f ? "uppercut" : "uppercut_end", t < 0.5f ? t : t - 0.5f, false);
+				case dev.overcraft.entity.BobEntity.STOP -> clip(s, "charge_stop", t, false);
+				case dev.overcraft.entity.BobEntity.TIMED_OUT -> clip(s, "charge_timeout", t, false);
+				case dev.overcraft.entity.BobEntity.FIRE -> clip(s, "idle_fire", t, true);
+				default -> clip(s, new String[] {"despawn", "despawn_ra1", "despawn_ra2"}[Math.floorMod(e.getId(), 3)], t, false);
+			}
+			// his charge's glow (25CC) and his going (2B06) (AsheFx)
+			dev.overcraft.client.effect.AsheFx.bob(e, e.getPosition(s.partialTick), e.getYRot(),
+				dev.overcraft.client.effect.KirikoFx.enemyOf(e.getOwner()));
+		});
+	}
+
 	/** Sow the Seed's seed on the ground: his model 126CC, still. */
 	public static LifeweaverPropRenderer<SeedEntity> seed(EntityRendererProvider.Context context) {
 		return new LifeweaverPropRenderer<>(context, "lifeweaver_seed", (e, s) -> s.clip = null);
