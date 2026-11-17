@@ -50,6 +50,8 @@ public class TurretEntity extends Mob implements OwnableEntity {
 	private static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(TurretEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> STATE_AT = SynchedEntityData.defineId(TurretEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> SHOT_AT = SynchedEntityData.defineId(TurretEntity.class, EntityDataSerializers.INT);
+	/** Its owner's entity id for clients (-1: none online): the owner's UUID stays on the server; his HUD shows its health (#146). */
+	private static final EntityDataAccessor<Integer> OWNER_ENTITY = SynchedEntityData.defineId(TurretEntity.class, EntityDataSerializers.INT);
 	private static final net.minecraft.resources.Identifier L3_HEALTH_ID = dev.overcraft.Overcraft.id("turret_level3");
 
 	private @Nullable UUID ownerId;
@@ -88,6 +90,7 @@ public class TurretEntity extends Mob implements OwnableEntity {
 		builder.define(STATE, FLYING);
 		builder.define(STATE_AT, 0);
 		builder.define(SHOT_AT, -1000);
+		builder.define(OWNER_ENTITY, -1);
 	}
 
 	public int state() {
@@ -111,6 +114,22 @@ public class TurretEntity extends Mob implements OwnableEntity {
 	/** Built: it fights (level 2 or 3). */
 	public boolean built() {
 		return state() == BUILT || state() == LEVEL3;
+	}
+
+	/** Its owner's entity id as clients see it (-1 none): for his turret's health on his HUD (#146). */
+	public int ownerEntityId() {
+		return entityData.get(OWNER_ENTITY);
+	}
+
+	/** Each server tick: the owner's current entity id (it changes when he rejoins). */
+	private void syncOwner() {
+		if (level() instanceof net.minecraft.server.level.ServerLevel level) {
+			net.minecraft.world.entity.player.Player p = ownerId == null ? null : level.getPlayerByUUID(ownerId);
+			int id = p == null ? -1 : p.getId();
+			if (entityData.get(OWNER_ENTITY) != id) {
+				entityData.set(OWNER_ENTITY, id);
+			}
+		}
 	}
 
 	public @Nullable UUID ownerUuid() {
@@ -148,6 +167,7 @@ public class TurretEntity extends Mob implements OwnableEntity {
 	@Override
 	public void tick() {
 		super.tick();
+		syncOwner();
 		setYHeadRot(getYRot());
 		yBodyRot = getYRot();
 		if (!(level() instanceof ServerLevel level)) {
