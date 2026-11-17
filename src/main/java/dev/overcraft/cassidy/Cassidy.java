@@ -65,6 +65,7 @@ public final class Cassidy implements HeroKit {
 
 	private static final Identifier DEADEYE_SPEED = Overcraft.id("deadeye_slow");
 	private static final Identifier GIDDY_SPEED_ID = Overcraft.id("giddy_up");
+	private static final Identifier SILVER_SLOW_ID = Overcraft.id("silver_bullet_aim");
 
 	/** Silver Bullet's bleeds under way: what, by whom, its steps left. */
 	private record Bleed(LivingEntity target, UUID owner, int[] left) {
@@ -164,7 +165,20 @@ public final class Cassidy implements HeroKit {
 			return;
 		}
 		boolean silverPerk = s.has(Perk.CASSIDY_SILVER_BULLET);
-		c.silverAim = silverPerk && able && s.secondaryHeld && c.silverCooldown <= 0 && c.roll < 0;
+		// the aim comes up while the right button is held and Silver Bullet is ready (not rolling, not empty), and goes down
+		// otherwise; the shot needs it fully up (#164)
+		boolean wantAim = silverPerk && able && s.secondaryHeld && c.silverCooldown <= 0 && c.roll < 0 && s.primaryAmmo > 0;
+		if (wantAim && !c.silverLowering) {
+			c.silverProgress = Math.min(1, c.silverProgress + 1.0 / Ow.ticks(SILVER_AIM_UP));
+		} else if (c.silverProgress > 0) {
+			c.silverLowering = true;
+			c.silverProgress = Math.max(0, c.silverProgress - 1 / (SILVER_AIM_DOWN * 20));
+		}
+		if (c.silverProgress <= 0) {
+			c.silverLowering = false;
+		}
+		c.silverAim = c.silverProgress >= 1;
+		speed(player, SILVER_SLOW_ID, c.silverProgress > 0 ? -SILVER_SLOW : 0);
 		if (busy) {
 			return;
 		}
@@ -179,6 +193,10 @@ public final class Cassidy implements HeroKit {
 		if (!silverPerk && s.secondaryHeld) {
 			// pressed, or held through the shot's recovery or a reload: it fans once it can (ours: the data buffers a press 0.1 s)
 			startFan(player, s, c);
+			return;
+		}
+		if (silverPerk && s.secondaryHeld && c.silverProgress > 0 && !c.silverAim) {
+			// coming up: no shot until it's fully raised (01D2 #1101)
 			return;
 		}
 		if (s.primaryHeld && now >= c.primaryLockUntil) {
@@ -971,7 +989,7 @@ public final class Cassidy implements HeroKit {
 			s.primaryAmmo, s.primaryReload >= 0 ? (float) Math.min(1, s.primaryReload / Ow.ticks(RELOAD)) : -1,
 			0, -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0), s.rushed, s.canChangeHero, s.onFire,
 			dev.overcraft.hero.Perks.level(s), dev.overcraft.hero.Perks.progress(s), dev.overcraft.hero.Perks.ready(s),
-			Perk.index(s.minorPerk), Perk.index(s.majorPerk), (float) (c.silverCooldown / 20.0), mode, left, 0);
+			Perk.index(s.minorPerk), Perk.index(s.majorPerk), (float) (c.silverCooldown / 20.0), mode, left, (float) c.silverProgress);
 	}
 
 	/** Out of play (#100): Deadeye ends (its charge stays spent), the roll, the fan and the throw end, his speeds go. */
@@ -989,6 +1007,9 @@ public final class Cassidy implements HeroKit {
 		c.giddy = -1;
 		c.fanLeft = 0;
 		c.silverAim = false;
+		c.silverProgress = 0;
+		c.silverLowering = false;
+		speed(player, SILVER_SLOW_ID, 0);
 		speed(player, DEADEYE_SPEED, 0);
 		speed(player, GIDDY_SPEED_ID, 0);
 		if (why.forGood()) {
