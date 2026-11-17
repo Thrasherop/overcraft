@@ -290,7 +290,14 @@ public final class Torbjorn implements HeroKit {
 	/** The 1 / 2 keys or the wheel (HeroInputPayload.EXTRA_STAFF / BLASTER / SWAP: the weapon keys every hero with two shares). */
 	public static void extra(ServerPlayer player, HeroState s, int extra) {
 		TorbjornState t = s.torbjorn;
-		if (!HeroManager.controls(player) || t.ultCast >= 0 || t.ultLeft > 0) {
+		if (!HeroManager.controls(player)) {
+			return;
+		}
+		if ((extra & HeroInputPayload.EXTRA_INTERACT) != 0) {
+			recallTurret(player, s, t);
+			return;
+		}
+		if (t.ultCast >= 0 || t.ultLeft > 0) {
 			return;
 		}
 		boolean want = t.hammer;
@@ -479,6 +486,25 @@ public final class Torbjorn implements HeroKit {
 		if (broken) {
 			Voice.say(owner, "turret_destroyed", 1);
 		}
+	}
+
+	/**
+	 * The Interact key recalls his turret (tools/reference/torbjorn-map.md: recall on INTERACT, not while it's building, 16C5
+	 * #563 / #513; #146): it goes, and the cooldown is the data's 12 s if it was in combat, else 6 s (#531), as when it's broken.
+	 * No sound: the recall's isn't mapped yet.
+	 */
+	private static void recallTurret(ServerPlayer player, HeroState s, TorbjornState t) {
+		TurretEntity turret = turret(player, t);
+		if (turret == null || !turret.built()) {
+			return;
+		}
+		t.turret = null;
+		double cooldown = Ow.ticks(turret.inCombat() ? TURRET_COOLDOWN : TURRET_COOLDOWN_CALM);
+		if (cooldown >= s.ability1Cooldown) {
+			s.ability1Cooldown = cooldown;
+			t.turretCooldownTotal = cooldown / 20;
+		}
+		turret.discard();
 	}
 
 	/** A turret shot of his landed on {@code target}: its damage, credited to him; a mob it hits fights the turret (ours). */
