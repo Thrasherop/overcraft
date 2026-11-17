@@ -171,6 +171,33 @@ public final class HeroWeapon {
 	}
 
 	/**
+	 * Ashe's Coach Gun (entity 2560, model 107A0, set 09AC) in her left hand while it's cast: on her hardpoint 000B (var 40C1:
+	 * ashe-map.md "Models"), read as Weapon_L with no offset, Tracer's left pistol's (M: her models' hardpoint tables not read), from the
+	 * cast for as long as its own clip runs: coach_gun 6179 in third person (0.93 s), the additive add_coach_gun_1p 5AAA over its rest in
+	 * first (0.57 s) (ashe_coach_gun.txt; M: the entity's spawn window not read). Null otherwise.
+	 */
+	private static EmoteProps.@Nullable Placed coachGun(HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson, float now) {
+		HeroModels.Loaded gun = HeroModels.get("ashe_coach_gun");
+		if (gun == null || animator.emoting()) {
+			return null;
+		}
+		SkinnedModel.Clip clip = gun.model().clips.get(firstPerson ? "add_coach_gun_1p" : "coach_gun");
+		float t = animator.since("coach_gun", now);
+		Skeleton.Pose heroPose = firstPerson ? animator.lastViewPose() : animator.lastPose();
+		int bone = heroModel.node("Weapon_L");
+		if (clip == null || t >= clip.duration() || heroPose == null || bone < 0 || heroPose.t.length != heroModel.nodeNames.length) {
+			return null;
+		}
+		Skeleton.Pose own = rest(gun.model());
+		if (firstPerson) {
+			Skeleton.addAdditive(clip, t, own, 1);
+		} else {
+			Skeleton.sample(clip, t, own);
+		}
+		return new EmoteProps.Placed(gun, Skeleton.world(heroModel, heroPose, bone), Skeleton.skin(gun.model(), own, -1, null));
+	}
+
+	/**
 	 * Every model the hero carries besides the weapon in hand: Ana's Sleep Dart pistol for a moment (sidearm); Brigitte's
 	 * flail head seated on the handle's socket (hardpoint 0254 = bone_0FCD, entity 2378 on it: brigitte_flail.txt) and, in
 	 * third person, her shield folded on her back (entity 1B25 on her hardpoint 01D8 = bone_0F74, no offset: assets.md).
@@ -183,6 +210,12 @@ public final class HeroWeapon {
 			out.add(pistol);
 		}
 		parts(hero, animator, heroModel, firstPerson, now, out);
+		if (hero == Hero.ASHE) {
+			EmoteProps.Placed coach = coachGun(animator, heroModel, firstPerson, now);
+			if (coach != null) {
+				out.add(coach);
+			}
+		}
 		if (hero == Hero.TRACER) {
 			EmoteProps.Placed left = leftPistol(animator, heroModel, firstPerson, now);
 			if (left != null) {

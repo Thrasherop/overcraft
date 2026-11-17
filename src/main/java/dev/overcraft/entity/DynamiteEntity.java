@@ -100,9 +100,6 @@ public class DynamiteEntity extends OwProjectile {
 			return;
 		}
 		if (landed()) {
-			if (tickCount % 5 == 0 && level() instanceof ServerLevel level) {
-				level.sendParticles(net.minecraft.core.particles.ParticleTypes.SMALL_FLAME, getX(), getY() + 0.15, getZ(), 1, 0.02, 0.02, 0.02, 0.01);
-			}
 			setDeltaMovement(Vec3.ZERO);
 			if (tickCount >= lifetime()) {
 				explode();

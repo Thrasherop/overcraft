@@ -85,6 +85,7 @@ public class OvercraftClient implements ClientModInitializer {
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.CassidyFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.PharahFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.JunkratFx.frame());
+		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.AsheFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.LifeweaverFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(Fx::render);
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.hero.PressTrace.frame());

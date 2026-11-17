@@ -1050,6 +1050,18 @@ EFFECT_MASKS = {
     "jr_debris": ("Junkrat", "RIPTire", "0000000022FD", 8),
     "jr_glow_ball": ("Junkrat", "RIPTire", "00000003699E", 1),
     "jr_chain": ("Junkrat", "SteelTrap", "000000002A90", 1),
+    # Ashe's (tools/reference/ashe-effects.md "For the asset pack"; pass research/ashe/fx as a source): the flame-shaped flash, the
+    # Coach Gun's round flash and spikes, the fire balls' fade, B.O.B.'s colour smoke and charge gradient, the held target's ring and
+    # bits, Remote Detonator's glow
+    "ashe_flash": ("Ashe", "Viper", "000000018BAC", 4),
+    "ashe_coach_glow": ("Ashe", "CoachGun", "0000000008CF", 1),
+    "ashe_coach_spike": ("Ashe", "CoachGun", "000000018D9B", 4),
+    "ashe_ball_fade": ("Ashe", "Dynamite", "00000001909A", 1),
+    "ashe_smoke_puff": ("Ashe", "BOB", "000000013F75", 2),
+    "ashe_charge_strip": ("Ashe", "BOB", "00000001B1C9", 1),
+    "ashe_dazed_ring": ("Ashe", "BOB", "00000000176B", 1),
+    "ashe_dazed_bits": ("Ashe", "BOB", "0000000030F5", 16),
+    "ashe_detonator_glow": ("Ashe", "Perks", "000000003253", 2),
 }
 
 
@@ -1158,6 +1170,8 @@ EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  # Junkrat's (junkrat-effects.md): the launch's burst (1468, 0.2 x 0.17 x 0.2) and Nitro Boost's flare (6740)
                  "jr_muzzle_burst": ("Junkrat", "FragLauncher", "0000000027B3"),
                  "jr_nitro_flare": ("Junkrat", "Perks", "000000014346"),
+                 # Ashe's (ashe-effects.md): B.O.B.'s charge front glow (25CC), a half dome 0.99 x 0.50 x 0.99
+                 "ashe_charge_dome": ("Ashe", "BOB", "0000000085D0"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
                  # rings (a fat torus lying flat), the hook's cone, the towed ally's arcs, Purr's sphere, torus and wall
                  "cat_torus": ("JetpackCat", "Lifeline", "000000015A26"),

@@ -17,6 +17,8 @@ import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -36,14 +38,15 @@ import java.util.UUID;
  * <ul>
  * <li><b>Health:</b> 1150 (1000 and the Tank role's 150, W), Minecraft's 92; her side's damage doesn't reach him (no friendly fire).</li>
  * <li><b>Who he is to others:</b> her pet (OwnableEntity): her allies' ally, her enemies' enemy (Allies). <b>Mobs</b> take him on when he
- * hits them (ours: the mob's last attacker is him, so Minecraft's own retaliation goals go for him) and otherwise go on with whoever
- * they had.</li>
+ * hits them (ours: the mob's last attacker is him, so Minecraft's own retaliation goals go for him), and hostile ones that see him
+ * with no one nearer go for him unprovoked (drawMobs, ours).</li>
  * <li><b>Cleanup:</b> he stays through her G and her death (W: he fights on), and is gone on a hero switch, her leaving, or when she
  * can't be found (Ashe.leavePlay / clearWorld). Not saved: a world reloaded has no B.O.B.</li>
  * </ul>
  */
 public class BobEntity extends PathfinderMob implements OwnableEntity {
-	public static final int DROP = 0, CHARGE = 1, UPPERCUT = 2, STOP = 3, FIRE = 4, DESPAWN = 5;
+	/** His phases; STOP a charge a wall or being stuck ended (its clip 05AE), TIMED_OUT one that ran its 4 s (0492: D 1537 #472). */
+	public static final int DROP = 0, CHARGE = 1, UPPERCUT = 2, STOP = 3, FIRE = 4, DESPAWN = 5, TIMED_OUT = 6;
 	private static final EntityDataAccessor<Integer> PHASE = SynchedEntityData.defineId(BobEntity.class, EntityDataSerializers.INT);
 
 	private @Nullable UUID owner;
@@ -127,6 +130,31 @@ public class BobEntity extends PathfinderMob implements OwnableEntity {
 		}
 	}
 
+	/** How far around him (blocks) mobs are looked at for drawMobs: the furthest follow range of Minecraft's hostiles (a zombie's 35). */
+	private static final double DRAW_REACH = 35;
+
+	/**
+	 * Minecraft's hostile mobs go for players (their target goals look for players and villagers), so on his own he'd stand ignored. Once a
+	 * second (staggered by id), each hostile mob of her enemies within its own follow range that sees him and has no target nearer than
+	 * him takes him on, as if he were a player in its sight (ours: Overwatch has no mobs; Torbjorn's turret only provokes on a hit). Neutral
+	 * mobs (endermen, piglins) stay neutral; another's pet is left alone; when he's going he draws no one.
+	 */
+	private void drawMobs(ServerPlayer owner) {
+		if ((tickCount + getId()) % 20 != 0 || phase() == DESPAWN) {
+			return;
+		}
+		for (Mob mob : level().getEntitiesOfClass(Mob.class, getBoundingBox().inflate(DRAW_REACH), m -> m instanceof Enemy
+			&& !(m instanceof NeutralMob) && !(m instanceof OwnableEntity o && o.getOwner() != null) && m.isAlive() && !m.isNoAi())) {
+			double d = mob.distanceTo(this);
+			LivingEntity had = mob.getTarget();
+			if (had == this || d > mob.getAttributeValue(Attributes.FOLLOW_RANGE) || !Allies.isEnemy(owner, mob)
+				|| had != null && had.isAlive() && mob.distanceTo(had) <= d || !mob.getSensing().hasLineOfSight(this)) {
+				continue;
+			}
+			mob.setTarget(this);
+		}
+	}
+
 	/** Called away early (a second B.O.B.): straight to his going. */
 	public void leave() {
 		if (phase() != DESPAWN) {
@@ -150,6 +178,7 @@ public class BobEntity extends PathfinderMob implements OwnableEntity {
 			return;
 		}
 		phaseTicks++;
+		drawMobs(owner);
 		Vec3 ahead = Vec3.directionFromRotation(0, getYRot());
 		switch (phase()) {
 			case DROP -> {
@@ -178,7 +207,7 @@ public class BobEntity extends PathfinderMob implements OwnableEntity {
 					AsheSounds.at((ServerLevel) level(), "bob.charge_stop", position(), 60);
 					phase(STOP);
 				} else if (phaseTicks >= Ow.ticks(AsheStats.BOB_CHARGE_TIME)) {
-					phase(STOP);
+					phase(TIMED_OUT);
 				}
 			}
 			case UPPERCUT -> {
@@ -187,7 +216,7 @@ public class BobEntity extends PathfinderMob implements OwnableEntity {
 					phase(FIRE);
 				}
 			}
-			case STOP -> {
+			case STOP, TIMED_OUT -> {
 				setDeltaMovement(0, getDeltaMovement().y, 0);
 				if (phaseTicks >= Ow.ticks(0.5)) {
 					phase(FIRE);

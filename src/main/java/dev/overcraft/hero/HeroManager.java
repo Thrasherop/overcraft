@@ -101,6 +101,10 @@ public final class HeroManager {
 	public static final AttachmentType<Integer> CASSIDY_LOOK = AttachmentRegistry.create(Overcraft.id("cassidy_look"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
 
+	/** Ashe's look (dev.overcraft.ashe.Ashe.look): how far Take Aim is up (%), for every client to pose her scoped (HeroAnimator). */
+	public static final AttachmentType<Integer> ASHE_LOOK = AttachmentRegistry.create(Overcraft.id("ashe_look"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
 	/** Pharah's look (dev.overcraft.pharah.Pharah.LOOK_*: hovering, a jet, Barrage), for every client to animate her. */
 	public static final AttachmentType<Integer> PHARAH_STATE = AttachmentRegistry.create(Overcraft.id("pharah_state"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
@@ -379,7 +383,7 @@ public final class HeroManager {
 	/** The synced states clients draw a hero in play by (not the hero itself, nor sleep, which others put on them). */
 	private static final java.util.List<AttachmentType<?>> HERO_LOOKS = java.util.List.of(SONG, MERCY, LIFEWEAVER, JUNO_GLIDE,
 		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA, DVA_FORM, DVA_STATE, LUCIO_WALL, PHARAH_STATE, ILLARI_FLIGHT, TORBJORN_LOOK,
-		CASSIDY_LOOK);
+		CASSIDY_LOOK, ASHE_LOOK);
 
 	/** Dev only (DevServer's "bot showstate off"): the rule off, to show what it does. */
 	public static boolean devNoShowState;

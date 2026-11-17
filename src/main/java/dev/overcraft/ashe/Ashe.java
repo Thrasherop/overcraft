@@ -18,7 +18,6 @@ import dev.overcraft.hero.Sleep;
 import dev.overcraft.hero.Voice;
 import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroSyncPayload;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -116,6 +115,12 @@ public final class Ashe implements HeroKit {
 			a.launchGrace = player.onGround() ? a.launchGrace - 1 : 0;
 		}
 		HeroManager.softLanding(player, s, launched, false);
+		// every client's look of her: Take Aim's scope, for her scoped poses (HeroAnimator: her _ads clips, 1P ads_hold)
+		int look = (int) Math.round(a.scope * 100);
+		Integer was = player.getAttached(HeroManager.ASHE_LOOK);
+		if (was == null ? look != 0 : was != look) {
+			player.setAttached(HeroManager.ASHE_LOOK, look);
+		}
 	}
 
 	// ---- The Viper and Take Aim (14FC) ----
@@ -305,7 +310,7 @@ public final class Ashe implements HeroKit {
 			java.util.Optional<Vec3> on = stick.getBoundingBox().inflate(DYNAMITE_SHOOT_BOX / 2).clip(eye, block);
 			if (on.isPresent() && (hit == null || on.get().distanceTo(eye) < hit.metres)) {
 				// shot: it goes off at once (D 1502: the Viper hits it like a target)
-				trail(level, fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD), on.get());
+				shotFx(level, player, player, fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD), on.get(), scoped ? SHOT_SCOPED : SHOT_HIP, null, false);
 				Voice.say(player, "dynamite_shot", 1);
 				stick.explode();
 				return true;
@@ -315,7 +320,8 @@ public final class Ashe implements HeroKit {
 			if (blockHit.getType() == HitResult.Type.BLOCK) {
 				AsheSounds.at(level, scoped ? "viper.hit_world_ads" : "viper.hit_world", block, 32);
 			}
-			trail(level, fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD), block);
+			shotFx(level, player, player, fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD), block, scoped ? SHOT_SCOPED : SHOT_HIP,
+				blockHit.getType() == HitResult.Type.BLOCK ? Vec3.atLowerCornerOf(blockHit.getDirection().getUnitVec3i()) : null, true);
 			return false;
 		}
 		LivingEntity target = hit.target;
@@ -341,7 +347,7 @@ public final class Ashe implements HeroKit {
 				sting(player, s.ashe, target, level.getGameTime());
 			}
 		}
-		trail(level, fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD), hit.at);
+		shotFx(level, player, player, fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD), hit.at, scoped ? SHOT_SCOPED : SHOT_HIP, dir.scale(-1), false);
 		return true;
 	}
 
@@ -391,20 +397,29 @@ public final class Ashe implements HeroKit {
 	private static void sting(ServerPlayer player, AsheState a, LivingEntity target, long now) {
 		if (target.getUUID().equals(a.stingTarget) && now - a.stingAt <= Ow.ticks(STING_WINDOW)) {
 			dot(player, target, "sting", STING_DAMAGE, STING_TIME, STING_BLOW);
+			// its burst 65A8 on the target (AsheFx)
+			Effects.play(player.level(), "ashe_sting", target.position().add(0, target.getBbHeight() * 0.6, 0), Vec3.ZERO, target, 0, player);
 		}
 		a.stingTarget = target.getUUID();
 		a.stingAt = now;
 	}
 
-	static void trail(ServerLevel level, Vec3 from, Vec3 to) {
-		Vec3 d = to.subtract(from);
-		double len = d.length();
-		int n = (int) Math.min(16, Math.max(1, len / 1.5));
-		for (int k = 1; k <= n; k++) {
-			Vec3 p = from.add(d.scale(k / (double) n * Math.min(1, 24 / Math.max(len, 1e-3))));
-			level.sendParticles(ParticleTypes.SMOKE, p.x, p.y, p.z, 1, 0, 0, 0, 0);
+	/** The shot effect's variants (AsheFx): the hip shot (280E: 2456 + 2458), the scoped (29A1: 25E4 + 25E5), B.O.B.'s (2999: 25CD + 25CE). */
+	public static final int SHOT_HIP = 0, SHOT_SCOPED = 1, SHOT_BOB = 2;
+	/** The hit effect's variants (AsheFx, 25CF): on a creature, on a block (with its decal), a Coach Gun pellet's (smaller). */
+	public static final int HIT_CREATURE = 0, HIT_BLOCK = 1, HIT_PELLET = 2;
+
+	/**
+	 * A shot's effects (tools/reference/ashe-effects.md; they were Minecraft's smoke and crit particles, #150): its muzzle and line from
+	 * {@code from} to {@code to} (the client draws it from the posed muzzle), and where it stopped, the shared hit 25CF facing
+	 * {@code normal} (none into the sky). {@code shooter} is her or B.O.B.; their side is hers.
+	 */
+	static void shotFx(ServerLevel level, Entity shooter, ServerPlayer owner, Vec3 from, Vec3 to, int variant, @Nullable Vec3 normal,
+					   boolean block) {
+		Effects.play(level, "ashe_shot", from, to.subtract(from), shooter, variant, owner);
+		if (normal != null) {
+			Effects.play(level, "ashe_hit", to, normal, null, block ? HIT_BLOCK : HIT_CREATURE, owner);
 		}
-		level.sendParticles(ParticleTypes.CRIT, to.x, to.y, to.z, 2, 0, 0, 0, 0);
 	}
 
 	/** A point from her eyes in her look's frame (right, up, ahead), or her eyes when a wall is between. */
@@ -510,6 +525,11 @@ public final class Ashe implements HeroKit {
 			BlockHitResult blockHit = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 			Hit hit = firstHit(level, player, eye, blockHit.getLocation(), COACH_PELLET_RADIUS);
 			if (hit == null) {
+				// a pellet's stop on the world: the hit 25CF, small (2B61 m_BF7914D4; ours half size: AsheFx)
+				if (blockHit.getType() == HitResult.Type.BLOCK && level.getRandom().nextInt(3) == 0) {
+					Effects.play(level, "ashe_hit", blockHit.getLocation(), Vec3.atLowerCornerOf(blockHit.getDirection().getUnitVec3i()), null,
+						HIT_PELLET, player);
+				}
 				continue;
 			}
 			hitWith.merge(hit.target, COACH_PELLET, Double::sum);
@@ -550,8 +570,8 @@ public final class Ashe implements HeroKit {
 			a.launchGrace = 10;
 		}
 		AsheSounds.split(player, "coach_gun.fire", eye, 120);
-		level.sendParticles(ParticleTypes.CLOUD, eye.x + look.x, eye.y + look.y - 0.2, eye.z + look.z, 8, 0.2, 0.2, 0.2, 0.05);
-		level.sendParticles(ParticleTypes.FLAME, eye.x + look.x, eye.y + look.y - 0.2, eye.z + look.z, 6, 0.1, 0.1, 0.1, 0.05);
+		// the blast 2455 at the Coach Gun's muzzle (the client poses it: AsheFx), along her aim
+		Effects.play(level, "ashe_coach", eye.add(look).add(0, -0.2, 0), look, player, 0, player);
 		long now = level.getGameTime();
 		if (a.secondShot) {
 			// the second shot of Double-Barreled: the real cooldown from here (D #538)
@@ -670,11 +690,13 @@ public final class Ashe implements HeroKit {
 			}
 			if (e.isAlive()) {
 				dot(owner, e, "burn", BURN_TOTAL * (self ? BLAST_SELF : 1), BURN_TIME, DYNAMITE_BLOW);
+				// the burn's look 254F on it for the burn's 5 s (AsheFx), the life in ticks
+				Effects.play(level, "ashe_burn", e.position(), Vec3.ZERO, e, Ow.ticks(BURN_TIME), owner);
 				AsheSounds.at(level, "dynamite.ignite", e.position(), 30);
 			}
 		}
-		level.sendParticles(ParticleTypes.EXPLOSION, at.x, at.y, at.z, 2, 0.4, 0.4, 0.4, 0);
-		level.sendParticles(ParticleTypes.FLAME, at.x, at.y, at.z, 40, radius / 3, radius / 4, radius / 3, 0.05);
+		// the blast 25C9 (AsheFx), 1.4 times with Airburst's airborne scale (variant 1)
+		Effects.play(level, "ashe_dynamite", at, new Vec3(0, 1, 0), null, scale > 1 ? 1 : 0, owner);
 		AsheSounds.split(owner, "dynamite.explode", at, 80);
 	}
 
@@ -696,10 +718,6 @@ public final class Ashe implements HeroKit {
 			if (!d.target.isAlive() || d.target.isRemoved() || Combat.isPhased(d.target)) {
 				// a phase takes it off (W: Protection Suzu, a barrier of one's own)
 				return true;
-			}
-			if (d.target.tickCount % 4 == 0 && d.target.level() instanceof ServerLevel level) {
-				level.sendParticles(ParticleTypes.FLAME, d.target.getX(), d.target.getY() + d.target.getBbHeight() * 0.6, d.target.getZ(), 1,
-					d.target.getBbWidth() / 3, d.target.getBbHeight() / 4, d.target.getBbWidth() / 3, 0.01);
 			}
 			if (--d.left[1] > 0) {
 				return false;
@@ -828,7 +846,8 @@ public final class Ashe implements HeroKit {
 			}
 			AsheSounds.at(level, "bob.hit_enemy_3p", hit.at, 40);
 		}
-		trail(level, gun.add(dir.scale(0.8)), end);
+		shotFx(level, bob, owner, gun.add(dir.scale(0.8)), end, SHOT_BOB, hit != null ? dir.scale(-1)
+			: blockHit.getType() == HitResult.Type.BLOCK ? Vec3.atLowerCornerOf(blockHit.getDirection().getUnitVec3i()) : null, hit == null);
 	}
 
 	/**
@@ -863,6 +882,8 @@ public final class Ashe implements HeroKit {
 				dev.overcraft.junkrat.Junkrat.root(e, flying ? BOB_IMMOBILIZE_AIR : BOB_IMMOBILIZE);
 				Combat.launch(e, up, owner, BOB_BLOW);
 				AsheSounds.at(level, "bob.immobilize_3p", e.position(), 40);
+				// the knock-up 270F on it (AsheFx)
+				Effects.play(level, "ashe_bob_knock", e.position().add(0, e.getBbHeight() * 0.6, 0), Vec3.ZERO, e, 0, owner);
 			}
 			n++;
 		}
@@ -948,6 +969,7 @@ public final class Ashe implements HeroKit {
 		a.bobCast = -1;
 		a.doubleUntil = -1;
 		speed(player, 0);
+		player.setAttached(HeroManager.ASHE_LOOK, 0);
 		if (why.forGood()) {
 			clearWorld(player);
 			a.bob = null;

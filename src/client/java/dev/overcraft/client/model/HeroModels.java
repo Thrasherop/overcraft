@@ -93,7 +93,9 @@ public final class HeroModels {
 		// Pharah's effects' meshes (PharahFx): Concussive's swirl, ground wave disc and shell, the jumps' ring disc
 		"pharah_conc_swirl", "pharah_disc", "pharah_sphere", "pharah_jet_disc",
 		// Junkrat's effects' meshes (JunkratFx): the launch's burst, Nitro Boost's flare
-		"jr_muzzle_burst", "jr_nitro_flare");
+		"jr_muzzle_burst", "jr_nitro_flare",
+		// Ashe's effects' meshes (AsheFx): B.O.B.'s charge glow (25CC)
+		"ashe_charge_dome");
 	private static final Map<String, Loaded> EXTRA_MODELS = new HashMap<>();
 	private static final List<Identifier> REGISTERED = new ArrayList<>();
 	/** Bigger images are halved until they fit: a 4096 texture per material is a lot of video memory for a player. */

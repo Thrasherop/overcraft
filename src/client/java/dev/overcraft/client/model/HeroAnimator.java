@@ -177,6 +177,13 @@ public final class HeroAnimator {
 	/** Sombra stealthed (her invisibility): her stand, runs and crouches have their own "_stealth" clips (sombra.txt). */
 	private boolean stealthed;
 	private boolean scoped;
+	/**
+	 * Ashe (ashe.txt, ashe_1p.txt) and Take Aim's scope (HeroManager.ASHE_LOOK, 0-1), the way it moved last (+1 in, -1 out): her "_ads"
+	 * clips (df 0xE5 cat 0x81 on her blend trees, as Ana's "_scoped") from half up, her view's ads_in / ads_hold / ads_out.
+	 */
+	private boolean ashe;
+	private float asheScope;
+	private int asheScopeWay;
 	/** How far her scope is up (0-1): the 1P raise's time (df 0x6D). */
 	private float scopeIn;
 	private boolean bloomCharging;
@@ -1124,6 +1131,10 @@ public final class HeroAnimator {
 				t = 0;
 			} else if (viewBase.equals("scope_in")) {
 				t = scopeIn * baseClip.duration();
+			} else if (ashe && viewBase.equals("ads_in")) {
+				t = asheScope * baseClip.duration();
+			} else if (ashe && viewBase.equals("ads_out")) {
+				t = (1 - asheScope) * baseClip.duration();
 			} else if (viewBase.equals("stealth_move_start")) {
 				// her stealthed run's way in and out (3E91 / 3E92, the 4-slot's transitions 0 > 1 and 1 > 0: L), once
 				t = Math.min(now - movingSince, baseClip.duration());
@@ -1302,6 +1313,23 @@ public final class HeroAnimator {
 				want = want + "_thorn";
 			}
 			return model.clips.containsKey(want) ? want : thorns && model.clips.containsKey("idle_thorn") ? "idle_thorn" : "idle";
+		}
+		if (ashe) {
+			// her view model (ashe_1p.txt): idle, run, the jump's and the fall; Take Aim: the raise (ads_in) and the lowering (ads_out) at
+			// the scope's own place, fully up the held aim (ads_hold) or its run / jump / fall (run_ads, jump_ads, fall_ads)
+			if (base.startsWith("jump")) {
+				want = "jump";
+			} else if (base.startsWith("fall")) {
+				want = "fall";
+			} else if (base.startsWith("run") || base.startsWith("strafe") || base.startsWith("crouch_walk")) {
+				want = "run";
+			}
+			if (asheScope >= 1) {
+				want = want.equals("idle") ? "ads_hold" : model.clips.containsKey(want + "_ads") ? want + "_ads" : "ads_hold";
+			} else if (asheScope > 0) {
+				want = asheScopeWay < 0 && model.clips.containsKey("ads_out") ? "ads_out" : "ads_in";
+			}
+			return model.clips.containsKey(want) ? want : "idle";
 		}
 		if (ana || sombra || brigitte) {
 			// her view model (ana_1p.txt; Sombra's sombra_1p.txt the same): idle, one walk for every direction, the jump's rise and fall; scoped, the held
@@ -1953,6 +1981,11 @@ public final class HeroAnimator {
 		dev.overcraft.client.ClientAna.State anaState = dev.overcraft.client.ClientAna.state(entity);
 		scoped = ana && anaState != null && anaState.scope() >= 0.5f;
 		scopeIn = ana && anaState != null ? anaState.scope() : 0;
+		ashe = "ashe".equals(heroId);
+		Integer asheLook = ashe ? entity.getAttached(dev.overcraft.hero.HeroManager.ASHE_LOOK) : null;
+		float asheNow = asheLook == null ? 0 : Math.clamp(asheLook / 100f, 0, 1);
+		asheScopeWay = asheNow > asheScope ? 1 : asheNow < asheScope ? -1 : asheNow >= 1 ? 0 : asheScopeWay;
+		asheScope = asheNow;
 		dev.overcraft.client.ClientLifeweaver.State lw = dev.overcraft.client.ClientLifeweaver.state(entity);
 		lifeweaver = lw != null;
 		thorns = lifeweaver && lw.has(dev.overcraft.lifeweaver.Lifeweaver.FLAG_THORNS);
@@ -2213,6 +2246,14 @@ public final class HeroAnimator {
 				next = want + "_scoped";
 			}
 		}
+		if (ashe && asheScope >= 0.5f) {
+			// Take Aim: her scoped set (ashe.txt: idle_ads, run_ads_*, strafe_ads_*, crouch_ads, crouch_walk_ads_*, jump_ads, fall_ads),
+			// from half up as Ana's (the in / out themselves are actions: ads_in, ads_out)
+			String ads = asheAds(next.equals("crouch_idle") ? "crouch" : resolve(model, next));
+			if (model.clips.containsKey(ads)) {
+				next = ads;
+			}
+		}
 		next = resolve(model, next);
 		if (!next.equals(base)) {
 			previous = base;
@@ -2384,6 +2425,16 @@ public final class HeroAnimator {
 	}
 
 	/** The clip to play for a state the model may not have. */
+	/** Ashe's scoped clip for a state: "_ads" after the state's stem (run_ads_back_left, strafe_ads_left, crouch_walk_ads_right). */
+	static String asheAds(String state) {
+		for (String stem : new String[] {"crouch_walk", "strafe", "run", "idle", "jump", "fall", "crouch"}) {
+			if (state.startsWith(stem)) {
+				return stem + "_ads" + state.substring(stem.length());
+			}
+		}
+		return state + "_ads";
+	}
+
 	private static String resolve(SkinnedModel model, String want) {
 		String name = want;
 		while (!model.clips.containsKey(name)) {
