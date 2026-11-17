@@ -79,7 +79,11 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 	 * same renderer as Lifeweaver's props (a placed model and its clip); drawn turned to his facing.
 	 */
 	public static LifeweaverPropRenderer<dev.overcraft.entity.RipTireEntity> tire(EntityRendererProvider.Context context) {
-		return new LifeweaverPropRenderer<>(context, "junkrat_tire", (e, s) -> clip(s, "tire_roll_ra0", (e.tickCount + s.partialTick) / 20f, true));
+		return new LifeweaverPropRenderer<>(context, "junkrat_tire", (e, s) -> {
+			clip(s, "tire_roll_ra0", (e.tickCount + s.partialTick) / 20f, true);
+			// its fuse, ribbons and sparks (156F) and Nitro Boost's flare (JunkratFx)
+			dev.overcraft.client.effect.JunkratFx.tire(e, e.getPosition(s.partialTick), s.partialTick);
+		});
 	}
 
 	/**

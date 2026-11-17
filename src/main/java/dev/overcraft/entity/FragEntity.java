@@ -33,6 +33,8 @@ public class FragEntity extends OwProjectile {
 	private int bounces;
 	private int fuse = Ow.ticks(JunkratStats.FRAG_FUSE);
 	private boolean done;
+	/** The face it went off on, outward (zero in the air or on a creature): its burst's scorch (JunkratFx). */
+	private Vec3 burstNormal = Vec3.ZERO;
 
 	public FragEntity(EntityType<? extends FragEntity> type, Level level) {
 		super(type, level);
@@ -50,6 +52,10 @@ public class FragEntity extends OwProjectile {
 
 	public int bounces() {
 		return bounces;
+	}
+
+	public Vec3 burstNormal() {
+		return burstNormal;
 	}
 
 	@Override
@@ -106,6 +112,7 @@ public class FragEntity extends OwProjectile {
 		Vec3 n = new Vec3(face.getStepX(), face.getStepY(), face.getStepZ());
 		boolean ground = n.y >= JunkratStats.GROUND_NORMAL;
 		if (!bomb && Junkrat.bounceBursts(bounces, ground)) {
+			burstNormal = n;
 			burst(hit.getLocation().add(n.scale(0.1)), null);
 			return;
 		}

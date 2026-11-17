@@ -1035,6 +1035,20 @@ EFFECT_MASKS = {
     "pharah_pod_flash": ("Pharah", "Barrage", "000000005E9C", 3),
     "pharah_pod_glow": ("Pharah", "Barrage", "000000027BFD", 1),
     "pharah_smoke_ribbon": ("Pharah", "RocketLauncher", "0000000009ED", 1),
+    # Junkrat's (tools/reference/junkrat-effects.md "For the asset pack"; pass research/junkrat/fx as a source): the blasts'
+    # fireball flipbook (a colour sprite coloured by its brightness), flash, spark streak and scorch (frag, mine, tire, bombs),
+    # the launch's muzzle burst, the frag's glow, the tire blast's ground ring noise, the metal bits (a colour sprite: NATURAL),
+    # the tire's glow ball, the trap's chain
+    "jr_fireball": ("Junkrat", "FragLauncher", "0000000047C4", 11),
+    "jr_flash": ("Junkrat", "FragLauncher", "00000002613A", 1),
+    "jr_spark_streak": ("Junkrat", "FragLauncher", "00000002C009", 1),
+    "jr_scorch": ("Junkrat", "FragLauncher", "0000000031E8", 1),
+    "jr_muzzle_flash": ("Junkrat", "FragLauncher", "000000011F7F", 2),
+    "jr_frag_glow": ("Junkrat", "FragLauncher", "000000018BAD", 4),
+    "jr_ring_noise": ("Junkrat", "RIPTire", "000000004CB7", 1),
+    "jr_debris": ("Junkrat", "RIPTire", "0000000022FD", 8),
+    "jr_glow_ball": ("Junkrat", "RIPTire", "00000003699E", 1),
+    "jr_chain": ("Junkrat", "SteelTrap", "000000002A90", 1),
 }
 
 
@@ -1140,6 +1154,9 @@ EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  # Cassidy's muzzle (057A, cassidy-effects.md): the flash cone (1 x 0.35 m) and the flat ring
                  "cassidy_muzzle_cone": ("Cassidy", "Peacekeeper", "0000000080B8"),
                  "cassidy_muzzle_ring": ("Cassidy", "Peacekeeper", "00000000E700"),
+                 # Junkrat's (junkrat-effects.md): the launch's burst (1468, 0.2 x 0.17 x 0.2) and Nitro Boost's flare (6740)
+                 "jr_muzzle_burst": ("Junkrat", "FragLauncher", "0000000027B3"),
+                 "jr_nitro_flare": ("Junkrat", "Perks", "000000014346"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
                  # rings (a fat torus lying flat), the hook's cone, the towed ally's arcs, Purr's sphere, torus and wall
                  "cat_torus": ("JetpackCat", "Lifeline", "000000015A26"),
