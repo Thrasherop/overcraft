@@ -54,21 +54,24 @@ public final class EndPhase {
 					sent = Float.NaN;
 					sendAll(server, new EndPhasePayload(-1, current.hashCode()));
 				}
+				// and another dragon can take its place: one gone without dying (/kill removes it without its death; the owner's
+				// respawned fight) held the search forever, and the next dragon at a third was never heard (found playing,
+				// 2026-11-17). Its own music comes back if it's loaded again first
+			} else {
+				float share = share(dragon);
+				if (Float.isNaN(sent) || Math.abs(share - sent) > STEP) {
+					sent = share;
+					sendAll(server, new EndPhasePayload(share, current.hashCode()));
+				}
 				return;
 			}
-			float share = share(dragon);
-			if (Float.isNaN(sent) || Math.abs(share - sent) > STEP) {
-				sent = share;
-				sendAll(server, new EndPhasePayload(share, current.hashCode()));
-			}
-			return;
 		}
 		if (++ticks % SCAN_TICKS != 0) {
 			return;
 		}
 		for (ServerLevel level : server.getAllLevels()) {
 			for (EnderDragon dragon : level.getDragons()) {
-				if (!done.contains(dragon.getUUID()) && share(dragon) <= START_SHARE) {
+				if (dragon.isAlive() && !dragon.getUUID().equals(current) && !done.contains(dragon.getUUID()) && share(dragon) <= START_SHARE) {
 					current = dragon.getUUID();
 					sent = share(dragon);
 					sendAll(server, new EndPhasePayload(sent, current.hashCode()));
