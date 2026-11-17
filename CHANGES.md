@@ -4,6 +4,16 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-17: 0.3.72 on next (not on main yet)
+
+- **Cassidy's, Pharah's and Junkrat's effects from their data (#150):** with these every hero's abilities draw their
+  Overwatch effects instead of Minecraft's particles. Cassidy: his shot lines and muzzle, hits, Fan the Hammer's smoke,
+  Silver Bullet's glow and bleed, Flashbang's flash and the hindered look, Combat Roll's dust, Deadeye's glint. Pharah: her
+  rockets' trails and blasts, Concussive Blast (blue for her side, red for enemies), her hover jets, Jump Jet and Jet Dash,
+  Barrage and Rocket Salvo. Junkrat: the frag's flight and burst, Concussion Mine, Steel Trap's snap and chain, RIP-Tire
+  and its blast, Total Mayhem, Nitro. Played lightly (Cassidy's shots, hits and Flashbang; Pharah's rocket trail);
+  the rest built and checked in code.
+
 ## 2026-11-17: 0.3.71 on next (not on main yet)
 
 - **Torbjorn recalls his turret with Interact (F) (#146):** from his data; its cooldown 6 s, or 12 s if it was in combat.
