@@ -30,7 +30,7 @@ public abstract class MouseHandlerMixin {
 			EmoteCamera.turn(dx, dy);
 		} else {
 			// Ana fully scoped: 30% (ClientAna)
-			double k = dev.overcraft.client.ClientAna.sensitivity();
+			double k = dev.overcraft.client.ClientAna.sensitivity() * dev.overcraft.client.ClientCassidy.sensitivity();
 			player.turn(dx * k, dy * k);
 		}
 	}

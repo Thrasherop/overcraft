@@ -21,8 +21,11 @@ public abstract class ScopeFovMixin {
 
 	@Inject(method = "tickFov", at = @At("TAIL"))
 	private void overcraft$scopeFov(CallbackInfo ci) {
-		if (ClientAna.scopeMoving()) {
-			fovModifier = ClientAna.fovModifier();
+		// either scope moving: Ana's Take Aim or Cassidy's Silver Bullet aim (#164); both run every tick to track their last value
+		boolean ana = ClientAna.scopeMoving();
+		boolean cassidy = dev.overcraft.client.ClientCassidy.aimMoving();
+		if (ana || cassidy) {
+			fovModifier = ClientAna.fovModifier() * dev.overcraft.client.ClientCassidy.fovModifier();
 		}
 	}
 }

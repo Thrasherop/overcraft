@@ -18,7 +18,7 @@ public abstract class HeroFovMixin {
 	private void overcraft$fixedFov(boolean firstPerson, float effectScale, CallbackInfoReturnable<Float> cir) {
 		if ((Object) this == Minecraft.getInstance().player && ClientHero.heroView()) {
 			// Ana's Take Aim zooms toward 30 degrees as it comes up (ClientAna)
-			cir.setReturnValue(dev.overcraft.client.ClientAna.fovModifier());
+			cir.setReturnValue(dev.overcraft.client.ClientAna.fovModifier() * dev.overcraft.client.ClientCassidy.fovModifier());
 		}
 	}
 }
