@@ -48,7 +48,9 @@ public enum Hero {
 	TORBJORN("torbjorn", "Torbjörn", Role.DAMAGE, "specialist",
 		dev.overcraft.torbjorn.TorbjornStats.HEALTH + dev.overcraft.torbjorn.TorbjornStats.ARMOR, true, 0xFFD9752B),
 	// the sixth Damage hero (#137), Sharpshooter (D tag 1188, loadout 0DDD; BZ 2026-02-10; W); colour ours (her white hair's silver)
-	ASHE("ashe", "Ashe", Role.DAMAGE, "sharpshooter", dev.overcraft.ashe.AsheStats.HEALTH, true, 0xFFC9C3B8);
+	ASHE("ashe", "Ashe", Role.DAMAGE, "sharpshooter", dev.overcraft.ashe.AsheStats.HEALTH, true, 0xFFC9C3B8),
+	// the last Damage hero (#138), Sharpshooter (D tag 1188, loadout 0DDD; BZ 2026-02-10; W); colour ours (her skin's violet)
+	WIDOWMAKER("widowmaker", "Widowmaker", Role.DAMAGE, "sharpshooter", dev.overcraft.widowmaker.WidowmakerStats.HEALTH, true, 0xFF8A6FD1);
 
 	public enum Role { TANK, DAMAGE, SUPPORT }
 

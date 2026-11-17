@@ -190,6 +190,10 @@ WEAPON_SLOTS = {
     # graph 168C #73 spawns 01BC on 000A in var 12A4): torbjorn_weapon.txt; the hammer's in-hand slot 12A4 under "stowLeft"
     # (EmoteData's second-weapon keys; it is in his right hand, not the left)
     "torbjorn": {"1D35": ("stow", "rivet gun", "torbjorn_weapon.txt"), "12A4": ("stowLeft", "hammer", "torbjorn_hammer.txt")},
+    # Widowmaker's Widow's Kiss, entity 002A (model 01D4, the classic skin's E003) in slot 12BB on 000A (research/widowmaker/work_assets/
+    # ents_widowmaker_out.txt: hero entity 001C's child "2A.003 hp A.03C var 12BB.01C"; its own child 13F6, model 306C / skin F64A, on the
+    # gun's hardpoint 0068 in var 1AFF): widowmaker_kiss.txt
+    "widowmaker": {"12BB": ("stow", "kiss", "widowmaker_kiss.txt")},
 }
 # a hero whose weapon geosets follow the stow windows where a clip has no GeoSetFlags: the mask bits that do (Juno's
 # Mediblaster, mask bit 1; her pod has no slot the emotes put away, so it stays where the data says nothing)
@@ -213,7 +217,7 @@ STOWS = {"lucio": True, "mercy": True, "ana": True, "sombra": True, "brigitte": 
 # heroes with no weapon pieces in their body .glb: their geosets are body variants (Pharah: geoset 1 her bare head and visor-up
 # look, geoset 2 her helmet, the submeshes 7-13 all 1.5-1.8 m up), so no mask or stow may hide them; her launcher is its own
 # entity (WEAPON_SLOTS), put away with the stow windows
-NO_PIECES = {"pharah", "tracer", "cassidy", "junkrat", "ashe", "torbjorn"}  # Ashe: The Viper and the Coach Gun are entities; Tracer: her pistols are entities, no submesh of her body .glb sits stowed at the origin; Cassidy's Peacekeeper and Junkrat's launcher too
+NO_PIECES = {"pharah", "tracer", "cassidy", "junkrat", "ashe", "torbjorn", "widowmaker"}  # Widowmaker: Widow's Kiss is an entity; Ashe: The Viper and the Coach Gun are entities; Tracer: her pistols are entities, no submesh of her body .glb sits stowed at the origin; Cassidy's Peacekeeper and Junkrat's launcher too
 
 # props that are children of the hero entity itself, by slot (STUChildEntityDefinition of the hero entity: H), shown by an
 # EntityControl that plays a clip on them (action 4) over its window: slot -> (model, hardpoint). Ana's (her hero entity

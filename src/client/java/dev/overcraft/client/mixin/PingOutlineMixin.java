@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class PingOutlineMixin {
 	@Inject(method = "shouldEntityAppearGlowing", at = @At("HEAD"), cancellable = true)
 	private void overcraft$pingedGlows(Entity entity, CallbackInfoReturnable<Boolean> cir) {
-		if (Pings.outlineColour(entity) >= 0) {
+		if (Pings.outlineColour(entity) >= 0 || dev.overcraft.client.effect.WidowReveal.outlineColour(entity) >= 0) {
 			cir.setReturnValue(true);
 		}
 	}

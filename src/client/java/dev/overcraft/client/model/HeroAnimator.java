@@ -182,6 +182,8 @@ public final class HeroAnimator {
 	 * clips (df 0xE5 cat 0x81 on her blend trees, as Ana's "_scoped") from half up, her view's ads_in / ads_hold / ads_out.
 	 */
 	private boolean ashe;
+	/** Widowmaker: her Take Aim plays Ashe's scoped path (her "_ads" set, her view's ads_in), from HeroManager.WIDOWMAKER_LOOK. */
+	private boolean widowmaker;
 	private float asheScope;
 	private int asheScopeWay;
 	/** How far her scope is up (0-1): the 1P raise's time (df 0x6D). */
@@ -360,6 +362,16 @@ public final class HeroAnimator {
 			}
 		}
 		String viewClip = a.mercy ? clip : action;
+		if (a.widowmaker && (action.equals("mine_throw") || action.equals("grapple_end"))) {
+			// her third person's are additive layers over her pose (widowmaker.txt add_mine_throw, add_grapple_end: below), her view's
+			// clips of their own (widowmaker_1p.txt mine_throw; the end's add_grapple_end a layer there too)
+			clip = "";
+			viewClip = action.equals("mine_throw") ? "mine_throw" : "";
+		}
+		if (a.widowmaker && action.equals("reload_ads")) {
+			// (scoped, her reload's own 3P clip 0004 under the scoped tree: widowmaker.txt reload_ads; her view's is the one reload)
+			viewClip = "reload";
+		}
 		if (a.lifeweaver) {
 			clip = a.lifeweaverAction(action);
 			viewClip = a.lifeweaverViewAction(action);
@@ -1586,6 +1598,12 @@ public final class HeroAnimator {
 		additive(model, pose, "add_charged_shot", "charged_shot", now);
 		// Ashe's scoped shot's recoil (ashe.txt 5F77, dfE5 cat81)
 		additive(model, pose, "add_ads_fire", "ads_fire", now);
+		if (widowmaker) {
+			// Widowmaker's mine throw and the hook's end over her pose (widowmaker.txt: 0056 #38 alias 001E, 005A #122 alias 009C)
+			additive(model, pose, model.clips.containsKey("add_mine_throw_ads") && asheScope >= 0.5f ? "add_mine_throw_ads" : "add_mine_throw",
+				"mine_throw", now);
+			additive(model, pose, "add_grapple_end", "grapple_end", now);
+		}
 		if (flier) {
 			flierLayers(model, entity, pose, now);
 		}
@@ -1989,9 +2007,12 @@ public final class HeroAnimator {
 		dev.overcraft.client.ClientAna.State anaState = dev.overcraft.client.ClientAna.state(entity);
 		scoped = ana && anaState != null && anaState.scope() >= 0.5f;
 		scopeIn = ana && anaState != null ? anaState.scope() : 0;
-		ashe = "ashe".equals(heroId);
-		Integer asheLook = ashe ? entity.getAttached(dev.overcraft.hero.HeroManager.ASHE_LOOK) : null;
-		float asheNow = asheLook == null ? 0 : Math.clamp(asheLook / 100f, 0, 1);
+		widowmaker = "widowmaker".equals(heroId);
+		ashe = "ashe".equals(heroId) || widowmaker;
+		Integer asheLook = widowmaker ? entity.getAttached(dev.overcraft.hero.HeroManager.WIDOWMAKER_LOOK)
+			: ashe ? entity.getAttached(dev.overcraft.hero.HeroManager.ASHE_LOOK) : null;
+		// (hers carries the pull's state above 1000: Widowmaker.tick)
+		float asheNow = asheLook == null ? 0 : Math.clamp((asheLook % 1000) / 100f, 0, 1);
 		asheScopeWay = asheNow > asheScope ? 1 : asheNow < asheScope ? -1 : asheNow >= 1 ? 0 : asheScopeWay;
 		asheScope = asheNow;
 		dev.overcraft.client.ClientLifeweaver.State lw = dev.overcraft.client.ClientLifeweaver.state(entity);

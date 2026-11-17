@@ -79,6 +79,7 @@ public final class HeroArt {
 			case TORBJORN -> "molten_core";
 			case ILLARI -> "captive_sun";
 			case ASHE -> "b_o_b";
+			case WIDOWMAKER -> "infra_sight";
 		});
 	}
 
@@ -90,7 +91,13 @@ public final class HeroArt {
 	/** A perk's icon (a white glyph on clear), by its id ("urgent_care"). */
 	public static @Nullable Identifier perk(Hero hero, String perk) {
 		// Ashe's Viper's Sting: the pack names it from its display name (viper_s_sting)
-		return art(hero, "perks/" + (perk.equals("vipers_sting") ? "viper_s_sting" : perk));
+		// Widowmaker's Sniper's Instinct and Widow's Bite the same (sniper_s_instinct, widow_s_bite)
+		return art(hero, "perks/" + switch (perk) {
+			case "vipers_sting" -> "viper_s_sting";
+			case "snipers_instinct" -> "sniper_s_instinct";
+			case "widows_bite" -> "widow_s_bite";
+			default -> perk;
+		});
 	}
 
 	/** One of the kill feed's own icons ("melee": Overwatch's Quick Melee fist), when the local pack has it. */

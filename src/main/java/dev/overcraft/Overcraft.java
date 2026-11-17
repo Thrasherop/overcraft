@@ -190,6 +190,8 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.illari.Illari.tickAll(server);
 			// Ashe's Dynamite burns and Viper's Stings
 			dev.overcraft.ashe.Ashe.tickAll(server);
+			// Widowmaker's poisons and Seeker Mine darts
+			dev.overcraft.widowmaker.Widowmaker.tickAll(server);
 			// Silver Bullet's bleeds
 			dev.overcraft.cassidy.Cassidy.tickBleeds(server);
 			dev.overcraft.hero.Effects.tick(server);

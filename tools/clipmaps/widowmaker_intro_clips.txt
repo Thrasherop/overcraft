@@ -1,0 +1,18 @@
+# Widowmaker's Play of the Game highlight intro: the clips only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/widowmaker.glb by bone name (HeroModels, from hero_models/widowmaker_intro_clips.glb), as Ashe's (ashe_intro_clips.txt).
+# From DataTool's extract-unlocks "Widowmaker|highlightintro=*" (build 154088, archived: research\widowmaker\extract\Unlocks\Heroes\
+# Widowmaker\HighlightIntro). The default Overwatch plays "Heroic" (her other base intros: Hanging Around, I see you, Swinging into
+# Action). Heroic holds (research\widowmaker\work_assets\intro_clips_out.txt) B6EE 2.567 s (effect 4717), BCF8 3.867 s (46CC), BCFA
+# 3.833 s (46CD), BCFB 4.233 s (46CB) and BD62 3.867 s (46CE), all group 0-32. The showcase set 0CA3's alias 2 (her HighlightIntro /
+# showcase entity 3A9C) plays them as a SEQUENCE (work_assets\clipmap_widowmaker\compact_0CA3.txt, H tree): sm[1] sm[1] seq[0] B6EE ->
+# seq[1] BCF8 -> seq[2] BD62 -> seq[3] BCFA -> seq[4] BCF8 -> seq[5] BD62 -> seq[6] BCFB; its sm[2] branch repeats them with a random
+# pick (seq[16] rand[0-5]). The intro set 42F5's own ids (19FA3-19FA6, 1A11A, 1A129, 1A183) are not extracted under F0DF. So B6EE
+# opens, the others follow in that order (H order; which steps the POTG plays before its cut is not in the data read: L).
+# Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <F0DF.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/widowmaker_intro_clips.txt --clips-from=<...>\Heroes\Widowmaker\HighlightIntro\Overwatch\Heroic
+emote_00000000B6EE = potg_intro
+emote_00000000BCF8 = potg_intro_2
+emote_00000000BD62 = potg_intro_3
+emote_00000000BCFA = potg_intro_4
+emote_00000000BCFB = potg_intro_5

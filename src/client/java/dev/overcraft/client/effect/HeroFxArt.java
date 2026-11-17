@@ -72,6 +72,7 @@ public final class HeroFxArt {
 			// Cassidy, Junkrat: no effect art (none made on first use, every button)
 			case JUNKRAT -> JunkratFx.ART;
 			case ASHE -> AsheFx.ART;
+			case WIDOWMAKER -> WidowmakerFx.ART;
 			// Pharah, Cassidy: no effect art (none made on first use, every button)
 			default -> List.of();
 		};
@@ -97,6 +98,7 @@ public final class HeroFxArt {
 			case PHARAH -> PharahFx.ART_ENEMY;
 			case JUNKRAT -> JunkratFx.ART_ENEMY;
 			case ASHE -> AsheFx.ART_ENEMY;
+			case WIDOWMAKER -> WidowmakerFx.ART_ENEMY;
 			default -> List.of();
 		};
 	}

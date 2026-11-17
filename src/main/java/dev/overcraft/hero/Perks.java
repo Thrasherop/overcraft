@@ -70,6 +70,7 @@ public final class Perks {
 			case TORBJORN -> dev.overcraft.torbjorn.TorbjornStats.PERK_MINOR_XP;
 			case ILLARI -> dev.overcraft.illari.IllariStats.PERK_MINOR_XP;
 			case ASHE -> dev.overcraft.ashe.AsheStats.PERK_MINOR_XP;
+			case WIDOWMAKER -> dev.overcraft.widowmaker.WidowmakerStats.PERK_MINOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}
@@ -96,6 +97,7 @@ public final class Perks {
 			case TORBJORN -> dev.overcraft.torbjorn.TorbjornStats.PERK_MAJOR_XP;
 			case ILLARI -> dev.overcraft.illari.IllariStats.PERK_MAJOR_XP;
 			case ASHE -> dev.overcraft.ashe.AsheStats.PERK_MAJOR_XP;
+			case WIDOWMAKER -> dev.overcraft.widowmaker.WidowmakerStats.PERK_MAJOR_XP;
 			default -> Double.MAX_VALUE;
 		};
 	}

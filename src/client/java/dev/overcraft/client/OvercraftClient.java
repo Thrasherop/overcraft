@@ -88,6 +88,7 @@ public class OvercraftClient implements ClientModInitializer {
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.PharahFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.JunkratFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.AsheFx.frame());
+		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.WidowmakerFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.LifeweaverFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(Fx::render);
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.hero.PressTrace.frame());
@@ -277,6 +278,11 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.DYNAMITE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"ashe_dynamite", 1f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.BOB, dev.overcraft.client.model.LifeweaverPropRenderer::bob);
+		// Widowmaker's Venom Mine (10A75) and grappling claw (0711, its rope drawn by WidowmakerFx.hook)
+		EntityRendererRegistry.register(OcEntities.VENOM_MINE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"widowmaker_mine", 0.3f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.GRAPPLE_HOOK, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"=widowmaker_hook", 0.3f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PULSE_BOMB, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"tracer_bomb", 0.4f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PHARAH_ROCKET, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,

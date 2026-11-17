@@ -24,7 +24,7 @@ public final class HeroWeapon {
 	 * Hardpoint 000A from the models' own hardpoint tables (research/lucio/models.json): on Weapon_R in both, turned 180
 	 * degrees about X in the third-person model DB3F (rotation x -1) and not at all in the first-person DB40.
 	 */
-	private static final Map<Hero, Spec> SPECS = with(with(with(with(Map.of(Hero.LUCIO,
+	private static final Map<Hero, Spec> SPECS = with(with(with(with(with(Map.of(Hero.LUCIO,
 		new Spec(new Mount("Weapon_R", new Quaternionf(-1, 0, 0, 0)), new Mount("Weapon_R", new Quaternionf())),
 		// Mercy's staff and blaster, entities on 000A = Weapon_R with no offset or turn in both her models' tables
 		// (research/mercy/models.json)
@@ -64,7 +64,10 @@ public final class HeroWeapon {
 		Hero.ASHE, new Spec(new Mount("bone_0606", new Quaternionf()), new Mount("bone_0606", new Quaternionf()))),
 		// Torbjörn's Rivet Gun (entity 0147, model DB4F) and Forge Hammer (entity 01BC, model EED9), both on hp 000A = Weapon_R, no
 		// offset (M: as Cassidy's; his models' hardpoint tables not read for the turn); hero_models/torbjorn_weapon.glb / torbjorn_hammer.glb
-		Hero.TORBJORN, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
+		Hero.TORBJORN, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf()))),
+		// Widowmaker's Kiss, entity 002A (model E003) on her hardpoint 000A (var 12BB) = Weapon_R in both views, no offset (M: as
+		// Cassidy's; her models' hardpoint tables not read for the turn); hero_models/widowmaker_kiss.glb
+		Hero.WIDOWMAKER, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
 
 	private static Map<Hero, Spec> with(Map<Hero, Spec> first, Hero hero, Spec spec) {
 		Map<Hero, Spec> all = new java.util.EnumMap<>(first);

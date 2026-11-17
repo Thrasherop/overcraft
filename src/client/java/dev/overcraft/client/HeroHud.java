@@ -198,9 +198,16 @@ public final class HeroHud {
 		g.pose().scale(scale, scale);
 		// Ana scoped in: her scope over the view, under every widget and the screen's hurt tints (under its surround they were
 		// lost: critique M6), in place of the crosshair once it shows, eased between the sync's ticks (#90)
-		float scope = hero == Hero.ANA ? ClientAna.ownScopeEased() : 0;
+		float scope = hero == Hero.ANA || hero == Hero.WIDOWMAKER ? ClientAna.ownScopeEased() : 0;
 		if (scope > SCOPE_SHOWN) {
+			// Widowmaker's lens: Ana's for now (ours, L: her own scope art isn't read from her data yet)
 			anaScope(g, w, h, Math.clamp((scope - SCOPE_SHOWN) / (1 - SCOPE_SHOWN), 0, 1));
+		}
+		if (hero == Hero.WIDOWMAKER && s.secondaryReload() >= 0 && scope >= 0.99f) {
+			// Take Aim's charge under the crosshair, as Overwatch's percent (0-100, 125 with Widow's Bite: Widowmaker.sync)
+			int percent = (int) Math.floor(s.secondaryReload());
+			HudText.outlined(g, Face.NUMBERS, percent + "%", w / 2, h / 2 + 64, 22, percent >= 100 ? 0xFFFF5A7A : 0xFFE6E8EE, 0xB3000000, 1.5f,
+				Align.CENTER);
 		}
 		g.pose().popMatrix();
 		screenEffects(g, s, player);
@@ -1168,6 +1175,17 @@ public final class HeroHud {
 			}
 			return;
 		}
+		if (hero == Hero.WIDOWMAKER) {
+			// Grappling Hook (Shift) and Venom Mine (E, lit while her mine is out), in Kiriko's two places (ours)
+			ability(g, hero, w, "grappling_hook", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.widowmaker.WidowmakerStats.HOOK_COOLDOWN, ability1ReadyAt);
+			ability(g, hero, w, "venom_mine", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.widowmaker.WidowmakerStats.MINE_COOLDOWN, ability2ReadyAt);
+			if ((s.mode() & dev.overcraft.widowmaker.Widowmaker.MODE_MINE_OUT) != 0) {
+				song(g, true, false, w - 563, 906, w);
+			}
+			return;
+		}
 		if (hero == Hero.TORBJORN) {
 			// Deploy Turret (Shift: lit while his turret is out) and Overload (E: lit while it runs), in Kiriko's two places (ours)
 			// (the ring over the cooldown running now: 6 s from a throw, 12 s after a turret lost in combat; ability3Cooldown carries it)
@@ -1680,6 +1698,12 @@ public final class HeroHud {
 			// The Viper's 12 (the left button; the right aims it) where Kiriko's kunai are
 			weapon(g, hero, w, "the_viper", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
 				dev.overcraft.ashe.AsheStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
+		if (hero == Hero.WIDOWMAKER) {
+			// Widow's Kiss's 35 (the left button; the right scopes it) where Kiriko's kunai are
+			weapon(g, hero, w, "widow_s_kiss", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+				dev.overcraft.widowmaker.WidowmakerStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;
 		}
 		if (hero == Hero.CASSIDY) {

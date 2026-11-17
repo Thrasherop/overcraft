@@ -39,12 +39,13 @@ ROOT = Path(__file__).resolve().parent.parent
 PACK = Path(os.environ["OC_ASSET_PACK"]) if os.environ.get("OC_ASSET_PACK") else ROOT / "local-assets" / "pack"
 LOCAL = PACK.parent
 MODELS = PACK / "assets" / "overcraft" / "hero_models"
-HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver", "sigma", "ana", "dva", "pharah", "tracer", "cassidy", "junkrat", "ashe", "torbjorn"}
+HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver", "sigma", "ana", "dva", "pharah", "tracer", "cassidy", "junkrat", "ashe", "torbjorn", "widowmaker"}
 # DataTool's folder for each hero (its in-game name)
 HERO_FOLDERS = {"kiriko": "Kiriko", "lucio": "Lúcio", "sombra": "Sombra", "illari": "Illari", "juno": "Juno",
                 "sojourn": "Sojourn", "jetpack_cat": "Jetpack Cat", "mercy": "Mercy", "lifeweaver": "Lifeweaver",
                 "ana": "Ana", "brigitte": "Brigitte", "sigma": "Sigma",
-                "dva": "D.Va", "pharah": "Pharah", "tracer": "Tracer", "cassidy": "Cassidy", "junkrat": "Junkrat", "ashe": "Ashe", "torbjorn": "Torbjörn"}
+                "dva": "D.Va", "pharah": "Pharah", "tracer": "Tracer", "cassidy": "Cassidy", "junkrat": "Junkrat", "ashe": "Ashe", "torbjorn": "Torbjörn",
+                "widowmaker": "Widowmaker"}
 GUI = PACK / "assets" / "overcraft" / "textures" / "gui" / "heroes"
 # extract-hero-icons names files by id only; each hero has one of each kind, told apart by size (the same for every
 # hero checked: Kiriko, Reaper). Two kinds are 256x256: the lower id is the portrait, the higher a closer crop.
@@ -396,7 +397,7 @@ def add_sounds(source, only=None):
 
 # heroes whose collectible voice lines go in the pack: our id -> DataTool's hero folder name
 VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio", "mercy": "Mercy", "juno": "Juno", "ana": "Ana", "sombra": "Sombra",
-                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn", "sigma": "Sigma", "dva": "D.Va", "pharah": "Pharah", "tracer": "Tracer", "cassidy": "Cassidy", "junkrat": "Junkrat", "illari": "Illari", "ashe": "Ashe", "torbjorn": "Torbjörn"}
+                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn", "sigma": "Sigma", "dva": "D.Va", "pharah": "Pharah", "tracer": "Tracer", "cassidy": "Cassidy", "junkrat": "Junkrat", "illari": "Illari", "ashe": "Ashe", "torbjorn": "Torbjörn", "widowmaker": "Widowmaker"}
 # a hero whose extraction (Unlocks/ and HeroVoice/) isn't under the build root: its folder relative to it, as the hero's
 # soundmap reads her voice (Juno's DataTool extract-unlocks "Juno|voiceline=*" went to research\juno\extract, 27 unlocks)
 VOICELINE_ROOTS = {"juno": "../../research/juno/extract", "ana": "../../research/ana/extract",
@@ -411,7 +412,8 @@ VOICELINE_ROOTS = {"juno": "../../research/juno/extract", "ana": "../../research
                    "junkrat": "../../research/junkrat/extract",
                    "illari": "../../research/illari/extract",
                    "torbjorn": "../../research/torbjorn/extract",
-                   "ashe": "../../research/ashe/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
+                   "ashe": "../../research/ashe/extract",
+                   "widowmaker": "../../research/widowmaker/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
 # Heroes whose voice-line unlocks DataTool doesn't export (Jetpack Cat's: each is an effect with one voice stimulus that
 # names one meow), listed from the data instead (E:\Overwatch Archive\research\jetpack_cat\gaps.md 1c, H): unlock name
 # -> (group, the meow under HeroVoice/<folder>/Voicelines/(cat sounds), our subtitle: DataTool names them only "(cat
@@ -1107,6 +1109,14 @@ EFFECT_MASKS = {
     "ashe_dazed_ring": ("Ashe", "BOB", "00000000176B", 1),
     "ashe_dazed_bits": ("Ashe", "BOB", "0000000030F5", 16),
     "ashe_detonator_glow": ("Ashe", "Perks", "000000003253", 2),
+    # Widowmaker's (tools/reference/widowmaker-effects.md "For the asset pack"; pass research/widowmaker/fx as a source): the hip
+    # muzzle's flash and glow, the scoped muzzle's colour flash, the rope's own texture, the cast puff's second mask, the poison's bits
+    "widow_flash": ("Widowmaker", "Kiss", "00000003269F", 4),
+    "widow_muzzle_glow": ("Widowmaker", "Kiss", "00000002007A", 1),
+    "widow_scoped_flash": ("Widowmaker", "Kiss", "00000002A02D", 4),
+    "widow_rope": ("Widowmaker", "Hook", "000000001DD6", 1),
+    "widow_cast": ("Widowmaker", "Hook", "00000001DC1F", 1),
+    "widow_poison_bits": ("Widowmaker", "Mine", "000000009487", 4),
 }
 
 
@@ -1177,7 +1187,11 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
             "sigma_send_streak": ("cat_cone_line", "cat_soft"),
             "sigma_flux_glow": ("cat_soft", "mercy_noise"),
             # Levitation's streaks (65BF: 299E1 x 299E8 x A7B6 on its half-shell 963D): the noise rounded by the glow A7B6
-            "sigma_levitate": ("cat_noise", "glow")}
+            "sigma_levitate": ("cat_noise", "glow"),
+            # Widowmaker's (widowmaker-effects.md): the cast puff 1DC68 x 1DC1F (0291 / 0285 C5) and the scoped smoke band
+            # 4D5 x B35 x 965 (0118 / 0067 / 0117)
+            "widow_cast_puff": ("brigitte_soft_square", "widow_cast"),
+            "widow_smoke_band": ("cassidy_smoke_noise", "ana_beam_line", "ana_nano_line")}
 
 # products stretched to full brightness (ours: the data's colours are HDR, and three masks multiplied left the hook's
 # bubbles at a third, unseen in play)

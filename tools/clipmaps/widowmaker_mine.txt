@@ -1,0 +1,11 @@
+# Widowmaker's Venom Mine (model 000000010A75.00C, base 06F2, look 0605): the thrown projectile entity 00AF (set 0074) and the stuck
+# mine, pet entity 00AE (set 0054, health), both spawned by her Venom Mine graph 0056.
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\widowmaker\ascripts\clipmaps_widowmaker.py from the
+# compacted blend-tree sets (research\widowmaker\work_assets\clipmap_widowmaker\compact_<set>.txt, build 154088); names from the alias
+# that holds each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips: listed as 'on another model'.
+0-0_000000000AE9 = stick   # 0.2333 s; set 0054 alias 2 ((was mine_se0: the stuck mine 00AE's set 0054 seq[0] (0.23 s)) the Venom Mine's set (L)); seq[0]
+0-0_000000000AEA = arm   # 0.6667 s; set 0054 alias 2 ((was mine_se1: seq[1] (0.67 s; L)) the Venom Mine's set (L)); seq[1]
+0-0_000000000AE8 = thrown   # 0.8667 s; set 0074 alias 2 ((was mine: the projectile 00AF's set 0074 (0.87 s)) the Venom Mine's set (L)); -

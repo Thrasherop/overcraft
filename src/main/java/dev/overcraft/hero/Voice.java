@@ -406,6 +406,10 @@ public final class Voice {
 				// Specialist and his hammer's kill line
 				dev.overcraft.torbjorn.Torbjorn.killed(killer, state, blow);
 			}
+			if (state.hero == Hero.WIDOWMAKER && blow != null && "venom_mine".equals(blow.icon())) {
+				// her mine's kill line (11E3: widowmaker.voice.mine_kill)
+				say(killer, "mine_kill", 1);
+			}
 			if (state.hero == Hero.DVA) {
 				// her own: Call Mech's "Squished!", the pilot's "No mech? No problem!"
 				dev.overcraft.dva.Dva.killed(killer, state, blow);

@@ -99,7 +99,12 @@ public enum Perk {
 	ASHE_REMOTE_DETONATOR(Hero.ASHE, Tier.MINOR, "remote_detonator"),
 	ASHE_DOUBLE_BARRELED(Hero.ASHE, Tier.MINOR, "double_barreled"),
 	ASHE_VIPERS_STING(Hero.ASHE, Tier.MAJOR, "vipers_sting"),
-	ASHE_AIRBURST(Hero.ASHE, Tier.MAJOR, "airburst");
+	ASHE_AIRBURST(Hero.ASHE, Tier.MAJOR, "airburst"),
+	// Widowmaker's, the live list's order (D 0060.177: 25A7, 2736; 2873, 2704; widowmaker-map.md)
+	WIDOWMAKER_SCOPED_EFFICIENCY(Hero.WIDOWMAKER, Tier.MINOR, "scoped_efficiency"),
+	WIDOWMAKER_SNIPERS_INSTINCT(Hero.WIDOWMAKER, Tier.MINOR, "snipers_instinct"),
+	WIDOWMAKER_WIDOWS_BITE(Hero.WIDOWMAKER, Tier.MAJOR, "widows_bite"),
+	WIDOWMAKER_SEEKER_MINE(Hero.WIDOWMAKER, Tier.MAJOR, "seeker_mine");
 
 	public enum Tier { MINOR, MAJOR }
 

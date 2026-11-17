@@ -819,6 +819,7 @@ public final class Combat {
 			case TORBJORN -> (int) dev.overcraft.torbjorn.TorbjornStats.ULT_COST;
 			case ILLARI -> (int) dev.overcraft.illari.IllariStats.ULT_COST;
 			case ASHE -> (int) dev.overcraft.ashe.AsheStats.ULT_COST;
+			case WIDOWMAKER -> (int) dev.overcraft.widowmaker.WidowmakerStats.ULT_COST;
 			case DVA -> (int) dev.overcraft.dva.DvaStats.MECH_ULT_COST;
 			default -> 1;
 		};

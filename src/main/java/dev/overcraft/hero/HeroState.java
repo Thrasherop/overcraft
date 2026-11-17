@@ -231,6 +231,8 @@ public final class HeroState {
 	public final dev.overcraft.illari.IllariState illari = new dev.overcraft.illari.IllariState();
 	/** Ashe (dev.overcraft.ashe.Ashe): her kit's state. */
 	public final dev.overcraft.ashe.AsheState ashe = new dev.overcraft.ashe.AsheState();
+	/** Widowmaker (dev.overcraft.widowmaker.Widowmaker): her kit's state. */
+	public final dev.overcraft.widowmaker.WidowmakerState widowmaker = new dev.overcraft.widowmaker.WidowmakerState();
 	/** Sojourn: ticks into Power Slide (-1 not sliding), when it last ended (game time), her Railgun's energy (0-100, 150). */
 	public int sojournSlide = -1;
 	public long sojournSlideEndAt = -1000;

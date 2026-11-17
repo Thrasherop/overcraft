@@ -84,6 +84,8 @@ public final class HeroModels {
 		"illari_pylon", "projectile_illari_sun",
 		// Ashe's Viper (1079F, her held weapon: weapon()), Coach Gun (107A0), Dynamite (107A8) and B.O.B. (10800)
 		"ashe_viper", "ashe_coach_gun", "projectile_ashe_dynamite", "ashe_bob",
+		// Widowmaker's Kiss (E003, her held weapon: weapon()), Venom Mine (10A75) and grappling claw (0711)
+		"widowmaker_kiss", "projectile_widowmaker_mine", "widowmaker_hook",
 		// Torbjorn's effects' meshes (TorbjornFx): the rivet and pellet slugs, the pellet hit's shard, the pool's lava blobs, the slag's
 		// blob, the burn's rings, the forming dome, the cast's hemisphere
 		"torb_rivet", "torb_pellet", "torb_hit_shard_mesh", "torb_lava_a", "torb_lava_b_mesh", "torb_lava_c", "torb_slag_blob",
@@ -135,7 +137,8 @@ public final class HeroModels {
 	/** The hero's weapon when it's a model of its own (hero_models/<hero>_weapon.glb: Lúcio's Sonic Amplifier), or null. */
 	public static @Nullable Loaded weapon(Hero hero) {
 		// Ashe's is named for its weapon, The Viper (ashe-map.md)
-		return EXTRA_MODELS.get(hero == Hero.ASHE ? "ashe_viper" : hero.id + "_weapon");
+		// Widowmaker's for hers, Widow's Kiss (widowmaker-assets.md)
+		return EXTRA_MODELS.get(hero == Hero.ASHE ? "ashe_viper" : hero == Hero.WIDOWMAKER ? "widowmaker_kiss" : hero.id + "_weapon");
 	}
 
 	/** A model that isn't a hero's (see {@link #EXTRAS}). */

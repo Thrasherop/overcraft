@@ -443,6 +443,21 @@ public final class HeroModelRenderer {
 			}
 			dev.overcraft.client.effect.AsheFx.posed(entity, points);
 		}
+		if (hero == Hero.WIDOWMAKER && !previewing && entity.isAlive() && weaponShown) {
+			// the Kiss's muzzle (hp 0006) and her hook launcher (hp 0055) as posed, in the world (WidowmakerFx.POINTS)
+			net.minecraft.world.phys.Vec3 base = entity.getPosition(partialTicks);
+			float turn = (float) Math.toRadians(-facing);
+			String[] names = dev.overcraft.client.effect.WidowmakerFx.POINTS;
+			net.minecraft.world.phys.Vec3[] points = new net.minecraft.world.phys.Vec3[names.length];
+			for (int i = 0; i < names.length; i++) {
+				Vector3f held = HeroWeapon.point(hero, animator, loaded.model(), false, now, names[i]);
+				if (held != null) {
+					held.mul(state.scale).rotateY(turn);
+					points[i] = base.add(held.x, held.y, held.z);
+				}
+			}
+			dev.overcraft.client.effect.WidowmakerFx.posed(entity, points);
+		}
 		if (hero == Hero.JETPACK_CAT && !previewing && entity.isAlive()) {
 			// her jetpack's flames and her paws' points, as posed, in the world (JetpackCatFx)
 			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
@@ -1212,7 +1227,7 @@ public final class HeroModelRenderer {
 		animator.swing = !minecraft || hands.attackHand == net.minecraft.world.InteractionHand.OFF_HAND ? 0
 			: HeroAnimator.SWING[4] > 0 ? HeroAnimator.SWING[4] : avatar.swingAnimation;
 		Matrix4f[] skin = animator.poseFirstPerson(loaded.model(), player, now, view);
-		if (hero == Hero.ANA && !minecraft && dev.overcraft.client.ClientAna.ownScope() >= 1) {
+		if ((hero == Hero.ANA || hero == Hero.WIDOWMAKER) && !minecraft && dev.overcraft.client.ClientAna.ownScope() >= 1) {
 			// fully scoped, Overwatch draws nothing of her: her view model goes (0B94 #199, M) and her scope's overlay fills
 			// the view (HeroHud.anaScope, #90). Her held pose 3B92 already takes the arms out of view (played); not drawing
 			// them makes sure no edge of the rifle shows inside the lens while she turns (the arms' sway)

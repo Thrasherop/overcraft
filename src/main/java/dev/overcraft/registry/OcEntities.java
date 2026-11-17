@@ -195,6 +195,14 @@ public final class OcEntities {
 		EntityType.Builder.<dev.overcraft.entity.BobEntity>of(dev.overcraft.entity.BobEntity::new, MobCategory.MISC)
 			.noLootTable().noSave().sized((float) (dev.overcraft.ashe.AsheStats.BOB_RADIUS * 2), (float) dev.overcraft.ashe.AsheStats.BOB_HEIGHT)
 			.clientTrackingRange(10).updateInterval(1));
+	/** Widowmaker's Venom Mine (00AF / 00AE): 0.2 m (D volley #21), drawn 0.3 m for its model; kept with its chunk. */
+	public static final EntityType<dev.overcraft.entity.VenomMineEntity> VENOM_MINE = register("venom_mine",
+		EntityType.Builder.<dev.overcraft.entity.VenomMineEntity>of(dev.overcraft.entity.VenomMineEntity::new, MobCategory.MISC)
+			.noLootTable().sized(0.3f, 0.3f).clientTrackingRange(10).updateInterval(1));
+	/** Her grappling claw (00D3): 0.2 m against blocks (ours; not saved: under 2 s out). */
+	public static final EntityType<dev.overcraft.entity.GrappleHookEntity> GRAPPLE_HOOK = register("grapple_hook",
+		EntityType.Builder.<dev.overcraft.entity.GrappleHookEntity>of(dev.overcraft.entity.GrappleHookEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.2f, 0.2f).clientTrackingRange(10).updateInterval(1));
 	/** Torbjörn's rivets (2A66): 0.175 m (D 290D + the global 0.075); his alt's pellets (13ED): 0.1 m against blocks (not saved). */
 	public static final EntityType<dev.overcraft.entity.RivetEntity> RIVET = register("rivet",
 		EntityType.Builder.<dev.overcraft.entity.RivetEntity>of(dev.overcraft.entity.RivetEntity::new, MobCategory.MISC)

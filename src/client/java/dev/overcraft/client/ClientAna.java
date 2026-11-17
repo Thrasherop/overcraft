@@ -40,6 +40,10 @@ public final class ClientAna {
 			// Ashe's Take Aim: her scope synced in the meter (Ashe.sync); full zoom at half the scope-in (D 14FC #552: clamp(v169 x 2))
 			return !mc.options.getCameraType().isFirstPerson() || !ClientHero.heroView() ? 0 : Math.min(1, ClientHero.sync().meter() * 2);
 		}
+		if (ClientHero.hero() == dev.overcraft.hero.Hero.WIDOWMAKER) {
+			// Widowmaker's Take Aim: her scope synced in the meter (Widowmaker.sync), the zoom following it (D v169 -> v172 at #139, M)
+			return !mc.options.getCameraType().isFirstPerson() || !ClientHero.heroView() ? 0 : ClientHero.sync().meter();
+		}
 		State s = state(mc.player);
 		return s == null || !mc.options.getCameraType().isFirstPerson() || !ClientHero.heroView() ? 0 : s.scope();
 	}
@@ -92,7 +96,9 @@ public final class ClientAna {
 		}
 		float fov = Minecraft.getInstance().options.fov().get();
 		// Ashe's 40 degrees (D 14FC #554 v172, M as a vertical field of view, as Ana's 30)
-		double scoped = ClientHero.hero() == dev.overcraft.hero.Hero.ASHE ? dev.overcraft.ashe.AsheStats.ADS_FOV : AnaStats.SCOPED_FOV;
+		// Widowmaker's 30 degrees (D 001B #44 v172, M as a vertical field of view, as Ana's)
+		double scoped = ClientHero.hero() == dev.overcraft.hero.Hero.ASHE ? dev.overcraft.ashe.AsheStats.ADS_FOV
+			: ClientHero.hero() == dev.overcraft.hero.Hero.WIDOWMAKER ? dev.overcraft.widowmaker.WidowmakerStats.SCOPE_FOV : AnaStats.SCOPED_FOV;
 		return 1 - scope * (1 - (float) scoped / Math.max(fov, 1));
 	}
 

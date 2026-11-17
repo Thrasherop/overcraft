@@ -105,6 +105,13 @@ public final class HeroManager {
 	public static final AttachmentType<Integer> ASHE_LOOK = AttachmentRegistry.create(Overcraft.id("ashe_look"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
 
+	/**
+	 * Widowmaker's look (dev.overcraft.widowmaker.Widowmaker.tick): how far Take Aim is up (%), +1000 while the hook pulls her, +2000 in
+	 * its end, for every client to pose her (HeroAnimator).
+	 */
+	public static final AttachmentType<Integer> WIDOWMAKER_LOOK = AttachmentRegistry.create(Overcraft.id("widowmaker_look"),
+		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
+
 	/** Pharah's look (dev.overcraft.pharah.Pharah.LOOK_*: hovering, a jet, Barrage), for every client to animate her. */
 	public static final AttachmentType<Integer> PHARAH_STATE = AttachmentRegistry.create(Overcraft.id("pharah_state"),
 		builder -> builder.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()));
@@ -202,6 +209,7 @@ public final class HeroManager {
 		KITS.put(Hero.TORBJORN, new dev.overcraft.torbjorn.Torbjorn());
 		KITS.put(Hero.ILLARI, new dev.overcraft.illari.Illari());
 		KITS.put(Hero.ASHE, new dev.overcraft.ashe.Ashe());
+		KITS.put(Hero.WIDOWMAKER, new dev.overcraft.widowmaker.Widowmaker());
 	}
 
 	private HeroManager() {
@@ -296,7 +304,7 @@ public final class HeroManager {
 		return state != null && ((state.hero == Hero.MERCY || state.hero == Hero.LIFEWEAVER || state.hero == Hero.SOMBRA
 			|| state.hero == Hero.SOJOURN || state.hero == Hero.SIGMA || state.hero == Hero.DVA || state.hero == Hero.LUCIO
 			|| state.hero == Hero.BRIGITTE || state.hero == Hero.KIRIKO || state.hero == Hero.PHARAH || state.hero == Hero.JUNKRAT
-			|| state.hero == Hero.ILLARI || state.hero == Hero.ASHE)
+			|| state.hero == Hero.ILLARI || state.hero == Hero.ASHE || state.hero == Hero.WIDOWMAKER)
 			&& state.softLanding || state.hero == Hero.JUNO);
 	}
 
@@ -383,7 +391,7 @@ public final class HeroManager {
 	/** The synced states clients draw a hero in play by (not the hero itself, nor sleep, which others put on them). */
 	private static final java.util.List<AttachmentType<?>> HERO_LOOKS = java.util.List.of(SONG, MERCY, LIFEWEAVER, JUNO_GLIDE,
 		JUNO_LOCK, SOJOURN_SLIDE, SOJOURN_GUN, SIGMA_STATE, ANA, DVA_FORM, DVA_STATE, LUCIO_WALL, PHARAH_STATE, ILLARI_FLIGHT, TORBJORN_LOOK,
-		CASSIDY_LOOK, ASHE_LOOK);
+		CASSIDY_LOOK, ASHE_LOOK, WIDOWMAKER_LOOK);
 
 	/** Dev only (DevServer's "bot showstate off"): the rule off, to show what it does. */
 	public static boolean devNoShowState;

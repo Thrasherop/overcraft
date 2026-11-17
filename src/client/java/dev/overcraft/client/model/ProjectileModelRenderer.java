@@ -180,6 +180,11 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 			// Ashe's stick: its fuse in flight (25C7) and lit on the ground (25C8) (AsheFx)
 			case dev.overcraft.entity.DynamiteEntity stick -> dev.overcraft.client.effect.AsheFx.dynamite(stick, at,
 				KirikoFx.enemyOf(stick.getOwner()));
+			// Widowmaker's: the claw's rope (beam 0277 / 33C5) and the mine's look (WidowmakerFx)
+			case dev.overcraft.entity.GrappleHookEntity hook -> dev.overcraft.client.effect.WidowmakerFx.hook(hook, at,
+				KirikoFx.enemyOf(hook.getOwner()));
+			case dev.overcraft.entity.VenomMineEntity mine -> dev.overcraft.client.effect.WidowmakerFx.mine(mine, at,
+				KirikoFx.enemyOf(mine.getOwner()));
 			default -> {
 			}
 		}

@@ -135,6 +135,10 @@ public final class QuickMelee {
 			// her melee clip's foley (ashe_sfx.txt): her own, and the 3P copy for others
 			dev.overcraft.ashe.AsheSounds.split(hero, "melee", hero.position(), 30);
 		}
+		if (s.hero == Hero.WIDOWMAKER) {
+			// her melee clip's foley (widowmaker_sfx.txt: one copy, no _3p)
+			dev.overcraft.widowmaker.WidowmakerSounds.all(hero.level(), "melee", hero.position(), 30);
+		}
 		if (s.hero == Hero.JUNKRAT) {
 			// his melee clip's foley (junkrat_sfx.txt): his own, and the 3P copy for others
 			dev.overcraft.junkrat.JunkratSounds.split(hero, "melee", hero.position(), 30);
