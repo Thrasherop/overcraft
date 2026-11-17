@@ -4,6 +4,15 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-17: 0.3.68 on next (not on main yet)
+
+- **D.Va's Fusion Cannons hit endermen (#162):** her shots were an arrow's damage type, which an enderman dodges as a
+  projectile. Now hitscan, as every other hitscan weapon already was.
+- **Deadeye locks onto calm endermen (#162):** and calm piglins; a cow still doesn't take a lock, nor does Torbjorn's turret
+  pick calm mobs.
+- **/changehero alone opens the hero select (#165):** an operator's free pick from anywhere; /changehero <hero> [players]
+  is unchanged.
+
 ## 2026-11-16: 0.3.67 on next (not on main yet)
 
 - **Play of the Game follows the music (#161):** the owner: the intro, lineup and POTG waited for the dragon to fly back to
