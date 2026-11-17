@@ -87,7 +87,9 @@ public final class HeroModels {
 		"torb_rivet", "torb_pellet", "torb_hit_shard_mesh", "torb_lava_a", "torb_lava_b_mesh", "torb_lava_c", "torb_slag_blob",
 		"torb_burn_ring_mesh", "torb_burn_ring_b", "torb_dome", "torb_hemisphere",
 		// Cassidy's effects' meshes (CassidyFx): the muzzle's flash cone and ring (057A)
-		"cassidy_muzzle_cone", "cassidy_muzzle_ring");
+		"cassidy_muzzle_cone", "cassidy_muzzle_ring",
+		// Pharah's effects' meshes (PharahFx): Concussive's swirl, ground wave disc and shell, the jumps' ring disc
+		"pharah_conc_swirl", "pharah_disc", "pharah_sphere", "pharah_jet_disc");
 	private static final Map<String, Loaded> EXTRA_MODELS = new HashMap<>();
 	private static final List<Identifier> REGISTERED = new ArrayList<>();
 	/** Bigger images are halved until they fit: a 4096 texture per material is a lot of video memory for a player. */
