@@ -707,6 +707,8 @@
 	"subtitles.overcraft.music.victory": "Victory music plays",
 	"subtitles.overcraft.announcer.potg": "Announcer: Play of the game",
 	"subtitles.overcraft.music.potg": "Play of the Game music plays",
+	"subtitles.overcraft.music.overtime_intro": "End-phase music plays",
+	"subtitles.overcraft.music.overtime_loop": "End-phase music plays",
 	"overcraft.hud.potg": "Play of the game",
 	"overcraft.highlights.title": "Highlights",
 	"overcraft.highlights.one": "Highlight",

@@ -66,6 +66,8 @@ public class OvercraftClient implements ClientModInitializer {
 				VictoryHud.show();
 			}
 		});
+		// the dragon fight's end-phase music (#45)
+		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.EndPhasePayload.TYPE, (payload, context) -> EndMusic.receive(payload));
 		// a Mercy resurrected us: respawn as the death screen's button does (the server puts us back where we fell)
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.GripPayload.TYPE, (payload, context) ->
 			ClientLifeweaver.onGrip(payload));
@@ -141,6 +143,7 @@ public class OvercraftClient implements ClientModInitializer {
 			dev.overcraft.client.hud.DeadeyeHud.clear();
 			HeroHud.clearMoments();
 			VictoryHud.clear();
+			EndMusic.clear();
 			RushSound.clear();
 			LucioMusic.clear();
 			dev.overcraft.client.comms.EmoteSounds.clear();
@@ -151,6 +154,7 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientTickEvents.START_CLIENT_TICK.register(ClientTow::tick);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			ClientHero.endTick(client);
+			EndMusic.tick(client);
 			RushSound.tick(client);
 			LucioMusic.tick(client);
 			JetpackCatSounds.tick(client);

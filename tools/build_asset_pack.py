@@ -8,7 +8,8 @@
     py tools/build_asset_pack.py ui <DataTool output dir>  the heroes' portraits and ability/perk icons, from DataTool's
                                                             extract-hero-icons (<dir>/HeroIcons/<Hero>/...), and the role
                                                             badges from dump-ui-textures (<dir>/UITextures), for the UI
-    py tools/build_asset_pack.py sounds <DataTool output dir>  the heroes' sounds and voice lines (tools/soundmaps/)
+    py tools/build_asset_pack.py sounds [--only <event prefix>] <DataTool output dir>  the heroes' sounds and voice lines
+                                                            (tools/soundmaps/); --only adds just those events to the pack
     py tools/build_asset_pack.py fonts <dir>               the HUD's fonts, from a folder holding Overwatch's font files
     py tools/build_asset_pack.py props <DataTool output dir> [hero]  the emotes' props (as the emote data names them), from the emote unlocks
     py tools/build_asset_pack.py projectiles <DataTool output dir>  thrown things drawn as models in flight (PROJECTILES: Ana's dart and grenade)
@@ -215,14 +216,18 @@ def glyph_crop(png, box, out):
 
 # the sound maps' own subtitles: event -> text (read_soundmaps)
 SUBTITLES = {}
+# events whose files Minecraft streams (a rule ending "| stream": long music, started on a cue, #45)
+STREAMED = set()
 
 
 def read_soundmaps():
     """The sound maps (tools/soundmaps/*.txt): sources {id: [files]}, mixing rules {event: [(source, delay, gain)]} and
     weights {(id, file): Overwatch's weight} (a source line's "| w=<weight>"). A "$<event> = <text>" line is the event's
-    subtitle, for events the jar's lang doesn't name (the emotes' sounds and lines: SUBTITLES)."""
+    subtitle, for events the jar's lang doesn't name (the emotes' sounds and lines: SUBTITLES). A layer's delay may carry
+    an end, "@<delay>~<end s>": the source is cut there (a music section, #45). A rule ending "| stream" is STREAMED."""
     sources, rules, weights = {}, {}, {}
     SUBTITLES.clear()
+    STREAMED.clear()
     for soundmap in sorted((ROOT / "tools" / "soundmaps").glob("*.txt")):
         for line in soundmap.read_text(encoding="utf8").splitlines():
             line = line.split("#")[0].strip() if not line.lstrip().startswith("#") else ""
@@ -234,20 +239,27 @@ def read_soundmaps():
                 continue
             if name.startswith("@"):
                 layers = []
+                rest, _, flag = (x.strip() for x in rest.partition("|"))
+                if flag == "stream":
+                    STREAMED.add(name[1:])
                 for part in filter(None, (x.strip() for x in rest.split(" + "))):
                     gain = 0.0
                     delay = 0.0
                     pitch = 1.0
+                    end = None
                     if ":" in part:
                         part, g = part.rsplit(":", 1)
                         gain = float(g)
                     if "@" in part:
                         part, d = part.split("@", 1)
+                        if "~" in d:
+                            d, e = d.split("~", 1)
+                            end = float(e)
                         delay = float(d)
                     if "*" in part:
                         part, p = part.split("*", 1)
                         pitch = float(p)
-                    layers.append((part.strip(), delay, gain, pitch))
+                    layers.append((part.strip(), delay, gain, pitch, end))
                 rules[name[1:]] = layers
             else:
                 file, _, weight = (x.strip() for x in rest.partition("| w="))
@@ -264,22 +276,41 @@ def sample_rate(f):
     return int(probe.stdout.strip() or 48000)
 
 
+def channels(f):
+    """The file's channel count (ffprobe)."""
+    probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "a:0", "-show_entries", "stream=channels",
+                            "-of", "csv=p=0", str(f)], capture_output=True, text=True)
+    return int(probe.stdout.strip() or 2)
+
+
+# The end-phase music's 12 channels (#45; music-round9: "probably a 7.1.4 mix with an empty centre", M) in Wwise's 7.1.4
+# order, FL FR C LFE BL BR SL SR TFL TFR TBL TBR. Measured on 2A7946 (ffmpeg astats, RMS dB): 1-2 -16, 3 silent, 4 -27,
+# 5-6 -18, 7-8 silent, 9-10 -27, 11-12 silent. Folded to stereo as the usual downmix does (ours): centre and surrounds at
+# -3 dB, the heights at -6 dB, the LFE left out. ffmpeg can't do it itself: the file names no channel layout.
+DOWNMIX_12 = ("pan=stereo|c0=c0+0.707*c2+0.707*c4+0.707*c6+0.5*c8+0.5*c10"
+              "|c1=c1+0.707*c2+0.707*c5+0.707*c7+0.5*c9+0.5*c11,")
+
+
 def mix(inputs, out, stereo=False):
-    """Mixes [(file, delay s, gain dB, pitch)] into one mono Ogg Vorbis file with ffmpeg; peaks kept under full scale.
-    A pitch other than 1 plays the file faster and higher (as Wwise's pitch does), by resampling. A negative delay starts
-    the file that far in (the match-end music started where the moment it's played for falls in it: #155). {@code stereo}
-    keeps two channels (music, heard in the head)."""
+    """Mixes [(file, delay s, gain dB, pitch, end s or None)] into one mono Ogg Vorbis file with ffmpeg; peaks kept under
+    full scale. A pitch other than 1 plays the file faster and higher (as Wwise's pitch does), by resampling. A negative
+    delay starts the file that far in (the match-end music started where the moment it's played for falls in it: #155); an
+    end cuts the source there, in the source's seconds (a music section, #45). {@code stereo} keeps two channels (music,
+    heard in the head); a 12-channel source is folded down first (DOWNMIX_12)."""
     cmd = ["ffmpeg", "-y", "-loglevel", "error"]
-    for f, _, _, _ in inputs:
+    for f, *_ in inputs:
         cmd += ["-i", str(f)]
     chains = []
     layout = "stereo" if stereo else "mono"
-    for k, (f, delay, gain, pitch) in enumerate(inputs):
+    for k, (f, delay, gain, pitch, *more) in enumerate(inputs):
+        end = more[0] if more else None
         rate = sample_rate(f)
         speed = f"asetrate={round(rate * pitch)},aresample={rate}," if pitch != 1 else ""
+        fold = DOWNMIX_12 if channels(f) == 12 else ""
+        cut = f"atrim=end={end}," if end is not None else ""
         shift = (f"atrim=start={-delay},asetpts=PTS-STARTPTS" if delay < 0
                  else f"adelay={int(round(delay * 1000))}:all=1")
-        chains.append(f"[{k}:a]{speed}aformat=channel_layouts={layout},{shift},volume={gain}dB[a{k}]")
+        chains.append(f"[{k}:a]{fold}{cut}{speed}aformat=channel_layouts={layout},{shift},volume={gain}dB[a{k}]")
     labels = "".join(f"[a{k}]" for k in range(len(inputs)))
     chains.append(f"{labels}amix=inputs={len(inputs)}:normalize=0:duration=longest,alimiter=limit=0.89[out]")
     cmd += ["-filter_complex", ";".join(chains), "-map", "[out]", "-ac", "2" if stereo else "1", "-c:a", "libvorbis",
@@ -287,11 +318,13 @@ def mix(inputs, out, stereo=False):
     return subprocess.run(cmd, capture_output=True, text=True).returncode == 0
 
 
-def add_sounds(source):
+def add_sounds(source, only=None):
     """Builds each mapped sound event (tools/soundmaps/*.txt) into assets/overcraft/sounds/ and writes the pack's
     sounds.json, replacing the jar's vanilla stand-ins with the real recordings. An event with a mixing rule gets one
     file per variant of its first layer (up to MAX_VARIANTS), its other layers mixed in with ffmpeg; without ffmpeg,
-    only the first layer is copied (no mixing). Events with no rule are their sources' files as they are."""
+    only the first layer is copied (no mixing). Events with no rule are their sources' files as they are. {@code only}
+    (an event prefix: "sounds --only music.overtime <dir>") builds just those events into the pack as it stands, adding
+    them to its sounds.json and lang and leaving every other file as it was."""
     import json
     import random
     import shutil as sh
@@ -300,17 +333,19 @@ def add_sounds(source):
     have_ffmpeg = sh.which("ffmpeg") is not None
     if not have_ffmpeg:
         print("ffmpeg not found: copying each event's first layer only (no mixing, stereo files stay stereo)")
-    used = {layer for layers in rules.values() for layer, _, _, _ in layers}
+    used = {layer for layers in rules.values() for layer, *_ in layers}
     events = dict(rules)
     for name in sources:
         if name not in used and name not in events:
-            events[name] = [(name, 0.0, 0.0, 1.0)]
+            events[name] = [(name, 0.0, 0.0, 1.0, None)]
     out = PACK / "assets" / "overcraft" / "sounds"
-    if out.exists():
+    if only is None and out.exists():
         shutil.rmtree(out)
     rng = random.Random(1)
     sounds = {}
     for event, layers in sorted(events.items()):
+        if only is not None and not event.startswith(only):
+            continue
         files = []
         if layers:
             first = sources.get(layers[0][0], [])
@@ -318,13 +353,13 @@ def add_sounds(source):
             for i, base in enumerate(first[:MAX_VARIANTS] if len(layers) > 1 or event in rules else first):
                 dest = out / event.replace(".", "/") / f"{i}.ogg"
                 dest.parent.mkdir(parents=True, exist_ok=True)
-                picks = [(Path(source) / base, layers[0][1], layers[0][2], layers[0][3])]
-                for layer, delay, gain, pitch in layers[1:]:
+                picks = [(Path(source) / base, *layers[0][1:])]
+                for layer, delay, gain, pitch, end in layers[1:]:
                     options = sources.get(layer, [])
                     if options:
                         picks.append((Path(source) / options[(i + rng.randrange(len(options))) % len(options)], delay, gain,
-                                      pitch))
-                missing = [str(f) for f, _, _, _ in picks if not f.exists()]
+                                      pitch, end))
+                missing = [str(f) for f, *_ in picks if not f.exists()]
                 if missing:
                     print(f"missing for {event}: {missing[0]}")
                     continue
@@ -332,18 +367,28 @@ def add_sounds(source):
                 # Overwatch's weight (0.1-1) as Minecraft's (a whole number, at least 1)
                 weight = weights.get((layers[0][0], base))
                 entry = {"name": name, "weight": max(1, round(weight * 10))} if weight is not None else name
+                if event in STREAMED:
+                    entry = {**(entry if isinstance(entry, dict) else {"name": name}), "stream": True}
                 if have_ffmpeg and mix(picks, dest, stereo=event.startswith("music.")):
                     files.append(entry)
                 elif not have_ffmpeg or picks[0][0].suffix == ".ogg":
                     shutil.copyfile(picks[0][0], dest)
                     files.append(entry)
         sounds[event] = {"replace": True, "subtitle": "subtitles.overcraft." + event, "sounds": files}
-    lang = add_voicelines(source, out, sounds)
+    sounds_file = PACK / "assets" / "overcraft" / "sounds.json"
+    lang_file = PACK / "assets" / "overcraft" / "lang" / "en_us.json"
+    if only is not None:
+        # into the pack as it stands: every other event and line stays as its last full build made it
+        built = sounds
+        sounds = json.loads(sounds_file.read_text(encoding="utf8")) if sounds_file.exists() else {}
+        sounds.update(built)
+        lang = json.loads(lang_file.read_text(encoding="utf8")) if lang_file.exists() else {}
+    else:
+        lang = add_voicelines(source, out, sounds)
     for event, text in SUBTITLES.items():
         if event in sounds:
             lang[f"subtitles.overcraft.{event}"] = text
-    (PACK / "assets" / "overcraft" / "sounds.json").write_text(json.dumps(sounds, indent=1), encoding="utf8")
-    lang_file = PACK / "assets" / "overcraft" / "lang" / "en_us.json"
+    sounds_file.write_text(json.dumps(sounds, indent=1), encoding="utf8")
     lang_file.parent.mkdir(parents=True, exist_ok=True)
     lang_file.write_text(json.dumps(lang, indent=1, ensure_ascii=False), encoding="utf8")
     print(f"{len(sounds)} sound events, {sum(len(v['sounds']) for v in sounds.values())} files -> {out}")
@@ -1680,7 +1725,10 @@ def main():
     elif cmd == "ui":
         add_ui(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
     elif cmd == "sounds":
-        add_sounds(sys.argv[2])
+        if sys.argv[2:3] == ["--only"]:
+            add_sounds(sys.argv[4], only=sys.argv[3])
+        else:
+            add_sounds(sys.argv[2])
     elif cmd == "fonts":
         add_fonts(sys.argv[2])
     elif cmd == "effects":

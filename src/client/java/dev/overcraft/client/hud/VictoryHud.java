@@ -36,6 +36,8 @@ public final class VictoryHud {
 	/** The match is won: show it, and play the announcer and the music. */
 	public static void show() {
 		shownAt = Util.getMillis();
+		// the end phase's music gives way (its 0.5 s fade) as VICTORY's starts (#45)
+		dev.overcraft.client.EndMusic.victory();
 		play(OcSounds.ANNOUNCER_VICTORY);
 		// the end track, which runs on into the POTG (PotgMusic)
 		dev.overcraft.client.PotgMusic.victory(OcSounds.MUSIC_VICTORY);
