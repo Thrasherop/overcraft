@@ -7,7 +7,6 @@ import dev.overcraft.hero.Combat;
 import dev.overcraft.registry.OcEntities;
 import dev.overcraft.torbjorn.Torbjorn;
 import dev.overcraft.torbjorn.TorbjornSounds;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -337,13 +336,8 @@ public class TurretEntity extends Mob implements OwnableEntity {
 			|| Combat.inSight(level, gun, target, this)) {
 			Torbjorn.turretHit(owner, this, target, damage, missile);
 		}
-		// its tracer (ours: the data's 2A69 shot is an effect)
-		Vec3 step = at.subtract(gun).normalize().scale(0.6);
-		int n = (int) Math.min(30, at.distanceTo(gun) / 0.6);
-		for (int i = 1; i < n; i++) {
-			Vec3 p = gun.add(step.scale(i));
-			level.sendParticles(missile ? ParticleTypes.SMOKE : ParticleTypes.ELECTRIC_SPARK, p.x, p.y, p.z, 1, 0, 0, 0, 0);
-		}
+		// its shot's look 2654 (2A69's effect: the line gun to hit, the flash, the smoke: TorbjornFx), its end as the direction
+		dev.overcraft.hero.Effects.play(level, "torb_turret_shot", gun, at.subtract(gun), this, missile ? 1 : 0, owner);
 		TorbjornSounds.all(level, "turret.fire", gun, 50);
 	}
 

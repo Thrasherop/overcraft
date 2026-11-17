@@ -178,6 +178,8 @@ public final class Torbjorn implements HeroKit {
 			player.level().addFreshEntity(rivet);
 			Combat.animate(player, "fire");
 			TorbjornSounds.split(player, "rivet.fire", from, 80);
+			// the rivet's muzzle 2651 at his gun's hp 0006 (TorbjornFx)
+			Effects.play(player.level(), "torb_muzzle", from, rivet.getDeltaMovement(), player, 0, player);
 		} else if (s.secondaryHeld && s.primaryAmmo >= ALT_AMMO) {
 			s.primaryAmmo -= ALT_AMMO;
 			s.weaponRecovery += ALT_INTERVAL * 20;
@@ -190,6 +192,8 @@ public final class Torbjorn implements HeroKit {
 			}
 			Combat.animate(player, "fire");
 			TorbjornSounds.split(player, "rivet.alt_fire", from, 80);
+			// the alt's muzzle 2662, once a volley (it's per pellet in the data: ten stacked, ours once: TorbjornFx)
+			Effects.play(player.level(), "torb_alt_muzzle", from, aim, player, 0, player);
 		}
 	}
 
@@ -237,6 +241,10 @@ public final class Torbjorn implements HeroKit {
 		}
 		Combat.animate(player, "reload");
 		TorbjornSounds.split(player, "reload", player.getEyePosition(), 30);
+		// the "refuel": the reload's molten glow and burst at his hand (029D for others, 00E2 in his own view: TorbjornFx), its
+		// length in ticks as the variant (2.0 s, 1.4 in Overload, less with Specialist's bonus)
+		Effects.play(player.level(), "torb_reload", player.getEyePosition(), Vec3.ZERO, player,
+			(int) Math.round(reloadTicks(t.reloadFast) / Math.max(0.1, Combat.attackRate(player))), player);
 	}
 
 	/**
@@ -593,6 +601,10 @@ public final class Torbjorn implements HeroKit {
 	/** Molten Core's cast and fire; whether it's on (his weapons are its). */
 	private static boolean ult(ServerPlayer player, HeroState s, TorbjornState t, boolean able, long now) {
 		if (t.ultCast >= 0) {
+			if (t.ultCast + 1 == Ow.ticks(ULT_CAST_BURST)) {
+				// the cast's burst 34B0 at his forge arm (hp 0075: TorbjornFx)
+				Effects.play(player.level(), "torb_ult_cast", muzzle(player), player.getViewVector(1), player, 0, player);
+			}
 			if (++t.ultCast >= Ow.ticks(ULT_CAST)) {
 				t.ultCast = -1;
 				t.slag = SLAG_SHOTS;
@@ -615,6 +627,8 @@ public final class Torbjorn implements HeroKit {
 			player.level().addFreshEntity(slag);
 			Combat.animate(player, "fire");
 			TorbjornSounds.split(player, "molten.fire", from, 60);
+			// the slag's launch flare 26CC (TorbjornFx)
+			Effects.play(player.level(), "torb_slag_launch", from, slag.getDeltaMovement(), player, 0, player);
 		}
 		if (t.slag <= 0 || t.ultLeft <= 0) {
 			endUlt(player, s, t);
@@ -642,6 +656,8 @@ public final class Torbjorn implements HeroKit {
 			ultDealt(owner, dealt, target);
 			TorbjornSounds.split(owner, "molten.hit", slag.position(), 60);
 		}
+		// its hit 26B7 (TorbjornFx)
+		Effects.play(level, "torb_slag_hit", slag.position(), Vec3.ZERO, null, 0, owner);
 		Vec3 at = slag.position();
 		var down = level.clip(new ClipContext(at, at.add(0, -12, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, slag));
 		if (down.getType() != HitResult.Type.MISS) {
@@ -650,6 +666,7 @@ public final class Torbjorn implements HeroKit {
 	}
 
 	public static void slagLanded(ServerPlayer owner, SlagEntity slag, Vec3 at) {
+		Effects.play(owner.level(), "torb_slag_hit", at, new Vec3(0, 1, 0), null, 0, owner);
 		pool(owner, owner.level(), at);
 	}
 
@@ -668,9 +685,11 @@ public final class Torbjorn implements HeroKit {
 		POOLS.add(new Pool(level, at, owner.getUUID(), now + Ow.ticks(POOL_FORM), now + Ow.ticks(POOL_FORM + POOL_TIME)));
 		TorbjornSounds.all(level, "molten.impact", at, 50);
 		TorbjornSounds.all(level, "molten.pool", at, 40);
+		// its look, once: 26FB forming, then the lava floor 2754 for its life (TorbjornFx keeps and draws it), the life in ticks
+		Effects.play(level, "torb_pool", at, new Vec3(0, 1, 0), null, Ow.ticks(POOL_FORM + POOL_TIME), owner);
 	}
 
-	/** Every server tick: the pools burn the enemies in them (190 a second, +100 on a hero's armor) and are drawn. */
+	/** Every server tick: the pools burn the enemies in them (190 a second, +100 on a hero's armor); their look is TorbjornFx's. */
 	public static void tickPools(MinecraftServer server) {
 		if (POOLS.isEmpty()) {
 			return;
@@ -679,11 +698,6 @@ public final class Torbjorn implements HeroKit {
 		BURNED.values().removeIf(at -> server.overworld().getGameTime() - at > 200);
 		for (Pool p : new ArrayList<>(POOLS)) {
 			long now = p.level.getGameTime();
-			if (now % 4 == 0) {
-				p.level.sendParticles(now < p.formedAt ? ParticleTypes.SMOKE : ParticleTypes.LAVA, p.at.x, p.at.y + 0.05, p.at.z,
-					now < p.formedAt ? 2 : 3, POOL_RADIUS * 0.5, 0.02, POOL_RADIUS * 0.5, 0);
-				p.level.sendParticles(ParticleTypes.FLAME, p.at.x, p.at.y + 0.1, p.at.z, 4, POOL_RADIUS * 0.5, 0.05, POOL_RADIUS * 0.5, 0.01);
-			}
 			if (now < p.formedAt || now % BURN_EVERY != 0) {
 				continue;
 			}
@@ -712,6 +726,8 @@ public final class Torbjorn implements HeroKit {
 				float boost = dev.overcraft.mercy.Boosts.amplify(owner, 1f, e);
 				float dealt = Combat.damage(e, Combat.blast(p.level, null, owner), damage / (boost > 0 ? boost : 1), SLAG_BLOW);
 				ultDealt(owner, dealt, e);
+				// burning: 254F on them while the burn lasts (TorbjornFx holds it a little past the last step)
+				Effects.play(p.level, "torb_burn", feet, Vec3.ZERO, e, BURN_EVERY, owner);
 			}
 		}
 	}

@@ -6,7 +6,6 @@ import dev.overcraft.registry.OcEntities;
 import dev.overcraft.torbjorn.Torbjorn;
 import dev.overcraft.torbjorn.TorbjornStats;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -23,7 +22,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * A ball of Molten Core's slag (16DA #382: projectile 2902): 40 m/s falling at 30, 25 to an enemy it hits; off a wall or a ceiling
  * it bounces (W), on the ground (or under the enemy it hit) it leaves a pool (16DD on pet 2903: Torbjorn.pool). No model in his data
- * (effects only): the item stands in, with a trail of flame.
+ * (effects only): its look in flight is its effect 2509 (TorbjornFx.slagFlight, from its renderer); the item stands in without the pack.
  */
 public class SlagEntity extends OwProjectile {
 	private boolean done;
@@ -59,14 +58,6 @@ public class SlagEntity extends OwProjectile {
 	@Override
 	public double barrierDamage() {
 		return TorbjornStats.SLAG_DAMAGE;
-	}
-
-	@Override
-	public void tick() {
-		super.tick();
-		if (level() instanceof ServerLevel level && isAlive() && tickCount % 2 == 0) {
-			level.sendParticles(ParticleTypes.FLAME, getX(), getY(), getZ(), 1, 0.03, 0.03, 0.03, 0.005);
-		}
 	}
 
 	@Override

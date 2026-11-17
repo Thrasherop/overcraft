@@ -171,7 +171,8 @@ public final class KirikoFx {
 				if (!LucioFx.dispatch(e, enemy) && !JetpackCatFx.dispatch(e, enemy) && !MercyFx.dispatch(e, enemy)
 					&& !LifeweaverFx.dispatch(e, enemy) && !AnaFx.dispatch(e, enemy) && !SombraFx.dispatch(e, enemy)) {
 					if (!BrigitteFx.dispatch(e, enemy) && !JunoFx.dispatch(e, enemy)) {
-						if (!SojournFx.dispatch(e, enemy) && !TracerFx.dispatch(e, enemy) && !DvaFx.dispatch(e, enemy)) {
+						if (!SojournFx.dispatch(e, enemy) && !TracerFx.dispatch(e, enemy) && !DvaFx.dispatch(e, enemy)
+							&& !TorbjornFx.dispatch(e, enemy)) {
 							SigmaFx.dispatch(e, enemy);
 						}
 					}

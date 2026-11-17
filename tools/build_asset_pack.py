@@ -963,6 +963,37 @@ EFFECT_MASKS = {
     "sigma_disc": ("Sigma", "GraviticFlux", "000000009489", 1),
     "sigma_flux_rings": ("Sigma", "GraviticFlux", "0000000202A6", 1),
     "sigma_flux_vortex": ("Sigma", "GraviticFlux", "0000000202B3", 1),
+    # Torbjorn's (tools/reference/torbjorn-effects.md "What the builder adds"; pass research/torbjorn/fx as a source).
+    # Overload: the vent flame tongue (26F1)
+    "torb_flame": ("Torbjorn", "Overload", "00000001CAFA", 1),
+    # Molten Core: the pool's cracked crust and soft blob (2754), the forming fire flecks, flashes and dome noise (26FB),
+    # the slag's hit flash (26B7), the burn's ring strip (254F), the slag's ribbon noise (2509)
+    "torb_lava_crust": ("Torbjorn", "MoltenCore", "0000000561FC", 1),
+    "torb_lava_b": ("Torbjorn", "MoltenCore", "00000001B2B6", 1),
+    "torb_pool_fire": ("Torbjorn", "MoltenCore", "00000001B709", 1),
+    "torb_pool_flash": ("Torbjorn", "MoltenCore", "00000001B97A", 1),
+    "torb_pool_flash_b": ("Torbjorn", "MoltenCore", "00000001B97B", 1),
+    "torb_dome_noise": ("Torbjorn", "MoltenCore", "00000001B72B", 1),
+    "torb_slag_hit": ("Torbjorn", "MoltenCore", "00000002A81E", 1),
+    "torb_burn_ring": ("Torbjorn", "MoltenCore", "0000000190F7", 1),
+    "torb_ribbon_noise": ("Torbjorn", "MoltenCore", "0000000299E2", 1),
+    # the Rivet Gun: the muzzle's star, flash and smoke (2651 / 2662), the thin ribbon and the rivet's ribbon (2653 /
+    # 1865), the pellet hit's puff, smoke and shard (05AF)
+    "torb_star": ("Torbjorn", "RivetGun", "0000000191DD", 4),
+    "torb_flash": ("Torbjorn", "RivetGun", "00000001924B", 4),
+    "torb_smoke_puff": ("Torbjorn", "RivetGun", "000000019271", 1),
+    "torb_ribbon": ("Torbjorn", "RivetGun", "0000000192B0", 1),
+    "torb_trail": ("Torbjorn", "RivetGun", "00000002A480", 1),
+    "torb_hit_puff": ("Torbjorn", "RivetGun", "000000044A8F", 4),
+    "torb_hit_smoke": ("Torbjorn", "RivetGun", "00000003F25F", 1),
+    "torb_hit_shard": ("Torbjorn", "RivetGun", "000000005B70", 4),
+    # the reload's molten glow at his hand (00E2)
+    "torb_reload_glow": ("Torbjorn", "Reload", "00000001B6D6", 1),
+    # the turret: its shot's fire cone (2654), the aim ray's noise and edge (050A), its glare
+    "torb_turret_fire": ("Torbjorn", "Turret", "000000003AF6", 1),
+    "torb_ray": ("Torbjorn", "Turret", "000000002662", 1),
+    "torb_ray_edge": ("Torbjorn", "Turret", "0000000193BE", 1),
+    "torb_glare": ("Torbjorn", "Turret", "00000000098D", 1),
 }
 
 
@@ -1051,6 +1082,20 @@ EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  "dva_missile_ball": ("DVa", "MicroMissiles", "000000007CDA"),
                  # Tracer's Recall ring (00BB, 0958)
                  "tracer_recall_ring": ("Tracer", "Recall", "000000000958"),
+                 # Torbjorn's (torbjorn-effects.md): the rivet and pellet slugs (2653 / 1865), the pellet hit's shard (05AF),
+                 # the pool's three lava blobs (2754), the slag's blob (2509), the burn's rings (254F), the forming dome
+                 # (26FB), the cast's hemisphere (34B0)
+                 "torb_rivet": ("Torbjorn", "RivetGun", "0000000083D6"),
+                 "torb_pellet": ("Torbjorn", "RivetGun", "0000000080BE"),
+                 "torb_hit_shard_mesh": ("Torbjorn", "RivetGun", "000000000EF7"),
+                 "torb_lava_a": ("Torbjorn", "MoltenCore", "00000000887F"),
+                 "torb_lava_b_mesh": ("Torbjorn", "MoltenCore", "0000000083F7"),
+                 "torb_lava_c": ("Torbjorn", "MoltenCore", "00000000885C"),
+                 "torb_slag_blob": ("Torbjorn", "MoltenCore", "00000000E20D"),
+                 "torb_burn_ring_mesh": ("Torbjorn", "MoltenCore", "0000000086CF"),
+                 "torb_burn_ring_b": ("Torbjorn", "MoltenCore", "000000005708"),
+                 "torb_dome": ("Torbjorn", "MoltenCore", "000000000DAF"),
+                 "torb_hemisphere": ("Torbjorn", "MoltenCore", "00000000963D"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
                  # rings (a fat torus lying flat), the hook's cone, the towed ally's arcs, Purr's sphere, torus and wall
                  "cat_torus": ("JetpackCat", "Lifeline", "000000015A26"),

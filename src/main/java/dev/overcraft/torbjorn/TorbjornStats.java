@@ -117,6 +117,8 @@ public final class TorbjornStats {
 	// ---- Molten Core (16DA / 16DD / 16DE; Q) ----
 	/** The cast: 0.75 s (D #370 v670; W 0.592) H, then 5.5 s to fire his 10 (D #363 chase from 6 - 0.5; W 5.5) H. */
 	public static final double ULT_CAST = 0.75, ULT_TIME = 5.5;
+	/** The cast's burst 34B0 comes 0.27 s into it (clip 2B61 / 2B4A's effect key: tools/reference/torbjorn-effects.md, H). */
+	public static final double ULT_CAST_BURST = 0.27;
 	/** 10 slag shots (D 074E; W), 6.5 a second (D #382; W 1 per 0.144 s held), 40 m/s (D 074D; W) falling at 30 (D #462, M) H. */
 	public static final int SLAG_SHOTS = 10;
 	public static final double SLAG_RATE = 6.5, SLAG_SPEED = 40, SLAG_GRAVITY = 30;

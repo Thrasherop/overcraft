@@ -5,7 +5,6 @@ import dev.overcraft.hero.Allies;
 import dev.overcraft.registry.OcEntities;
 import dev.overcraft.torbjorn.Torbjorn;
 import dev.overcraft.torbjorn.TorbjornStats;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -87,7 +86,9 @@ public class RivetEntity extends OwProjectile {
 	protected void onHitEntity(EntityHitResult hit) {
 		if (level() instanceof ServerLevel level && getOwner() instanceof ServerPlayer owner) {
 			Torbjorn.rivetHit(owner, this, hit.getEntity(), hit.getLocation());
-			level.sendParticles(ParticleTypes.CRIT, hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, 2, 0.05, 0.05, 0.05, 0.02);
+			// its look on a creature: the rivet's 2650, a pellet's 05AF (TorbjornFx), facing back along the shot
+			Vec3 back = getDeltaMovement().lengthSqr() < 1.0E-6 ? Vec3.ZERO : getDeltaMovement().normalize().scale(-1);
+			dev.overcraft.hero.Effects.play(level, pellet() ? "torb_pellet_hit" : "torb_rivet_hit", hit.getLocation(), back, null, 0, owner);
 		}
 		discard();
 	}
@@ -97,7 +98,9 @@ public class RivetEntity extends OwProjectile {
 		super.onHitBlock(hit);
 		if (level() instanceof ServerLevel level) {
 			Vec3 at = hit.getLocation();
-			level.sendParticles(ParticleTypes.SMALL_FLAME, at.x, at.y, at.z, 1, 0.02, 0.02, 0.02, 0.005);
+			// its look on the world: the rivet's 2650, a pellet's 265B (TorbjornFx), off the face it hit
+			Vec3 normal = Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i());
+			dev.overcraft.hero.Effects.play(level, pellet() ? "torb_pellet_world" : "torb_rivet_hit", at, normal, null, 0, getOwner());
 			dev.overcraft.torbjorn.TorbjornSounds.all(level, pellet() ? "rivet.alt_hit_world" : "rivet.hit_world", at, 40);
 			discard();
 		}
