@@ -1,0 +1,13 @@
+# Jetpack Cat's Play of the Game highlight intro: the clip only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/jetpack_cat.glb by bone name (HeroModels, from hero_models/jetpack_cat_intro_clips.glb), as Sigma's (sigma_intro_clips.txt).
+# From DataTool's extract-unlocks "Jetpack Cat|highlightintro=*" (build 154088, archived: research\potg_intros\extract\Unlocks\Heroes\
+# Jetpack Cat\HighlightIntro; headers research\potg_intros\intro_clips_rest.txt). Heroic is her only base intro. It holds six body
+# clips (all 278 bones her model's, 0586.118), group 32: 1937D 7.833 s (effect 8B3A), 19C8F 7.567 s, 1A015 6.467 s, 1A016 5.633 s,
+# 1A017 7.133 s, 1A0E8 6.867 s. Her intro set 4319's alias B33 is a SEQUENCE (research\potg_intros\work\compact_4319_jetpack_cat.txt,
+# compacted from research\jetpack_cat\resolved\000000004319.021.flat.json by research\ana\scripts\clipmap_ana.py, H tree): seq[0]
+# 7.833 s -> seq[1] 6.467 -> seq[2] 5.633 -> seq[3] 7.133 -> seq[4] a 6.467 or a random pick of 6.467 / 5.633 / 7.133 / 6.867; the set's
+# own ids (1A16C-1A170) are not extracted. So 1937D is the opening (H by length: the only 7.833 s clip). She hovers in place (root
+# travel 0.06 m in the export). 236 frames at 30 fps. Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <0586.118.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/jetpack_cat_intro_clips.txt --clips-from=<...>\Heroes\Jetpack Cat\HighlightIntro\Overwatch\Heroic
+emote_00000001937D = potg_intro

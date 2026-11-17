@@ -1,0 +1,13 @@
+# Sombra's Play of the Game highlight intro: the clip only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/sombra.glb by bone name (HeroModels, from hero_models/sombra_intro_clips.glb), as Sigma's (sigma_intro_clips.txt).
+# From DataTool's extract-unlocks "Sombra|highlightintro=*" (build 154088, archived: research\potg_intros\extract\Unlocks\Heroes\
+# Sombra\HighlightIntro; headers research\potg_intros\intro_clips_rest.txt). The default Overwatch plays "Heroic" (her other base
+# intros: Undetected, Hacking, Pulse). Heroic's body clips (225 of their ~246 bones her model's, F376): group 33 BBFE 5.333 s (effect
+# 46B3); group 32 BF94 / BF95 3.333 s, BF96 6.667 s. BD29 / BDA2 (group 32, 4 and 63 bones, 2 and 5 hers) and BF97 / BF99 / BF9A
+# (groups 40 / 44, 4 bones) are the intro's props, not kept. Her intro set 4300's alias B33 is a SEQUENCE (research\sombra\work\
+# clipmap_sombra\compact_4300.txt, H tree): seq[0] 5.333 s p0/33 -> seq[1] 6.667 -> seq[2] 3.333 -> seq[3] 6.667 -> seq[4] ...; the
+# set's own ids (19F13-19F15) are not extracted. So BBFE is the opening (H by length and group: the only group 33 clip). She stays
+# in place (root travel 0.03 m in the export). 161 frames at 30 fps. Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <F376.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/sombra_intro_clips.txt --clips-from=<...>\Heroes\Sombra\HighlightIntro\Overwatch\Heroic
+emote_00000000BBFE = potg_intro
