@@ -15,7 +15,7 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
   gave a free mine; holding the scoped shot fired once; the hook pulled her on into the air when its block was mined; the
   hook's cooldown stood still for half a second; E and Q worked in a boat; a mine whose block was mined hung in the air,
   then vanished; the jump out of a pull threw her about 13 m up.
-  Not tried yet: a second player, the Nether, her perks.
+  Perks played: Scoped Efficiency and Seeker Mine. Not tried yet: a second player, the Nether, her other two perks.
 
 ## 2026-11-17: 0.3.74 on next (not on main yet)
 

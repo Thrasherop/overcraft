@@ -50,6 +50,9 @@ Workshop recording of her: her movement is the data's default mover.
   The stuck mine with its block removed: my first test removed the wrong block (the mine's position is the bottom of its box: the block
   is the one at its middle); the fix then showed the mine vanished as it fell, because OwProjectile expires anything older than its
   flight life (10 s) and a stuck mine is. Now its stuck time doesn't count: after 12 s on a wall it fell, stuck to the floor and burst.
-- Not tried: a second player (her Infra-Sight shown to an ally, the pull with ping), the Nether, the perks (Seeker Mine's darts read as
-  a 10 m turret to the critic: unplayed), Toggle Zoom (not built). Not reproduced: one real-key run lost a mine after G twice; two
+- Perks (picked from the perk menu: Alt held, a click): Scoped Efficiency, a scoped shot 3 rounds (35 -> 32) at full 120; Seeker Mine,
+  a husk 6.6 m from the mine (outside the plain mine's 3 m) took 75 over 5 s (5.55) and the mine stayed. The critic read W's prose as
+  "trigger at 3 m, then darts within 10 m"; the data's 59BF has a 10 m radius and no burst, so the data's reading stands.
+- Not tried: a second player (her Infra-Sight shown to an ally, the pull with ping), the Nether, Sniper's Instinct and Widow's Bite,
+  Toggle Zoom (not built). Not reproduced: one real-key run lost a mine after G twice; two
   repeats didn't, and that window had a spider death in it.
