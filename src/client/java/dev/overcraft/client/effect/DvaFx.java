@@ -25,14 +25,14 @@ public final class DvaFx {
 		new EffectArt.Art("dva_sd_burst#20", Palette.DVA_SD, false),
 		new EffectArt.Art("dva_sd_core", Palette.DVA_SD, false),
 		new EffectArt.Art("dva_solid", Palette.DVA_SD, false),
-		new EffectArt.Art("spark", Palette.DVA_SD, false),
+		new EffectArt.Art("spark#4", Palette.DVA_SD, false),
 		new EffectArt.Art("dva_sd_smoke#4", Palette.DVA_SD, false),
 		new EffectArt.Art("dva_sd_scorch", Palette.DVA_SD, false),
 		new EffectArt.Art("dva_missile_flame", Palette.DVA_MISSILE, false),
 		new EffectArt.Art("dva_smoke", Palette.DVA_SMOKE, true),
 		new EffectArt.Art("dva_solid", Palette.DVA_MISSILE_HIT, false),
 		new EffectArt.Art("dva_missile_fire#12", Palette.DVA_MISSILE_HIT, false),
-		new EffectArt.Art("spark", Palette.DVA_MISSILE_HIT, false),
+		new EffectArt.Art("spark#4", Palette.DVA_MISSILE_HIT, false),
 		new EffectArt.Art("dva_fusion_tracer", Palette.DVA_FUSION, false),
 		new EffectArt.Art("dva_fusion_flash#4", Palette.DVA_FUSION, false),
 		new EffectArt.Art("dva_fusion_glow", Palette.DVA_FUSION, false),
@@ -47,14 +47,14 @@ public final class DvaFx {
 		new EffectArt.Art("dva_sd_burst#20", Palette.DVA_SD_ENEMY, false),
 		new EffectArt.Art("dva_sd_core", Palette.DVA_SD_ENEMY, false),
 		new EffectArt.Art("dva_solid", Palette.DVA_SD_ENEMY, false),
-		new EffectArt.Art("spark", Palette.DVA_SD_ENEMY, false),
+		new EffectArt.Art("spark#4", Palette.DVA_SD_ENEMY, false),
 		new EffectArt.Art("dva_sd_smoke#4", Palette.DVA_SD_ENEMY, false),
 		new EffectArt.Art("dva_sd_scorch", Palette.DVA_SD_ENEMY, false),
 		new EffectArt.Art("dva_missile_flame", Palette.DVA_MISSILE_ENEMY, false),
 		new EffectArt.Art("dva_smoke", Palette.DVA_SMOKE, true),
 		new EffectArt.Art("dva_solid", Palette.DVA_MISSILE_HIT_ENEMY, false),
 		new EffectArt.Art("dva_missile_fire#12", Palette.DVA_MISSILE_HIT_ENEMY, false),
-		new EffectArt.Art("spark", Palette.DVA_MISSILE_HIT_ENEMY, false),
+		new EffectArt.Art("spark#4", Palette.DVA_MISSILE_HIT_ENEMY, false),
 		new EffectArt.Art("dva_fusion_tracer", Palette.DVA_FUSION_ENEMY, false),
 		new EffectArt.Art("dva_fusion_flash#4", Palette.DVA_FUSION_ENEMY, false),
 		new EffectArt.Art("dva_fusion_glow", Palette.DVA_FUSION_ENEMY, false),
@@ -232,7 +232,7 @@ public final class DvaFx {
 				.alpha(0.6f).fade(0.02f, 0.6f).nearFade(1));
 		}
 		for (int i = 0; i < 40; i++) {
-			Particle spark = Fx.particle("spark", colour);
+			Particle spark = Fx.particle("spark#4", colour);
 			if (spark == null) {
 				break;
 			}
@@ -311,7 +311,7 @@ public final class DvaFx {
 			Fx.add(fire.at(at).life(0.2f).size(0.8f, 1.2f).loop(60).fade(0.02f, 0.4f).nearFade(0.8f));
 		}
 		for (int i = 0; i < 8; i++) {
-			Particle spark = Fx.particle("spark", colour);
+			Particle spark = Fx.particle("spark#4", colour);
 			if (spark == null) {
 				break;
 			}

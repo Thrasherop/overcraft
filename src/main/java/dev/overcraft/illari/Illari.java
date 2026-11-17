@@ -215,6 +215,8 @@ public final class Illari implements HeroKit {
 		s.primaryReload = 0;
 		Combat.animate(player, "reload");
 		IllariSounds.split(player, "reload", player.getEyePosition(), 30);
+		// the sun in her hand 4F07 (IllariFx: "illari reload sun ball", #150)
+		Effects.play(player.level(), "illari_reload", player.getEyePosition(), Vec3.ZERO, player, 0, player);
 	}
 
 	/** One hitscan shot from her eyes: the first creature she can hurt within 0.04 m before a block, its falloff, x1.5 on the head. */
@@ -267,8 +269,10 @@ public final class Illari implements HeroKit {
 		} else if (blockHit.getType() == HitResult.Type.BLOCK) {
 			IllariSounds.at(level, "rifle.hit_world", block, 30);
 		}
-		trail(level, muzzle(player), stop, SHOT_DUST, 0.75);
-		level.sendParticles(ParticleTypes.CRIT, stop.x, stop.y, stop.z, 1, 0, 0, 0, 0);
+		// her shot's band 48BE and muzzle star 4BA3, then the hit 4BA1 (IllariFx, #150)
+		Vec3 from = muzzle(player);
+		Effects.play(level, "illari_shot", from, stop.subtract(from), player, 0, player);
+		Effects.play(level, "illari_hit", stop, Vec3.ZERO, null, 0, player);
 	}
 
 	// ---- the healing beam (3A65) ----
@@ -738,8 +742,10 @@ public final class Illari implements HeroKit {
 			if (e.isAlive()) {
 				double into = (now - (m.until - Ow.ticks(MARK_TIME))) / 20.0;
 				Combat.buff(e, Attributes.MOVEMENT_SPEED, SLOW_ID, -markSlow(into), 0.2);
-				if (now % 4 == 0 && e.level() instanceof ServerLevel level) {
-					level.sendParticles(ParticleTypes.FLAME, e.getX(), e.getY() + e.getBbHeight() + 0.3, e.getZ(), 1, 0.1, 0.05, 0.1, 0);
+				if (now % 20 == 0 && e.level() instanceof ServerLevel level) {
+					// its mark 4B50, each second, growing with what it has stored (IllariFx, #150)
+					int stored = (int) Math.round(100 * Math.min(1, m.taken / SUNSTRUCK_AT));
+					Effects.play(level, "illari_mark", e.getBoundingBox().getCenter(), Vec3.ZERO, null, stored, level.getServer().getPlayerList().getPlayer(m.owner));
 				}
 			}
 		}
@@ -802,8 +808,8 @@ public final class Illari implements HeroKit {
 			float dealt = Combat.damage(e, Combat.blast(level, null, owner), sunstruckDamage(d), SUN_BLOW);
 			dealt(owner, dealt, e, false);
 		}
-		level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y, at.z, 1, 0, 0, 0, 0);
-		level.sendParticles(ParticleTypes.FLAME, at.x, at.y, at.z, 30, 1.5, 1, 1.5, 0.08);
+		// its detonation 4E17 (IllariFx, #150)
+		Effects.play(level, "illari_sunstruck", at, Vec3.ZERO, null, 0, owner);
 		IllariSounds.blast(owner, level, "sun.explode", at, 120);
 	}
 
@@ -845,6 +851,8 @@ public final class Illari implements HeroKit {
 		j.launchGrace = LAUNCH_GRACE;
 		Combat.animate(player, "ult_launch");
 		IllariSounds.split(player, "sun.cast", player.getEyePosition(), 80);
+		// the sun forming in her hand 4EF3 (IllariFx, #150)
+		Effects.play(player.level(), "illari_cast", player.getEyePosition(), Vec3.ZERO, player, 0, player);
 		ultLine(player);
 	}
 
@@ -863,6 +871,8 @@ public final class Illari implements HeroKit {
 		}
 		if (t == Ow.ticks(SUN_LAUNCH)) {
 			IllariSounds.split(player, "sun.armed", player.getEyePosition(), 40);
+			// the sun held at her rifle 4EF2 until it's thrown (IllariFx, #150)
+			Effects.play(player.level(), "illari_armed", player.getEyePosition(), Vec3.ZERO, player, 0, player);
 		}
 		if (!j.ballFired && t >= Ow.ticks(SUN_LAUNCH) && (able && leftPress || t >= Ow.ticks(SUN_AUTO_FIRE))) {
 			fireBall(player, j);
@@ -885,6 +895,8 @@ public final class Illari implements HeroKit {
 		player.level().addFreshEntity(ball);
 		Combat.animate(player, "ball_fire");
 		IllariSounds.split(player, "sun.fire", from, 80);
+		// the throw 4F06 (IllariFx, #150)
+		Effects.play(player.level(), "illari_throw", from, aimPoint(player, 200).subtract(from), player, 0, player);
 	}
 
 	private static void endSun(ServerPlayer player, HeroState s, IllariState j) {
@@ -951,8 +963,8 @@ public final class Illari implements HeroKit {
 			dealt(owner, dealt, e, false);
 			mark(owner, e);
 		}
-		level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y, at.z, 1, 0, 0, 0, 0);
-		level.sendParticles(ParticleTypes.FLAME, at.x, at.y, at.z, 60, 3, 1.5, 3, 0.1);
+		// its burst 4E27 (IllariFx, #150)
+		Effects.play(level, "illari_burst", at, Vec3.ZERO, null, 0, owner);
 		IllariSounds.all(level, "sun.impact", at, 150);
 	}
 
@@ -975,6 +987,8 @@ public final class Illari implements HeroKit {
 		MARKS.put(e.getUUID(), new Mark(owner.getUUID(), now + Ow.ticks(MARK_TIME), e.getBoundingBox().getCenter()));
 		MARKED.put(e.getUUID(), e);
 		IllariSounds.at((ServerLevel) e.level(), "sun.mark", e.getBoundingBox().getCenter(), 30);
+		// the mark's eight-point sun stamped (4B50's 3F2CB, IllariFx: variant 1000)
+		Effects.play((ServerLevel) e.level(), "illari_mark", e.getBoundingBox().getCenter(), Vec3.ZERO, null, 1000, owner);
 	}
 
 	/** Captive Sun's line: her own copy in her head, the allies' and the enemies' from her (D 3CAB #1084, as Junkrat's). */

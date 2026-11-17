@@ -80,6 +80,7 @@ public class OvercraftClient implements ClientModInitializer {
 		// Mercy's beams follow her staff and their targets frame by frame, before the effects are drawn
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.MercyFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.DvaFx.frame());
+		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.IllariFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.LifeweaverFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(Fx::render);
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.hero.PressTrace.frame());

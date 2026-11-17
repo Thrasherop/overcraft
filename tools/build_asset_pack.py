@@ -936,6 +936,16 @@ EFFECT_MASKS = {
     "tracer_blast": ("Tracer", "PulseBomb", "00000001D113", 8),
     "tracer_blast_decal": ("Tracer", "PulseBomb", "000000020CE6", 1),
     "tracer_glow": ("Tracer", "Recall", "00000000F767", 1),
+    # Illari (tools/reference/illari-effects.md): stars, halo, the burst's star, Sunstruck's sun, embers, flames, the shot, the scorch
+    "illari_star": ("Illari", "CaptiveSun", "000000074DEA", 1),
+    "illari_halo": ("Illari", "CaptiveSun", "000000036D6D", 1),
+    "illari_burst_star": ("Illari", "CaptiveSun", "000000055BA5", 1),
+    "illari_sun_mark": ("Illari", "CaptiveSun", "00000003F2CB", 1),
+    "illari_ember": ("Illari", "CaptiveSun", "00000002D6CA", 4),
+    "illari_flame": ("Illari", "CaptiveSun", "00000003FAA8", 1),
+    "illari_shot_line": ("Illari", "SolarRifle", "000000043321", 1),
+    "illari_hit_glow": ("Illari", "SolarRifle", "00000000258D", 1),
+    "illari_scorch": ("Illari", "CaptiveSun", "000000019008", 1),
     # her Pulse Pistols' muzzle 0076 (tracer-effects.md): the soft glow, and the three flash flipbooks
     "tracer_muzzle_glow": ("Tracer", "PulsePistols", "00000000A7B6", 1),
     "tracer_muzzle_a": ("Tracer", "PulsePistols", "000000020848", 3),

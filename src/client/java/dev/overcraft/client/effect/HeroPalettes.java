@@ -50,5 +50,15 @@ final class HeroPalettes {
 	static final float[] TR_MUZZLE = {0, 0, 0, 0, .35f, 0, .07f, .74f, 1, 0, .71f, .96f};
 	/** The enemy's: ending #FF2447 (M). */
 	static final float[] TR_MUZZLE_ENEMY = {0, 0, 0, 0, .35f, .5f, .04f, .1f, 1, 1, .14f, .28f};
+	/** Illari's gold (D1CA r0 / 74C6 r0), ending on its cream #FFEEB7 so solid masks keep the colour (tools/reference/illari-effects.md). */
+	static final float[] IL_SUN = {0, 0, 0, 0, .25f, .61f, .38f, .25f, .5f, .89f, .59f, .31f, .75f, .98f, .82f, .57f, 1, 1, .93f, .72f};
+	/** Her sparks and flames (74C6 r1). */
+	static final float[] IL_FIRE = {0, 0, 0, 0, .25f, .44f, .16f, .10f, .5f, .85f, .35f, .23f, .75f, .99f, .45f, .18f, 1, 1, .49f, 0};
+	/** Her rifle's shot (2B74 r2). */
+	static final float[] IL_SHOT = {0, 0, 0, 0, .25f, .50f, .24f, .10f, .5f, .67f, .33f, .15f, .75f, .89f, .46f, .23f, 1, 1, .94f, .78f};
+	/** Sunstruck's mark (171E r9). */
+	static final float[] IL_MARK = {0, 0, 0, 0, .25f, .65f, .41f, .11f, .5f, .75f, .59f, .31f, .75f, .87f, .77f, .44f, 1, 1, .93f, .56f};
+	/** The burst's scorch (5F07 r2: dark), drawn as a dim brown mark (M). */
+	static final float[] IL_SCORCH = {0, 0, 0, 0, 1, .12f, .07f, .03f};
 	static final float[] TR_SHOT_ENEMY = {0, 0, 0, 0, .3f, .45f, .09f, .05f, .7f, 1, .194f, .103f, 1, 1, .75f, .6f};
 }
