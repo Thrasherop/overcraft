@@ -26,7 +26,10 @@ public final class SigmaStats {
 	public static final double VOLLEY_RELOAD = 1.3;
 	/** 50 m/s (D 0478, v6368; W 48) H. */
 	public static final double SPHERE_SPEED = 50;
-	/** 0.32 m across (D 28DA 0.2 + the global 28A4 0.12; W 0.32): its radius vs creatures 0.16 m H / M. */
+	/**
+	 * Its radius against creatures, 0.32 m (D 28DA 0.2 + the global 28A4 0.12, both radii as every hero's; W rev 410846 0.32) H.
+	 * Read as a diameter before (#163: it hit at half size).
+	 */
 	public static final double SPHERE_SIZE = 0.32;
 	/** Its radius against blocks (D: environment 0.075) H. */
 	public static final double SPHERE_BLOCK_RADIUS = 0.075;

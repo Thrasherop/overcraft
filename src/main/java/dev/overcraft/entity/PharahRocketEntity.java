@@ -56,7 +56,8 @@ public class PharahRocketEntity extends OwProjectile {
 	@Override
 	public float hitRadius() {
 		return (float) switch (kind()) {
-			case ROCKET, SALVO -> PharahStats.ROCKET_RADIUS;
+			case ROCKET -> PharahStats.ROCKET_RADIUS;
+			case SALVO -> PharahStats.SALVO_RADIUS;
 			case BARRAGE -> PharahStats.BARRAGE_SIZE;
 			case CONCUSSIVE -> PharahStats.CONCUSSIVE_RADIUS;
 		};

@@ -166,4 +166,6 @@ public final class PharahStats {
 	 */
 	public static final double SALVO_WINDOW = 5, SALVO_DELAY = 0.1, SALVO_DIRECT = 10, SALVO_SPLASH = 20, SALVO_SPEED = 40, SALVO_APART = 0.2;
 	public static final int SALVO_COUNT = 2;
+	/** Rocket Salvo's mini-rockets' radius, 0.015 m (W rev 408633; not read in the data) M. They had the full rocket's 0.32 (#163). */
+	public static final double SALVO_RADIUS = 0.015;
 }

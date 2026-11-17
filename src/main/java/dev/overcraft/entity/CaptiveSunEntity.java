@@ -48,7 +48,8 @@ public class CaptiveSunEntity extends OwProjectile {
 
 	@Override
 	public float hitRadius() {
-		return (float) IllariStats.BALL_SIZE / 2;
+		// a radius (#163: halved, it hit at half its size)
+		return (float) IllariStats.BALL_SIZE;
 	}
 
 	@Override
