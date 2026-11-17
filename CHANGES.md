@@ -4,6 +4,16 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-17: 0.3.70 on next (not on main yet)
+
+- **Illari's Captive Sun and reload sun from her data (#150):** the sun forming in her hand, held at her rifle once armed,
+  the throw, the ball's glow in flight, its burst, Sunstruck's sun on the marked and its detonation; the small sun in her
+  hand as she reloads; her rifle's gold shot line, muzzle star and hit. No more Minecraft flames and explosions.
+- **Torbjorn's effects from his data (#150):** Overload's flames and smoke at his back vents; Molten Core's forge glow, the
+  slag in flight and its lava floor (glowing lava blobs, embers, sparks) and burning enemies; his rivets' muzzle flashes,
+  shots and hits; the turret's shots.
+- **D.Va's sparks** (Self-Destruct, missiles) were never drawn: fixed.
+
 ## 2026-11-17: 0.3.69 on next (not on main yet)
 
 - **Cassidy's Silver Bullet aims down sights (#164):** hold the right button: the view zooms to 40 degrees over 0.2 s, the
