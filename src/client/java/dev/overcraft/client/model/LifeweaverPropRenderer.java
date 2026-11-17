@@ -200,8 +200,10 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 			SkinnedModel model = loaded.model();
 			Skeleton.Pose pose = new Skeleton.Pose(model.nodeNames.length).rest(model);
 			SkinnedModel.Clip clip = state.clip == null ? null : model.clips.get(state.clip);
-			if (clip != null && clip.duration() > 0) {
-				float t = state.time < 0 ? (-state.time - 1) % clip.duration() : Math.min(state.time, clip.duration());
+			if (clip != null) {
+				// a one-key clip is a held pose of length 0 (the turret's l2_idle / l3_idle, which scale away the other level's
+				// parts): it's sampled too, at its only key (#146: skipping it drew the rest pose, level 3's pods at level 2)
+				float t = clip.duration() <= 0 ? 0 : state.time < 0 ? (-state.time - 1) % clip.duration() : Math.min(state.time, clip.duration());
 				Skeleton.sample(clip, t, pose);
 			}
 			SkinnedModel.Clip add = state.add == null ? null : model.clips.get(state.add);
