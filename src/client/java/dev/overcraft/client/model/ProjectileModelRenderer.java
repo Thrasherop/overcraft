@@ -138,6 +138,8 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 				slag.getDeltaMovement(), dt, KirikoFx.enemyOf(slag.getOwner()));
 			case dev.overcraft.entity.RivetEntity rivet -> s.drawnByEffect = dev.overcraft.client.effect.TorbjornFx.rivetFlight(rivet.getId(),
 				at, rivet.getDeltaMovement(), s.age, dt, rivet.pellet(), KirikoFx.enemyOf(rivet.getOwner()));
+			// Cassidy's Flashbang: its model and its ribbons 0600
+			case dev.overcraft.entity.FlashbangEntity flash -> dev.overcraft.client.effect.CassidyFx.flashFlight(flash.getId(), at);
 			case SuzuEntity suzu -> KirikoFx.suzuFlight(suzu.getId(), at, dt, KirikoFx.enemyOf(suzu.getOwner()));
 			case dev.overcraft.entity.SonicEntity sonic -> s.drawnByEffect = dev.overcraft.client.effect.LucioFx.sonicFlight(
 				sonic.getId(), at, sonic.getDeltaMovement(), dt, KirikoFx.enemyOf(sonic.getOwner()));

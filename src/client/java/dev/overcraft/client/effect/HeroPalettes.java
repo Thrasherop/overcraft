@@ -161,4 +161,83 @@ final class HeroPalettes {
 	static final float[] TB_THROWN = {0, 0, 0, 0, .25f, 1, 1, 1, .5f, 1, 1, .589f, .75f, 1, .922f, .205f, 1, 1, .775f, 0};
 	/** the turret's shot line 801 x 510 x 50C (2654): tint D763 r4 (10, 5.4, 0), orange HDR, scaled to its brightest (H); the ramp ours. */
 	static final float[] TB_TURRET_LINE = {0, 0, 0, 0, .3f, .3f, .16f, 0, .7f, 1, .54f, 0, 1, 1, .7f, .25f};
+
+	// ---- Cassidy's (tools/reference/cassidy-effects.md "Proposed palettes": raw stops from fx_cassidy_palettes.py, each ending on
+	// its colour; "/peak" normalised by the row's HDR peak, "top = 75 %" the white core dropped: ours) ----
+	/** his shot's line 18D7 (mask 510 x 50C), his side: 0FEF r4 /peak, cyan to blue (H row, M role). */
+	static final float[] CS_LINE = {0, 0, 0, 0, .25f, 0, .7f, .971f, .5f, 0, .568f, .938f, .75f, 0, .438f, .906f, 1, 0, .306f, .878f};
+	/** the same to his enemies: C54D r4 /peak, orange to red. */
+	static final float[] CS_LINE_ENEMY = {0, 0, 0, 0, .25f, .957f, .147f, 0, .5f, .913f, .059f, 0, .75f, .896f, .021f, 0, 1, .888f, .001f, 0};
+	/** Deadeye's second line 510 x 50C (060D): 59BA r4 /peak, amber to red. */
+	static final float[] CS_DEADEYE_LINE = {0, 0, 0, 0, .25f, .972f, .271f, 0, .5f, .944f, .18f, 0, .75f, .916f, .091f, 0, 1, .888f, .001f, 0};
+	/** the smoke along the line (18D7's 4DB x B35 x 965): B2E7 r7 /peak, grey. */
+	static final float[] CS_SMOKE_LINE = {0, 0, 0, 0, .25f, .362f, .361f, .358f, .5f, .36f, .36f, .36f, .75f, .36f, .36f, .36f, 1, .36f, .36f, .36f};
+	/** Silver Bullet's blue-headed smoke (6DB8): 734D r7 /peak, blue to grey. */
+	static final float[] CS_SILVER_LINE = {0, 0, 0, 0, .25f, .119f, .342f, .74f, .5f, .155f, .272f, .48f, .75f, .152f, .211f, .316f, 1, .15f, .15f, .15f};
+	/** Deadeye's shot tube 8C0 (060D): 06FF r6, orange. */
+	static final float[] CS_DEADEYE_TUBE = {0, 0, 0, 0, .25f, 1, .285f, .081f, .5f, 1, .285f, .081f, .75f, 1, .285f, .081f, 1, 1, .285f, .081f};
+	/** the muzzle's flashes 5C04 (057A): 3352 r1, brown to cream, top = 75 %. */
+	static final float[] CS_MUZZLE_FLASH = {0, 0, 0, 0, .25f, 1, .372f, 0, .5f, 1, .702f, .023f, 1, 1, 1, .106f};
+	/** the muzzle's back flashes 5C04 (057A): B2A1 r1, dark red to cream, top = 75 %. */
+	static final float[] CS_MUZZLE_FLASH_C = {0, 0, 0, 0, .25f, 1, .127f, .035f, .5f, 1, .285f, .077f, 1, 1, .756f, .437f};
+	/** Fan the Hammer's muzzle flash (356B): BD91 r1, gold to cream. */
+	static final float[] CS_FAN_FLASH = {0, 0, 0, 0, .25f, 1, .476f, .007f, .5f, 1, .496f, .015f, .75f, 1, .561f, .068f, 1, 1, .879f, .52f};
+	/** the muzzle's sparks 1BCFB (057A): 8370 r2, orange to cream. */
+	static final float[] CS_MUZZLE_SPARK = {0, 0, 0, 0, .25f, 1, .259f, 0, .5f, 1, .393f, 0, .75f, 1, .525f, 0, 1, 1, .888f, .584f};
+	/** the muzzle's ring E700 (057A): 7147 r6, orange to cream, top = 75 %. */
+	static final float[] CS_MUZZLE_RING = {0, 0, 0, 0, .25f, 1, .379f, 0, .5f, 1, .61f, 0, 1, 1, .817f, .194f};
+	/** the muzzle's smoke B08 x 1C77 x 5429 (057A): B999 r7, cream to tan. */
+	static final float[] CS_MUZZLE_SMOKE = {0, 0, 0, 0, .25f, 1, 1, .381f, .5f, 1, 1, .605f, .75f, 1, .908f, .551f, 1, .862f, .669f, .407f};
+	/** the hit's flashes 5B71 (05AE), his side: 3949 r1, blue to cream, top = 75 %. */
+	static final float[] CS_HIT = {0, 0, 0, 0, .25f, .006f, .471f, 1, .5f, .032f, .494f, .993f, 1, .512f, .71f, .83f};
+	/** the same to his enemies: 606A r1, red to yellow, top = 75 %. */
+	static final float[] CS_HIT_ENEMY = {0, 0, 0, 0, .25f, .917f, .01f, .003f, .5f, .997f, .021f, .005f, 1, 1, .239f, .019f};
+	/** the hit's shards EF7 x 5B70 (05AE): 275F r1, gold to cream. */
+	static final float[] CS_HIT_SHARD = {0, 0, 0, 0, .25f, 1, .476f, .007f, .5f, 1, .495f, .015f, .75f, 1, .678f, .255f, 1, 1, .879f, .52f};
+	/** the same to his enemies: 2559 r1, red to yellow. */
+	static final float[] CS_HIT_SHARD_ENEMY = {0, 0, 0, 0, .25f, .917f, .01f, .003f, .5f, .997f, .021f, .005f, .75f, 1, .239f, .019f, 1, .982f, 1, .048f};
+	/** the hit's decal 29F7 (05AE), his side: 5C90 r2, cyan to blue. */
+	static final float[] CS_HIT_DECAL = {0, 0, 0, 0, .25f, 0, 1, 1, .5f, 0, 1, 1, .75f, 0, .559f, 1, 1, 0, 0, 1};
+	/** the same to his enemies: 6F1B r2, yellow to red. */
+	static final float[] CS_HIT_DECAL_ENEMY = {0, 0, 0, 0, .25f, 1, 1, 0, .5f, 1, 1, 0, .75f, 1, .559f, 0, 1, 1, 0, 0};
+	/** the reload's barrel smoke 9EF x B0A (0402 / 05C0): 4287 r0, peach. */
+	static final float[] CS_RELOAD_SMOKE = {0, 0, 0, 0, .25f, 1, .284f, .214f, .5f, 1, .352f, .248f, .75f, 1, .419f, .283f, 1, 1, .486f, .317f};
+	/** Silver Bullet armed at his wrist (6E6B), his side: CB3F r4, navy to pale cyan, top = 75 %. */
+	static final float[] CS_SILVER_ARMED = {0, 0, 0, 0, .25f, .002f, .014f, .18f, .5f, .01f, .387f, .599f, 1, .118f, 1, 1};
+	/** the same to his enemies: CB3F r5, dark red to cream, top = 75 %. */
+	static final float[] CS_SILVER_ARMED_ENEMY = {0, 0, 0, 0, .25f, .076f, .001f, .001f, .5f, .325f, .013f, .005f, 1, 1, .227f, .13f};
+	/** the bleed's glows (3488): F7C6 r0, pink to magenta. */
+	static final float[] CS_BLEED = {0, 0, 0, 0, .25f, 1, .282f, .869f, .5f, 1, .231f, .933f, .75f, 1, .167f, .973f, 1, 1, .081f, .972f};
+	/** the bleed's sparks 1F35 (3488): 8FF6 r1, dark red to pink, top = 75 %. */
+	static final float[] CS_BLEED_SPARK = {0, 0, 0, 0, .25f, .484f, 0, 0, .5f, .968f, 0, 0, 1, 1, .132f, .132f};
+	/** Combat Roll's dust 5429 x B08 x 1FC65 (05E4): 706F r2, black to cream, top = 75 %. */
+	static final float[] CS_ROLL_DUST = {0, 0, 0, 0, .25f, .33f, .293f, .252f, .5f, .661f, .586f, .504f, 1, .986f, .875f, .753f};
+	/** the Flashbang's flash 2D6C9 (5C8C), his side: FF88 r0, black to gold to pale yellow, top = 75 %. */
+	static final float[] CS_FLASH = {0, 0, 0, 0, .25f, .419f, .245f, .005f, .5f, 1, .748f, .016f, 1, 1, 1, .064f};
+	/** the same to his enemies: FF88 r1, rust to peach, top = 50 %. */
+	static final float[] CS_FLASH_ENEMY = {0, 0, 0, 0, .25f, 1, .052f, .013f, 1, 1, .404f, .07f};
+	/** the bang's dome 963D (5C8C), his side: E5D5 r1, gold, top = 75 %. */
+	static final float[] CS_FLASH_DOME = {0, 0, 0, 0, .25f, .403f, .161f, 0, .5f, .682f, .302f, 0, 1, .879f, .485f, 0};
+	/** the same to his enemies: E5D5 r2, red, top = 75 %. */
+	static final float[] CS_FLASH_DOME_ENEMY = {0, 0, 0, 0, .25f, 1, .158f, .071f, .5f, 1, .256f, .123f, 1, 1, .411f, .202f};
+	/** the bang's second flash 16E9D x 29887 (5C8C): A55C r4, blue, top = 75 %. */
+	static final float[] CS_FLASH_RAYS = {0, 0, 0, 0, .25f, 0, .158f, .887f, .5f, .044f, .284f, 1, 1, .124f, .5f, 1};
+	/** the bang's streaks 1FBCE x 19167 (5C8C), his side: CC06 r5, navy to pale blue, top = 75 %. */
+	static final float[] CS_FLASH_STREAK = {0, 0, 0, 0, .25f, .052f, .125f, .42f, .5f, .033f, .243f, .733f, 1, .011f, .475f, 1};
+	/** the same to his enemies: CC06 r7, plum to yellow, top = 75 %. */
+	static final float[] CS_FLASH_STREAK_ENEMY = {0, 0, 0, 0, .25f, .898f, .21f, .025f, .5f, 1, .403f, .061f, 1, 1, 1, .3f};
+	/** the Flashbang's ribbon in flight AC4 (0600): ECA2 r2 /peak, orange. */
+	static final float[] CS_FLASH_TRAIL = {0, 0, 0, 0, .25f, 1, .139f, .006f, .5f, 1, .139f, .006f, .75f, 1, .139f, .006f, 1, 1, .139f, .006f};
+	/** its second ribbon (0600): DB42 r3 /peak, warm yellow. */
+	static final float[] CS_FLASH_TRAIL_B = {0, 0, 0, 0, .25f, 1, .728f, .269f, .5f, 1, .728f, .269f, .75f, 1, .728f, .269f, 1, 1, .728f, .269f};
+	/** Deadeye's eye glint 2F4F0 x 242 (0610): EE96 r0, its closing black dropped (magenta at .5: L). */
+	static final float[] CS_DEADEYE_EYE = {0, 0, 0, 0, .25f, 1, 0, 0, .5f, 1, 0, 1, 1, .542f, 0, 0};
+	/** Deadeye's star F7A7 at his eye (0610): 7C32 r1, tan to white, top = 50 %. */
+	static final float[] CS_DEADEYE_STAR = {0, 0, 0, 0, .25f, 1, .708f, .255f, 1, 1, .904f, .354f};
+	/** Deadeye's glows 139C on him (0610), his side: 4EEC r1, ochre to white, top = 50 %. */
+	static final float[] CS_DEADEYE_GLOW = {0, 0, 0, 0, .25f, 1, .68f, 0, 1, 1, 1, .264f};
+	/** the same to his enemies: DFD2 r3, dark red to gold, top = 75 %. */
+	static final float[] CS_DEADEYE_GLOW_ENEMY = {0, 0, 0, 0, .25f, .557f, .002f, 0, .5f, 1, .121f, 0, 1, 1, .435f, .003f};
+	/** Deadeye's hit 010F (decal 220A, puffs 1BE6): 35DA r2, yellow to red. */
+	static final float[] CS_DEADEYE_DECAL = {0, 0, 0, 0, .25f, 1, .74f, 0, .5f, 1, .48f, 0, .75f, 1, .225f, 0, 1, 1, 0, 0};
 }

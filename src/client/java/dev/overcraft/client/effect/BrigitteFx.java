@@ -104,6 +104,18 @@ public final class BrigitteFx {
 	private static final Map<Integer, Held> BASHES = new HashMap<>();
 	private static final Map<Integer, Held> STUNS = new HashMap<>();
 
+	/**
+	 * Another's stun drawn with hers: Cassidy's hindered look 05D9 is the same band meshes DE0 x 247C and stars 248B as her stun 220D
+	 * (cassidy-effects.md "Hindered"), held for that many seconds from now (renewed, never shortened).
+	 */
+	static void stun(int entity, float seconds, boolean enemy) {
+		float now = Fx.now();
+		Held was = STUNS.get(entity);
+		float until = now + seconds;
+		STUNS.put(entity, new Held(was != null && was.until() > now ? was.since() : now, was != null ? Math.max(was.until(), until) : until,
+			enemy));
+	}
+
 	/** Dev only: what it draws on this entity now. */
 	public static String devHeld(int id) {
 		return STUNS.containsKey(id) ? "stun " : "";

@@ -1004,6 +1004,22 @@ EFFECT_MASKS = {
     "torb_ray": ("Torbjorn", "Turret", "000000002662", 1),
     "torb_ray_edge": ("Torbjorn", "Turret", "0000000193BE", 1),
     "torb_glare": ("Torbjorn", "Turret", "00000000098D", 1),
+    # Cassidy's (tools/reference/cassidy-effects.md "What the builder adds"; pass research/cassidy/fx as a source; the
+    # rest of his masks are already here under other heroes' names). Peacekeeper: the shot's smoke noise (18D7), the hit's
+    # flashes (05AE), the muzzle's flame flipbook, cone and ring mask, flashes and sparks (057A)
+    "cassidy_smoke_noise": ("Cassidy", "Peacekeeper", "0000000004D5", 1),
+    "cassidy_hit_flash": ("Cassidy", "Peacekeeper", "000000005B71", 4),
+    "cassidy_muzzle_flame": ("Cassidy", "Peacekeeper", "00000001FB83", 32),
+    "cassidy_cone": ("Cassidy", "Peacekeeper", "00000002A2B9", 1),
+    "cassidy_flash": ("Cassidy", "Peacekeeper", "000000005C04", 4),
+    "cassidy_spark": ("Cassidy", "Peacekeeper", "00000001BCFB", 1),
+    # Combat Roll's dust flipbook (05E4), Flashbang's bang flash (5C8C) and ribbon (0600), the bleed's glow (3488),
+    # Deadeye's dust (0610)
+    "cassidy_dust": ("Cassidy", "CombatRoll", "00000001FC65", 32),
+    "cassidy_bang": ("Cassidy", "Flashbang", "00000002D6C9", 1),
+    "cassidy_ribbon": ("Cassidy", "Flashbang", "000000000AC4", 1),
+    "cassidy_bleed_glow": ("Cassidy", "SilverBullet", "000000037B2E", 1),
+    "cassidy_dust_cloud": ("Cassidy", "Deadeye", "000000000AFF", 1),
 }
 
 
@@ -1106,6 +1122,9 @@ EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  "torb_burn_ring_b": ("Torbjorn", "MoltenCore", "000000005708"),
                  "torb_dome": ("Torbjorn", "MoltenCore", "000000000DAF"),
                  "torb_hemisphere": ("Torbjorn", "MoltenCore", "00000000963D"),
+                 # Cassidy's muzzle (057A, cassidy-effects.md): the flash cone (1 x 0.35 m) and the flat ring
+                 "cassidy_muzzle_cone": ("Cassidy", "Peacekeeper", "0000000080B8"),
+                 "cassidy_muzzle_ring": ("Cassidy", "Peacekeeper", "00000000E700"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
                  # rings (a fat torus lying flat), the hook's cone, the towed ally's arcs, Purr's sphere, torus and wall
                  "cat_torus": ("JetpackCat", "Lifeline", "000000015A26"),
