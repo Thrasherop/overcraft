@@ -14,7 +14,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -217,9 +216,14 @@ public final class FusionCannons {
 		}
 	}
 
-	/** Her shots' damage: an arrow's type (a shot, not a melee blow), from her and by her, so an enemy barrier takes it. */
+	/**
+	 * Her shots' damage: overcraft:hitscan (a shot, not a melee blow, as Combat.hitscan), from her and by her, so an enemy
+	 * barrier takes it. An arrow's type, as before, is a projectile, which an enderman dodges: her cannons never hit one (the
+	 * owner on 0.3.66, #162: "lots of hitscan firing doesn't hit enderman, like dva primary fire").
+	 */
 	static DamageSource shotSource(ServerPlayer owner) {
 		return new DamageSource(owner.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
-			.getOrThrow(DamageTypes.ARROW), owner, owner);
+			.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,
+				dev.overcraft.Overcraft.id("hitscan"))), owner, owner);
 	}
 }
