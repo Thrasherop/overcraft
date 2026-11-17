@@ -30,8 +30,12 @@ public final class JunkratStats {
 	public static final double FRAG_SPEED = 30, FRAG_GRAVITY = 17;
 	/** Frag Cannon: x1.25 its speed, 37.5 m/s (D 022B #446; BZ 2025-12-09; W) H. */
 	public static final double FRAG_CANNON = 1.25;
-	/** Its hit size on a creature: 0.1 m (D 28EE), halved after its second bounce (D v59304 [1, 0.5] M; W 0.32 -> 0.16 m) H/M. */
-	public static final double FRAG_HIT_RADIUS = 0.1;
+	/**
+	 * Its hit size on a creature: 0.32 m (D 022B #276 m_57DAE1B5, the size against enemies = v27951 28ED 0.2 + v54935 28A4 0.12, the
+	 * shared bonus; W rev 410907 0.32), halved after its second bounce (D v59304 [1, 0.5]; W 0.16) H. 28EE's 0.1 is m_1FFD8312, its
+	 * size against the world (M): read the other way round before (#163, re-read 2026-11-17).
+	 */
+	public static final double FRAG_HIT_RADIUS = 0.32;
 	/** Off a block it keeps half its speed into the face (D m_0D20DAFD 0.5, M) and 0.75 along it (D m_C29D35E8 0.75, L). */
 	public static final double FRAG_RESTITUTION = 0.5, FRAG_FRICTION = 0.75;
 	/**

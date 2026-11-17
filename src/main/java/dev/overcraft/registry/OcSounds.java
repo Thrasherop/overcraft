@@ -690,6 +690,12 @@ public final class OcSounds {
 	/** Play of the Game: the announcer's "Play of the game." (voice set 001D, file A8C4) and its music, cue 5B1F (D: music-round9). */
 	public static final SoundEvent ANNOUNCER_POTG = register("announcer.potg");
 	public static final SoundEvent MUSIC_POTG = register("music.potg");
+	/**
+	 * The dragon fight's end phase (#45): Overwatch's overtime cue (STUSound 69B7, stream 2A7946: music-round9, H), its intro
+	 * and its loop (tools/soundmaps/kiriko.txt has the cut). From the local pack only.
+	 */
+	public static final SoundEvent MUSIC_OVERTIME_INTRO = register("music.overtime_intro");
+	public static final SoundEvent MUSIC_OVERTIME_LOOP = register("music.overtime_loop");
 
 	private static SoundEvent register(String name) {
 		return Registry.register(BuiltInRegistries.SOUND_EVENT, Overcraft.id(name), SoundEvent.createVariableRangeEvent(Overcraft.id(name)));

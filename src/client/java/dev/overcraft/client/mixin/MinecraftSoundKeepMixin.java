@@ -16,7 +16,8 @@ public abstract class MinecraftSoundKeepMixin {
 	@ModifyVariable(method = "updateLevelInEngines(Lnet/minecraft/client/multiplayer/ClientLevel;Z)V", at = @At("HEAD"), argsOnly = true)
 	private boolean overcraft$keepPotgMusic(boolean stopSound, @com.llamalad7.mixinextras.sugar.Local(argsOnly = true) net.minecraft.client.multiplayer.ClientLevel level) {
 		// a new level (the replay's, the way back), not leaving the world (disconnect passes none: the critique's 4)
-		if (stopSound && level != null && PotgMusic.playing()) {
+		// the dragon fight's end-phase music too (#45: everyone hears it, wherever they go), only while it should play
+		if (stopSound && level != null && (PotgMusic.playing() || dev.overcraft.client.EndMusic.playing())) {
 			PotgMusic.stopAllButInterface();
 			return false;
 		}

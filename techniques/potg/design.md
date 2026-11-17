@@ -53,6 +53,8 @@ move (Fabric sends round the listener's `send`). Ghosts and the camera haven't.
   alone" are dropped everywhere below.
 - **The rest of the defaults stand:** the replay key stays a dev command (2), Minecraft-mode kills don't count (5), a
   highlight intro picked for the first version (7), it ends on the replay and then the exit portal opens (8).
+- **A Minecraft-mode killing blow doesn't cancel it (owner, 2026-11-17, #161: "No").** Their Minecraft-mode kills still
+  don't score, but the dragon's POTG is chosen from everyone's plays whoever lands the blow.
 - **Clips (6):** the owner will send real POTG clips for the camera, into `local-assets/raw/`. The camera comes last,
   so nothing waits on them.
 

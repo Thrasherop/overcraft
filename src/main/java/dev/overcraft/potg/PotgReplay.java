@@ -121,9 +121,8 @@ public final class PotgReplay {
 	private static long startedAt;
 	private static long watchdogAt;
 	private static int generation;
-	/** The dragon died and its POTG waits for tick 199; whether its killer allows one (not a Minecraft-mode player). */
+	/** The dragon died and its POTG waits for the music's cue. */
 	private static boolean dragonPending;
-	private static boolean killerAllows;
 	private static boolean shown;
 	/**
 	 * The world stays held through the POTG's end screen, after the viewers are back: until every viewer's client says its
@@ -173,13 +172,12 @@ public final class PotgReplay {
 
 	/**
 	 * The dragon has taken its killing blow (AFTER_DEATH: Minecraft's die(), where VICTORY and its music start; the dragon
-	 * then flies to the fountain to die): scoring stops, and its killer decides whether there's a POTG at all: a player out of
-	 * hero mode takes it away (owner, 2026-11-11: Minecraft-mode kills don't count). Anything else (a hero, the world, a
-	 * command) leaves it to the plays. The POTG itself starts on the music's cue, CARD_AFTER_KILL_MS after the blow.
+	 * then flies to the fountain to die): scoring stops. Whoever dealt the blow, the POTG is left to the plays: a player out of
+	 * hero mode doesn't take it away from everyone (owner, 2026-11-17, #161: "No"; their own Minecraft-mode kills still don't
+	 * score). The POTG itself starts on the music's cue, CARD_AFTER_KILL_MS after the blow.
 	 */
 	public static void dragonDied(EnderDragon dragon, DamageSource source) {
 		Entity killer = source.getEntity();
-		killerAllows = killerAllows(killer);
 		dragonPending = true;
 		int token = ++dragonToken;
 		if (!(dragon.level() instanceof ServerLevel level)) {
@@ -188,7 +186,8 @@ public final class PotgReplay {
 		MinecraftServer server = level.getServer();
 		PlayScore.close(server);
 		Overcraft.LOG.info("[POTG] the dragon died, killer {} ({}); scoring closed; the POTG in {} ms", killer == null ? "(none)"
-			: killer.getName().getString(), killerAllows ? "allows a POTG" : "out of hero mode: no POTG", CARD_AFTER_KILL_MS);
+			: killer.getName().getString() + (killer instanceof Player p && !(HeroManager.hero(p) != null && HeroManager.heroMode(p)) ? ", out of hero mode" : ""),
+			"the plays decide", CARD_AFTER_KILL_MS);
 		TIMER.schedule(new java.util.TimerTask() {
 			@Override
 			public void run() {
@@ -207,10 +206,6 @@ public final class PotgReplay {
 	/** Each dragon's kill; a cue for an earlier one (a second dragon killed within the 7 s) does nothing. */
 	private static int dragonToken;
 
-	static boolean killerAllows(@Nullable Entity killer) {
-		return !(killer instanceof Player p) || HeroManager.hero(p) != null && HeroManager.heroMode(p);
-	}
-
 	/**
 	 * The music's cue after the dragon's killing blow (CARD_AFTER_KILL_MS): the POTG is chosen and starts, and the world freezes
 	 * there (the dragon mid-death: the exit portal opens after the POTG, as the note's timeline has it).
@@ -227,7 +222,7 @@ public final class PotgReplay {
 		// the next plays start from nothing (the run goes on after the dragon: "the whole time"); the highlights stay
 		PlayScore.open();
 		MobStats.decided(server, dragon);
-		if (killerAllows && choice != null) {
+		if (choice != null) {
 			if (active && !holdsWorld) {
 				// a highlight someone watches alone gives way to the dragon's POTG (critique 2: the POTG was refused and the
 				// run's plays were lost); the watcher is put back first, and sees the POTG with everyone
@@ -235,7 +230,7 @@ public final class PotgReplay {
 			}
 			Overcraft.LOG.info("[POTG] the dragon's POTG: {}", startPotg(server, show(choice.highlight(), choice.owner())));
 		} else {
-			Overcraft.LOG.info("[POTG] no POTG: {}", !killerAllows ? "the killer was out of hero mode" : "no play since the last POTG");
+			Overcraft.LOG.info("[POTG] no POTG: no play since the last POTG");
 		}
 		// the run is over at the dragon, POTG or not (critique 9): its totals start again; hero time stays
 		PlayerStats.runOver(server);

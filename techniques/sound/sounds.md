@@ -85,6 +85,14 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
 - **Music:** the match-end music was traced through the music-director graphs (0D3B, 1B47):
   [sounds-round8](../../tools/reference/sounds-round8.md), [music-round9](../../tools/reference/music-round9.md). Its
   streams are 12-channel Opus and need a stereo downmix.
+  - **A music cue's sections come from its Wwise playlist** (the dragon's end phase, #45): `wwmusic.py <musicbanks.json>
+    event <id>` prints each segment's duration, entry/exit markers and its track's play-at and trims. Source time =
+    segment time - play-at; a section runs from its entry cue to where its track ends, and the next one starts at its
+    exit cue while its tail rings on. The soundmap cuts them with `@-<start>~<end>` and folds the 12 channels
+    (`DOWNMIX_12`); a looping section gets its own tail laid over its start so Minecraft's file loop rings through, and
+    the client (`EndMusic`) starts the loop at the intro's exit cue by the clock. `sounds --only <prefix>` adds such
+    events to the pack without rebuilding the rest. A long music event is `| stream` (it starts at once, unlike a
+    static buffer decoded whole). The worked cut: [kiriko.txt](../../tools/soundmaps/kiriko.txt)'s end-phase lines.
 - **Ranges come through the volume** (Lifeweaver, 2026-10-29): `sounds.json` sets none, and a volume over 1 only
   widens Minecraft's 16 blocks without making it louder. `HeroSounds.split(..., metres)` and `HeroSounds.at(...)` pass
   the game copy's range as metres / 16; client loops do the same (`LifeweaverSounds.on`).

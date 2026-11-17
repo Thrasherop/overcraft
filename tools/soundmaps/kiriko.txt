@@ -21,6 +21,19 @@ announcer.potg = ExtraSounds/Announcer/00000000A8C4.0B2-Play of the game..ogg
 music.endtrack = ExtraSounds/MusicScan/Scan/Sounds/0000000069C1.02C/0000002B13E8.03F.ogg
 @music.victory = music.endtrack@-4.93
 @music.potg = music.endtrack@-15.28
+# The end phase (#45, the owner: "when a team is about to win, a song plays to hint at it ... Starting quiet at 1/3 health"):
+# Overwatch's overtime cue, effect 30C9 on message 075E (music-round9, H): STUSound 69B7 (bank 1E6EF), stream 2A7946
+# (83.16 s, 12-channel Opus, folded to stereo by DOWNMIX_12). Its Wwise playlist (wwmusic.py, event 50917017, H): a
+# 15.64 s intro segment whose track plays the source from 0.382 s (its entry cue at 0.214 s = source 0.596 s, its exit cue
+# at 13.929 s = source 14.311 s, the track running on to source 15.963 s), then a 65.08 s segment looped for ever (source
+# from 18.076 s; entry cue 0.107 s = source 18.176 s, exit cue 61.821 s = source 79.890 s, on to the end, 83.143 s). Wwise
+# starts each next pass at the exit cue while the last one's tail (past its exit) rings on. So: the intro from its entry
+# to its end, tail kept (EndMusic starts the loop 13.714 s in, at its exit cue); the loop from its entry to its exit, with
+# its own tail (79.890 s on) laid over its start, so Minecraft's seamless loop of the file rings each pass into the next.
+# Extracted offline 2026-11-17 (kiriko-sounds' extract_banks.py "EndPhase=69B8,69B7,69C3,5220,5B26,5B27").
+music.overtime = ExtraSounds/EndPhase/EndPhase/Sounds/0000000069B7.02C/0000002A7946.03F.ogg
+@music.overtime_intro = music.overtime@-0.596~15.963 | stream
+@music.overtime_loop = music.overtime@-18.176~79.890 + music.overtime@-79.890 | stream
 
 # ===== How each game event is put together (build_asset_pack.py sounds). Minecraft plays one file per sound event, so
 # the layers Overwatch plays together are mixed into one file per variant, at build time:
