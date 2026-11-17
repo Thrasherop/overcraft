@@ -4,6 +4,20 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-17: 0.3.74 on next (not on main yet)
+
+- **Ashe (#137):** pick her from the select screen. The Viper from the hip (35, spread building over sustained fire) and
+  aimed down its sights on the right button (75, zoomed, slower walk); shell-by-shell reload; Coach Gun (Shift) blasts
+  enemies back and launches her; Dynamite (E) lands, burns and goes off 2 s later or when shot; B.O.B. (Q) charges in,
+  knocks enemies up and fires for 10 s, and mobs go after him; quick melee. Her perks: Remote Detonator, Double-Barreled,
+  Viper's Sting, Airburst. Her model, Viper and Coach Gun, her sounds and voice, and her effects come from your install.
+  Played: picked from the select screen, after a death and on rejoin; H to switch away and back; G out and back; every
+  button against husks, zombies, skeletons and a drowned, in the day, at night and underwater; damage read against her
+  numbers; two perks each tier. Fixed while playing: the held scope dropped the Viper to the hip; her sounds weren't in
+  the pack. Fixed from a critic's read: hip spread never built up, the scoped shot cut other animations, G twice reset
+  Double-Barreled's cooldown, and five smaller ones.
+  Not tried yet: a second player seeing her, the Nether, boats, Airburst.
+
 ## 2026-11-17: 0.3.73 on next (not on main yet)
 
 - **Junkrat's mine goes off when you click detonate mid-throw (#153):** a right click while the mine was still leaving his
