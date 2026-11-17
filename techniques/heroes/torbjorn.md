@@ -101,5 +101,14 @@ ult's 0.75 s cast (D #370; W 0.592) and 6.5 slag a second (D #382; W 0.144 s hel
 it reaches the server's kit). Seen, not his: after Save and Leave and Open world, the select screen came up with Kiriko chosen and
 Torbjörn only underlined; READY played Kiriko.
 
-**Not shown / not tried:** a critic; an Overwatch side by side; Hammer Time and Anchor Bolts in play (coded); slopes, water, ladders, the
+**Perks played, 2026-11-17** (perks picked in the Left Alt menu with the real mouse; speeds from the harness's velocity, 0.15 s
+samples while holding the real W / S):
+- **Hammer Time:** the gun 5.5 m/s forward; the hammer out (key 2) 6.6 m/s forward (+20 %) and 5.94 back (x0.9, our back-pedal);
+  with Overload (E) on top 7.42 back = 5.5 x 1.5 x 0.9, the two adding as Overwatch's buffs do. ✓
+- **Anchor Bolts:** thrown (Shift) at a stone wall 8 m off, it held there 1 m up, but **stood upright against the wall** and,
+  with the wall under it removed, **hung in the air** (both reproduced). Fixed: it's a SurfaceStuck now (the face synced), drawn
+  with its base on the face and its front swivelling toward its aim in the face's plane; its gun is reckoned out from the face;
+  the block behind it gone, it lets go and falls as a grounded one does.
+
+**Not shown / not tried:** a critic; an Overwatch side by side; slopes, water, ladders, the
 Nether; a second player; the dragon; emotes and the Heroic intro.

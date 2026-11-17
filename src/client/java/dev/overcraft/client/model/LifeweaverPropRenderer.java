@@ -39,6 +39,9 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 		net.minecraft.core.@Nullable Direction face;
 		float width;
 		float height;
+		/** It turns to aim (Torbjörn's turret): bolted to a wall or a ceiling it swivels about the face's normal, toward its aim. */
+		boolean swivel;
+		float xRot;
 	}
 
 	private final String model;
@@ -208,6 +211,8 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 	public void extractRenderState(T entity, State state, float partialTicks) {
 		super.extractRenderState(entity, state, partialTicks);
 		state.yRot = entity.getYRot(partialTicks);
+		state.xRot = entity.getXRot(partialTicks);
+		state.swivel = entity instanceof dev.overcraft.entity.TurretEntity;
 		state.loaded = HeroModels.get(model);
 		state.lift = 0;
 		state.partialTick = partialTicks;
@@ -238,7 +243,24 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 			poseStack.pushPose();
 			poseStack.translate(0, state.lift, 0);
 			// the models face +Z, like the heroes'
-			if (state.face != null && state.face.getAxis().isHorizontal()) {
+			if (state.face != null && state.swivel) {
+				// Anchor Bolts (play 2026-11-17: it stood upright against the wall): its base on the face, its up out of it, its front
+				// (+Z) toward its aim laid onto the face's plane, as its head would swivel on a base bolted there
+				org.joml.Vector3f n = new org.joml.Vector3f(state.face.getStepX(), state.face.getStepY(), state.face.getStepZ());
+				float half = state.face.getAxis().isVertical() ? state.height / 2 : state.width / 2;
+				poseStack.translate(-n.x * half, state.height / 2 - n.y * half, -n.z * half);
+				float yaw = (float) Math.toRadians(state.yRot), pitch = (float) Math.toRadians(state.xRot);
+				org.joml.Vector3f aim = new org.joml.Vector3f(-(float) Math.sin(yaw) * (float) Math.cos(pitch), -(float) Math.sin(pitch),
+					(float) Math.cos(yaw) * (float) Math.cos(pitch));
+				org.joml.Vector3f front = new org.joml.Vector3f(aim).sub(new org.joml.Vector3f(n).mul(aim.dot(n)));
+				if (front.lengthSquared() < 1e-4f) {
+					// aiming straight out of the face: any way along it (up the wall; on a ceiling, its yaw)
+					front.set(n.y == 0 ? 0 : -(float) Math.sin(yaw), n.y == 0 ? 1 : 0, n.y == 0 ? 0 : (float) Math.cos(yaw));
+				}
+				front.normalize();
+				org.joml.Vector3f side = new org.joml.Vector3f(n).cross(front).normalize();
+				poseStack.mulPose(new org.joml.Matrix4f().set3x3(new org.joml.Matrix3f(side, n, front)));
+			} else if (state.face != null && state.face.getAxis().isHorizontal()) {
 				// on a wall (#154, the owner: Illari's pylon "on a wall is straight up instead of tangent to the surface"): its base
 				// on the face (the entity stands its half width out, half its height down), its up out of the wall. It already
 				// faces out (HealingPylonEntity's yaw); a quarter turn about its side takes its up onto its front

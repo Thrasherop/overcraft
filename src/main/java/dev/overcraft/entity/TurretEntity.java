@@ -44,7 +44,7 @@ import static dev.overcraft.torbjorn.TorbjornStats.*;
  * builds, aims and fires here. Nobody heals it but his hammer (Combat.heal). Saved with its chunk; one that isn't the turret he has
  * out goes ({@link Torbjorn#stillHis}).
  */
-public class TurretEntity extends Mob implements OwnableEntity {
+public class TurretEntity extends Mob implements OwnableEntity, SurfaceStuck {
 	/** Its states (synced: the renderer's clips). */
 	public static final int FLYING = 0, BUILDING = 1, BUILT = 2, UPGRADING = 3, LEVEL3 = 4;
 	private static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(TurretEntity.class, EntityDataSerializers.INT);
@@ -52,6 +52,8 @@ public class TurretEntity extends Mob implements OwnableEntity {
 	private static final EntityDataAccessor<Integer> SHOT_AT = SynchedEntityData.defineId(TurretEntity.class, EntityDataSerializers.INT);
 	/** Its owner's entity id for clients (-1: none online): the owner's UUID stays on the server; his HUD shows its health (#146). */
 	private static final EntityDataAccessor<Integer> OWNER_ENTITY = SynchedEntityData.defineId(TurretEntity.class, EntityDataSerializers.INT);
+	/** Anchor Bolts: the face it's bolted to (SurfaceStuck), synced so it's drawn with its base on it; -1 on the ground. */
+	private static final EntityDataAccessor<Integer> FACE = SynchedEntityData.defineId(TurretEntity.class, EntityDataSerializers.INT);
 	private static final net.minecraft.resources.Identifier L3_HEALTH_ID = dev.overcraft.Overcraft.id("turret_level3");
 
 	private @Nullable UUID ownerId;
@@ -91,6 +93,7 @@ public class TurretEntity extends Mob implements OwnableEntity {
 		builder.define(STATE_AT, 0);
 		builder.define(SHOT_AT, -1000);
 		builder.define(OWNER_ENTITY, -1);
+		builder.define(FACE, -1);
 	}
 
 	public int state() {
@@ -183,6 +186,13 @@ public class TurretEntity extends Mob implements OwnableEntity {
 			fly(level, owner);
 			return;
 		}
+		net.minecraft.core.Direction face = stuckFace();
+		if (stuck && face != null && surfaceGone(face)) {
+			// the block it was bolted to went: it falls and lands as any turret (play 2026-11-17: it hung in the air)
+			stuck = false;
+			setNoGravity(false);
+			entityData.set(FACE, -1);
+		}
 		if (!stuck && !onGround()) {
 			// the ground under it went (ours: it falls again, as it does from a broken platform: W)
 			flight = flight.add(0, -Ow.accel(TURRET_GRAVITY), 0);
@@ -239,7 +249,11 @@ public class TurretEntity extends Mob implements OwnableEntity {
 		flight = flight.add(0, -Ow.accel(TURRET_GRAVITY), 0);
 		move(MoverType.SELF, flight);
 		if (anchored && (horizontalCollision || verticalCollision && flight.y > 0)) {
-			// Anchor Bolts: it holds where it touched a wall or a ceiling (D 16C5 #465's attach fields under 2502)
+			// Anchor Bolts: it holds where it touched a wall or a ceiling (D 16C5 #465's attach fields under 2502), its base on that
+			// face (play 2026-11-17: it stood upright against the wall)
+			net.minecraft.core.Direction face = horizontalCollision
+				? net.minecraft.core.Direction.getApproximateNearest(-flight.x, 0, -flight.z) : net.minecraft.core.Direction.DOWN;
+			entityData.set(FACE, SurfaceStuck.encode(face));
 			stuck = true;
 			setNoGravity(true);
 			land(level);
@@ -277,7 +291,32 @@ public class TurretEntity extends Mob implements OwnableEntity {
 
 	/** Its gun, where its shots start. */
 	public Vec3 gun() {
-		return position().add(0, TURRET_GUN_UP, 0);
+		net.minecraft.core.Direction face = stuckFace();
+		if (face == null) {
+			return position().add(0, TURRET_GUN_UP, 0);
+		}
+		// bolted to a wall or a ceiling: its gun as far out from the face as it stands up from the ground
+		Vec3 n = Vec3.atLowerCornerOf(face.getUnitVec3i());
+		return base(face).add(n.scale(TURRET_GUN_UP));
+	}
+
+	@Override
+	public net.minecraft.core.@Nullable Direction stuckFace() {
+		return SurfaceStuck.decode(entityData.get(FACE));
+	}
+
+	/** Where its base meets the face it's bolted to: the box's centre, back half its size along the face's normal. */
+	private Vec3 base(net.minecraft.core.Direction face) {
+		Vec3 n = Vec3.atLowerCornerOf(face.getUnitVec3i());
+		double half = face.getAxis().isVertical() ? getBbHeight() / 2 : getBbWidth() / 2;
+		return getBoundingBox().getCenter().subtract(n.scale(half));
+	}
+
+	/** Whether the block it's bolted to went (mined, blown up): ours, as Widowmaker's mine and hook let go then. */
+	private boolean surfaceGone(net.minecraft.core.Direction face) {
+		Vec3 n = Vec3.atLowerCornerOf(face.getUnitVec3i());
+		net.minecraft.core.BlockPos behind = net.minecraft.core.BlockPos.containing(base(face).subtract(n.scale(0.15)));
+		return level().getBlockState(behind).getCollisionShape(level(), behind).isEmpty();
 	}
 
 	private boolean canShoot(ServerLevel level, ServerPlayer owner, LivingEntity e) {
@@ -442,6 +481,7 @@ public class TurretEntity extends Mob implements OwnableEntity {
 		}
 		output.putInt("TurretState", state() == FLYING ? BUILDING : state() == UPGRADING || state() == LEVEL3 ? BUILT : state());
 		output.putBoolean("TurretStuck", stuck);
+		output.putInt("TurretFace", entityData.get(FACE));
 	}
 
 	@Override
@@ -451,6 +491,7 @@ public class TurretEntity extends Mob implements OwnableEntity {
 		ownerId = owner == null ? null : owner.getUUID();
 		setState(input.getIntOr("TurretState", BUILT));
 		stuck = input.getBooleanOr("TurretStuck", false);
+		entityData.set(FACE, stuck ? input.getIntOr("TurretFace", -1) : -1);
 		setNoGravity(stuck);
 		var max = getAttribute(Attributes.MAX_HEALTH);
 		if (max != null) {
