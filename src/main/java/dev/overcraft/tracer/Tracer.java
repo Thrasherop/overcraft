@@ -127,6 +127,29 @@ public final class Tracer implements HeroKit {
 		return s.tracerBlinks > 0 && s.tracerRecall < 0 && !asleep && !silenced && !passenger;
 	}
 
+	/**
+	 * A move packet that is one of her Blinks (#152, reproduced 2026-11-16: a Blink over a one-block bump put her back where
+	 * she started, "moved wrongly"). Her client moves her along the Blink's path (up over the bump, down again), but Minecraft's
+	 * server replays a move as one straight sweep, axis by axis, ran into the bump and set her back. A move that could be a
+	 * Blink (Tracer in play with a charge, or one just spent; within its 7.5 m and its step up) gets Minecraft's own impulse
+	 * grace for that move, as a wind charge's does; the server still refuses one that ends inside a block.
+	 */
+	public static void beforeMove(ServerPlayer player, Vec3 to) {
+		HeroState s = HeroManager.state(player);
+		if (s == null || s.hero != Hero.TRACER || !HeroManager.inHeroPlay(player)) {
+			return;
+		}
+		Vec3 from = player.position();
+		double level = Math.hypot(to.x - from.x, to.z - from.z);
+		if (level < 1 || level > BLINK_DISTANCE + 0.5 || Math.abs(to.y - from.y) > BLINK_STEP * 2) {
+			return;
+		}
+		long now = player.level().getGameTime();
+		if (s.tracerBlinks > 0 || now - s.tracerBlinkAt <= Ow.ticks(0.25)) {
+			player.applyPostImpulseGraceTime(1);
+		}
+	}
+
 	/** The Blinks her client made that the server hasn't seen yet: its presses sent less those seen (mod 256, as synced). */
 	public static int pending(int sent, int seen) {
 		return (sent - seen) & 0xFF;
@@ -166,7 +189,8 @@ public final class Tracer implements HeroKit {
 		player.resetFallDistance();
 		Combat.animate(player, "blink");
 		ServerLevel level = player.level();
-		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, player.getX(), player.getY() + 1, player.getZ(), 12, 0.25, 0.5, 0.25, 0.1);
+		// her Blink's look 018F / 0190 (TracerFx)
+		Effects.play(level, "tracer_blink", player.position(), Vec3.ZERO, player, 0, player);
 	}
 
 	// ---- Recall (001A) ----
@@ -224,7 +248,8 @@ public final class Tracer implements HeroKit {
 		Combat.animate(player, "recall");
 		TracerSounds.own(player, "recall.start");
 		TracerSounds.split(player, "recall.rewind", player.position(), 70);
-		player.level().sendParticles(ParticleTypes.REVERSE_PORTAL, player.getX(), player.getY() + 1, player.getZ(), 30, 0.3, 0.6, 0.3, 0.05);
+		// where she leaves (00BA: TracerFx)
+		Effects.play(player.level(), "tracer_recall_start", player.position(), Vec3.ZERO, player, 0, player);
 	}
 
 	private static void recall(ServerPlayer player, HeroState s, long now) {
@@ -253,7 +278,8 @@ public final class Tracer implements HeroKit {
 				// a tenth of what it gave back as ult charge (D #147 STU_008D30B1 x0.1, M)
 				Combat.addUltCharge(player, (Ow.toOw(player.getHealth()) - before) * RECALL_ULT_SHARE);
 			}
-			player.level().sendParticles(ParticleTypes.REVERSE_PORTAL, s.tracerRecallTo.x, s.tracerRecallTo.y + 1, s.tracerRecallTo.z, 30, 0.3, 0.6, 0.3, 0.05);
+			// where she arrives (00BB: TracerFx)
+			Effects.play(player.level(), "tracer_recall_end", s.tracerRecallTo, Vec3.ZERO, player, 0, player);
 		} else if (s.tracerHold != null && player.position().distanceToSqr(s.tracerHold) > 0.25) {
 			// held still (her client does it; this is for what moves her there anyway: water, a piston)
 			player.connection.teleport(new PositionMoveRotation(s.tracerHold, Vec3.ZERO, 0, 0), java.util.Set.of(Relative.X_ROT, Relative.Y_ROT));
@@ -431,8 +457,8 @@ public final class Tracer implements HeroKit {
 				killed |= !e.isAlive();
 			}
 		}
-		level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y, at.z, 1, 0, 0, 0, 0);
-		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, at.x, at.y, at.z, 40, 1.2, 1.2, 1.2, 0.3);
+		// the blast 0153 (TracerFx)
+		Effects.play(level, "tracer_bomb_blast", at, Vec3.ZERO, null, 0, owner);
 		TracerSounds.all(level, "pulse_bomb.explode", at, 200);
 		if (killed && owner.isAlive()) {
 			// "Kaboom!" (0034 #394 -> #372: a kill by the bomb)
@@ -569,10 +595,16 @@ public final class Tracer implements HeroKit {
 					bestDist = hit.get().distanceToSqr(eye);
 				}
 			}
-			// the stand-in look: a spark from her pistol (left, then right) to where the bullet ended
+			// her shot's look (#150, tools/reference/tracer-effects.md): the line 002C from her pistol (left, then right) to where
+			// the bullet ended, then the world hit 0114 on a block, or a flash on a creature (her data's creature hit is empty)
 			Vec3 muzzle = fromEyes(player, i == 0 ? -MUZZLE_SIDE : MUZZLE_SIDE, MUZZLE_UP, MUZZLE_AHEAD);
 			Vec3 stop = best != null ? bestAt : block;
-			trail(level, muzzle, stop);
+			Effects.play(level, "tracer_shot", muzzle, stop.subtract(muzzle), player, 0, player);
+			if (best != null) {
+				Effects.play(level, "tracer_hit", stop, Vec3.ZERO, player, 0, player);
+			} else if (blockHit.getType() == HitResult.Type.BLOCK) {
+				Effects.play(level, "tracer_hit_block", stop, Vec3.atLowerCornerOf(blockHit.getDirection().getUnitVec3i()), player, 0, player);
+			}
 			if (best == null) {
 				if (blockHit.getType() == HitResult.Type.BLOCK && wall == null) {
 					wall = block;
@@ -609,17 +641,6 @@ public final class Tracer implements HeroKit {
 				Effects.hitMarker(player, target, h.crit);
 			}
 		}
-	}
-
-	private static void trail(ServerLevel level, Vec3 from, Vec3 to) {
-		Vec3 d = to.subtract(from);
-		double len = d.length();
-		int n = (int) Math.min(12, Math.max(1, len / 1.5));
-		for (int k = 1; k <= n; k++) {
-			Vec3 p = from.add(d.scale(k / (double) n * Math.min(1, 18 / Math.max(len, 1e-3))));
-			level.sendParticles(ParticleTypes.ELECTRIC_SPARK, p.x, p.y, p.z, 1, 0, 0, 0, 0);
-		}
-		level.sendParticles(ParticleTypes.CRIT, to.x, to.y, to.z, 1, 0, 0, 0, 0);
 	}
 
 	/** A point from her eyes in her look's frame (right, up, ahead), or her eyes when a wall is between. */

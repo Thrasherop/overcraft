@@ -18,6 +18,15 @@ public abstract class ServerMoveMixin {
 	@Shadow
 	public ServerPlayer player;
 
+	/** Tracer's Blink: the server's straight replay of her move mustn't set her back (#152, Tracer.beforeMove). */
+	@Inject(method = "handleMovePlayer", at = @At("HEAD"))
+	private void overcraft$blink(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
+		if (packet.hasPosition() && player.level().getServer().isSameThread()) {
+			dev.overcraft.tracer.Tracer.beforeMove(player, new net.minecraft.world.phys.Vec3(packet.getX(player.getX()),
+				packet.getY(player.getY()), packet.getZ(player.getZ())));
+		}
+	}
+
 	@Inject(method = "handleMovePlayer", at = @At("RETURN"))
 	private void overcraft$moved(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
 		dev.overcraft.sojourn.Railgun.moved(player);

@@ -47,7 +47,7 @@ public final class DvaCallView {
 	}
 
 	/** Where the view is and how it's turned while her clip runs: {x, y, z, yaw, pitch}, or null for Minecraft's own. */
-	public static double @Nullable [] camera(LocalPlayer player, float partialTicks) {
+	public static double @Nullable [] camera(net.minecraft.client.player.AbstractClientPlayer player, float partialTicks) {
 		Minecraft mc = Minecraft.getInstance();
 		float now = (player.level().getGameTime() + partialTicks) / 20f;
 		// (a pose from the future is stale too: a rejoin into a world whose clock is behind the last one's)
@@ -97,7 +97,7 @@ public final class DvaCallView {
 	 * The view pulled in along the ray from her eyes where a block is in the way, as Minecraft's third person is (Camera's
 	 * getMaxZoom: 0.1 m off the face): a wall at her back, a ledge's block (the critic of 83b6bfa, #133).
 	 */
-	private static Vec3 inOpenAir(LocalPlayer player, Vec3 eye, Vec3 want) {
+	private static Vec3 inOpenAir(net.minecraft.client.player.AbstractClientPlayer player, Vec3 eye, Vec3 want) {
 		Vec3 to = want.subtract(eye);
 		double length = to.length();
 		if (length < 1.0E-4) {
@@ -120,7 +120,7 @@ public final class DvaCallView {
 	}
 
 	/** How black the screen is (0-1): in as she reaches the cockpit, held to the link, out as the mech's view comes up. */
-	public static float fade(LocalPlayer player, float partialTicks) {
+	public static float fade(net.minecraft.client.player.AbstractClientPlayer player, float partialTicks) {
 		Minecraft mc = Minecraft.getInstance();
 		if (!firstPerson(mc)) {
 			return 0;
@@ -139,7 +139,7 @@ public final class DvaCallView {
 	}
 
 	/** Her called mech, falling in (this client's copy). */
-	private static @Nullable DvaMechEntity mech(LocalPlayer player) {
+	private static @Nullable DvaMechEntity mech(net.minecraft.client.player.AbstractClientPlayer player) {
 		for (DvaMechEntity m : player.level().getEntitiesOfClass(DvaMechEntity.class, new AABB(player.blockPosition()).inflate(8))) {
 			if (m.kind() == DvaMechEntity.CALL && m.ownerId() == player.getId()) {
 				return m;

@@ -40,7 +40,8 @@ public class HypersphereEntity extends OwProjectile {
 
 	@Override
 	public float hitRadius() {
-		return (float) SigmaStats.SPHERE_SIZE / 2;
+		// a radius (#163: halved, it hit at half its size)
+		return (float) SigmaStats.SPHERE_SIZE;
 	}
 
 	@Override

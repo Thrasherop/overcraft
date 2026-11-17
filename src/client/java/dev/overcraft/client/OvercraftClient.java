@@ -54,7 +54,18 @@ public class OvercraftClient implements ClientModInitializer {
 			(payload, context) -> dev.overcraft.client.hud.ConspiratorHud.receive(payload));
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.DeadeyePayload.TYPE,
 			(payload, context) -> dev.overcraft.client.hud.DeadeyeHud.receive(payload));
-		ClientPlayNetworking.registerGlobalReceiver(VictoryPayload.TYPE, (payload, context) -> VictoryHud.show());
+		// not during a showing: a replayed dragon kill carries its own VICTORY, which restarted the music mid-POTG (#161)
+		// an operator's /changehero with no hero (#165): the select screen, a free pick wherever they are
+		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.OpenSelectPayload.TYPE, (payload, context) -> {
+			if (!dev.overcraft.client.ClientPotg.active()) {
+				net.minecraft.client.Minecraft.getInstance().gui.setScreen(new dev.overcraft.client.HeroSelectScreen(false));
+			}
+		});
+		ClientPlayNetworking.registerGlobalReceiver(VictoryPayload.TYPE, (payload, context) -> {
+			if (!dev.overcraft.client.ClientPotg.active()) {
+				VictoryHud.show();
+			}
+		});
 		// a Mercy resurrected us: respawn as the death screen's button does (the server puts us back where we fell)
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.GripPayload.TYPE, (payload, context) ->
 			ClientLifeweaver.onGrip(payload));
@@ -68,6 +79,12 @@ public class OvercraftClient implements ClientModInitializer {
 			ClientHero.playOwn(Identifier.parse(payload.sound()), payload.volume(), payload.pitch(), payload.seed())));
 		// Mercy's beams follow her staff and their targets frame by frame, before the effects are drawn
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.MercyFx.frame());
+		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.DvaFx.frame());
+		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.IllariFx.frame());
+		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.TorbjornFx.frame());
+		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.CassidyFx.frame());
+		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.PharahFx.frame());
+		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.JunkratFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.client.effect.LifeweaverFx.frame());
 		LevelRenderEvents.COLLECT_SUBMITS.register(Fx::render);
 		LevelRenderEvents.COLLECT_SUBMITS.register(context -> dev.overcraft.hero.PressTrace.frame());
@@ -198,15 +215,18 @@ public class OvercraftClient implements ClientModInitializer {
 			"blossom", 0.6f, false, 1, true));
 		EntityRendererRegistry.register(OcEntities.THORN, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"thorn", 0.3f, false, 1, true));
-		// Ana's dart: its model 11741 isn't exported yet: the item stands in (her effects are a later step)
+		// Ana's: all three fell back to Minecraft's items (arrow, splash potion). The shot's model 11741 and the grenade's 11763
+		// (hero_models/projectile_*.glb); the sleep dart's model is 11740, the chambered dart already in the pack as ana_dart (ana-effects H)
 		EntityRendererRegistry.register(OcEntities.ANA_DART, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"ana_dart", 0.3f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.SLEEP_DART, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
-			"sleep_dart", 0.3f, false, 1, false));
+			"=ana_dart", 0.3f, false, 1, false));
+		// (the grenade's entity 1426: -720 a second, D, its role M)
 		EntityRendererRegistry.register(OcEntities.BIOTIC_GRENADE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
-			"biotic_grenade", 0.4f, false, 1, false));
+			"biotic_grenade", 0.4f, false, 1, false).tumbling(-720));
+		// the beacon, model 10518 (hero_models/sombra_beacon.glb, not projectile_*: it drew an ender eye, #87); upright, tumbling as 1575 says
 		EntityRendererRegistry.register(OcEntities.TRANSLOCATOR, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
-			"sombra_beacon", 0.4f, false, 1, false));
+			"=sombra_beacon", 0.4f, false, 1, false).upright().tumbling(-720));
 		EntityRendererRegistry.register(OcEntities.CYBERSPACE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"sombra_cyberspace", 0.4f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.PETAL_THROW, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
@@ -236,6 +256,14 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.STEEL_TRAP, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"junkrat_trap", 0.5f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.RIP_TIRE, dev.overcraft.client.model.LifeweaverPropRenderer::tire);
+		// Torbjörn's rivets, pellets and slag: no models in his data (effects only), the items stand in; his turret (1000C)
+		EntityRendererRegistry.register(OcEntities.RIVET, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"torbjorn_rivet", 0.25f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.TORBJORN_PELLET, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"torbjorn_pellet", 0.12f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.SLAG, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
+			"torbjorn_slag", 0.4f, false, 1, false));
+		EntityRendererRegistry.register(OcEntities.TURRET, dev.overcraft.client.model.LifeweaverPropRenderer::turret);
 		// Illari's Healing Pylon (134D8) and Captive Sun's ball (10BAE)
 		EntityRendererRegistry.register(OcEntities.HEALING_PYLON, dev.overcraft.client.model.LifeweaverPropRenderer::pylon);
 		EntityRendererRegistry.register(OcEntities.CAPTIVE_SUN, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
@@ -254,7 +282,11 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.ACCRETION, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"=sigma_rock", 1.2f, false, 1, false));
 
+		// under everything: Sombra's stealth tints the view, not the HUD (#87)
+		HudElementRegistry.addFirst(Overcraft.id("stealth_wash"), HeroHud::stealthWash);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Overcraft.id("hero_hud"), HeroHud::render);
+		// a Play of the Game's replay: the viewer is a spectator (no hotbar), the HUD is the scorer's (#155)
+		HudElementRegistry.attachElementAfter(VanillaHudElements.SPECTATOR_MENU, Overcraft.id("hero_hud_potg"), HeroHud::renderFollowed);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Overcraft.id("rush_view"), HeroHud::rushView);
 		// over everything else, in either mode
 		HudElementRegistry.addLast(Overcraft.id("victory"), VictoryHud::render);

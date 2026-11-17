@@ -87,9 +87,7 @@ public final class Boosters {
 		}
 		hits(player, s);
 		ServerLevel level = player.level();
-		// stand-in thrusters: small flames low on her back (big ones filled the third-person camera: found playing)
-		Vec3 back = player.position().add(0, 0.9, 0).subtract(Vec3.directionFromRotation(0, player.getYRot()).scale(0.6));
-		level.sendParticles(ParticleTypes.SMALL_FLAME, back.x, back.y, back.z, 2, 0.15, 0.1, 0.15, 0.005);
+		// her thrusters' flames and trails (1492) are her clients' (DvaFx, from her synced boosting state)
 		if (DvaPerks.boostersLeft(s) <= 0) {
 			end(player, s);
 		}

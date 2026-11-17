@@ -47,6 +47,8 @@ public final class HeroModels {
 	 * torii, Jetpack Cat's rings and cones: Fx.mesh) load only from this list.
 	 */
 	private static final List<String> EXTRAS = List.of("kitsune", "projectile_kunai", "projectile_ofuda", "projectile_suzu", "torii",
+		// D.Va's Defense Matrix (dva-effects.md): the field's tube, its ring frame, the pulse ring
+		"dva_matrix_tube", "dva_matrix_frame", "dva_matrix_pulse", "dva_sd_ring", "dva_missile_ball", "tracer_recall_ring",
 		"cat_torus", "cat_cone", "cat_sphere", "cat_purr_torus", "cat_purr_wall", "cat_half_ring", "cat_bubble",
 		// the rest of #59: her flame tube, the cast's bell, the head slash's arc and dome
 		"cat_flame", "cat_bell", "cat_slash_arc", "cat_dome",
@@ -56,6 +58,8 @@ public final class HeroModels {
 		"lw_flower_ring", "lw_bud", "lw_flower",
 		// Sombra's Translocator beacon (model 10518)
 		"sombra_beacon",
+		// Ana's unscoped dart (model 11741) and Biotic Grenade (model 11763)
+		"projectile_ana_dart", "projectile_biotic_grenade",
 		// Brigitte's effects' meshes (BrigitteFx): the swing arcs, the shield's outline, the half dome, the band, Inspire's
 		// ring, the shard, the whip head's ring, Rally's ground ring
 		"brigitte_swing_arc", "brigitte_swing_arc_back", "brigitte_shield_plate", "brigitte_dome", "brigitte_band", "brigitte_ring",
@@ -74,10 +78,22 @@ public final class HeroModels {
 		// Junkrat's frag (118EA; the Total Mayhem bombs the same), mine (10093), trap (100DC: in flight, and the set trap's jaws 103B;
 		// the set trap's own 29B2 exports empty) and tire (118D8)
 		"projectile_junkrat_frag", "projectile_junkrat_mine", "projectile_junkrat_trap", "junkrat_tire",
+		// Torbjörn's Forge Hammer (EED9, entity 01BC) and turret (1000C, pet 28B7)
+		"torbjorn_hammer", "torbjorn_turret",
 		// Illari's Healing Pylon (134D8) and Captive Sun's ball (10BAE)
 		"illari_pylon", "projectile_illari_sun",
 		// Ashe's Viper (1079F, her held weapon: weapon()), Coach Gun (107A0), Dynamite (107A8) and B.O.B. (10800)
-		"ashe_viper", "ashe_coach_gun", "projectile_ashe_dynamite", "ashe_bob");
+		"ashe_viper", "ashe_coach_gun", "projectile_ashe_dynamite", "ashe_bob",
+		// Torbjorn's effects' meshes (TorbjornFx): the rivet and pellet slugs, the pellet hit's shard, the pool's lava blobs, the slag's
+		// blob, the burn's rings, the forming dome, the cast's hemisphere
+		"torb_rivet", "torb_pellet", "torb_hit_shard_mesh", "torb_lava_a", "torb_lava_b_mesh", "torb_lava_c", "torb_slag_blob",
+		"torb_burn_ring_mesh", "torb_burn_ring_b", "torb_dome", "torb_hemisphere",
+		// Cassidy's effects' meshes (CassidyFx): the muzzle's flash cone and ring (057A)
+		"cassidy_muzzle_cone", "cassidy_muzzle_ring",
+		// Pharah's effects' meshes (PharahFx): Concussive's swirl, ground wave disc and shell, the jumps' ring disc
+		"pharah_conc_swirl", "pharah_disc", "pharah_sphere", "pharah_jet_disc",
+		// Junkrat's effects' meshes (JunkratFx): the launch's burst, Nitro Boost's flare
+		"jr_muzzle_burst", "jr_nitro_flare");
 	private static final Map<String, Loaded> EXTRA_MODELS = new HashMap<>();
 	private static final List<Identifier> REGISTERED = new ArrayList<>();
 	/** Bigger images are halved until they fit: a 4096 texture per material is a lot of video memory for a player. */
@@ -495,6 +511,11 @@ public final class HeroModels {
 
 	/** The hair cards a pack is meant to hold colours for (the other black images are eye shadows and such, not drawn on purpose). */
 	private static final java.util.Set<String> HAIR_CARDS = java.util.Set.of("000000008052");
+	/**
+	 * Hair cards exported white (Illari's gold fan D830, on the other hair shader: its image is white with the strands in the alpha,
+	 * the colour in the material's statics; #144): their colours from hero_models/colour/<material>.png too (tools/glow_maps.py WHITE_HAIR).
+	 */
+	private static final java.util.Set<String> WHITE_HAIR_CARDS = java.util.Set.of("00000000D830");
 
 	/**
 	 * Hair cards exported black (Lúcio's dreads, material 8052: his hair shader colours them and glTF kept only the black image) take their
@@ -503,7 +524,7 @@ public final class HeroModels {
 	private static void colourHair(ResourceManager resources, SkinnedModel model, List<@Nullable NativeImage> images) {
 		for (SkinnedModel.Piece piece : model.pieces) {
 			NativeImage image = piece.image() >= 0 && piece.image() < images.size() ? images.get(piece.image()) : null;
-			if (image == null || piece.material().isEmpty() || !isBlack(image)) {
+			if (image == null || piece.material().isEmpty() || !isBlack(image) && !WHITE_HAIR_CARDS.contains(piece.material())) {
 				continue;
 			}
 			Identifier id = Identifier.tryBuild(Overcraft.MOD_ID, "hero_models/colour/" + piece.material().toLowerCase(java.util.Locale.ROOT) + ".png");

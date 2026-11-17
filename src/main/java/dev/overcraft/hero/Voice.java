@@ -232,6 +232,16 @@ public final class Voice {
 		java.util.Map.entry("junkrat.trap", new Stimulus(60, 1, 1, false)), // 043D (09BB #791)
 		java.util.Map.entry("junkrat.tire_kill", new Stimulus(75, 5, 5, false)), // 0414
 		java.util.Map.entry("junkrat.ultimate", new Stimulus(95, 1, 1, false)), // 184C (0232 #572, the own key F1AC)
+		// Torbjörn's (tools/soundmaps/torbjorn.txt; priorities and cooldowns ours, as Junkrat's like kinds)
+		java.util.Map.entry("torbjorn.nano_boosted", new Stimulus(95, 2, 2, true)),
+		java.util.Map.entry("torbjorn.overload", new Stimulus(60, 2, 5, false)),
+		java.util.Map.entry("torbjorn.turret_build", new Stimulus(60, 10, 15, false)),
+		java.util.Map.entry("torbjorn.turret_upgrade", new Stimulus(60, 5, 10, false)),
+		java.util.Map.entry("torbjorn.turret_destroyed", new Stimulus(60, 5, 10, false)),
+		java.util.Map.entry("torbjorn.turret_kill", new Stimulus(60, 10, 15, false)),
+		java.util.Map.entry("torbjorn.turret_repair", new Stimulus(50, 15, 20, false)),
+		java.util.Map.entry("torbjorn.hammer_kill", new Stimulus(60, 5, 10, false)),
+		java.util.Map.entry("torbjorn.ultimate", new Stimulus(95, 1, 1, false)),
 		// Illari's (tools/soundmaps/illari.txt; her stimuli's .078)
 		java.util.Map.entry("illari.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
 		java.util.Map.entry("illari.pylon", new Stimulus(95, 0.1f, 0.1f, false)), // 13E0 (3DF4 #116)
@@ -391,6 +401,10 @@ public final class Voice {
 			if (state.hero == Hero.JUNKRAT) {
 				// Specialist, Mine Recycling and his mine's kill line
 				dev.overcraft.junkrat.Junkrat.killed(killer, state, blow);
+			}
+			if (state.hero == Hero.TORBJORN) {
+				// Specialist and his hammer's kill line
+				dev.overcraft.torbjorn.Torbjorn.killed(killer, state, blow);
 			}
 			if (state.hero == Hero.DVA) {
 				// her own: Call Mech's "Squished!", the pilot's "No mech? No problem!"

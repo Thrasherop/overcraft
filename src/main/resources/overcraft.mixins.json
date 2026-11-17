@@ -28,7 +28,6 @@
 		"TrackedEntityAccessor",
 		"PotgSendMixin",
 		"PotgFreezeMixin",
-		"PotgDragonMixin",
 		"PotgPickupMixin",
 		"PotgDropMixin",
 		"HealOrHarmMixin",

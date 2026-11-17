@@ -1,0 +1,63 @@
+# T1 Rivet Gun: a direct rivet, a head rivet, the alt up close and far, rate, ammo, reload. Husks NoAI 100 MC (1250 OW), armor 0.
+cmd /gamerule spawn_monsters false
+cmd /difficulty easy
+cmd /time set noon
+cmd /kill @e[type=!player]
+MARK T1a rivet to the chest at 8 m (expected 70 OW = 5.6 MC; ammo 18 -> 17)
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /summon husk 0.5 -60 8.5 {NoAI:1b,Tags:["t1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 8.5 run tp @s ~ ~ ~ ~ ~
+sleep 1
+hp @e[tag=t1,limit=1]
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 1.0
+hp @e[tag=t1,limit=1]
+state
+MARK T1b rivet to the head (expected 140 OW = 11.2 MC more)
+cmd /data merge entity @e[tag=t1,limit=1] {Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 -58.35 8.5 run tp @s ~ ~ ~ ~ ~
+sleep 0.8
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 1.0
+hp @e[tag=t1,limit=1]
+MARK T1c alt at 3 m (expected about 125 OW = 10 MC, ammo -2)
+cmd /data merge entity @e[tag=t1,limit=1] {Health:100f}
+cmd /tp @s 0.5 -60 5.5 0 0
+cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 8.5 run tp @s ~ ~ ~ ~ ~
+sleep 0.8
+key primary_fire down
+sleep 0.1
+key primary_fire up
+sleep 1.0
+hp @e[tag=t1,limit=1]
+state
+MARK T1d alt at 25 m (expected x0.3: 37.5 OW = 3 MC if all land)
+cmd /data merge entity @e[tag=t1,limit=1] {Health:100f}
+cmd /tp @s 0.5 -60 -16.5 0 0
+cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 8.5 run tp @s ~ ~ ~ ~ ~
+sleep 0.8
+key primary_fire down
+sleep 0.1
+key primary_fire up
+sleep 1.5
+hp @e[tag=t1,limit=1]
+MARK T1e rate and reload: hold the left 3 s (expected ~6 shots at 0.51 s), then R (ammo back at 1.0 s, done at 2.0 s)
+cmd /kill @e[type=!player]
+key reload tap
+sleep 2.5
+state
+key secondary_fire down
+sleep 3.0
+key secondary_fire up
+state
+key reload tap
+sleep 0.8
+state
+sleep 0.4
+state
+sleep 1.0
+state

@@ -34,6 +34,11 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		HeroModels.@Nullable Loaded loaded;
 		/** Its flight effect is its look (Lúcio's round: no model, all glow and rings). */
 		boolean drawnByEffect;
+		/** Seconds since it was thrown, for its tumble. */
+		float age;
+		/** The face it's set down on (SurfaceStuck), or null while it flies. */
+		net.minecraft.core.@Nullable Direction face;
+		float height;
 	}
 
 	/** Per model: its rest skin and the turn that lays its longest side along +Z. */
@@ -46,6 +51,9 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 	private final boolean flip;
 	private final float modelScale;
 	private final boolean effectOnly;
+	/** Its tumble in degrees a second, about its own side axis; and whether it keeps its own up instead of its longest side along its flight. */
+	private float tumble;
+	private boolean upright;
 
 	/** {@code flip}: the model's tip points the other way along its long side. */
 	public ProjectileModelRenderer(EntityRendererProvider.Context context, String model, float spriteScale, boolean flip) {
@@ -66,6 +74,38 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		this.effectOnly = effectOnly;
 	}
 
+	/**
+	 * A tumble in degrees a second. D: STUProjectileVisualComponent's {@code m_CC568D8C} on the thrown entities only (beacon 1575 -720,
+	 * Ana's 1426 -720, Suzu 3FD3 200, Sigma's 18B7 500): its role M from what holds it; which axis isn't in the field, ours.
+	 */
+	public ProjectileModelRenderer<T> tumbling(float degreesPerSecond) {
+		tumble = degreesPerSecond;
+		return this;
+	}
+
+	/** Keeps the model's own up and front (round things: the owner's frame 2 shows the beacon's eye on top, its legs below) (measured from the owner's frame). */
+	public ProjectileModelRenderer<T> upright() {
+		upright = true;
+		return this;
+	}
+
+	/**
+	 * Your own projectile, in first person, isn't drawn while it's still at your eye (#151, the owner: "for the first frame
+	 * of shooting kunai, the kunai is super big on the screen"): the server launches it from the eye, so its first frame
+	 * was the model inside the camera. Minecraft's thrown items had the same rule (not drawn for two ticks within 3.5 m
+	 * of the camera); ours applies it to your own only.
+	 */
+	@Override
+	public boolean shouldRender(T entity, net.minecraft.client.renderer.culling.Frustum culler, double camX, double camY,
+								double camZ, float partialTicks) {
+		net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+		if (entity.tickCount < 2 && entity.getOwner() != null && entity.getOwner() == mc.getCameraEntity()
+			&& mc.options.getCameraType().isFirstPerson() && entity.distanceToSqr(camX, camY, camZ) < 3.5 * 3.5) {
+			return false;
+		}
+		return super.shouldRender(entity, culler, camX, camY, camZ, partialTicks);
+	}
+
 	@Override
 	public ThrownItemRenderState createRenderState() {
 		return new State();
@@ -77,6 +117,9 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		State s = (State) state;
 		s.yRot = entity.getYRot(partialTicks);
 		s.xRot = entity.getXRot(partialTicks);
+		s.age = (entity.tickCount + partialTicks) / 20f;
+		s.face = entity instanceof dev.overcraft.entity.SurfaceStuck stuck ? stuck.stuckFace() : null;
+		s.height = entity.getBbHeight();
 		// "=name": a hero model by its own name (Sigma's rock, sigma_rock), else projectile_<name>
 		s.loaded = HeroModels.get(model.startsWith("=") ? model.substring(1) : "projectile_" + model);
 		// the flight effects (trail, glow, sparkles), fed with where it is this frame
@@ -85,6 +128,21 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		switch (entity) {
 			case OfudaEntity ofuda -> KirikoFx.ofudaFlight(ofuda.getId(), at, ofuda.homing(), KirikoFx.enemyOf(ofuda.getOwner()));
 			case KunaiEntity kunai -> KirikoFx.kunaiFlight(kunai.getId(), at, dt, KirikoFx.enemyOf(kunai.getOwner()));
+			case dev.overcraft.entity.PulseBombEntity bomb -> dev.overcraft.client.effect.TracerFx.bombFlight(bomb.getId(), at,
+				bomb.tickCount / 20f, KirikoFx.enemyOf(bomb.getOwner()));
+			case dev.overcraft.entity.CaptiveSunEntity sun -> dev.overcraft.client.effect.IllariFx.ballFlight(sun.getId(), at);
+			case dev.overcraft.entity.DvaMissileEntity missile -> dev.overcraft.client.effect.DvaFx.missileFlight(missile.getId(), at,
+				missile.getDeltaMovement(), dt, KirikoFx.enemyOf(missile.getOwner()));
+			// Torbjorn's: the slag (2509) and his rivets and pellets (2653 / 1865) are their effects (no models in his data)
+			case dev.overcraft.entity.SlagEntity slag -> s.drawnByEffect = dev.overcraft.client.effect.TorbjornFx.slagFlight(slag.getId(), at,
+				slag.getDeltaMovement(), dt, KirikoFx.enemyOf(slag.getOwner()));
+			case dev.overcraft.entity.RivetEntity rivet -> s.drawnByEffect = dev.overcraft.client.effect.TorbjornFx.rivetFlight(rivet.getId(),
+				at, rivet.getDeltaMovement(), s.age, dt, rivet.pellet(), KirikoFx.enemyOf(rivet.getOwner()));
+			// Cassidy's Flashbang: its model and its ribbons 0600
+			case dev.overcraft.entity.FlashbangEntity flash -> dev.overcraft.client.effect.CassidyFx.flashFlight(flash.getId(), at);
+			// Pharah's: her rockets (0078), Concussive Blast (0132), Barrage's and Salvo's mini-rockets (0080) around their model 084C
+			case dev.overcraft.entity.PharahRocketEntity rocket -> dev.overcraft.client.effect.PharahFx.rocketFlight(rocket.getId(), at,
+				rocket.getDeltaMovement(), dt, rocket.kind(), KirikoFx.enemyOf(rocket.getOwner()));
 			case SuzuEntity suzu -> KirikoFx.suzuFlight(suzu.getId(), at, dt, KirikoFx.enemyOf(suzu.getOwner()));
 			case dev.overcraft.entity.SonicEntity sonic -> s.drawnByEffect = dev.overcraft.client.effect.LucioFx.sonicFlight(
 				sonic.getId(), at, sonic.getDeltaMovement(), dt, KirikoFx.enemyOf(sonic.getOwner()));
@@ -108,6 +166,17 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 				sphere.getId(), at, sphere.getDeltaMovement(), dt, sphere.getOwner());
 			case dev.overcraft.entity.AccretionEntity rock -> dev.overcraft.client.effect.SigmaFx.rockFlight(rock.getId(), at, dt,
 				rock.getOwner());
+			// Cyberspace's 7763 has no model (sombra-effects): the cube is its effect (SombraFx.tick), and no shard with it (it fell back to the item)
+			case dev.overcraft.entity.CyberspaceEntity cube -> s.drawnByEffect = dev.overcraft.client.effect.EffectArt.get("sombra_cube_glow",
+				dev.overcraft.client.effect.EffectArt.Palette.SOMBRA_CYBER_CUBE, false) != null;
+			// Junkrat's: the frag's and the bombs' flight (051B / 1792), the mine's blinks (156A), the trap's ribbon and chain (6705 /
+			// 16D5) beside their models (JunkratFx)
+			case dev.overcraft.entity.FragEntity frag -> dev.overcraft.client.effect.JunkratFx.fragFlight(frag, at, dt,
+				KirikoFx.enemyOf(frag.getOwner()));
+			case dev.overcraft.entity.ConcussionMineEntity mine -> dev.overcraft.client.effect.JunkratFx.mineFlight(mine, at,
+				KirikoFx.enemyOf(mine.getOwner()));
+			case dev.overcraft.entity.SteelTrapEntity trap -> dev.overcraft.client.effect.JunkratFx.trapFlight(trap, at,
+				KirikoFx.enemyOf(trap.getOwner()));
 			default -> {
 			}
 		}
@@ -129,6 +198,27 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		}
 		Prepared p = PREPARED.computeIfAbsent(loaded.model(), ProjectileModelRenderer::prepare);
 		poseStack.pushPose();
+		if (s.face != null) {
+			// set down (#154, the owner: the trap on the ground "is like sideways", the mine "in a weird tilt"): its own up along
+			// the face's normal, not its longest side along the way it flew. On the ground it keeps the heading it flew in; on a
+			// wall its front points down the wall. A wall's mine sits half its height down and 0.1 m out (the entity), so it's
+			// drawn back on the face
+			if (s.face == net.minecraft.core.Direction.UP) {
+				poseStack.rotateDegrees(Axis.YP, s.yRot);
+			} else {
+				Vec3 n = Vec3.atLowerCornerOf(s.face.getUnitVec3i());
+				poseStack.translate(-n.x * 0.1, s.height / 2, -n.z * 0.1);
+				poseStack.rotateDegrees(Axis.YP, (float) Math.toDegrees(Math.atan2(n.x, n.z)));
+				poseStack.rotateDegrees(Axis.XP, s.face == net.minecraft.core.Direction.DOWN ? 180 : 90);
+			}
+			if (modelScale != 1) {
+				poseStack.scale(modelScale, modelScale, modelScale);
+			}
+			HeroModelRenderer.submitModel(loaded, p.skin(), poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY,
+				java.util.Set.of(), false, false);
+			poseStack.popPose();
+			return;
+		}
 		// yaw then pitch take +Z onto the flight direction (yRot = atan2(vx, vz), xRot = atan2(vy, horizontal))
 		poseStack.rotateDegrees(Axis.YP, s.yRot);
 		poseStack.rotateDegrees(Axis.XP, -s.xRot);
@@ -138,7 +228,12 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 		if (flip) {
 			poseStack.rotateDegrees(Axis.YP, 180);
 		}
-		poseStack.mulPose(new Matrix4f().rotation(p.align()));
+		if (tumble != 0) {
+			poseStack.rotateDegrees(Axis.XP, tumble * s.age);
+		}
+		if (!upright) {
+			poseStack.mulPose(new Matrix4f().rotation(p.align()));
+		}
 		// no back-face culling (a talisman is a thin card seen from either side), and not a hero's stowed prop
 		HeroModelRenderer.submitModel(loaded, p.skin(), poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY,
 			java.util.Set.of(), false, false);

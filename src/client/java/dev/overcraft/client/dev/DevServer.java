@@ -157,6 +157,7 @@ public final class DevServer {
 					out.addProperty("mode", s.mode());
 					net.minecraft.world.phys.Vec3 aim = dev.overcraft.client.effect.JetpackCatFx.aimSeen;
 					out.addProperty("aimSeen", aim == null ? "" : aim.toString());
+					out.addProperty("potgMusic", dev.overcraft.client.PotgMusic.playing());
 					out.addProperty("perkLevel", s.perkLevel());
 					out.addProperty("perkProgress", s.perkProgress());
 					out.addProperty("primaryAmmo", s.primaryAmmo());
@@ -284,6 +285,12 @@ public final class DevServer {
 				net.minecraft.client.gui.screens.ConnectScreen.startConnecting(new net.minecraft.client.gui.screens.TitleScreen(), mc,
 					net.minecraft.client.multiplayer.resolver.ServerAddress.parseString(arg),
 					new net.minecraft.client.multiplayer.ServerData("Dev", arg, net.minecraft.client.multiplayer.ServerData.Type.LAN), false, null);
+				out.addProperty("ok", true);
+			}
+			case "victory" -> {
+				// dev only: "victory [slow]": the VICTORY banner and its sounds now, its clock slowed to look at the entrance
+				dev.overcraft.client.hud.VictoryHud.devSlow = arg.isBlank() ? 1 : Float.parseFloat(arg.trim());
+				dev.overcraft.client.hud.VictoryHud.show();
 				out.addProperty("ok", true);
 			}
 			case "openworld" -> {

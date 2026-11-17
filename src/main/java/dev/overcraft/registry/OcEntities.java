@@ -195,6 +195,22 @@ public final class OcEntities {
 		EntityType.Builder.<dev.overcraft.entity.BobEntity>of(dev.overcraft.entity.BobEntity::new, MobCategory.MISC)
 			.noLootTable().noSave().sized((float) (dev.overcraft.ashe.AsheStats.BOB_RADIUS * 2), (float) dev.overcraft.ashe.AsheStats.BOB_HEIGHT)
 			.clientTrackingRange(10).updateInterval(1));
+	/** Torbjörn's rivets (2A66): 0.175 m (D 290D + the global 0.075); his alt's pellets (13ED): 0.1 m against blocks (not saved). */
+	public static final EntityType<dev.overcraft.entity.RivetEntity> RIVET = register("rivet",
+		EntityType.Builder.<dev.overcraft.entity.RivetEntity>of(dev.overcraft.entity.RivetEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.2f, 0.2f).clientTrackingRange(8).updateInterval(1));
+	public static final EntityType<dev.overcraft.entity.RivetEntity> TORBJORN_PELLET = register("torbjorn_pellet",
+		EntityType.Builder.<dev.overcraft.entity.RivetEntity>of(dev.overcraft.entity.RivetEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.1f, 0.1f).clientTrackingRange(8).updateInterval(1));
+	/** His Molten Core's slag (2902): 0.2 m (D 290E; not saved: 10 s). */
+	public static final EntityType<dev.overcraft.entity.SlagEntity> SLAG = register("slag",
+		EntityType.Builder.<dev.overcraft.entity.SlagEntity>of(dev.overcraft.entity.SlagEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.3f, 0.3f).clientTrackingRange(8).updateInterval(1));
+	/** His turret (28B7): 1 m across and tall (its mover), a creature; saved with its chunk (TurretEntity). */
+	public static final EntityType<dev.overcraft.entity.TurretEntity> TURRET = register("turret",
+		EntityType.Builder.<dev.overcraft.entity.TurretEntity>of(dev.overcraft.entity.TurretEntity::new, MobCategory.MISC)
+			.noLootTable().sized(dev.overcraft.torbjorn.TorbjornStats.TURRET_WIDTH, dev.overcraft.torbjorn.TorbjornStats.TURRET_HEIGHT)
+			.clientTrackingRange(10).updateInterval(1));
 	public static final EntityType<KitsuneEntity> KITSUNE = register("kitsune", EntityType.Builder.<KitsuneEntity>of(KitsuneEntity::new, MobCategory.MISC)
 		.noLootTable().noSave().sized(0.8f, 0.8f).clientTrackingRange(8).updateInterval(1));
 
@@ -208,5 +224,7 @@ public final class OcEntities {
 
 	public static void init() {
 		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(BOB, dev.overcraft.entity.BobEntity.attributes());
+		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(TURRET,
+			dev.overcraft.entity.TurretEntity.attributes());
 	}
 }

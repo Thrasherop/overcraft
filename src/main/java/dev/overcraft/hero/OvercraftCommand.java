@@ -62,6 +62,30 @@ public final class OvercraftCommand {
 				.executes(c -> ult(c, EntityArgument.getPlayers(c, "players"), 100))
 				.then(Commands.argument("percent", IntegerArgumentType.integer(0, 100))
 					.executes(c -> ult(c, EntityArgument.getPlayers(c, "players"), IntegerArgumentType.getInteger(c, "percent"))))));
+		// /changehero <hero> [players]: an operator's hero change, anywhere and any time (#156, the owner): a free pick, then
+		// the select's own path (kit, perks, hero mode on), as the select screen does near a bed
+		// /changehero alone opens the select screen, a free pick anywhere (the owner: "/changehero should pull up the UI", #165)
+		dispatcher.register(Commands.literal("changehero")
+			.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+			.executes(c -> openSelect(c, List.of(c.getSource().getPlayerOrException())))
+			.then(Commands.argument("hero", StringArgumentType.word())
+				.suggests((c, b) -> SharedSuggestionProvider.suggest(heroIds(), b))
+				.executes(c -> changeHero(c, List.of(c.getSource().getPlayerOrException()), StringArgumentType.getString(c, "hero")))
+				.then(Commands.argument("players", EntityArgument.players())
+					.executes(c -> changeHero(c, EntityArgument.getPlayers(c, "players"), StringArgumentType.getString(c, "hero"))))));
+		// /perks [players] [level] and /perks reset [players]: /overcraft perks, shorter (#157, the owner): level 3 by default;
+		// reset puts them back to level 1, nothing earned or picked
+		dispatcher.register(Commands.literal("perks")
+			.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+			.executes(c -> perks(c, List.of(c.getSource().getPlayerOrException()), 3))
+			.then(Commands.literal("reset")
+				.executes(c -> perks(c, List.of(c.getSource().getPlayerOrException()), 1))
+				.then(Commands.argument("players", EntityArgument.players())
+					.executes(c -> perks(c, EntityArgument.getPlayers(c, "players"), 1))))
+			.then(Commands.argument("players", EntityArgument.players())
+				.executes(c -> perks(c, EntityArgument.getPlayers(c, "players"), 3))
+				.then(Commands.argument("level", IntegerArgumentType.integer(1, 3))
+					.executes(c -> perks(c, EntityArgument.getPlayers(c, "players"), IntegerArgumentType.getInteger(c, "level"))))));
 		// /overcraft potg disk|highlights|watch [n]|now: Play of the Game, dev builds only (runClient sets overcraft.dev): the
 		// recorders' disk, the caller's saved highlights, watching one alone (the highlight viewer's code path, until its menu
 		// is built), and the POTG now (the dragon's choice, everyone, the world held), for testing
@@ -106,6 +130,53 @@ public final class OvercraftCommand {
 		java.util.Set<String> names = new java.util.TreeSet<>(List.of(Teams.BLUE, Teams.RED));
 		names.addAll(source.getServer().getScoreboard().getTeamNames());
 		return names;
+	}
+
+	private static List<String> heroIds() {
+		List<String> ids = new java.util.ArrayList<>();
+		for (Hero h : Hero.values()) {
+			if (h.playable && HeroManager.kit(h) != null) {
+				ids.add(h.id);
+			}
+		}
+		return ids;
+	}
+
+	private static int changeHero(CommandContext<CommandSourceStack> c, Collection<ServerPlayer> players, String id) {
+		Hero hero = Hero.byId(id);
+		if (hero == null || !hero.playable || HeroManager.kit(hero) == null) {
+			c.getSource().sendFailure(Component.translatable("overcraft.command.changehero.unknown", id));
+			return 0;
+		}
+		int done = 0;
+		for (ServerPlayer player : players) {
+			if (!player.isAlive()) {
+				// a pick fills the hero's health: on a dead player it brought them back on the server while their screen still
+				// said they'd died, and their Respawn was then refused (found testing, 2026-11-16): they respawn first
+				c.getSource().sendFailure(Component.translatable("overcraft.command.changehero.dead", player.getName()));
+				continue;
+			}
+			HeroManager.forceSelect(player, hero);
+			done++;
+		}
+		int count = done;
+		c.getSource().sendSuccess(() -> Component.translatable("overcraft.command.changehero", count, hero.id), true);
+		return done;
+	}
+
+	/** Opens the hero select on their screens, a free pick wherever they are (#165); not for the dead. */
+	private static int openSelect(CommandContext<CommandSourceStack> c, Collection<ServerPlayer> players) {
+		int done = 0;
+		for (ServerPlayer player : players) {
+			if (!player.isAlive()) {
+				c.getSource().sendFailure(Component.translatable("overcraft.command.changehero.dead", player.getName()));
+				continue;
+			}
+			HeroManager.allowFreePick(player);
+			net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, new dev.overcraft.net.OpenSelectPayload());
+			done++;
+		}
+		return done;
 	}
 
 	private static int perks(CommandContext<CommandSourceStack> c, Collection<ServerPlayer> players, int level) {

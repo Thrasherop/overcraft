@@ -67,7 +67,7 @@ public final class ClientMercy {
 
 	/** In hero mode the scroll wheel picks her other weapon (MouseHandlerMixin). */
 	public static void scroll(double amount) {
-		if (ClientHero.hero() == Hero.MERCY && amount != 0) {
+		if ((ClientHero.hero() == Hero.MERCY || ClientHero.hero() == Hero.TORBJORN) && amount != 0) {
 			scrolled++;
 		}
 	}
@@ -164,7 +164,8 @@ public final class ClientMercy {
 		}
 		if (s == null) {
 			launched = false;
-			return 0;
+			// Torbjörn's hammer and Rivet Gun share Mercy's weapon keys (HeroInputPayload.EXTRA_STAFF / BLASTER / SWAP)
+			return ClientHero.hero() == Hero.TORBJORN ? extra : 0;
 		}
 		long now = player.level().getGameTime();
 		int earlyTicks = dev.overcraft.Ow.ticks(MercyStats.GA_EARLY);

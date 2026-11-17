@@ -93,7 +93,7 @@ public final class IllariStats {
 	public static final double SUN_FLIGHT = 5.2, SUN_FLIGHT_SPEED = 1.45, SUN_KNOCK_TAKEN = 0.5;
 	/** The ball fires on the left button, or by itself 4 s after the cast (D 1388) H/M. */
 	public static final double SUN_AUTO_FIRE = 4;
-	/** The ball: 30 m/s, 0.45 m, 10 s (D 293E / 293D; BZ 2025-12-09 0.75 -> 0.45) H. */
+	/** The ball: 30 m/s, radius 0.45 m, 10 s (D 293E / 293D; BZ 2025-12-09 0.75 -> 0.45; W rev 408912 0.45 radius) H. */
 	public static final double BALL_SPEED = 30, BALL_SIZE = 0.45, BALL_LIFE = 10;
 	/** 5 direct, 50 splash with no falloff (D 1D38 / 1D39) H; 10 m (BZ 2024-12-10 8 -> 10; the data's 1216 still 8) L. */
 	public static final double BALL_DIRECT = 5, BALL_SPLASH = 50, BALL_RADIUS = 10;

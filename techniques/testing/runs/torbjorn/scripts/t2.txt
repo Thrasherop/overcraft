@@ -1,0 +1,36 @@
+# T2 Deploy Turret: throw, build, targets the closest enemy, never a villager (ally) or a cow (bystander), damage per second, cooldown.
+cmd /gamerule spawn_monsters false
+cmd /difficulty easy
+cmd /time set noon
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 4.5 run tp @s ~ ~ ~ ~ ~
+MARK T2a throw at the floor 4 m ahead (expected lands ~4 m, builds 2.5 s; ability1Cooldown 6 s from the cast)
+sleep 0.5
+key ability_1 tap
+sleep 0.3
+state
+ents
+sleep 1.0
+state
+sleep 2.0
+ents
+MARK T2b a villager 5 m and a cow 4 m beside it, a NoAI husk 12 m (expected: only the husk shot; 12 a shot, 4 / s: ~48 OW / s = 3.84 MC / s)
+cmd /summon villager 4.5 -60 4.5 {NoAI:1b,Tags:["t2v"]}
+cmd /summon cow -3.5 -60 4.5 {NoAI:1b,Tags:["t2c"]}
+cmd /summon husk 0.5 -60 16.5 {NoAI:1b,Tags:["t2h"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+sleep 0.5
+hp @e[tag=t2h,limit=1]
+sleep 2.0
+hp @e[tag=t2h,limit=1]
+hp @e[tag=t2v,limit=1]
+hp @e[tag=t2c,limit=1]
+MARK T2c a second husk nearer (6 m): the turret keeps its target until it's gone (W); kill the first, it takes the second
+cmd /summon husk 3.5 -60 9.5 {NoAI:1b,Tags:["t2h2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+sleep 1.5
+hp @e[tag=t2h,limit=1]
+hp @e[tag=t2h2,limit=1]
+cmd /kill @e[tag=t2h]
+sleep 1.5
+hp @e[tag=t2h2,limit=1]
+state

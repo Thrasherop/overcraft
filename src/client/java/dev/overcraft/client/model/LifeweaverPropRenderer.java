@@ -35,6 +35,10 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 		/** Drawn this far up from the entity's position (the tree's box starts under its root). */
 		float lift;
 		float partialTick;
+		/** The face it's set on (SurfaceStuck: Illari's pylon), or null; its width, to draw a wall's back on the face. */
+		net.minecraft.core.@Nullable Direction face;
+		float width;
+		float height;
 	}
 
 	private final String model;
@@ -75,7 +79,35 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 	 * same renderer as Lifeweaver's props (a placed model and its clip); drawn turned to his facing.
 	 */
 	public static LifeweaverPropRenderer<dev.overcraft.entity.RipTireEntity> tire(EntityRendererProvider.Context context) {
-		return new LifeweaverPropRenderer<>(context, "junkrat_tire", (e, s) -> clip(s, "tire_roll_ra0", (e.tickCount + s.partialTick) / 20f, true));
+		return new LifeweaverPropRenderer<>(context, "junkrat_tire", (e, s) -> {
+			clip(s, "tire_roll_ra0", (e.tickCount + s.partialTick) / 20f, true);
+			// its fuse, ribbons and sparks (156F) and Nitro Boost's flare (JunkratFx)
+			dev.overcraft.client.effect.JunkratFx.tire(e, e.getPosition(s.partialTick), s.partialTick);
+		});
+	}
+
+	/**
+	 * Torbjörn's turret (model 1000C, set 0996: tools/clipmaps/torbjorn_turret.txt): in flight its rest pose, building its build clip
+	 * (00DC, 2.5 s), built its level 2 idle with a fire layer on each shot, its upgrade (00DE) then the level 3 idle; turned to its aim.
+	 */
+	public static LifeweaverPropRenderer<dev.overcraft.entity.TurretEntity> turret(EntityRendererProvider.Context context) {
+		return new LifeweaverPropRenderer<>(context, "torbjorn_turret", (e, s) -> {
+			float t = e.stateTime(s.partialTick);
+			switch (e.state()) {
+				case dev.overcraft.entity.TurretEntity.FLYING -> s.clip = null;
+				case dev.overcraft.entity.TurretEntity.BUILDING -> clip(s, "build", t, false);
+				case dev.overcraft.entity.TurretEntity.UPGRADING -> clip(s, "upgrade", t, false);
+				case dev.overcraft.entity.TurretEntity.LEVEL3 -> clip(s, "l3_idle", t, true);
+				default -> clip(s, "l2_idle", t, true);
+			}
+			// its thrown ribbon and damaged smoke (TorbjornFx)
+			dev.overcraft.client.effect.TorbjornFx.turret(e, e.getPosition(s.partialTick), e.state() == dev.overcraft.entity.TurretEntity.FLYING);
+			float shot = (e.tickCount - e.shotAt() + s.partialTick) / 20f;
+			if (e.built() && shot >= 0 && shot < 0.3f) {
+				s.add = e.state() == dev.overcraft.entity.TurretEntity.LEVEL3 ? "add_l3_fire" : "add_l2_fire";
+				s.addTime = shot;
+			}
+		});
 	}
 
 	/**
@@ -173,6 +205,9 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 		state.loaded = HeroModels.get(model);
 		state.lift = 0;
 		state.partialTick = partialTicks;
+		state.face = entity instanceof dev.overcraft.entity.SurfaceStuck stuck ? stuck.stuckFace() : null;
+		state.width = entity.getBbWidth();
+		state.height = entity.getBbHeight();
 		poser.accept(entity, state);
 	}
 
@@ -195,7 +230,17 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 			poseStack.pushPose();
 			poseStack.translate(0, state.lift, 0);
 			// the models face +Z, like the heroes'
-			poseStack.rotateDegrees(Axis.YP, -state.yRot);
+			if (state.face != null && state.face.getAxis().isHorizontal()) {
+				// on a wall (#154, the owner: Illari's pylon "on a wall is straight up instead of tangent to the surface"): its base
+				// on the face (the entity stands its half width out, half its height down), its up out of the wall. It already
+				// faces out (HealingPylonEntity's yaw); a quarter turn about its side takes its up onto its front
+				net.minecraft.world.phys.Vec3 n = net.minecraft.world.phys.Vec3.atLowerCornerOf(state.face.getUnitVec3i());
+				poseStack.translate(-n.x * state.width / 2, state.height / 2, -n.z * state.width / 2);
+				poseStack.rotateDegrees(Axis.YP, -state.yRot);
+				poseStack.rotateDegrees(Axis.XP, 90);
+			} else {
+				poseStack.rotateDegrees(Axis.YP, -state.yRot);
+			}
 			HeroModelRenderer.submitModel(loaded, skin, poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, java.util.Set.of(),
 				true, false);
 			poseStack.popPose();

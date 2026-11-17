@@ -24,7 +24,7 @@ public final class HeroWeapon {
 	 * Hardpoint 000A from the models' own hardpoint tables (research/lucio/models.json): on Weapon_R in both, turned 180
 	 * degrees about X in the third-person model DB3F (rotation x -1) and not at all in the first-person DB40.
 	 */
-	private static final Map<Hero, Spec> SPECS = with(with(with(Map.of(Hero.LUCIO,
+	private static final Map<Hero, Spec> SPECS = with(with(with(with(Map.of(Hero.LUCIO,
 		new Spec(new Mount("Weapon_R", new Quaternionf(-1, 0, 0, 0)), new Mount("Weapon_R", new Quaternionf())),
 		// Mercy's staff and blaster, entities on 000A = Weapon_R with no offset or turn in both her models' tables
 		// (research/mercy/models.json)
@@ -61,7 +61,10 @@ public final class HeroWeapon {
 		Hero.JUNKRAT, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf()))),
 		// Ashe's Viper, entity 2523 (model 1079F) on her hardpoint 00C9 (var 4082) = bone_0606, as Ana's and Sojourn's (M: her models'
 		// hardpoint tables not read for an offset); hero_models/ashe_viper.glb
-		Hero.ASHE, new Spec(new Mount("bone_0606", new Quaternionf()), new Mount("bone_0606", new Quaternionf())));
+		Hero.ASHE, new Spec(new Mount("bone_0606", new Quaternionf()), new Mount("bone_0606", new Quaternionf()))),
+		// Torbjörn's Rivet Gun (entity 0147, model DB4F) and Forge Hammer (entity 01BC, model EED9), both on hp 000A = Weapon_R, no
+		// offset (M: as Cassidy's; his models' hardpoint tables not read for the turn); hero_models/torbjorn_weapon.glb / torbjorn_hammer.glb
+		Hero.TORBJORN, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
 
 	private static Map<Hero, Spec> with(Map<Hero, Spec> first, Hero hero, Spec spec) {
 		Map<Hero, Spec> all = new java.util.EnumMap<>(first);
@@ -88,7 +91,7 @@ public final class HeroWeapon {
 		}
 		// Mercy holds one of two (hero_models/mercy_staff.glb, mercy_blaster.glb): the one her state has out
 		HeroModels.Loaded weapon = hero == Hero.MERCY ? HeroModels.get(animator.blaster() ? "mercy_blaster" : "mercy_staff")
-			: HeroModels.weapon(hero);
+			: hero == Hero.TORBJORN && animator.torbjornHammer() ? HeroModels.get("torbjorn_hammer") : HeroModels.weapon(hero);
 		// in an emote his hand is where the emote's pose has it (the props hang on the same pose: EmoteProps)
 		Skeleton.Pose heroPose = firstPerson ? animator.lastViewPose()
 			: animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();

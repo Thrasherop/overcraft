@@ -469,7 +469,9 @@ public class HeroSelectScreen extends OwScreen {
 		// Mercy's wings spread 1.7 m and rise over her head; Lifeweaver stands 2.03 m with his back petals over his head
 		// (ours, by eye as hers)
 		// Ana's showcase stands with her hood up and cape out: Lifeweaver's size kept her whole (ours, by eye)
-		return hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN || hero == Hero.PHARAH || hero == Hero.TRACER || hero == Hero.CASSIDY || hero == Hero.JUNKRAT || hero == Hero.ILLARI || hero == Hero.ASHE ? 0.72f
+		// Torbjörn: short and broad, his select pose bent forward with the gun at the camera: at 0.72 he filled the frame (the critic of
+		// 385d464; ours, by eye)
+		return hero == Hero.TORBJORN ? 0.6f : hero == Hero.JETPACK_CAT ? 0.55f : hero == Hero.MERCY ? 0.78f : hero == Hero.LIFEWEAVER || hero == Hero.ANA || hero == Hero.SOMBRA || hero == Hero.BRIGITTE || hero == Hero.JUNO || hero == Hero.SOJOURN || hero == Hero.PHARAH || hero == Hero.TRACER || hero == Hero.CASSIDY || hero == Hero.JUNKRAT || hero == Hero.TORBJORN || hero == Hero.ILLARI || hero == Hero.ASHE ? 0.72f
 			// Sigma floats with his head 2.1 m up and his hands out at his sides (ours, by eye)
 			: hero == Hero.SIGMA ? SIGMA_FRAME[0] : hero == Hero.DVA ? DVA_FRAME[0] : 1;
 	}
@@ -629,6 +631,14 @@ public class HeroSelectScreen extends OwScreen {
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "steel_trap"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "rip_tire"),
 				new Line(Component.translatable("overcraft.key.passive").getString(), "total_mayhem"));
+			// his data's loadouts: the Rivet Gun (the left button; the right its alt), the Forge Hammer (weapon 2), Deploy Turret,
+			// Overload, Molten Core (Specialist is the sub-role's)
+			case TORBJORN -> List.of(
+				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "rivet_gun"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.WEAPON_2)), "forge_hammer"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_1)), "deploy_turret"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ABILITY_2)), "overload"),
+				new Line(HeroHud.shortKey(HeroControls.get(Action.ULTIMATE)), "molten_core"));
 			case BRIGITTE -> List.of(
 				new Line(HeroHud.shortKey(HeroControls.get(Action.SECONDARY_FIRE)), "rocket_flail"),
 				new Line(HeroHud.shortKey(HeroControls.get(Action.PRIMARY_FIRE)), "barrier_shield"),

@@ -11,6 +11,7 @@
     py tools/build_asset_pack.py sounds <DataTool output dir>  the heroes' sounds and voice lines (tools/soundmaps/)
     py tools/build_asset_pack.py fonts <dir>               the HUD's fonts, from a folder holding Overwatch's font files
     py tools/build_asset_pack.py props <DataTool output dir> [hero]  the emotes' props (as the emote data names them), from the emote unlocks
+    py tools/build_asset_pack.py projectiles <DataTool output dir>  thrown things drawn as models in flight (PROJECTILES: Ana's dart and grenade)
     py tools/build_asset_pack.py parts <DataTool output dir> [hero]  the models weapon_parts.json names (magazines, vials), from the hero's skin folder
     py tools/build_asset_pack.py clips <DataTool output dir> [hero]  the clips-only files: each tools/clipmaps/<hero>[_1p]_clips.txt into hero_models/ (Blender)
     py tools/build_asset_pack.py glows <DataTool output dir> [<dir> ...]  every glow, from the materials (tools/glow_maps.py; no Blender, needs Pillow)
@@ -24,6 +25,7 @@
 
 The dev client (gradlew runClient) reads local-assets/pack/ directly.
 """
+import json
 import os
 import shutil
 import subprocess
@@ -36,12 +38,12 @@ ROOT = Path(__file__).resolve().parent.parent
 PACK = Path(os.environ["OC_ASSET_PACK"]) if os.environ.get("OC_ASSET_PACK") else ROOT / "local-assets" / "pack"
 LOCAL = PACK.parent
 MODELS = PACK / "assets" / "overcraft" / "hero_models"
-HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver", "sigma", "ana", "dva", "pharah", "tracer", "cassidy", "junkrat", "ashe"}
+HEROES = {"kiriko", "lucio", "sombra", "brigitte", "illari", "juno", "sojourn", "jetpack_cat", "mercy", "lifeweaver", "sigma", "ana", "dva", "pharah", "tracer", "cassidy", "junkrat", "ashe", "torbjorn"}
 # DataTool's folder for each hero (its in-game name)
 HERO_FOLDERS = {"kiriko": "Kiriko", "lucio": "Lúcio", "sombra": "Sombra", "illari": "Illari", "juno": "Juno",
                 "sojourn": "Sojourn", "jetpack_cat": "Jetpack Cat", "mercy": "Mercy", "lifeweaver": "Lifeweaver",
                 "ana": "Ana", "brigitte": "Brigitte", "sigma": "Sigma",
-                "dva": "D.Va", "pharah": "Pharah", "tracer": "Tracer", "cassidy": "Cassidy", "junkrat": "Junkrat", "ashe": "Ashe"}
+                "dva": "D.Va", "pharah": "Pharah", "tracer": "Tracer", "cassidy": "Cassidy", "junkrat": "Junkrat", "ashe": "Ashe", "torbjorn": "Torbjörn"}
 GUI = PACK / "assets" / "overcraft" / "textures" / "gui" / "heroes"
 # extract-hero-icons names files by id only; each hero has one of each kind, told apart by size (the same for every
 # hero checked: Kiriko, Reaper). Two kinds are 256x256: the lower id is the portrait, the higher a closer crop.
@@ -262,21 +264,26 @@ def sample_rate(f):
     return int(probe.stdout.strip() or 48000)
 
 
-def mix(inputs, out):
+def mix(inputs, out, stereo=False):
     """Mixes [(file, delay s, gain dB, pitch)] into one mono Ogg Vorbis file with ffmpeg; peaks kept under full scale.
-    A pitch other than 1 plays the file faster and higher (as Wwise's pitch does), by resampling."""
+    A pitch other than 1 plays the file faster and higher (as Wwise's pitch does), by resampling. A negative delay starts
+    the file that far in (the match-end music started where the moment it's played for falls in it: #155). {@code stereo}
+    keeps two channels (music, heard in the head)."""
     cmd = ["ffmpeg", "-y", "-loglevel", "error"]
     for f, _, _, _ in inputs:
         cmd += ["-i", str(f)]
     chains = []
+    layout = "stereo" if stereo else "mono"
     for k, (f, delay, gain, pitch) in enumerate(inputs):
-        ms = int(round(delay * 1000))
         rate = sample_rate(f)
         speed = f"asetrate={round(rate * pitch)},aresample={rate}," if pitch != 1 else ""
-        chains.append(f"[{k}:a]{speed}aformat=channel_layouts=mono,adelay={ms}:all=1,volume={gain}dB[a{k}]")
+        shift = (f"atrim=start={-delay},asetpts=PTS-STARTPTS" if delay < 0
+                 else f"adelay={int(round(delay * 1000))}:all=1")
+        chains.append(f"[{k}:a]{speed}aformat=channel_layouts={layout},{shift},volume={gain}dB[a{k}]")
     labels = "".join(f"[a{k}]" for k in range(len(inputs)))
     chains.append(f"{labels}amix=inputs={len(inputs)}:normalize=0:duration=longest,alimiter=limit=0.89[out]")
-    cmd += ["-filter_complex", ";".join(chains), "-map", "[out]", "-ac", "1", "-c:a", "libvorbis", "-q:a", "5", str(out)]
+    cmd += ["-filter_complex", ";".join(chains), "-map", "[out]", "-ac", "2" if stereo else "1", "-c:a", "libvorbis",
+            "-q:a", "5", str(out)]
     return subprocess.run(cmd, capture_output=True, text=True).returncode == 0
 
 
@@ -325,7 +332,7 @@ def add_sounds(source):
                 # Overwatch's weight (0.1-1) as Minecraft's (a whole number, at least 1)
                 weight = weights.get((layers[0][0], base))
                 entry = {"name": name, "weight": max(1, round(weight * 10))} if weight is not None else name
-                if have_ffmpeg and mix(picks, dest):
+                if have_ffmpeg and mix(picks, dest, stereo=event.startswith("music.")):
                     files.append(entry)
                 elif not have_ffmpeg or picks[0][0].suffix == ".ogg":
                     shutil.copyfile(picks[0][0], dest)
@@ -344,7 +351,7 @@ def add_sounds(source):
 
 # heroes whose collectible voice lines go in the pack: our id -> DataTool's hero folder name
 VOICELINE_HEROES = {"kiriko": "Kiriko", "lucio": "Lúcio", "mercy": "Mercy", "juno": "Juno", "ana": "Ana", "sombra": "Sombra",
-                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn", "sigma": "Sigma", "dva": "D.Va", "pharah": "Pharah", "tracer": "Tracer", "cassidy": "Cassidy", "junkrat": "Junkrat", "illari": "Illari", "ashe": "Ashe"}
+                    "brigitte": "Brigitte", "lifeweaver": "Lifeweaver", "sojourn": "Sojourn", "sigma": "Sigma", "dva": "D.Va", "pharah": "Pharah", "tracer": "Tracer", "cassidy": "Cassidy", "junkrat": "Junkrat", "illari": "Illari", "ashe": "Ashe", "torbjorn": "Torbjörn"}
 # a hero whose extraction (Unlocks/ and HeroVoice/) isn't under the build root: its folder relative to it, as the hero's
 # soundmap reads her voice (Juno's DataTool extract-unlocks "Juno|voiceline=*" went to research\juno\extract, 27 unlocks)
 VOICELINE_ROOTS = {"juno": "../../research/juno/extract", "ana": "../../research/ana/extract",
@@ -358,6 +365,7 @@ VOICELINE_ROOTS = {"juno": "../../research/juno/extract", "ana": "../../research
                    "cassidy": "../../research/cassidy/extract",
                    "junkrat": "../../research/junkrat/extract",
                    "illari": "../../research/illari/extract",
+                   "torbjorn": "../../research/torbjorn/extract",
                    "ashe": "../../research/ashe/extract"}   # each hero's extract-unlocks "<Hero>|voiceline=*" (#77)
 # Heroes whose voice-line unlocks DataTool doesn't export (Jetpack Cat's: each is an effect with one voice stimulus that
 # names one meow), listed from the data instead (E:\Overwatch Archive\research\jetpack_cat\gaps.md 1c, H): unlock name
@@ -482,6 +490,23 @@ def add_voicelines(source, out, sounds):
 
 # variants kept per sound event (Minecraft picks one at random each time)
 MAX_VARIANTS = 8
+
+
+def missing_sounds():
+    """Every sound sounds.json names that has no .ogg in the pack: the zip refuses to ship a pack with gaps."""
+    index = PACK / "assets" / "overcraft" / "sounds.json"
+    if not index.exists():
+        return []
+    lost = []
+    for event in json.loads(index.read_text(encoding="utf8")).values():
+        for s in event.get("sounds", []):
+            name = s["name"] if isinstance(s, dict) else s
+            if isinstance(s, dict) and s.get("type") == "event":
+                continue
+            ns, _, path = name.partition(":")
+            if not (PACK / "assets" / ns / "sounds" / f"{path}.ogg").exists():
+                lost.append(name)
+    return lost
 
 # the HUD's faces (HudText): pack file -> (Overwatch's file, font/*.json entries: size in GUI units and oversampling).
 # Minecraft only reads TrueType outlines, which these two are.
@@ -879,6 +904,54 @@ EFFECT_MASKS = {
     "sojourn_spark_tail": ("Sojourn", "PowerSlide", "00000000023F", 1),
     "sojourn_dot": ("Sojourn", "Disruptor", "000000004A58", 1),
     "sojourn_swirl": ("Sojourn", "Disruptor", "000000003DB8", 1),
+    # D.Va's Defense Matrix (tools/reference/dva-effects.md; pass research/dva/fx as a source): the field's tube masks (edges dark
+    # across it, a soft hump along it), the solid ring mask, the absorb beam and its flash flipbook
+    "dva_matrix_edge": ("DVa", "DefenseMatrix", "000000020427", 1),
+    "dva_matrix_hump": ("DVa", "DefenseMatrix", "00000002042B", 1),
+    "dva_solid": ("DVa", "DefenseMatrix", "000000001298", 1),
+    "dva_absorb_beam": ("DVa", "DefenseMatrix", "000000011C54", 1),
+    "dva_absorb_flash": ("DVa", "DefenseMatrix", "000000004AAA", 8),
+    # her Self-Destruct (dva-effects.md): the warning field's growing flare, in-drawn sparks, burst flipbook and streaks; the
+    # blast's core, smoke and scorch mark
+    "dva_sd_flare": ("DVa", "SelfDestruct", "0000000034DC", 1),
+    "dva_sd_spark_in": ("DVa", "SelfDestruct", "000000001C00", 1),
+    "dva_sd_burst": ("DVa", "SelfDestruct", "000000004A39", 20),
+    "dva_sd_streak": ("DVa", "SelfDestruct", "000000005438", 4),
+    "dva_sd_core": ("DVa", "SelfDestruct", "00000000E16E", 1),
+    "dva_sd_smoke": ("DVa", "SelfDestruct", "0000000004F0", 4),
+    "dva_sd_scorch": ("DVa", "SelfDestruct", "000000005502", 1),
+    # her Micro Missiles: the exhaust flame, the smoke trail, the glow flare, the hit's fire flipbook
+    "dva_missile_flame": ("DVa", "MicroMissiles", "000000011C86", 1),
+    "dva_smoke": ("DVa", "MicroMissiles", "000000011BFC", 1),
+    "dva_flare": ("DVa", "MicroMissiles", "000000004B2E", 2),
+    "dva_missile_fire": ("DVa", "MicroMissiles", "000000002291", 12),
+    # her Fusion Cannons' tracer, muzzle flash and glow; her Boosters' flame burst and trail
+    "dva_fusion_tracer": ("DVa", "FusionCannons", "000000004B20", 1),
+    "dva_fusion_flash": ("DVa", "FusionCannons", "000000004896", 4),
+    "dva_fusion_glow": ("DVa", "FusionCannons", "0000000021E2", 1),
+    "dva_boost_burst": ("DVa", "Boosters", "000000004C26", 7),
+    "dva_boost_trail": ("DVa", "Boosters", "0000000011D7", 1),
+    # Tracer's (tools/reference/tracer-effects.md; pass research/tracer/fx as a source): Blink's streak flash, the bomb's blast
+    # flipbook and scorch, Recall's glow
+    "tracer_blink": ("Tracer", "Blink", "0000000214A5", 1),
+    "tracer_blast": ("Tracer", "PulseBomb", "00000001D113", 8),
+    "tracer_blast_decal": ("Tracer", "PulseBomb", "000000020CE6", 1),
+    "tracer_glow": ("Tracer", "Recall", "00000000F767", 1),
+    # Illari (tools/reference/illari-effects.md): stars, halo, the burst's star, Sunstruck's sun, embers, flames, the shot, the scorch
+    "illari_star": ("Illari", "CaptiveSun", "000000074DEA", 1),
+    "illari_halo": ("Illari", "CaptiveSun", "000000036D6D", 1),
+    "illari_burst_star": ("Illari", "CaptiveSun", "000000055BA5", 1),
+    "illari_sun_mark": ("Illari", "CaptiveSun", "00000003F2CB", 1),
+    "illari_ember": ("Illari", "CaptiveSun", "00000002D6CA", 4),
+    "illari_flame": ("Illari", "CaptiveSun", "00000003FAA8", 1),
+    "illari_shot_line": ("Illari", "SolarRifle", "000000043321", 1),
+    "illari_hit_glow": ("Illari", "SolarRifle", "00000000258D", 1),
+    "illari_scorch": ("Illari", "CaptiveSun", "000000019008", 1),
+    # her Pulse Pistols' muzzle 0076 (tracer-effects.md): the soft glow, and the three flash flipbooks
+    "tracer_muzzle_glow": ("Tracer", "PulsePistols", "00000000A7B6", 1),
+    "tracer_muzzle_a": ("Tracer", "PulsePistols", "000000020848", 3),
+    "tracer_muzzle_b": ("Tracer", "PulsePistols", "0000000207C2", 4),
+    "tracer_muzzle_c": ("Tracer", "PulsePistols", "000000020847", 3),
     "sojourn_field_noise": ("Sojourn", "Disruptor", "0000000299E5", 1),
     "sojourn_flames": ("Sojourn", "Disruptor", "000000029132", 1),
     # Sigma's (tools/reference/sigma-effects.md "Masks for the pack"; research\sigmax). Hyperspheres: the launch swirl,
@@ -901,6 +974,82 @@ EFFECT_MASKS = {
     "sigma_disc": ("Sigma", "GraviticFlux", "000000009489", 1),
     "sigma_flux_rings": ("Sigma", "GraviticFlux", "0000000202A6", 1),
     "sigma_flux_vortex": ("Sigma", "GraviticFlux", "0000000202B3", 1),
+    # Torbjorn's (tools/reference/torbjorn-effects.md "What the builder adds"; pass research/torbjorn/fx as a source).
+    # Overload: the vent flame tongue (26F1)
+    "torb_flame": ("Torbjorn", "Overload", "00000001CAFA", 1),
+    # Molten Core: the pool's cracked crust and soft blob (2754), the forming fire flecks, flashes and dome noise (26FB),
+    # the slag's hit flash (26B7), the burn's ring strip (254F), the slag's ribbon noise (2509)
+    "torb_lava_crust": ("Torbjorn", "MoltenCore", "0000000561FC", 1),
+    "torb_lava_b": ("Torbjorn", "MoltenCore", "00000001B2B6", 1),
+    "torb_pool_fire": ("Torbjorn", "MoltenCore", "00000001B709", 1),
+    "torb_pool_flash": ("Torbjorn", "MoltenCore", "00000001B97A", 1),
+    "torb_pool_flash_b": ("Torbjorn", "MoltenCore", "00000001B97B", 1),
+    "torb_dome_noise": ("Torbjorn", "MoltenCore", "00000001B72B", 1),
+    "torb_slag_hit": ("Torbjorn", "MoltenCore", "00000002A81E", 1),
+    "torb_burn_ring": ("Torbjorn", "MoltenCore", "0000000190F7", 1),
+    "torb_ribbon_noise": ("Torbjorn", "MoltenCore", "0000000299E2", 1),
+    # the Rivet Gun: the muzzle's star, flash and smoke (2651 / 2662), the thin ribbon and the rivet's ribbon (2653 /
+    # 1865), the pellet hit's puff, smoke and shard (05AF)
+    "torb_star": ("Torbjorn", "RivetGun", "0000000191DD", 4),
+    "torb_flash": ("Torbjorn", "RivetGun", "00000001924B", 4),
+    "torb_smoke_puff": ("Torbjorn", "RivetGun", "000000019271", 1),
+    "torb_ribbon": ("Torbjorn", "RivetGun", "0000000192B0", 1),
+    "torb_trail": ("Torbjorn", "RivetGun", "00000002A480", 1),
+    "torb_hit_puff": ("Torbjorn", "RivetGun", "000000044A8F", 4),
+    "torb_hit_smoke": ("Torbjorn", "RivetGun", "00000003F25F", 1),
+    "torb_hit_shard": ("Torbjorn", "RivetGun", "000000005B70", 4),
+    # the reload's molten glow at his hand (00E2)
+    "torb_reload_glow": ("Torbjorn", "Reload", "00000001B6D6", 1),
+    # the turret: its shot's fire cone (2654), the aim ray's noise and edge (050A), its glare
+    "torb_turret_fire": ("Torbjorn", "Turret", "000000003AF6", 1),
+    "torb_ray": ("Torbjorn", "Turret", "000000002662", 1),
+    "torb_ray_edge": ("Torbjorn", "Turret", "0000000193BE", 1),
+    "torb_glare": ("Torbjorn", "Turret", "00000000098D", 1),
+    # Cassidy's (tools/reference/cassidy-effects.md "What the builder adds"; pass research/cassidy/fx as a source; the
+    # rest of his masks are already here under other heroes' names). Peacekeeper: the shot's smoke noise (18D7), the hit's
+    # flashes (05AE), the muzzle's flame flipbook, cone and ring mask, flashes and sparks (057A)
+    "cassidy_smoke_noise": ("Cassidy", "Peacekeeper", "0000000004D5", 1),
+    "cassidy_hit_flash": ("Cassidy", "Peacekeeper", "000000005B71", 4),
+    "cassidy_muzzle_flame": ("Cassidy", "Peacekeeper", "00000001FB83", 32),
+    "cassidy_cone": ("Cassidy", "Peacekeeper", "00000002A2B9", 1),
+    "cassidy_flash": ("Cassidy", "Peacekeeper", "000000005C04", 4),
+    "cassidy_spark": ("Cassidy", "Peacekeeper", "00000001BCFB", 1),
+    # Combat Roll's dust flipbook (05E4), Flashbang's bang flash (5C8C) and ribbon (0600), the bleed's glow (3488),
+    # Deadeye's dust (0610)
+    "cassidy_dust": ("Cassidy", "CombatRoll", "00000001FC65", 32),
+    "cassidy_bang": ("Cassidy", "Flashbang", "00000002D6C9", 1),
+    "cassidy_ribbon": ("Cassidy", "Flashbang", "000000000AC4", 1),
+    "cassidy_bleed_glow": ("Cassidy", "SilverBullet", "000000037B2E", 1),
+    "cassidy_dust_cloud": ("Cassidy", "Deadeye", "000000000AFF", 1),
+    # Pharah's (tools/reference/pharah-effects.md, PharahFx): the blast's and mini-rocket's streak flash 98C, the 1-1.9 m flares
+    # 9EE (rocket, Concussive's halo, the hover's and jumps' flash), the launch / exhaust flame 299E6, the blast's flare 22D0, the
+    # hover's jet cone 5233, the jumps' ring 3AE1 (14 frames, on mesh 1E8E), Concussive's ground wave band 2CC98 (on 96C1) and
+    # swirl noise 38E4A (on ED1C), Barrage's pod flash 5E9C (3) and glow 27BFD, the blast debris's smoke ribbons 9ED (0554)
+    "pharah_streak": ("Pharah", "RocketLauncher", "00000000098C", 1),
+    "pharah_flare": ("Pharah", "RocketLauncher", "0000000009EE", 1),
+    "pharah_flame_noise": ("Pharah", "RocketLauncher", "0000000299E6", 1),
+    "pharah_flare_line": ("Pharah", "RocketLauncher", "0000000022D0", 1),
+    "pharah_jet": ("Pharah", "HoverJets", "000000005233", 1),
+    "pharah_jet_ring": ("Pharah", "JumpJet", "000000003AE1", 14),
+    "pharah_wave_band": ("Pharah", "ConcussiveBlast", "00000002CC98", 1),
+    "pharah_swirl_noise": ("Pharah", "ConcussiveBlast", "000000038E4A", 1),
+    "pharah_pod_flash": ("Pharah", "Barrage", "000000005E9C", 3),
+    "pharah_pod_glow": ("Pharah", "Barrage", "000000027BFD", 1),
+    "pharah_smoke_ribbon": ("Pharah", "RocketLauncher", "0000000009ED", 1),
+    # Junkrat's (tools/reference/junkrat-effects.md "For the asset pack"; pass research/junkrat/fx as a source): the blasts'
+    # fireball flipbook (a colour sprite coloured by its brightness), flash, spark streak and scorch (frag, mine, tire, bombs),
+    # the launch's muzzle burst, the frag's glow, the tire blast's ground ring noise, the metal bits (a colour sprite: NATURAL),
+    # the tire's glow ball, the trap's chain
+    "jr_fireball": ("Junkrat", "FragLauncher", "0000000047C4", 11),
+    "jr_flash": ("Junkrat", "FragLauncher", "00000002613A", 1),
+    "jr_spark_streak": ("Junkrat", "FragLauncher", "00000002C009", 1),
+    "jr_scorch": ("Junkrat", "FragLauncher", "0000000031E8", 1),
+    "jr_muzzle_flash": ("Junkrat", "FragLauncher", "000000011F7F", 2),
+    "jr_frag_glow": ("Junkrat", "FragLauncher", "000000018BAD", 4),
+    "jr_ring_noise": ("Junkrat", "RIPTire", "000000004CB7", 1),
+    "jr_debris": ("Junkrat", "RIPTire", "0000000022FD", 8),
+    "jr_glow_ball": ("Junkrat", "RIPTire", "00000003699E", 1),
+    "jr_chain": ("Junkrat", "SteelTrap", "000000002A90", 1),
 }
 
 
@@ -947,6 +1096,8 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
             "ana_tracer": ("ana_beam_line", "ana_fade_v"),
             # Sombra's pistol tracer (1998, tools/reference/sombra-effects.md): its line 510 x its edge 50C
             "sombra_tracer": ("sombra_tracer_line", "sombra_tracer_edge"),
+            # D.Va's matrix tube 2D61: its edge mask times its hump along it (dva-effects.md)
+            "dva_matrix_field": ("dva_matrix_edge", "dva_matrix_hump"),
             # Brigitte's (tools/reference/brigitte-effects.md): the swing arc's streak 14E13 x edge line 14E79 (26EB),
             # Rally's armour pattern 144E5 x 14486 (219D C104), the pack trail's spot 18B18 x flame wisps 44F7 (218D C13)
             "brigitte_swing_band": ("brigitte_swing_streak_0", "brigitte_swing_edge"),
@@ -976,6 +1127,37 @@ PRODUCTS = {"cat_ring_band": ("cat_ring_line", "cat_band"),
 STRETCHED = {"mercy_wing_glow", "cat_bubble_band", "cat_slash_band", "cat_dome_glow", "cat_shock_sphere", "cat_bell_band"}
 
 EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
+                 # D.Va's Defense Matrix (dva-effects.md): the field's tube (narrowing to the emitter), its hexagonal ring frame
+                 # and the pulse ring
+                 "dva_matrix_tube": ("DVa", "DefenseMatrix", "00000000D6D1"),
+                 "dva_matrix_frame": ("DVa", "DefenseMatrix", "00000000D655"),
+                 "dva_matrix_pulse": ("DVa", "DefenseMatrix", "00000000D653"),
+                 # her Self-Destruct's shock ring (1703, 2B63)
+                 "dva_sd_ring": ("DVa", "SelfDestruct", "000000002B63"),
+                 # her missiles' hit ball (1FA5, 7CDA)
+                 "dva_missile_ball": ("DVa", "MicroMissiles", "000000007CDA"),
+                 # Tracer's Recall ring (00BB, 0958)
+                 "tracer_recall_ring": ("Tracer", "Recall", "000000000958"),
+                 # Torbjorn's (torbjorn-effects.md): the rivet and pellet slugs (2653 / 1865), the pellet hit's shard (05AF),
+                 # the pool's three lava blobs (2754), the slag's blob (2509), the burn's rings (254F), the forming dome
+                 # (26FB), the cast's hemisphere (34B0)
+                 "torb_rivet": ("Torbjorn", "RivetGun", "0000000083D6"),
+                 "torb_pellet": ("Torbjorn", "RivetGun", "0000000080BE"),
+                 "torb_hit_shard_mesh": ("Torbjorn", "RivetGun", "000000000EF7"),
+                 "torb_lava_a": ("Torbjorn", "MoltenCore", "00000000887F"),
+                 "torb_lava_b_mesh": ("Torbjorn", "MoltenCore", "0000000083F7"),
+                 "torb_lava_c": ("Torbjorn", "MoltenCore", "00000000885C"),
+                 "torb_slag_blob": ("Torbjorn", "MoltenCore", "00000000E20D"),
+                 "torb_burn_ring_mesh": ("Torbjorn", "MoltenCore", "0000000086CF"),
+                 "torb_burn_ring_b": ("Torbjorn", "MoltenCore", "000000005708"),
+                 "torb_dome": ("Torbjorn", "MoltenCore", "000000000DAF"),
+                 "torb_hemisphere": ("Torbjorn", "MoltenCore", "00000000963D"),
+                 # Cassidy's muzzle (057A, cassidy-effects.md): the flash cone (1 x 0.35 m) and the flat ring
+                 "cassidy_muzzle_cone": ("Cassidy", "Peacekeeper", "0000000080B8"),
+                 "cassidy_muzzle_ring": ("Cassidy", "Peacekeeper", "00000000E700"),
+                 # Junkrat's (junkrat-effects.md): the launch's burst (1468, 0.2 x 0.17 x 0.2) and Nitro Boost's flare (6740)
+                 "jr_muzzle_burst": ("Junkrat", "FragLauncher", "0000000027B3"),
+                 "jr_nitro_flare": ("Junkrat", "Perks", "000000014346"),
                  # Jetpack Cat's effect meshes (research\jetpack_cat\assets2.md 2): Lifeline's and Catnapper's ground
                  # rings (a fat torus lying flat), the hook's cone, the towed ally's arcs, Purr's sphere, torus and wall
                  "cat_torus": ("JetpackCat", "Lifeline", "000000015A26"),
@@ -1044,7 +1226,13 @@ EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  "juno_sphere": ("Juno", "HyperRing", "00000000D721"),
                  "juno_torus_thin": ("Juno", "OrbitalRay", "00000000EBEF"),
                  "juno_disc": ("Juno", "HyperRing", "000000005E5E"),
-                 "juno_cast_blade": ("Juno", "OrbitalRay", "000000014063")}
+                 "juno_cast_blade": ("Juno", "OrbitalRay", "000000014063"),
+                 # Pharah's (pharah-effects.md): Concussive's swirl ED1C (0.35 x 0.44 x 0.58), its ground wave's flat 1.28 m
+                 # disc 96C1, the jumps' ring disc 1E8E (same bounds, other UVs), the unit sphere 085B (Concussive's shell)
+                 "pharah_conc_swirl": ("Pharah", "ConcussiveBlast", "00000000ED1C"),
+                 "pharah_disc": ("Pharah", "ConcussiveBlast", "0000000096C1"),
+                 "pharah_jet_disc": ("Pharah", "JumpJet", "000000001E8E"),
+                 "pharah_sphere": ("Pharah", "ConcussiveBlast", "00000000085B")}
 
 
 def bake_cat_arcs(out):
@@ -1360,6 +1548,30 @@ def add_parts(source, only=None):
             print(part["model"] + ": " + (" ".join(report) or result.stderr[-2000:]))
 
 
+# Thrown things drawn as models in flight (ProjectileModelRenderer, hero_models/<name>.glb), by hero and model id. `projectiles <source>` converts them.
+PROJECTILES = {
+    "projectile_ana_dart": ("ana", "11741"),  # her unscoped shot, entity 15B7 (ana-effects H)
+    "projectile_biotic_grenade": ("ana", "11763"),  # entity 1426 (ana-effects H)
+}
+
+
+def add_projectiles(source):
+    """Converts PROJECTILES into hero_models/<name>.glb, static meshes on their origins. <source> is the extraction root holding Heroes/<Hero>/Skin."""
+    write_mcmeta()
+    MODELS.mkdir(parents=True, exist_ok=True)
+    for name, (hero, model) in PROJECTILES.items():
+        padded = "%012X" % int(model, 16)
+        found = sorted((Path(source) / "Heroes" / HERO_FOLDERS[hero] / "Skin").glob(f"*/*/Models/{padded}.00C/{padded}.owmdl"))
+        if not found:
+            print(f"{name}: no model {padded} under {source}")
+            continue
+        cmd = [blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "owm_static.py"), "--",
+               str(found[0]), str(MODELS / f"{name}.glb")]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        report = [line for line in result.stdout.splitlines() if line.startswith("OWM_")]
+        print(name + ": " + (" ".join(report) or result.stderr[-2000:]))
+
+
 def clip_ids(clip_map):
     """The clip ids a clip map names."""
     import re
@@ -1482,6 +1694,8 @@ def main():
         add_props(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
     elif cmd == "parts":
         add_parts(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
+    elif cmd == "projectiles":
+        add_projectiles(sys.argv[2])
     elif cmd == "clips":
         add_clips(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
     elif cmd == "glows":
@@ -1498,6 +1712,10 @@ def main():
         gaps = missing()
         if gaps:
             print("WARNING, this pack lacks:", *gaps, "(py tools/build_asset_pack.py weapons <roots>)", sep="\n  ")
+        lost = missing_sounds()
+        if lost:
+            # 0.3.50 shipped with only Ana's and Brigitte's sounds: a sounds step had dropped the rest from the pack
+            sys.exit(f"{len(lost)} sounds in sounds.json have no file in the pack (first: {lost[0]}); rebuild them first")
         write_version()
         out = LOCAL / "overcraft-assets.zip"
         with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:

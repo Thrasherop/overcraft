@@ -164,4 +164,42 @@ public final class ClientCassidy {
 		rollVy = ground && rollVy <= 0 ? -g : rollVy - g;
 		return new Vec3(rollDir.x * speed, rollVy, rollDir.z * speed);
 	}
+
+	// ---- Silver Bullet's aim (#164): the view only, as his data binds no raise pose ----
+
+	/** How far the local Cassidy's Silver Bullet aim is up (0-1) in his own first person, from the sync's meter. */
+	public static float silverAim() {
+		net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+		var sync = ClientHero.sync();
+		if (sync == null || !dev.overcraft.hero.Hero.CASSIDY.id.equals(sync.heroId()) || !mc.options.getCameraType().isFirstPerson()
+			|| !ClientHero.heroView()) {
+			return 0;
+		}
+		return Math.clamp(sync.meter(), 0, 1);
+	}
+
+	private static float lastAim;
+
+	/** The aim is up or moving (or just went down): the zoom follows it tick by tick, as Ana's scope (ScopeFovMixin). */
+	public static boolean aimMoving() {
+		float aim = silverAim();
+		boolean moving = aim > 0 || lastAim > 0;
+		lastAim = aim;
+		return moving;
+	}
+
+	/** The FOV multiplier: toward 40 vertical degrees by clamp(2 x the aim) (CassidyStats.SILVER_FOV). */
+	public static float fovModifier() {
+		float w = Math.min(1, 2 * silverAim());
+		if (w <= 0) {
+			return 1;
+		}
+		float fov = net.minecraft.client.Minecraft.getInstance().options.fov().get();
+		return 1 - w * (1 - (float) dev.overcraft.cassidy.CassidyStats.SILVER_FOV / Math.max(fov, 1));
+	}
+
+	/** The mouse's turn fully raised: 60%. */
+	public static double sensitivity() {
+		return silverAim() >= 1 ? dev.overcraft.cassidy.CassidyStats.SILVER_SENSITIVITY : 1;
+	}
 }

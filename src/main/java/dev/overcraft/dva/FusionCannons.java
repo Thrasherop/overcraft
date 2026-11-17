@@ -14,7 +14,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -145,6 +144,11 @@ public final class FusionCannons {
 		double pellet = FUSION_DAMAGE * (precise ? PRECISION_DAMAGE : 1);
 		double falloffScale = precise ? PRECISION_FALLOFF : 1;
 		List<Vec3> dirs = pattern(look, spread, player.getRandom().nextDouble() * Math.PI * 2);
+		// the volley's look (18FE's muzzle at the cannon, 10BB's tracers, 147A's hits: DvaFx), one message a volley; its spread in
+		// hundredths of a degree as the variant
+		s.dvaFusionSide = !s.dvaFusionSide;
+		dev.overcraft.hero.Effects.play(level, "dva_fusion", eye, look, player, (int) Math.round(spread * 100) * 2 + (s.dvaFusionSide ? 1 : 0),
+			player);
 		// the creatures any pellet could reach: one search a volley, not one a pellet
 		double widen = Math.tan(Math.toRadians(FUSION_SPREAD)) * FUSION_RANGE + 2;
 		AABB area = new AABB(eye, eye.add(look.scale(FUSION_RANGE))).inflate(widen);
@@ -174,8 +178,6 @@ public final class FusionCannons {
 			if (best == null && wall == null && block.distanceToSqr(eye) < (FUSION_RANGE - 0.01) * (FUSION_RANGE - 0.01)) {
 				wall = block;
 			}
-			// stand-in look: a spark where each pellet stops
-			level.sendParticles(best != null ? ParticleTypes.CRIT : ParticleTypes.SMOKE, stop.x, stop.y, stop.z, 1, 0, 0, 0, 0);
 			if (best == null) {
 				continue;
 			}
@@ -214,9 +216,14 @@ public final class FusionCannons {
 		}
 	}
 
-	/** Her shots' damage: an arrow's type (a shot, not a melee blow), from her and by her, so an enemy barrier takes it. */
+	/**
+	 * Her shots' damage: overcraft:hitscan (a shot, not a melee blow, as Combat.hitscan), from her and by her, so an enemy
+	 * barrier takes it. An arrow's type, as before, is a projectile, which an enderman dodges: her cannons never hit one (the
+	 * owner on 0.3.66, #162: "lots of hitscan firing doesn't hit enderman, like dva primary fire").
+	 */
 	static DamageSource shotSource(ServerPlayer owner) {
 		return new DamageSource(owner.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
-			.getOrThrow(DamageTypes.ARROW), owner, owner);
+			.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,
+				dev.overcraft.Overcraft.id("hitscan"))), owner, owner);
 	}
 }

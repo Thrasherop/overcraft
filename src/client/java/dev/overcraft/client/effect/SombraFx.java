@@ -144,7 +144,11 @@ public final class SombraFx {
 			if (e instanceof CyberspaceEntity) {
 				cyberFlight(e, enemy);
 			} else if (e instanceof TranslocatorEntity) {
-				// the beacon's ribbons: 0.25 and 0.5 m wide, 0.3 s, violet (1B0F)
+				// the beacon's ribbons: 0.25 and 0.5 m wide, 0.3 s, violet (1B0F, H, on child 1710). Not for her who threw it: the owner's frame 2 has none with the beacon
+				// about 2 m out (measured; one frame, and why isn't in what's read), and ours buried the beacon in a wedge (sbsf_vday_fade03)
+				if (e instanceof net.minecraft.world.entity.projectile.Projectile thrown && thrown.getOwner() != null && ownFirstPerson(thrown.getOwner())) {
+					continue;
+				}
 				Fx.trail(e.getId(), e.position(), "lucio_trail", enemy ? Palette.SOMBRA_BEACON_TRAIL_ENEMY_N : Palette.SOMBRA_BEACON_TRAIL_N,
 					0.25f, 0.3f, 0.9f);
 				Fx.trail(e.getId() + 1_000_000, e.position(), "lucio_trail", enemy ? Palette.SOMBRA_BEACON_TRAIL_ENEMY_N
@@ -656,13 +660,17 @@ public final class SombraFx {
 		float[] mesh = ringMesh;
 		Fx.attach("sombra_detect/" + me.getId(), me.position().add(0, RING_LIFT, 0), () -> {
 			Particle p = Fx.particle("sombra_square_band", Palette.SOMBRA_DETECT_RING_N);
-			return p == null ? null : p.mesh(mesh, new Vec3(1, 0, 0)).life(1).size(RING_SIZE, RING_SIZE).alpha(0.5f).fade(0.05f, 0.2f);
+			return p == null ? null : p.mesh(mesh, new Vec3(1, 0, 0)).life(1).size(RING_SIZE, RING_SIZE).alpha(0.9f).fade(0.05f, 0.2f);
 		});
 	}
 
 	private static float @org.jspecify.annotations.Nullable [] ringFrom, ringMesh;
-	private static final float RING_BAND = 0.1f;
-	private static final float RING_LIFT = 0.1f;
+	/**
+	 * Its height, a share of its width, and how far off the ground. 4DD9's size [1, 1] on the unit cylinder gives neither height nor the 8 m (M); at 0.1 it stood 0.84 m tall, a purple haze about 140 px deep on
+	 * the floor (wday_cycle01). Frames 3 and 4 show a line a few px wide with brighter segments: about 0.1 m tall on the floor (measured by eye from them, at about 4 m), brighter (ours).
+	 */
+	private static final float RING_BAND = 0.012f;
+	private static final float RING_LIFT = 0.03f;
 	/** 8 m across: the cylinder's 0.95 scaled. */
 	private static final float RING_SIZE = 8 / 0.95f;
 

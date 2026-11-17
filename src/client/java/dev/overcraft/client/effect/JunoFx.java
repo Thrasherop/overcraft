@@ -186,6 +186,8 @@ public final class JunoFx {
 	private static final List<Ray> RAYS = new ArrayList<>();
 	/** Her lock markers on the targets she has locked (her own client only), the ring's boost, the ray's allies. */
 	private static final Map<Integer, Held> LOCKS = new HashMap<>();
+	/** Her locks still filling, on her own client: when each began and when it would be done. */
+	private static final Map<Integer, Held> FILLS = new HashMap<>();
 	private static final Map<Integer, Held> BOOSTED = new HashMap<>();
 	private static final Map<Integer, Held> RAYED = new HashMap<>();
 	/** Each Juno's last reload whose sparks were drawn (its start, game s): once a reload. */
@@ -342,7 +344,6 @@ public final class JunoFx {
 			}
 		}
 		torpedoes(mc, now);
-		locks(mc, now);
 		rings(mc, now);
 		rays(mc);
 		boosted(mc, now);
@@ -505,55 +506,143 @@ public final class JunoFx {
 
 	// ---- Pulsar Torpedoes ----
 
+	/** Seconds into this lock, or below 0 with none going. */
+	public static float lockingFor(HeroAnimator a, float t) {
+		float lockFor = a.since("torpedo_lock", t);
+		return lockFor < a.since("torpedo_fire", t) && lockFor < a.since("torpedo_cancel", t) && lockFor < a.since("ult", t)
+			&& lockFor < JunoStats.LOCK_WINDOW + 0.1f ? lockFor : -1;
+	}
+
+	/** The hand pass's field of view, vertical (Minecraft's fixed 70; the note's bones at 1.4 land where it says with it): half its tangent. */
+	private static final float VIEW_TAN = (float) Math.tan(Math.toRadians(70) / 2);
+	/** How far from the eye her view's glows are drawn: ahead of the pods' meshes, whose depth the hand pass tests against (ours). */
+	private static final float VIEW_DEPTH = 0.2f;
+	/** Her pods' spheres against the bones: the bones at the lock's hold are at about (0.97, 0.54) of the screen, half off it; the frames' spheres at about (0.76, 0.43) (eye-read from the chat's copies, by the note). */
+	private static final float VIEW_IN_X = 0.78f, VIEW_IN_Y = 0.8f;
+	/**
+	 * Radii, as shares of half the screen's height. The sphere 190 of 544 (and 195 by "3s"), the yellow rim 330 (eye-read from the chat's copies, by the note). The ring's mask 724 stops short of its quad:
+	 * ours came out at 163 and 277 of 190 and 330 (the critic's read of wday_pods), so 1.17 on the quad.
+	 */
+	private static final float VIEW_SPHERE = 0.35f, VIEW_RIM = 0.607f, VIEW_RING_MASK = 1.17f;
+	/** The rim comes in between the frames' "4s" (no rim) and "3s", ours; the sphere pops up with the pods' raise (13/30 s, H). */
+	private static final float VIEW_RIM_FROM = 0.5f, VIEW_RIM_IN = 0.4f, VIEW_RAISE = 13 / 30f;
+
+	/**
+	 * The pods' glow as her own view sees it, drawn in the hand pass over the drawn pods (#86: a world particle was painted over by the pod, since
+	 * the arms draw later with depth cleared: rendering "Things in the hand pass"; and a quarter size on top of that). Layers from the data, 5254.00D
+	 * (4695 #214 on 048D, #862 on 048E): soft 568C; star E221 x 627C to .727 at .49 of the lock; ring 724 x 0558 from .5 to .282; burst 37C36 x 364C
+	 * over F6 .769-1; flare 37A79 x 75E0. Their sizes in metres don't fit a pod half a metre from the eye, so sizes and places are measured from the
+	 * note's eye-read of the chat's copies (a glass sphere, a bright star inside that washes the mesh out, then a faint yellow rim); brightnesses ours.
+	 */
+	public static void viewPods(com.mojang.blaze3d.vertex.PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector collector, Player juno, float now) {
+		HeroAnimator a = HeroAnimator.of(juno);
+		float t = lockingFor(a, now);
+		if (t < 0) {
+			return;
+		}
+		Minecraft mc = Minecraft.getInstance();
+		float aspect = (float) mc.getWindow().getWidth() / Math.max(1, mc.getWindow().getHeight());
+		float raise = Math.min(1, t / VIEW_RAISE);
+		float progress = Math.min(1, t / POD_FULL);
+		org.joml.Matrix4f inverse = new org.joml.Matrix4f(poseStack.last().pose()).invert();
+		// the pass's pose ends in the world's axes from the camera (HeroModelRenderer.viewPod), not the view's: the bone read along the camera's own
+		// (a test on its z alone drew nothing while she faced south: first capture, sbsf_day_juno_lock*)
+		net.minecraft.client.Camera camera = mc.gameRenderer.mainCamera();
+		org.joml.Vector3f forward = new org.joml.Vector3f(camera.forwardVector());
+		org.joml.Vector3f up = new org.joml.Vector3f(camera.upVector());
+		org.joml.Vector3f right = new org.joml.Vector3f(camera.leftVector()).negate();
+		for (int side = 0; side < 2; side++) {
+			org.joml.Vector3f bone = dev.overcraft.client.model.HeroModelRenderer.viewPod(side);
+			float depth = bone == null ? 0 : bone.dot(forward);
+			if (depth < 0.01f) {
+				continue;
+			}
+			float x = bone.dot(right) / depth * VIEW_IN_X / (VIEW_TAN * aspect);
+			float y = bone.dot(up) / depth * VIEW_IN_Y / VIEW_TAN;
+			float sphere = VIEW_SPHERE * raise;
+			float spin = now * (side == 0 ? 0.7f : -0.7f);
+			viewPodLayer(poseStack, collector, inverse, "juno_soft_dot", Palette.JUNO_POD_GLOW_N, x, y, sphere * 0.75f, aspect, forward, right, up, 0, 0.9f * raise);
+			viewPodLayer(poseStack, collector, inverse, "juno_ring_thin", Palette.JUNO_POD_RIBBON_N, x, y, sphere * VIEW_RING_MASK, aspect, forward, right, up, 0, 0.7f * raise);
+			viewPodLayer(poseStack, collector, inverse, "lw_star", Palette.JUNO_POD_GLOW_N, x, y, sphere * (0.5f + 0.5f * progress), aspect, forward, right, up, spin, 1.3f * raise);
+			viewPodLayer(poseStack, collector, inverse, "juno_lens_flare", Palette.JUNO_POD_RIBBON_N, x, y, sphere * 0.8f, aspect, forward, right, up, 0, 0.2f * progress);
+			float burst = Math.max(0, (progress - 0.769f) / 0.231f);
+			if (burst > 0) {
+				viewPodLayer(poseStack, collector, inverse, "lw_burst", Palette.JUNO_POD_BURST_N, x, y, sphere * 0.9f * burst, aspect, forward, right, up, spin, 0.2f);
+			}
+			float rim = Math.clamp((t - VIEW_RIM_FROM) / VIEW_RIM_IN, 0, 1);
+			if (rim > 0) {
+				viewPodLayer(poseStack, collector, inverse, "juno_ring_thin", Palette.JUNO_POD_BURST_N, x, y, VIEW_RIM * VIEW_RING_MASK, aspect, forward, right, up, 0, 0.35f * rim);
+			}
+		}
+	}
+
+	/** One facing quad at this place on the screen ((x, y) in -1..1, its radius a share of half the height), added to the scene. */
+	private static void viewPodLayer(com.mojang.blaze3d.vertex.PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector collector, org.joml.Matrix4f inverse,
+		String mask, Palette palette, float x, float y, float radius, float aspect, org.joml.Vector3f forward, org.joml.Vector3f right, org.joml.Vector3f up, float spin, float strength) {
+		net.minecraft.resources.Identifier texture = EffectArt.get(mask, palette);
+		if (texture == null || strength <= 0.01f) {
+			return;
+		}
+		float cx = x * VIEW_TAN * aspect * VIEW_DEPTH;
+		float cy = y * VIEW_TAN * VIEW_DEPTH;
+		float r = radius * VIEW_TAN * VIEW_DEPTH;
+		float cos = (float) Math.cos(spin) * r;
+		float sin = (float) Math.sin(spin) * r;
+		int colour = Math.clamp(Math.round(strength * 255), 0, 255) << 24 | 0xFFFFFF;
+		collector.submitCustomGeometry(poseStack, FxRender.additive(texture), (pose, buffer) -> {
+			viewPodVertex(pose, buffer, inverse, forward, right, up, cx - cos + sin, cy - sin - cos, colour, 0, 1);
+			viewPodVertex(pose, buffer, inverse, forward, right, up, cx + cos + sin, cy + sin - cos, colour, 1, 1);
+			viewPodVertex(pose, buffer, inverse, forward, right, up, cx + cos - sin, cy + sin + cos, colour, 1, 0);
+			viewPodVertex(pose, buffer, inverse, forward, right, up, cx - cos - sin, cy - sin + cos, colour, 0, 0);
+		});
+	}
+
+	private static void viewPodVertex(com.mojang.blaze3d.vertex.PoseStack.Pose pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, org.joml.Matrix4f inverse,
+		org.joml.Vector3f forward, org.joml.Vector3f right, org.joml.Vector3f up, float x, float y, int colour, float u, float v) {
+		org.joml.Vector3f at = new org.joml.Vector3f(forward).mul(VIEW_DEPTH).add(new org.joml.Vector3f(right).mul(x)).add(new org.joml.Vector3f(up).mul(y));
+		inverse.transformPosition(at);
+		buffer.addVertex(pose, at.x, at.y, at.z).setColor(colour).setUv(u, v).setOverlay(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY)
+			.setLight(0xF000F0).setNormal(pose, 0, 1, 0);
+	}
+
 	/**
 	 * The pods while she locks (5254 on hp 048D / 048E, held: sizes by the lock's progress, M input): per pod a burst glow
 	 * 37C36 growing to 1 m over the last quarter, a star flare E221 to 0.73 m, sparks drifting back, blue (red to her enemies).
 	 * The progress here: her time locking over the longest lock (ours). After a volley, the pods' fire trails (62B6: 0.15 m
-	 * ribbons, life 0.3 s, for 1.6 s; drawn while posed). In her own view on the view model's pods as drawn (up in the top
-	 * corners while she locks: HeroModelRenderer.viewPod), a quarter the size (they're half a metre from her eyes there), no
-	 * sparks or trails (#86: nothing showed on them in her view).
+	 * ribbons, life 0.3 s, for 1.6 s; drawn while posed). In her own view not here: viewPods, in the hand pass.
 	 */
 	private static void pods(Player juno) {
 		boolean own = ownFirstPerson(juno);
 		HeroAnimator a = HeroAnimator.of(juno);
 		float t = juno.level().getGameTime() / 20f;
 		float lockFor = a.since("torpedo_lock", t);
-		boolean locking = lockFor < a.since("torpedo_fire", t) && lockFor < a.since("torpedo_cancel", t) && lockFor < a.since("ult", t)
-			&& lockFor < JunoStats.LOCK_WINDOW + 0.1f;
+		boolean locking = lockingFor(a, t) >= 0;
 		boolean enemy = KirikoFx.enemyOf(juno);
-		if (locking) {
+		if (locking && !own) {
 			float progress = Math.min(1, lockFor / POD_FULL);
 			// the burst glow only over the last quarter of it
 			float burst = Math.max(0, (progress - 0.75f) / 0.25f);
 			for (int side = 0; side < 2; side++) {
 				int s = side;
-				// in her own view the particle follows the drawn pod (its position a drift from it: none)
-				Vec3 at = own ? Vec3.ZERO : pod(juno, side);
-				java.util.function.Supplier<org.joml.Vector3f> view = () -> {
-					org.joml.Vector3f v = dev.overcraft.client.model.HeroModelRenderer.viewPod(s);
-					return v != null ? v : new org.joml.Vector3f(0, 0, -100);
-				};
-				float k = own ? 0.25f : 1;
-				Particle glow = Fx.attach("juno_pod/" + juno.getId() + "/" + side + (own ? "/view" : ""), at, () -> {
+				Vec3 at = pod(juno, side);
+				Particle glow = Fx.attach("juno_pod/" + juno.getId() + "/" + side, at, () -> {
 					Particle g = Fx.particle("lw_burst", enemy ? Palette.JUNO_POD_GLOW_ENEMY_N : Palette.JUNO_POD_GLOW_N);
-					return g == null ? null : own ? g.life(0.2f).alpha(0.8f).fade(0.05f, 0.5f).follow(view).near()
-						: g.life(0.2f).alpha(0.8f).fade(0.05f, 0.5f).nearFade(0.5f);
+					return g == null ? null : g.life(0.2f).alpha(0.8f).fade(0.05f, 0.5f).nearFade(0.5f);
 				});
 				if (glow != null) {
-					float size = (0.15f + 0.85f * burst) * k;
+					float size = 0.15f + 0.85f * burst;
 					glow.size(size, size);
 				}
-				Particle star = Fx.attach("juno_pod_star/" + juno.getId() + "/" + side + (own ? "/view" : ""), at, () -> {
+				Particle star = Fx.attach("juno_pod_star/" + juno.getId() + "/" + side, at, () -> {
 					Particle g = Fx.particle("lw_star", enemy ? Palette.JUNO_POD_GLOW_ENEMY_N : Palette.JUNO_POD_GLOW_N);
-					return g == null ? null : own ? g.life(0.2f).spin(s * 1.2f, 2).alpha(0.7f).fade(0.05f, 0.5f).follow(view).near()
-						: g.life(0.2f).spin(s * 1.2f, 2).alpha(0.7f).fade(0.05f, 0.5f).nearFade(0.5f);
+					return g == null ? null : g.life(0.2f).spin(s * 1.2f, 2).alpha(0.7f).fade(0.05f, 0.5f).nearFade(0.5f);
 				});
 				if (star != null) {
-					float size = 0.73f * progress * k;
+					float size = 0.73f * progress;
 					star.size(size, size);
 				}
 				// sparks up to 20 a second, drifting back
-				if (!own && Fx.RANDOM.nextFloat() < progress) {
+				if (Fx.RANDOM.nextFloat() < progress) {
 					Particle spark = Fx.particle("spark#4", enemy ? Palette.JUNO_POD_GLOW_ENEMY_N : Palette.JUNO_POD_GLOW_N);
 					if (spark != null) {
 						Fx.add(spark.at(at).velocity(facing(juno).scale(-range(0.3f, 1)).add(randomUnit().scale(0.3))).life(range(0.2f, 0.4f))
@@ -778,25 +867,38 @@ public final class JunoFx {
 	}
 
 	/**
-	 * Her lock markers (the data's is UX element 0727.116 on the target's hp 0001, a HUD widget, not decoded: ours a ring
-	 * round the target's middle, cyan on an ally, red on an enemy, turning), on her own client only, from the lock until its
-	 * torpedo leaves.
+	 * Her locks as her HUD marks them (4B99 #158: 0727.116, world layer, shown to her alone; 646D = v10349 / v1723 the fill, 5BC2 ally or enemy, M), each
+	 * mark's art ours since none is located (ReticleHud.junoMark): the target, how far its lock has filled, 0-1. A filling one's from the server's
+	 * first tick on it (it sends how long the fill takes), and is dropped if the lock hasn't come by then (out of the cone); a locked one is 1 until
+	 * its torpedo leaves.
 	 */
-	private static void locks(Minecraft mc, float now) {
-		held(mc, LOCKS, now, (target, h, n) -> {
-			boolean ally = mc.player != null && dev.overcraft.hero.Allies.wasAlly(mc.player, target);
-			Vec3 centre = target.getBoundingBox().getCenter();
-			float size = Math.max(0.9f, target.getBbHeight() * 0.9f);
-			Particle ring = Fx.attach("juno_lock/" + target.getId(), centre, () -> {
-				Particle r = Fx.particle("juno_ring_thin", ally ? Palette.JUNO_TORP_LOCK_GLINT_N : Palette.ENEMY);
-				return r == null ? null : r.life(0.2f).spin(0, 1.5f).alpha(0.9f).fade(0.05f, 0.5f).nearFade(0.5f);
-			});
-			if (ring != null) {
-				// a snap in at the lock: from 1.6x to its size over 0.15 s
-				float in = Math.min(1, (n - h.since) / 0.15f);
-				ring.size(size * (1.6f - 0.6f * in), size * (1.6f - 0.6f * in));
+	public static void lockMarks(Minecraft mc, float now, boolean locking, java.util.function.ObjDoubleConsumer<Entity> mark) {
+		if (mc.level == null) {
+			return;
+		}
+		if (!locking) {
+			// the lock's over: nothing goes on filling
+			FILLS.clear();
+		}
+		for (Iterator<Map.Entry<Integer, Held>> it = FILLS.entrySet().iterator(); it.hasNext(); ) {
+			Map.Entry<Integer, Held> fill = it.next();
+			Entity target = mc.level.getEntity(fill.getKey());
+			if (target == null || LOCKS.containsKey(fill.getKey())) {
+				it.remove();
+			} else {
+				// (the server says when it stops: juno_lock_unfill; a late lock waits at full)
+				mark.accept(target, Math.min(1, (now - fill.getValue().since) / Math.max(0.01f, fill.getValue().until - fill.getValue().since)));
 			}
-		});
+		}
+		for (Iterator<Map.Entry<Integer, Held>> it = LOCKS.entrySet().iterator(); it.hasNext(); ) {
+			Map.Entry<Integer, Held> lock = it.next();
+			Entity target = mc.level.getEntity(lock.getKey());
+			if (target == null || now >= lock.getValue().until) {
+				it.remove();
+			} else {
+				mark.accept(target, 1);
+			}
+		}
 	}
 
 	// ---- Hyper Ring ----
@@ -1344,6 +1446,17 @@ public final class JunoFx {
 					LOCKS.put(e.entity(), new Held(now, now + (float) JunoStats.LOCK_WINDOW + 1, enemy));
 				}
 			}
+			case "juno_lock_fill" -> {
+				// dx how long a full fill takes, dy how much is done: a target that left and came back goes on from there
+				if (mc.player != null && e.variant() == mc.player.getId()) {
+					FILLS.put(e.entity(), new Held(now - e.dx() * e.dy(), now + e.dx() * (1 - e.dy()), enemy));
+				}
+			}
+			case "juno_lock_unfill" -> {
+				if (mc.player != null && e.variant() == mc.player.getId()) {
+					FILLS.remove(e.entity());
+				}
+			}
 			case "juno_torpedo" -> launch(podLaunch(mc, at), e.entity(), e.variant() == 1, enemy);
 			case "juno_torpedo_hit" -> torpedoHit(at, e.entity(), e.variant() == 1, enemy);
 			case "juno_torpedo_wall" -> wall(at, dir, e.entity(), enemy);
@@ -1353,7 +1466,10 @@ public final class JunoFx {
 			// one who has just come to see it (OrbitalRay.showTo): where it is now, its age from what's left, no landing
 			case "juno_ray_state" -> addRay(at, dir, e.entity(), (int) Math.round(JunoStats.RAY_TIME * 20), e.variant(), enemy);
 			case "juno_ray_ally" -> RAYED.put(e.entity(), new Held(now - e.dx(), now + e.variant() / 20f, enemy));
-			case "juno_locks_gone" -> LOCKS.clear();
+			case "juno_locks_gone" -> {
+				LOCKS.clear();
+				FILLS.clear();
+			}
 			default -> {
 				return false;
 			}
@@ -1400,6 +1516,7 @@ public final class JunoFx {
 		TORPEDOES.clear();
 		RINGS.clear();
 		RAYS.clear();
+		FILLS.clear();
 		LOCKS.clear();
 		BOOSTED.clear();
 		RAYED.clear();

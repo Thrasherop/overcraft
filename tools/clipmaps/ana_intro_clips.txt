@@ -1,0 +1,12 @@
+# Ana's Play of the Game highlight intro: the clip only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/ana.glb by bone name (HeroModels, from hero_models/ana_intro_clips.glb), as Sigma's (sigma_intro_clips.txt).
+# From DataTool's extract-unlocks "Ana|highlightintro=*" (build 154088, archived: research\potg_intros\extract\Unlocks\Heroes\Ana\
+# HighlightIntro; headers research\potg_intros\intro_clips_rest.txt). The default Overwatch plays "Heroic" (her other base intros:
+# Shh, Locked On, Guardian, Under Fire). Heroic holds five body clips (239 of their 249 bones her model's, 10562): group 16-32 BACC
+# 8.667 s (effect 4635); group 36 BC6D 2.433 s, BC6E 7.6 s, BC6F 5.0 s, BC70 6.667 s. Her intro set 42EA's alias B33 is a SEQUENCE
+# (research\ana\work\clipmap_ana\compact_42EA.txt, H tree): seq[0] 8.667 s p16/32 -> seq[1] 5.0 -> seq[2] 6.667 -> seq[3] 2.433 ->
+# seq[4] a 7.6 or a random pick; the set's own ids (19EA5-19EAA) are not extracted. So BACC is the opening (H by length and group).
+# Root travel 0.25 m in the export; her rifle is part of her model. 261 frames at 30 fps. Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <10562.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/ana_intro_clips.txt --clips-from=<...>\Heroes\Ana\HighlightIntro\Overwatch\Heroic
+emote_00000000BACC = potg_intro

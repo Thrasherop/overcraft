@@ -256,6 +256,27 @@ public final class Combat {
 		return state * boosters * Tank.knockbackFactor(target) * dev.overcraft.sigma.GraviticFlux.knockbackFactor(target);
 	}
 
+	/**
+	 * Minecraft's own push (a zombie's or husk's hit, an arrow) on a hero in hero play: Minecraft sizes it for its own
+	 * gravity, 0.4 blocks a tick up and out, which a plain player lands from in about 0.5 s, about 1 m back. Under Overwatch's
+	 * gravity (17.5 m/s², OwMovement) the same lift kept a hero up about 0.9 s at full sideways speed: 3.3 m a hit, a husk
+	 * juggling her 19 m in six (#143, measured 2026-11-15: hero mode 3.3 m a hit, plain Minecraft 1.0 m). The distance goes
+	 * with the push squared (speed times time aloft), so 0.55 gives Minecraft's hop and distance back. Ours: Overwatch has
+	 * no mob hits to copy. A hero's own pushes (their quick melee, abilities) stay as they are.
+	 */
+	public static final double MINECRAFT_PUSH_ON_HERO = 0.55;
+
+	public static double minecraftPushOnHero(LivingEntity target, @org.jspecify.annotations.Nullable DamageSource source) {
+		if (!(target instanceof Player player) || !HeroManager.inHeroPlay(player)) {
+			return 1;
+		}
+		Entity attacker = source == null ? null : source.getEntity();
+		if (attacker instanceof Player a && HeroManager.inHeroPlay(a)) {
+			return 1;
+		}
+		return MINECRAFT_PUSH_ON_HERO;
+	}
+
 	/** The share of a hero's push that reaches it: its state's, and its knockback resistance (a warden, a ravager: none). */
 	public static double pushShare(LivingEntity target) {
 		return knockbackTaken(target) * Math.max(0, 1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
@@ -393,6 +414,10 @@ public final class Combat {
 	 * full amount (W Global Passive Abilities; ours: the owner's open question, ana-plan.md).
 	 */
 	public static float heal(LivingEntity target, double owHeal) {
+		if (target instanceof dev.overcraft.entity.TurretEntity) {
+			// nobody heals Torbjörn's turret but his hammer (W: repaired by the Forge Hammer; ours that heals pass it by)
+			return 0;
+		}
 		double scale = healScale(antiHealed(target), healBoosted(target), healCut(target), healCutTank(target));
 		if (scale <= 0) {
 			return 0;
@@ -791,6 +816,7 @@ public final class Combat {
 			case TRACER -> (int) dev.overcraft.tracer.TracerStats.ULT_COST;
 			case CASSIDY -> (int) dev.overcraft.cassidy.CassidyStats.ULT_COST;
 			case JUNKRAT -> (int) dev.overcraft.junkrat.JunkratStats.ULT_COST;
+			case TORBJORN -> (int) dev.overcraft.torbjorn.TorbjornStats.ULT_COST;
 			case ILLARI -> (int) dev.overcraft.illari.IllariStats.ULT_COST;
 			case ASHE -> (int) dev.overcraft.ashe.AsheStats.ULT_COST;
 			case DVA -> (int) dev.overcraft.dva.DvaStats.MECH_ULT_COST;
@@ -846,6 +872,11 @@ public final class Combat {
 		double perTick = Ow.hp(decay) / 20;
 		overhealth.put(entity.getUUID(), new Overhealth(entity, perTick, holdUntil + (long) Math.ceil(amount / perTick) + 1, holdUntil));
 		overhealthLeft.put(entity.getUUID(), amount);
+	}
+
+	/** What's left of an entity's overhealth, gone now (Torbjörn's Overload's at its end or his leaving play). */
+	public static void endOverhealth(LivingEntity entity) {
+		clearOverhealth(entity);
 	}
 
 	private static void clearOverhealth(LivingEntity entity) {

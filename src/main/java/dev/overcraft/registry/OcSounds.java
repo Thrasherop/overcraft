@@ -589,6 +589,24 @@ public final class OcSounds {
 		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
 		"ping_warning", "ping_enemy", "mine_throw", "mine_jump", "mine_kill", "trap", "tire_kill", "ultimate");
 	/**
+	 * Torbjörn's sounds by name ("torbjorn." + name, through dev.overcraft.torbjorn.TorbjornSounds; tools/soundmaps/torbjorn_sfx.txt) and his
+	 * voice moments ("torbjorn.voice.<moment>", tools/soundmaps/torbjorn.txt; not the wheel's call_* lines, every hero's: OcSounds.init
+	 * registers those and "resurrected", "damage_boosted", "nano_boosted": registering them twice crashed the start, Illari's and his).
+	 */
+	public static final java.util.List<String> TORBJORN_SOUNDS = java.util.List.of("ult.friendly", "ult.enemy", "draw_hammer",
+		"draw_hammer_3p", "draw_rivet", "draw_rivet_3p", "hammer.hit", "hammer.hit_3p", "hammer.hit_world", "hammer.repair",
+		"hammer.repair_3p", "hammer.repair_full", "hammer.swing", "hammer.swing_3p", "molten.burn", "molten.burn_3p", "molten.burn_hit",
+		"molten.fire", "molten.fire_3p", "molten.flight", "molten.hit", "molten.impact", "molten.loop", "molten.loop_3p", "molten.pool",
+		"molten.pool_loop", "overload", "overload.end", "overload.loop", "overload.loop_3p", "overload_3p", "reload", "reload_3p",
+		"rivet.alt_fire", "rivet.alt_fire_3p", "rivet.alt_hit_enemy", "rivet.alt_hit_enemy_3p", "rivet.alt_hit_world", "rivet.fire",
+		"rivet.fire_3p", "rivet.hit_enemy", "rivet.hit_enemy_3p", "rivet.hit_world", "turret.build", "turret.build_step", "turret.damaged",
+		"turret.deploy", "turret.destroyed", "turret.destroyed_3p", "turret.downgrade", "turret.fire", "turret.flight", "turret.hit",
+		"turret.land", "turret.overloaded", "turret.recall", "turret.throw", "turret.throw_3p", "turret.upgrade", "ult.cast", "ult.cast_3p");
+	public static final java.util.List<String> TORBJORN_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "enemy_turret_destroyed", "hammer_kill", "overload",
+		"turret_attacked", "turret_build", "turret_destroyed", "turret_kill", "turret_repair", "turret_upgrade", "ultimate");
+	/**
 	 * Illari's sounds by name ("illari." + name, played through dev.overcraft.illari.IllariSounds; tools/soundmaps/illari_sfx.txt says
 	 * which data event each is) and her voice moments (Voice.say: "illari.voice.<moment>", tools/soundmaps/illari.txt). The ult line is
 	 * ult.friendly / ult.enemy, her own "ultimate".
@@ -664,6 +682,8 @@ public final class OcSounds {
 		CASSIDY_VOICE.forEach(moment -> register("cassidy.voice." + moment));
 		JUNKRAT_SOUNDS.forEach(name -> register("junkrat." + name));
 		JUNKRAT_VOICE.forEach(moment -> register("junkrat.voice." + moment));
+		TORBJORN_SOUNDS.forEach(name -> register("torbjorn." + name));
+		TORBJORN_VOICE.forEach(moment -> register("torbjorn.voice." + moment));
 		ILLARI_SOUNDS.forEach(name -> register("illari." + name));
 		ILLARI_VOICE.forEach(moment -> register("illari.voice." + moment));
 		ASHE_SOUNDS.forEach(name -> register("ashe." + name));

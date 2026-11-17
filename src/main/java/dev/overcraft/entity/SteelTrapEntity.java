@@ -31,9 +31,11 @@ import org.jspecify.annotations.Nullable;
  * creatures (D restitution 0.15). 0.75 s after it lands it's armed; the first enemy within 1 m springs it: 100 and a 2.5 s root
  * ({@link Junkrat#trapSprung}). It lets go at the root's end and goes 8 s later. 100 health: an enemy can break it (D 0355; W).
  */
-public class SteelTrapEntity extends OwProjectile {
+public class SteelTrapEntity extends OwProjectile implements SurfaceStuck {
 	/** 0 in flight, 1 set down, 2 sprung (synced: its look). */
 	private static final EntityDataAccessor<Integer> STAGE = SynchedEntityData.defineId(SteelTrapEntity.class, EntityDataSerializers.INT);
+	/** What it holds, as an entity id (-1 none; synced: its chain and the root's look on the caught, JunkratFx). */
+	private static final EntityDataAccessor<Integer> CAUGHT = SynchedEntityData.defineId(SteelTrapEntity.class, EntityDataSerializers.INT);
 	private int landed = -1;
 	private int sprung = -1;
 	private @Nullable LivingEntity caught;
@@ -51,6 +53,13 @@ public class SteelTrapEntity extends OwProjectile {
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 		super.defineSynchedData(builder);
 		builder.define(STAGE, 0);
+		builder.define(CAUGHT, -1);
+	}
+
+	/** Set down, it's on the ground (it bounces off walls and ceilings): SurfaceStuck. */
+	@Override
+	public @Nullable Direction stuckFace() {
+		return stage() >= 1 ? Direction.UP : null;
 	}
 
 	public int stage() {
@@ -61,8 +70,18 @@ public class SteelTrapEntity extends OwProjectile {
 		return stage() == 1 && landed >= Ow.ticks(JunkratStats.TRAP_ARM);
 	}
 
+	/** What it holds: the server's own, the synced id's on a client. */
 	public @Nullable LivingEntity caught() {
+		if (level().isClientSide()) {
+			int id = entityData.get(CAUGHT);
+			return id >= 0 && level().getEntity(id) instanceof LivingEntity e ? e : null;
+		}
 		return caught;
+	}
+
+	private void setCaught(@Nullable LivingEntity e) {
+		caught = e;
+		entityData.set(CAUGHT, e == null ? -1 : e.getId());
 	}
 
 	/** Its catch pulled out (Life Grip, #124): let go now, as at its time's end. */
@@ -70,7 +89,7 @@ public class SteelTrapEntity extends OwProjectile {
 		if (caught != null && getOwner() instanceof ServerPlayer owner) {
 			Junkrat.trapReleased(owner, this, caught);
 		}
-		caught = null;
+		setCaught(null);
 	}
 
 	@Override
@@ -130,7 +149,7 @@ public class SteelTrapEntity extends OwProjectile {
 				if (victim != null) {
 					entityData.set(STAGE, 2);
 					sprung = 0;
-					caught = victim;
+					setCaught(victim);
 					Junkrat.trapSprung(owner, this, victim);
 				}
 			}
@@ -139,7 +158,7 @@ public class SteelTrapEntity extends OwProjectile {
 		sprung++;
 		if (caught != null && (!caught.isAlive() || sprung >= Ow.ticks(Junkrat.rootSeconds(caught)))) {
 			Junkrat.trapReleased(owner, this, caught);
-			caught = null;
+			setCaught(null);
 		}
 		if (sprung >= Ow.ticks(JunkratStats.TRAP_ROOT + JunkratStats.TRAP_LINGER)) {
 			discard();
@@ -239,7 +258,7 @@ public class SteelTrapEntity extends OwProjectile {
 			if (getOwner() instanceof ServerPlayer owner) {
 				if (caught != null) {
 					Junkrat.trapReleased(owner, this, caught);
-					caught = null;
+					setCaught(null);
 				}
 				Junkrat.trapBroken(owner, this);
 			}

@@ -244,6 +244,16 @@ public final class Allies {
 			&& (isEnemy(hero, other) || friendlyFireOn(hero) && isAlly(hero, other));
 	}
 
+	/**
+	 * A lock the player aims (Deadeye): {@link #lockOn}, and also the mobs calm by nature (an enderman, a piglin, a zombified
+	 * piglin) even before they fight: a player who aims at one means it (the owner on 0.3.66: "deadeye still isn't locking
+	 * onto non-aggro enderman"; 2026-11-12, a calm enderman's kill counts). A cow stays out; a turret keeps lockOn.
+	 */
+	public static boolean lockOnAimed(LivingEntity hero, Entity other) {
+		return lockOn(hero, other) || other instanceof LivingEntity living && living.isAlive() && !other.isSpectator()
+			&& calmByNature(other) && !Combat.phaseStops(living);
+	}
+
 	private static boolean friendlyFireOn(LivingEntity hero) {
 		return hero instanceof Player player && HeroManager.options(player).friendlyFire();
 	}

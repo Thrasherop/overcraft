@@ -225,6 +225,8 @@ public final class HeroState {
 	public int cassidyRollDir;
 	/** Junkrat (dev.overcraft.junkrat.Junkrat): his kit's state. */
 	public final dev.overcraft.junkrat.JunkratState junkrat = new dev.overcraft.junkrat.JunkratState();
+	/** Torbjörn (dev.overcraft.torbjorn.Torbjorn): his kit's state. */
+	public final dev.overcraft.torbjorn.TorbjornState torbjorn = new dev.overcraft.torbjorn.TorbjornState();
 	/** Illari (dev.overcraft.illari.Illari): her kit's state. */
 	public final dev.overcraft.illari.IllariState illari = new dev.overcraft.illari.IllariState();
 	/** Ashe (dev.overcraft.ashe.Ashe): her kit's state. */
@@ -338,6 +340,10 @@ public final class HeroState {
 	public long dvaPrecisionEndedAt = -1000;
 	/** When Defense Matrix's "ate something" line is due (game time, -1: none): 0.75 s after an absorb (02CC #343). */
 	public long dvaMatrixLineAt = -1;
+	/** Which arm her matrix's next absorb beam leaves from (DvaFx: 1506 alternates hp 003D / 003E). */
+	public int dvaAbsorbArm;
+	/** Which cannon fired her last volley (DvaFx: 18FE alternates hp 0005 / 0007). */
+	public boolean dvaFusionSide;
 	/** Whether the Fusion Cannons fired last tick (a burst's first volley and its end have their own sounds). */
 	public boolean dvaFusionBurst;
 	/** When Shield System's restore sound may play again (game time). */
@@ -362,6 +368,8 @@ public final class HeroState {
 	public double junoFireClock;
 	/** Juno: each target whose lock tick is sounding, and when its file was started (game time; Torpedoes.ticking). */
 	public final java.util.Map<Integer, Long> junoLockTicking = new java.util.HashMap<>();
+	/** What her client was last told is filling (Torpedoes.marks). */
+	public final java.util.Set<Integer> junoLockFilling = new java.util.HashSet<>();
 	/** Juno: Locked On's cooldown taken off for this firing (ticks, at most 5 s). */
 	public double junoLockedOn;
 	/** Juno: ticks into Hyper Ring's cast and Orbital Ray's (-1 none). */

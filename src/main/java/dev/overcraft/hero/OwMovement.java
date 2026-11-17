@@ -407,7 +407,12 @@ public final class OwMovement {
 		int ticks;
 		boolean climbing;
 		boolean used;
+		/** The way into the wall she's on (unit, level), found when she takes hold. */
+		Vec3 into = Vec3.ZERO;
 	}
+
+	/** On a wall, her only level motion: this far a tick into it (m), so she stays against it (horizontalCollision) and never slides. */
+	private static final double CLIMB_HOLD = 0.02;
 
 	private OwMovement() {
 	}
@@ -556,7 +561,30 @@ public final class OwMovement {
 			entity.resetFallDistance();
 			Vec3 v = entity.getViewVector(1.0f).scale(Ow.speed(dev.overcraft.dva.DvaStats.BOOSTERS_SPEED * speedFactor(entity)));
 			entity.setDeltaMovement(v);
-			entity.move(MoverType.SELF, v);
+			// along the ground she steps up what she'd walk up (a slab, a path's edge): Minecraft's collide steps only an entity on
+			// the ground or moving down into it, and a level flight is neither, so a half slab stopped her dead for the rest of the
+			// flight (#148, reproduced 2026-11-15: z 134.30 from 1.3 s into it)
+			if (v.y <= 0 && !entity.level().noCollision(entity, entity.getBoundingBox().move(0, -0.05, 0))) {
+				entity.setOnGround(true);
+			}
+			// and up over a one-block rise (a curb in Minecraft's terrain): on generated ground the first such rise stopped her
+			// for the rest of the flight, which played as the flight cut short (the owner on 0.3.55, "Dva is still having
+			// boosters cancelled"; reproduced 2026-11-16 in a desert, stopped 10 m in at z -103.7). As little lift as clears it,
+			// with room overhead; anything taller is a wall
+			// and past any other edge her box catches (leaves or a branch at head height, a ledge's lip, a trunk's corner; the owner
+			// on 0.3.66: "they still are broken", reproduced 2026-11-16 in a birch wood: stopped 8.8 m in under a tree's leaves with
+			// 3 m of air below, hanging there for the rest of the flight): the smallest slip down or sideways that clears it
+			Vec3 slip = boostersSlip(entity, v);
+			if (slip != null) {
+				// no faster than she flies (0.6 m a tick): a wide slip curves her round over a few ticks, not in one jump; the
+				// next ticks pick the same way, now the nearer
+				double most = v.length();
+				slip = slip.length() > most ? slip.normalize().scale(most) : slip;
+			}
+			// one move, slip and flight together: a dedicated server checks the tick's movement as one move from where she was,
+			// and two moves here (the slip, then the flight) ended somewhere its single one didn't, so it put her back each tick
+			// ("Kiriko moved wrongly!" x13 against a trunk on a dedicated server, 2026-11-16: she shook in place for the flight)
+			entity.move(MoverType.SELF, slip == null ? v : v.add(slip));
 			return;
 		}
 		if (pharahBarrage.test(entity)) {
@@ -671,6 +699,11 @@ public final class OwMovement {
 		double dy = vy;
 		if (climb(entity, input)) {
 			vy = dy = Ow.speed(KirikoStats.CLIMB_SPEED);
+			// straight up: no level motion but a hold against the wall (the owner, #159: "there should be no sideways
+			// movement. Once you attach to a wall, it is straight up")
+			Vec3 into = CLIMBS.get(entity).into;
+			horizontal = into.scale(CLIMB_HOLD);
+			end = Vec3.ZERO;
 		} else if (boots != null && gliding >= 0) {
 			entity.resetFallDistance();
 			if (boots.rising) {
@@ -861,6 +894,7 @@ public final class OwMovement {
 		if (wants && !climb.used) {
 			climb.climbing = true;
 			climb.ticks = 1;
+			climb.into = wallSide(entity);
 			return true;
 		}
 		return false;
@@ -1453,6 +1487,73 @@ public final class OwMovement {
 		}
 		Vec3 heading = shownHeading(entity, ride);
 		return (float) Math.toDegrees(Math.atan2(-heading.x, heading.z));
+	}
+
+	/** The level side a wall touches her on, the one most along her look (a corner has two): unit, or her look's if none is found. */
+	private static Vec3 wallSide(LivingEntity entity) {
+		Vec3 look = entity.getViewVector(1.0f);
+		Vec3 best = null;
+		double bestDot = -2;
+		for (net.minecraft.core.Direction d : net.minecraft.core.Direction.Plane.HORIZONTAL) {
+			Vec3 n = Vec3.atLowerCornerOf(d.getUnitVec3i());
+			if (!entity.level().noCollision(entity, entity.getBoundingBox().move(n.scale(0.05)))) {
+				double dot = n.x * look.x + n.z * look.z;
+				if (dot > bestDot) {
+					bestDot = dot;
+					best = n;
+				}
+			}
+		}
+		return best != null ? best : new Vec3(look.x, 0, look.z).normalize();
+	}
+
+	/**
+	 * D.Va's Boosters: the smallest shift that takes this tick's move past what's in its way, or null if none is needed or none will
+	 * do: up to BOOSTERS_CURB up or down and BOOSTERS_SLIP aside, alone or together (a trunk with leaves beside it at head height
+	 * needs down and aside at once), with a clear way to it (no slipping through a block); at equal sizes up first.
+	 */
+	static Vec3 boostersSlip(LivingEntity entity, Vec3 v) {
+		net.minecraft.world.phys.AABB box = entity.getBoundingBox();
+		// level only: aimed down, the ground under her is collide's to handle (a slip there was a hover)
+		Vec3 level = new Vec3(v.x, 0, v.z);
+		if (level.horizontalDistanceSqr() < 1.0E-6 || entity.level().noCollision(entity, box.move(level))) {
+			return null;
+		}
+		Vec3 flat = level.normalize();
+		Vec3 side = new Vec3(-flat.z, 0, flat.x);
+		for (double[] o : BOOST_SLIPS) {
+			Vec3 t = side.scale(o[0]).add(0, o[1], 0);
+			if (!entity.level().noCollision(entity, box.move(t.add(level)))) {
+				continue;
+			}
+			int steps = (int) Math.ceil(t.length() / 0.2);
+			boolean clear = true;
+			for (int k = 1; k <= steps && clear; k++) {
+				clear = entity.level().noCollision(entity, box.move(t.scale((double) k / steps)));
+			}
+			if (clear) {
+				return t;
+			}
+		}
+		return null;
+	}
+
+	/** The shifts {@link #boostersSlip} tries, (aside, up) in 0.1 m steps, smallest first, up before down, then aside before mixed. */
+	private static final double[][] BOOST_SLIPS = boostSlips();
+
+	private static double[][] boostSlips() {
+		java.util.List<double[]> all = new java.util.ArrayList<>();
+		int across = (int) Math.round(dev.overcraft.dva.DvaStats.BOOSTERS_SLIP * 10);
+		int high = (int) Math.round(dev.overcraft.dva.DvaStats.BOOSTERS_CURB * 10);
+		for (int a = -across; a <= across; a++) {
+			for (int u = -high; u <= high; u++) {
+				if (a != 0 || u != 0) {
+					all.add(new double[] {a / 10.0, u / 10.0});
+				}
+			}
+		}
+		all.sort(java.util.Comparator.<double[]>comparingDouble(o -> o[0] * o[0] + o[1] * o[1]).thenComparingDouble(o -> -o[1]));
+		return all.toArray(new double[0][]);
 	}
 
 	/** Climbing a wall right now (the local player only: other players' movement isn't simulated here). */

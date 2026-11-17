@@ -1,0 +1,4 @@
+cmd /tp @s 0.5 -60 0.0 0 15
+sleep 1.0
+screenshot tb_turret_dir2.png
+ents

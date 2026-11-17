@@ -46,6 +46,11 @@ public class FlashbangEntity extends OwProjectile {
 		start = from;
 	}
 
+	/** Bang Bang's second (its range past the first's): its bang is the larger 6541 (CassidyFx). */
+	public boolean second() {
+		return range > CassidyStats.FLASH_RANGE + 1.0E-6;
+	}
+
 	@Override
 	protected Item getDefaultItem() {
 		return Items.FIREWORK_STAR;

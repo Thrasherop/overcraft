@@ -1,0 +1,13 @@
+# Sojourn's Play of the Game highlight intro: the clip only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/sojourn.glb by bone name (HeroModels, from hero_models/sojourn_intro_clips.glb), as Sigma's (sigma_intro_clips.txt).
+# From DataTool's extract-unlocks "Sojourn|highlightintro=*" (build 154088, archived: research\potg_intros\extract\Unlocks\Heroes\
+# Sojourn\HighlightIntro; headers research\potg_intros\intro_clips_rest.txt). The default Overwatch plays "Heroic" (her other base
+# intros: Leader, Slide Into Action). Heroic holds four body clips (288 of their ~296 bones her model's, DCA7), group 32: ABEF 3.667 s
+# (effect 41C2), AC07 7.233 s (effect 41D5), BAB8 4.333 s (effect 45ED), BAC8 7.333 s (effect 45EC). Her intro set 4306's alias B33 is a
+# SEQUENCE (research\sojourn\work\clipmap_sojourn\compact_4306.txt, H tree): seq[0] 7.233 s -> seq[1] 7.333 -> seq[2] 4.333 -> seq[3]
+# 7.333 -> seq[4] a 7.333 or a random pick of 7.333 / 4.333; the set's own ids (19F7B-19F7D) are not extracted. So AC07 is the opening
+# (H by length: the only 7.233 s clip; ABEF, 3.667 s, is in no step). She stays in place (root travel 0.05 m in the export); her
+# railgun is its own model on hardpoint 00C9 (sojourn_weapon), moved by her bones. 217 frames at 30 fps. Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <DCA7.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/sojourn_intro_clips.txt --clips-from=<...>\Heroes\Sojourn\HighlightIntro\Overwatch\Heroic
+emote_00000000AC07 = potg_intro
