@@ -22,6 +22,9 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
 - **Junkrat's frag hit size (#163):** its direct hit is 0.32 m around the frag. Played against a husk at 10 m at offsets
   on both sides: hits and misses match that radius.
 - **The perk menu takes quick clicks:** a short click with Left Alt held picked nothing.
+- **A movement ability lets go of Jetpack Cat's rope (#142):** Blink, Jump Jet, Combat Roll, Swift Step, Boosters and the
+  other movement abilities end the tow. Played on two clients: towed as Tracer, Blink broke the rope and she dropped
+  while the cat flew on.
 
 ## 2026-11-17: 0.3.72 on next (not on main yet)
 
