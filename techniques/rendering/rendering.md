@@ -272,3 +272,18 @@ fitting each by its own outline (width, top of the hair) moved heroes whose outl
 - **Recorded plus read:** the play only reaches what the harness reached (no Valkyrie, no ally hits), so each list is the log's keys plus the pairs the Fx class names literally (`fx128_scan.py`, `fx128_gen.py` in the run folder). A palette chosen through a variable is only in the list if play reached it.
 - **Watch what draws at the pick, not after it:** a model's glow or a jetpack flame asks for its art in the pick's own frame, before any wait; those go in `ON_PICK`. And a hero can draw `Palette.ENEMY` in its own view (Juno's rings on the enemies she hits): the generator filed those as enemy-only, the log caught it.
 - Some first uses are still over 100 ms with no art made (Mercy's beam, Ana's scope): another first-use cost, not looked into.
+
+## Effects: what bit (2026-11-17)
+
+From the effects of #150 (Tracer, D.Va, Illari, Torbjorn, Cassidy, Pharah, Junkrat):
+
+- **EffectArt.Palette sits at Java's 64 KB method limit.** Inline stop lists in the enum make its static initializer too
+  large ("code too large"). The lists live in `PaletteStops0/1/2` (generated, 150 each) and new palettes as arrays in
+  `HeroPalettes` (or a hero's own class, `JunkratPalettes`); the enum constants only reference them.
+- **Solid masks take a palette's top stop**: end a palette on its colour, not white, or every solid piece draws white.
+- **`dva_solid` is a plain square** unless a mesh is set on the particle (D.Va's ball): use a round mask (`sojourn_dot`) for orbs.
+- **First-person hands and weapon draw over the world**: an effect placed at the hand in the shooter's own view is hidden
+  behind the gun. Place it beside the gun's silhouette, or take the hand point from the first-person renderer (Sojourn's).
+- **Muzzle flashes in the shooter's own first person**: a sixth the size and no glow (a third still whited out the pistols).
+- **Testing effects**: `fxnear r` lists live particles (attached ones aren't counted); the dev `fx` command plays 3 m ahead,
+  inside the near-fade of effects that fade within 3 m of the camera, so it can show nothing for them.

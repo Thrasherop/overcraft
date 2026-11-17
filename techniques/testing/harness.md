@@ -214,3 +214,15 @@
 - **Hero mode's crouch is `key crouch` (Left Ctrl), not `key sneak`; the world's bottom is -64: a `/fill` below it does nothing, silently (2026-11-06, [polish4](polish4.md)).**
 - **`presstrace` (2026-11-06, [sojourn](../heroes/sojourn.md#the-charged-shot-on-the-press-126-2026-11-06)):** `presstrace start`, `key x down`, `presstrace`: milliseconds on one clock from the press to the input sent, the server's shot, her sounds, the look, the clip, the next frame: a "not crisp" becomes a table. `presstrace energy <n>`, `ammo <n>`. Add `PressTrace.mark` for another hero. **Traps it found:** a client slowed to 10 fps (window not active) puts 100 ms on every server-sent look: read `fps` in the row. A hero falling 8 m five times with regeneration off died, and every later row read "lost press": guard health in the loop. `emote <id>` wants its name (`triumph`), not a clip's id: a wrong one answers ok and plays nothing: read `emoteClip`. Each request costs a frame: "0.55 s after" was likely past 0.65 s. **A rotation packet followed by a payload isn't ordered as you'd think:** the payload acted on the old aim 4 of 8 times at 30 fps (ours to carry the aim in the payload).
 - **`presstrace`, more (2026-11-06):** `lag <ms>`: her hero payloads held both ways, dev only, not real latency. `frames on|off`, `sample <ms>` (the client thread's stack into the log: read a hitch, don't guess it), `art` (effect art still coming), `sounding <text>`: channels actually running. **`bot playing` lists a stopped sound for 20 ticks from its start (`SoundEngine.soundDeleteTime`):** it can't show a stop. **A 1000-health target dies in a long script,** and every later "no hit" reads as a bug: re-summon it. **At a dev lag, setting energy right after a press happens before the shot spends it:** wait a ping.
+
+## A local dedicated server
+
+Some bugs show only on a dedicated server (the owner plays on one): the movement check, sync of non-synced fields, timers.
+In a checkout or worktree: `run/eula.txt` (`eula=true`) and `run/server.properties` with `online-mode=false`,
+`enable-rcon=true`, `rcon.port=25575`, `rcon.password=...`, `level-name=...`; start `gradlew.bat runServer --args=nogui`
+(minimized, output to a log), then the client (`runClient`, same `run/` folder is fine) and `py -I tools/dev.py "connect
+localhost:25565"`. The harness's `servercmd` is single-player only: drive the server over RCON (a 20-line Python client:
+login packet type 3, command type 2). `whitelist off` and `op <name>` first. Stop with RCON `stop`.
+
+From Git Bash, `cmd //c "cd /d E:\... & gradlew.bat ..."` silently doesn't run Gradle (no output, no error): build and
+compile through PowerShell (`Set-Location ...; & .\gradlew.bat build`) and check `$LASTEXITCODE`.
