@@ -4,6 +4,16 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-17: 0.3.69 on next (not on main yet)
+
+- **Cassidy's Silver Bullet aims down sights (#164):** hold the right button: the view zooms to 40 degrees over 0.2 s, the
+  mouse slows to 60%, he moves 20% slower, and the left button fires the Silver Bullet once fully raised. From his data
+  (it binds no gun-raise pose, so the view is what changes).
+- **Projectile sizes (#163):** Sigma's Hyperspheres and Illari's Captive Sun hit at their real radius (they hit at half);
+  Pharah's Rocket Salvo mini-rockets are small (they had the full rocket's size). Checked every weapon against the wiki.
+- **Illari's gold hair (#144):** drawn pale gold from her data, not white (rebuild the asset pack's colours).
+- **Tracer's muzzle flash (#150):** small cyan flashes at her pistols each shot, from her data.
+
 ## 2026-11-17: 0.3.68 on next (not on main yet)
 
 - **D.Va's Fusion Cannons hit endermen (#162):** her shots were an arrow's damage type, which an enderman dodges as a
