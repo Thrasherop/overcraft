@@ -96,6 +96,7 @@ public final class ClientPotg {
 			ClientPlayNetworking.send(new HighlightsPayload(HighlightsPayload.DONE, ""));
 		}
 		PotgCard.hide();
+		PotgMusic.stop();
 		mc.getSoundManager().stop();
 		mc.gui.toastManager().clear();
 		if (mc.gui.screen() instanceof PotgCard.Holder) {
@@ -105,6 +106,7 @@ public final class ClientPotg {
 
 	/** Each client tick: the look's clock, the holder back if a login's loading screen took it, the end, the safety end. */
 	public static void tick(Minecraft mc) {
+		PotgMusic.tick();
 		if (!active) {
 			while (HIGHLIGHTS.consumeClick()) {
 				if (mc.player != null && mc.gui.screen() == null) {
@@ -132,6 +134,7 @@ public final class ClientPotg {
 
 	public static void onDisconnect() {
 		active = false;
+		PotgMusic.stop();
 		PotgCard.hide();
 	}
 }

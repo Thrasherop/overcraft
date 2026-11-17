@@ -37,7 +37,8 @@ public final class VictoryHud {
 	public static void show() {
 		shownAt = Util.getMillis();
 		play(OcSounds.ANNOUNCER_VICTORY);
-		play(OcSounds.MUSIC_VICTORY);
+		// the end track, which runs on into the POTG (PotgMusic)
+		dev.overcraft.client.PotgMusic.victory(OcSounds.MUSIC_VICTORY);
 	}
 
 	/** A sound heard as the interface's (not placed in the world), if the pack has it. */
