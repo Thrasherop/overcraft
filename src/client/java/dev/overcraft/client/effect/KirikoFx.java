@@ -173,7 +173,8 @@ public final class KirikoFx {
 					if (!BrigitteFx.dispatch(e, enemy) && !JunoFx.dispatch(e, enemy)) {
 						if (!SojournFx.dispatch(e, enemy) && !TracerFx.dispatch(e, enemy) && !DvaFx.dispatch(e, enemy)
 							&& !IllariFx.dispatch(e, enemy)
-							&& !TorbjornFx.dispatch(e, enemy)) {
+							&& !TorbjornFx.dispatch(e, enemy)
+							&& !PharahFx.dispatch(e, enemy)) {
 							SigmaFx.dispatch(e, enemy);
 						}
 					}

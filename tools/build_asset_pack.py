@@ -1004,6 +1004,21 @@ EFFECT_MASKS = {
     "torb_ray": ("Torbjorn", "Turret", "000000002662", 1),
     "torb_ray_edge": ("Torbjorn", "Turret", "0000000193BE", 1),
     "torb_glare": ("Torbjorn", "Turret", "00000000098D", 1),
+    # Pharah's (tools/reference/pharah-effects.md, PharahFx): the blast's and mini-rocket's streak flash 98C, the 1-1.9 m flares
+    # 9EE (rocket, Concussive's halo, the hover's and jumps' flash), the launch / exhaust flame 299E6, the blast's flare 22D0, the
+    # hover's jet cone 5233, the jumps' ring 3AE1 (14 frames, on mesh 1E8E), Concussive's ground wave band 2CC98 (on 96C1) and
+    # swirl noise 38E4A (on ED1C), Barrage's pod flash 5E9C (3) and glow 27BFD, the blast debris's smoke ribbons 9ED (0554)
+    "pharah_streak": ("Pharah", "RocketLauncher", "00000000098C", 1),
+    "pharah_flare": ("Pharah", "RocketLauncher", "0000000009EE", 1),
+    "pharah_flame_noise": ("Pharah", "RocketLauncher", "0000000299E6", 1),
+    "pharah_flare_line": ("Pharah", "RocketLauncher", "0000000022D0", 1),
+    "pharah_jet": ("Pharah", "HoverJets", "000000005233", 1),
+    "pharah_jet_ring": ("Pharah", "JumpJet", "000000003AE1", 14),
+    "pharah_wave_band": ("Pharah", "ConcussiveBlast", "00000002CC98", 1),
+    "pharah_swirl_noise": ("Pharah", "ConcussiveBlast", "000000038E4A", 1),
+    "pharah_pod_flash": ("Pharah", "Barrage", "000000005E9C", 3),
+    "pharah_pod_glow": ("Pharah", "Barrage", "000000027BFD", 1),
+    "pharah_smoke_ribbon": ("Pharah", "RocketLauncher", "0000000009ED", 1),
 }
 
 
@@ -1174,7 +1189,13 @@ EFFECT_MODELS = {"torii": ("Kiriko", "KitsuneRush", "00000001048D"),
                  "juno_sphere": ("Juno", "HyperRing", "00000000D721"),
                  "juno_torus_thin": ("Juno", "OrbitalRay", "00000000EBEF"),
                  "juno_disc": ("Juno", "HyperRing", "000000005E5E"),
-                 "juno_cast_blade": ("Juno", "OrbitalRay", "000000014063")}
+                 "juno_cast_blade": ("Juno", "OrbitalRay", "000000014063"),
+                 # Pharah's (pharah-effects.md): Concussive's swirl ED1C (0.35 x 0.44 x 0.58), its ground wave's flat 1.28 m
+                 # disc 96C1, the jumps' ring disc 1E8E (same bounds, other UVs), the unit sphere 085B (Concussive's shell)
+                 "pharah_conc_swirl": ("Pharah", "ConcussiveBlast", "00000000ED1C"),
+                 "pharah_disc": ("Pharah", "ConcussiveBlast", "0000000096C1"),
+                 "pharah_jet_disc": ("Pharah", "JumpJet", "000000001E8E"),
+                 "pharah_sphere": ("Pharah", "ConcussiveBlast", "00000000085B")}
 
 
 def bake_cat_arcs(out):

@@ -161,4 +161,130 @@ final class HeroPalettes {
 	static final float[] TB_THROWN = {0, 0, 0, 0, .25f, 1, 1, 1, .5f, 1, 1, .589f, .75f, 1, .922f, .205f, 1, 1, .775f, 0};
 	/** the turret's shot line 801 x 510 x 50C (2654): tint D763 r4 (10, 5.4, 0), orange HDR, scaled to its brightest (H); the ramp ours. */
 	static final float[] TB_TURRET_LINE = {0, 0, 0, 0, .3f, .3f, .16f, 0, .7f, 1, .54f, 0, 1, 1, .7f, .25f};
+	// ---- Pharah (tools/reference/pharah-effects.md, PharahFx; rows from fx_junkrat_pal.py pharah: black at 0, HDR rows hue-clamped,
+	// a near-white top dropped so a solid mask ends on the colour) ----
+	/** 9421 r2 HDR 5 reversed (pharah-effects.md, H). */
+	static final float[] PH_MUZZLE = {0, 0, 0, 0, .25f, 1, .597f, .28f, .5f, 1, .838f, .502f, .75f, 1, .95f, .605f, 1, 1, 1, .651f};
+	/** 9E23 r2 HDR 5 reversed (pharah-effects.md, H). */
+	static final float[] PH_MUZZLE_ENEMY = {0, 0, 0, 0, .25f, 1, .342f, .28f, .5f, 1, .567f, .495f, .75f, 1, .68f, .603f, 1, 1, .73f, .651f};
+	/** 0096 r4 HDR 2 (pharah-effects.md, H). */
+	static final float[] PH_MUZZLE_FLAME = {0, 0, 0, 0, .25f, .848f, .431f, 0, .5f, 1, .66f, .098f, .75f, 1, .82f, .323f, 1, 1, .898f, .628f};
+	/** 8F66 r4 shift HDR 2 (pharah-effects.md, H). */
+	static final float[] PH_MUZZLE_FLAME_ENEMY = {0, 0, 0, 0, .25f, .848f, .043f, 0, .5f, 1, .219f, .098f, .75f, 1, .46f, .324f, 1, 1, .68f, .631f};
+	/** 64DC r0 shift top dropped (pharah-effects.md, H). */
+	static final float[] PH_MUZZLE_SPARK = {0, 0, 0, 0, .33f, .377f, .222f, 0, .67f, .753f, .445f, 0, 1, 1, .705f, .183f};
+	/** 409F r0 shift top dropped (pharah-effects.md, H). */
+	static final float[] PH_MUZZLE_SPARK_ENEMY = {0, 0, 0, 0, .33f, .377f, .019f, 0, .67f, .753f, .039f, 0, 1, 1, .244f, .183f};
+	/** 33D6 r1 HDR 2 top dropped (pharah-effects.md, H). */
+	static final float[] PH_ROCKET_GLOW = {0, 0, 0, 0, .33f, .777f, .21f, 0, .67f, 1, .381f, 0, 1, 1, .9f, .353f};
+	/** 10A7 r1 HDR 2.02 (pharah-effects.md, H). */
+	static final float[] PH_ROCKET_FLARE = {0, 0, 0, 0, .25f, .537f, .089f, 0, .5f, 1, .171f, 0, .75f, 1, .174f, 0, 1, 1, .624f, 0};
+	/** 1E25 r5 HDR 1.47 (pharah-effects.md, H). */
+	static final float[] PH_ROCKET_FLAME = {0, 0, 0, 0, .25f, .422f, 0, 0, .5f, .764f, 0, 0, .75f, 1, 0, 0, 1, 1, .527f, .042f};
+	/** 8911 r1 (pharah-effects.md, H). */
+	static final float[] PH_BLAST_FIRE = {0, 0, 0, 0, .25f, .71f, .192f, 0, .5f, .991f, .419f, .045f, .75f, .976f, .714f, .135f, 1, .991f, 1, .753f};
+	/** 8911 r2 (pharah-effects.md, H). */
+	static final float[] PH_BLAST_FIRE_ENEMY = {0, 0, 0, 0, .25f, .71f, .089f, 0, .5f, .992f, .252f, .045f, .75f, .987f, .479f, .135f, 1, 1, .947f, .753f};
+	/** DE90 r1 top dropped (pharah-effects.md, H). */
+	static final float[] PH_BLAST_FLASH = {0, 0, 0, 0, .33f, 1, .013f, 0, .67f, 1, .123f, 0, 1, 1, .467f, 0};
+	/** DE90 r2 top dropped (pharah-effects.md, H). */
+	static final float[] PH_BLAST_FLASH_ENEMY = {0, 0, 0, 0, .33f, 1, .013f, 0, .67f, 1, .123f, 0, 1, 1, .289f, 0};
+	/** BAA0 r1 (pharah-effects.md, H). */
+	static final float[] PH_BLAST_FLARE = {0, 0, 0, 0, .25f, .646f, .175f, 0, .5f, .995f, .352f, .025f, .75f, .982f, .555f, .087f, 1, .964f, 1, .223f};
+	/** BAA0 r2 (pharah-effects.md, H). */
+	static final float[] PH_BLAST_FLARE_ENEMY = {0, 0, 0, 0, .25f, .503f, .088f, 0, .5f, 1, .175f, 0, .75f, .992f, .245f, .023f, 1, .982f, .381f, .074f};
+	/** 527D r1 (pharah-effects.md, H). */
+	static final float[] PH_BLAST_SPARK = {0, 0, 0, 0, .25f, .798f, .132f, 0, .5f, 1, .365f, .154f, .75f, 1, .603f, .349f, 1, 1, .807f, .533f};
+	/** E1D0 r3 (pharah-effects.md, H). */
+	static final float[] PH_BLAST_SMOKE = {0, 0, 0, 0, .25f, .251f, .171f, .112f, .5f, .502f, .341f, .223f, .75f, .749f, .509f, .333f, 1, 1, .679f, .445f};
+	/** tex 22A8 (pharah-effects.md, H). */
+	static final float[] PH_BLAST_DEBRIS = {0, 0, 0, 0, .25f, .205f, .023f, 0, .5f, 1, .133f, 0, .75f, 1, .571f, .025f, 1, .991f, 1, .578f};
+	/** 114A r1 (pharah-effects.md, H). */
+	static final float[] PH_CONC_LAUNCH = {0, 0, 0, 0, .25f, .018f, .141f, 1, .5f, .16f, .265f, 1, .75f, .3f, .389f, 1, 1, .443f, .514f, 1};
+	/** 114A r2 (pharah-effects.md, H). */
+	static final float[] PH_CONC_LAUNCH_ENEMY = {0, 0, 0, 0, .25f, .72f, .013f, .009f, .5f, .814f, .115f, .078f, .75f, .906f, .216f, .146f, 1, 1, .318f, .216f};
+	/** 6C6B r3 (pharah-effects.md, H). */
+	static final float[] PH_CONC_LAUNCH_B = {0, 0, 0, 0, .25f, .101f, .213f, 1, .5f, .309f, .395f, 1, .75f, .513f, .574f, 1, 1, .721f, .757f, 1};
+	/** 6C6B r4 (pharah-effects.md, H). */
+	static final float[] PH_CONC_LAUNCH_B_ENEMY = {0, 0, 0, 0, .25f, 1, 0, 0, .5f, 1, 0, 0, .75f, 1, .225f, .158f, 1, 1, .485f, .342f};
+	/** 2C95 r1 HDR 6 top dropped (pharah-effects.md, H). */
+	static final float[] PH_CONC_GLOW = {0, 0, 0, 0, .33f, 0, .089f, .715f, .67f, .235f, .329f, 1, 1, .625f, .67f, 1};
+	/** 2C95 r3 HDR 6 (pharah-effects.md, H). */
+	static final float[] PH_CONC_GLOW_ENEMY = {0, 0, 0, 0, .25f, .715f, 0, 0, .5f, 1, .05f, 0, .75f, 1, .353f, .256f, 1, 1, .745f, .659f};
+	/** 762A r1 HDR 6 (pharah-effects.md, H). */
+	static final float[] PH_CONC_HALO = {0, 0, 0, 0, .25f, .034f, .157f, 1, .5f, .226f, .338f, 1, .75f, .449f, .548f, 1, 1, .776f, .855f, 1};
+	/** 762A r3 HDR 6 (pharah-effects.md, H). */
+	static final float[] PH_CONC_HALO_ENEMY = {0, 0, 0, 0, .25f, 1, .006f, 0, .5f, 1, .043f, 0, .75f, 1, .085f, 0, 1, 1, .831f, .776f};
+	/** 40B0 r2 HDR 6 reversed (pharah-effects.md, H). */
+	static final float[] PH_CONC_TRAIL = {0, 0, 0, 0, .25f, .385f, .503f, 1, .5f, .424f, .538f, 1, .75f, .473f, .583f, 1, 1, .503f, .61f, 1};
+	/** 40B0 r3 HDR 2 reversed (pharah-effects.md, H). */
+	static final float[] PH_CONC_TRAIL_ENEMY = {0, 0, 0, 0, .25f, 1, .139f, .139f, .5f, 1, .188f, .188f, .75f, 1, .227f, .227f, 1, 1, .271f, .271f};
+	/** 25AF r3 (pharah-effects.md, H). */
+	static final float[] PH_CONC_DOME = {0, 0, 0, 0, .25f, .188f, .215f, 1, .5f, .396f, .435f, 1, .75f, .565f, .63f, 1, 1, .584f, .651f, 1};
+	/** 25AF r4 (pharah-effects.md, H). */
+	static final float[] PH_CONC_DOME_ENEMY = {0, 0, 0, 0, .25f, 1, .203f, .187f, .5f, 1, .419f, .395f, .75f, 1, .591f, .565f, 1, 1, .61f, .584f};
+	/** D704 r5 (pharah-effects.md, H). */
+	static final float[] PH_CONC_SWIRL = {0, 0, 0, 0, .25f, .149f, .147f, .377f, .5f, .299f, .295f, .753f, .75f, .416f, .472f, .981f, 1, .491f, .701f, 1};
+	/** D704 r7 (pharah-effects.md, H). */
+	static final float[] PH_CONC_SWIRL_ENEMY = {0, 0, 0, 0, .25f, .377f, .162f, .147f, .5f, .753f, .323f, .295f, .75f, .981f, .486f, .413f, 1, 1, .658f, .491f};
+	/** 373E r5 HDR 5 top dropped (pharah-effects.md, H). */
+	static final float[] PH_CONC_WAVE = {0, 0, 0, 0, .33f, .002f, .197f, 1, .67f, .002f, .395f, 1, 1, .32f, .695f, 1};
+	/** 373E r6 HDR 4 top dropped (pharah-effects.md, H). */
+	static final float[] PH_CONC_WAVE_ENEMY = {0, 0, 0, 0, .33f, .778f, .017f, .001f, .67f, 1, .037f, .002f, 1, 1, .334f, .303f};
+	/** F87C r3 (pharah-effects.md, H). */
+	static final float[] PH_CONC_SHELL = {0, 0, 0, 0, .25f, 0, .005f, .665f, .5f, .096f, .113f, 1, .75f, .287f, .322f, 1, 1, .637f, .665f, 1};
+	/** F87C r4 (pharah-effects.md, H). */
+	static final float[] PH_CONC_SHELL_ENEMY = {0, 0, 0, 0, .25f, .36f, .003f, 0, .5f, .541f, .063f, .052f, .75f, .541f, .179f, .155f, 1, .541f, .364f, .345f};
+	/** D8A1 r3 (pharah-effects.md, H). */
+	static final float[] PH_CONC_CORE = {0, 0, 0, 0, .25f, .154f, .183f, 1, .5f, .309f, .337f, 1, .75f, .461f, .489f, 1, 1, .615f, .643f, 1};
+	/** D8A1 r4 (pharah-effects.md, H). */
+	static final float[] PH_CONC_CORE_ENEMY = {0, 0, 0, 0, .25f, 1, .227f, .156f, .5f, 1, .451f, .309f, .75f, 1, .471f, .257f, 1, 1, .491f, .205f};
+	/** tex 3200 x 0.372,3.94,5.34 HDR 5.34 (pharah-effects.md, H). */
+	static final float[] PH_HOVER = {0, 0, 0, 0, .25f, 0, .235f, 1, .5f, .002f, .345f, 1, .75f, .022f, .544f, 1, 1, .048f, .667f, 1};
+	/** 4DC7 r2 HDR 8 reversed (pharah-effects.md, H). */
+	static final float[] PH_HOVER_FLAME = {0, 0, 0, 0, .25f, .133f, .262f, 1, .5f, .196f, .377f, 1, .75f, .494f, .626f, 1, 1, .791f, .875f, 1};
+	/** 5311 r0 HDR 5.86 (pharah-effects.md, H). */
+	static final float[] PH_HOVER_FLAME_B = {0, 0, 0, 0, .25f, 1, .088f, 0, .5f, 1, .049f, 0, .75f, 1, .025f, 0, 1, 1, .007f, 0};
+	/** tex 3200 x 0.229,2.92,6.16 HDR 6.16 (pharah-effects.md, H). */
+	static final float[] PH_HOVER_SPARK = {0, 0, 0, 0, .25f, 0, .151f, 1, .5f, .001f, .222f, 1, .75f, .012f, .35f, 1, 1, .026f, .429f, 1};
+	/** 1281 r2 HDR 6.4 reversed (pharah-effects.md, H). */
+	static final float[] PH_HOVER_JET = {0, 0, 0, 0, .25f, .035f, .246f, 1, .5f, .024f, .316f, 1, .75f, .089f, .457f, 1, 1, .563f, .864f, 1};
+	/** tex 31C0 x 4.86,3.94,1 HDR 4.86 (pharah-effects.md, H). */
+	static final float[] PH_JUMP_FLASH = {0, 0, 0, 0, .25f, 1, .398f, 0, .5f, 1, .629f, 0, .75f, 1, .811f, 0, 1, 1, .811f, .206f};
+	/** tex 31C0 x 10,10,10 HDR 10 top dropped (pharah-effects.md, H). */
+	static final float[] PH_JUMP_FLAME = {0, 0, 0, 0, .33f, 1, .491f, 0, .67f, 1, .776f, 0, 1, 1, 1, .002f};
+	/** B2B1 r1 HDR 1.37 (pharah-effects.md, H). */
+	static final float[] PH_JUMP_SMOKE = {0, 0, 0, 0, .25f, .44f, .134f, .134f, .5f, .81f, .268f, .268f, .75f, 1, .367f, .367f, 1, 1, .389f, .389f};
+	/** FE81 r0 HDR 1.93 (pharah-effects.md, H). */
+	static final float[] PH_MINI_FLAME = {0, 0, 0, 0, .25f, 1, .046f, 0, .5f, 1, .074f, 0, .75f, 1, .092f, 0, 1, 1, .105f, 0};
+	/** 7A23 r1 (pharah-effects.md, H). */
+	static final float[] PH_MINI_HIT = {0, 0, 0, 0, .25f, .71f, .192f, 0, .5f, .991f, .419f, .045f, .75f, .976f, .714f, .135f, 1, .991f, 1, .753f};
+	/** F4AA r1 (pharah-effects.md, H). */
+	static final float[] PH_MINI_HIT_ENEMY = {0, 0, 0, 0, .25f, .71f, .014f, 0, .5f, .992f, .111f, .045f, .75f, .987f, .329f, .135f, 1, .991f, 1, .753f};
+	/** 67D0 r0 HDR 5.75 reversed (pharah-effects.md, H). */
+	static final float[] PH_MINI_HIT_SPARK = {0, 0, 0, 0, .25f, 1, .429f, .091f, .5f, 1, .555f, .112f, .75f, 1, .616f, .117f, 1, 1, .652f, .121f};
+	/** 1A11 r0 HDR 2.29 reversed (pharah-effects.md, H). */
+	static final float[] PH_MINI_HIT_SMOKE = {0, 0, 0, 0, .25f, 0, 0, 0, .5f, 0, 0, 0, .75f, .838f, .221f, 0, 1, 1, .383f, 0};
+	/** tex 31C0 x 8,8,8 HDR 8 top dropped (pharah-effects.md, H). */
+	static final float[] PH_POD = {0, 0, 0, 0, .33f, 1, .491f, 0, .67f, 1, .776f, 0, 1, 1, 1, .002f};
+	/** 7CE2 r2 HDR 12 reversed (pharah-effects.md, H). */
+	static final float[] PH_POD_FLASH = {0, 0, 0, 0, .25f, 1, .404f, 0, .5f, 1, .404f, 0, .75f, 1, .519f, .056f, 1, 1, .75f, .167f};
+	/** FAB3 r2 HDR 18.69 reversed (pharah-effects.md, H). */
+	static final float[] PH_POD_FLASH_ENEMY = {0, 0, 0, 0, .25f, 1, .025f, 0, .5f, 1, .025f, 0, .75f, 1, .036f, .002f, 1, 1, .054f, .005f};
+	/** 809D r6 HDR 14.99 (pharah-effects.md, H). */
+	static final float[] PH_POD_GLOW = {0, 0, 0, 0, .25f, .043f, .269f, 1, .5f, .048f, .301f, 1, .75f, .236f, .487f, 1, 1, .342f, .59f, 1};
+	/**
+	 * Pharah's ribbons (pharah-effects.md): the data's rows for them are "by age" (head first: a ribbon's colour over its life), which
+	 * Fx.trail can't draw; here as mask rows, black, then the aged colour at the ribbon's edge, the head's colour at its core, ending on
+	 * it (ours from the H rows). The rocket's smoke 749A r5 / twin B09C r5, its hot streak 9422 r7, the mini-rocket's F758 r3, the blast
+	 * debris's E8FD r4 (0554), Concussive's smoke 4018 r8 (its top the 25 % stop: the head's near-white drew as a white tube; its twin
+	 * r9's values aren't in the note: an orange-grey, ours).
+	 */
+	static final float[] PH_ROCKET_TRAIL = {0, 0, 0, 0, .5f, .174f, .174f, .174f, 1, 1, .482f, .149f};
+	static final float[] PH_ROCKET_TRAIL_ENEMY = {0, 0, 0, 0, .5f, .209f, .034f, .034f, 1, 1, .353f, .11f};
+	static final float[] PH_ROCKET_STREAK = {0, 0, 0, 0, .5f, .638f, .542f, .451f, 1, .93f, 1, 0};
+	static final float[] PH_MINI_TRAIL = {0, 0, 0, 0, .5f, .275f, .275f, .275f, 1, 1, .707f, .054f};
+	static final float[] PH_DEBRIS_TRAIL = {0, 0, 0, 0, .5f, .189f, .05f, 0, 1, 1, .076f, 0};
+	static final float[] PH_CONC_SMOKE_TRAIL = {0, 0, 0, 0, .5f, .231f, .353f, .678f, 1, .353f, .591f, .859f};
+	static final float[] PH_CONC_SMOKE_TRAIL_ENEMY = {0, 0, 0, 0, .5f, .35f, .12f, .08f, 1, .86f, .36f, .2f};
 }

@@ -358,6 +358,29 @@ public final class HeroModelRenderer {
 				dev.overcraft.client.effect.TorbjornFx.posed(entity, points);
 			}
 		}
+		if (hero == Hero.PHARAH && !previewing && entity.isAlive()) {
+			// her launcher's muzzle (hp 0006) as held and her jets, pods, wrist and body, as posed, in the world (PharahFx.POINTS: the
+			// launch, the hover, the jumps, Barrage's pods, Concussive's launch)
+			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
+			if (pose != null) {
+				net.minecraft.world.phys.Vec3 base = entity.getPosition(partialTicks);
+				float turn = (float) Math.toRadians(-facing);
+				String[] names = dev.overcraft.client.effect.PharahFx.POINTS;
+				net.minecraft.world.phys.Vec3[] points = new net.minecraft.world.phys.Vec3[names.length];
+				for (int i = 0; i < names.length; i++) {
+					if (i >= dev.overcraft.client.effect.PharahFx.GUN_POINTS) {
+						points[i] = bone(loaded.model(), pose, names[i], base, facing, state.scale);
+						continue;
+					}
+					Vector3f held = weaponShown ? HeroWeapon.point(hero, animator, loaded.model(), false, now, names[i]) : null;
+					if (held != null) {
+						held.mul(state.scale).rotateY(turn);
+						points[i] = base.add(held.x, held.y, held.z);
+					}
+				}
+				dev.overcraft.client.effect.PharahFx.posed(entity, points);
+			}
+		}
 		if (hero == Hero.JETPACK_CAT && !previewing && entity.isAlive()) {
 			// her jetpack's flames and her paws' points, as posed, in the world (JetpackCatFx)
 			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();

@@ -138,6 +138,9 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 				slag.getDeltaMovement(), dt, KirikoFx.enemyOf(slag.getOwner()));
 			case dev.overcraft.entity.RivetEntity rivet -> s.drawnByEffect = dev.overcraft.client.effect.TorbjornFx.rivetFlight(rivet.getId(),
 				at, rivet.getDeltaMovement(), s.age, dt, rivet.pellet(), KirikoFx.enemyOf(rivet.getOwner()));
+			// Pharah's: her rockets (0078), Concussive Blast (0132), Barrage's and Salvo's mini-rockets (0080) around their model 084C
+			case dev.overcraft.entity.PharahRocketEntity rocket -> dev.overcraft.client.effect.PharahFx.rocketFlight(rocket.getId(), at,
+				rocket.getDeltaMovement(), dt, rocket.kind(), KirikoFx.enemyOf(rocket.getOwner()));
 			case SuzuEntity suzu -> KirikoFx.suzuFlight(suzu.getId(), at, dt, KirikoFx.enemyOf(suzu.getOwner()));
 			case dev.overcraft.entity.SonicEntity sonic -> s.drawnByEffect = dev.overcraft.client.effect.LucioFx.sonicFlight(
 				sonic.getId(), at, sonic.getDeltaMovement(), dt, KirikoFx.enemyOf(sonic.getOwner()));
