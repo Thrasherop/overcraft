@@ -4,6 +4,25 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-17: 0.3.73 on next (not on main yet)
+
+- **Junkrat's mine goes off when you click detonate mid-throw (#153):** a right click while the mine was still leaving his
+  hand, or in its first 0.1 s, was lost. It's now held and sets the mine off the moment it can, cutting the throw's
+  animation. Played: presses 0, 0.05, 0.12 and 0.2 s after the throw key all detonate (the old build missed the first two).
+- **Torbjorn's turret looks like its level (#146):** at level 2 it showed the whole level-3 turret (missile pod, third
+  barrel, shoulder plates). Now level 2 has two barrels and no pod; Overload with Overloaded Turret grows the level-3 parts
+  and they go again when it ends. Played both.
+- **A Minecraft-mode killing blow doesn't cancel the dragon's POTG (#161):** as you answered. Minecraft-mode kills still
+  don't score, but the POTG is picked from everyone's plays whoever lands the blow. Played: G to Minecraft mode, final
+  blow on the dragon, the POTG and its end screen showed.
+- **End-phase music for the dragon (#45):** below a third of the dragon's health everyone hears Overwatch's overtime cue,
+  its intro then its loop, quiet and rising as the dragon's health falls; the killing blow's VICTORY fades it out.
+  Minecraft's own music holds while it plays. Played: starts on time, intro hands over to the loop, stops at VICTORY,
+  POTG on the music's cue. Fixed while playing: a dragon removed without dying blocked the music for the next one.
+- **Junkrat's frag hit size (#163):** its direct hit is 0.32 m around the frag. Played against a husk at 10 m at offsets
+  on both sides: hits and misses match that radius.
+- **The perk menu takes quick clicks:** a short click with Left Alt held picked nothing.
+
 ## 2026-11-17: 0.3.72 on next (not on main yet)
 
 - **Cassidy's, Pharah's and Junkrat's effects from their data (#150):** with these every hero's abilities draw their
