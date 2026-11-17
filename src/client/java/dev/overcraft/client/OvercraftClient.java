@@ -55,6 +55,12 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.DeadeyePayload.TYPE,
 			(payload, context) -> dev.overcraft.client.hud.DeadeyeHud.receive(payload));
 		// not during a showing: a replayed dragon kill carries its own VICTORY, which restarted the music mid-POTG (#161)
+		// an operator's /changehero with no hero (#165): the select screen, a free pick wherever they are
+		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.OpenSelectPayload.TYPE, (payload, context) -> {
+			if (!dev.overcraft.client.ClientPotg.active()) {
+				net.minecraft.client.Minecraft.getInstance().gui.setScreen(new dev.overcraft.client.HeroSelectScreen(false));
+			}
+		});
 		ClientPlayNetworking.registerGlobalReceiver(VictoryPayload.TYPE, (payload, context) -> {
 			if (!dev.overcraft.client.ClientPotg.active()) {
 				VictoryHud.show();

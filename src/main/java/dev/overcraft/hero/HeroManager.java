@@ -442,6 +442,13 @@ public final class HeroManager {
 	}
 
 	/** An operator's change (/changehero, #156): a free pick wherever they stand, then the select's own path. */
+	/** Their next pick may be made anywhere (an operator's /changehero, #165); the pick uses it up. */
+	public static void allowFreePick(ServerPlayer player) {
+		HeroState state = STATES.computeIfAbsent(player.getUUID(), id -> new HeroState());
+		state.freePick = true;
+		state.canChangeHero = true;
+	}
+
 	public static void forceSelect(ServerPlayer player, Hero hero) {
 		STATES.computeIfAbsent(player.getUUID(), id -> new HeroState()).freePick = true;
 		select(player, hero);
