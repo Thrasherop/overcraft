@@ -498,6 +498,11 @@ public final class HeroModels {
 
 	/** The hair cards a pack is meant to hold colours for (the other black images are eye shadows and such, not drawn on purpose). */
 	private static final java.util.Set<String> HAIR_CARDS = java.util.Set.of("000000008052");
+	/**
+	 * Hair cards exported white (Illari's gold fan D830, on the other hair shader: its image is white with the strands in the alpha,
+	 * the colour in the material's statics; #144): their colours from hero_models/colour/<material>.png too (tools/glow_maps.py WHITE_HAIR).
+	 */
+	private static final java.util.Set<String> WHITE_HAIR_CARDS = java.util.Set.of("00000000D830");
 
 	/**
 	 * Hair cards exported black (Lúcio's dreads, material 8052: his hair shader colours them and glTF kept only the black image) take their
@@ -506,7 +511,7 @@ public final class HeroModels {
 	private static void colourHair(ResourceManager resources, SkinnedModel model, List<@Nullable NativeImage> images) {
 		for (SkinnedModel.Piece piece : model.pieces) {
 			NativeImage image = piece.image() >= 0 && piece.image() < images.size() ? images.get(piece.image()) : null;
-			if (image == null || piece.material().isEmpty() || !isBlack(image)) {
+			if (image == null || piece.material().isEmpty() || !isBlack(image) && !WHITE_HAIR_CARDS.contains(piece.material())) {
 				continue;
 			}
 			Identifier id = Identifier.tryBuild(Overcraft.MOD_ID, "hero_models/colour/" + piece.material().toLowerCase(java.util.Locale.ROOT) + ".png");
