@@ -46,5 +46,9 @@ final class HeroPalettes {
 	/** The same for an enemy: her flames' orange 54EA (3, 0.6, 0) scaled (H; which colour each side sees is M). */
 	static final float[] DVA_BOOST_ENEMY = {0, 0, 0, 0, .5f, .5f, .1f, 0, .85f, 1, .2f, 0, 1, 1, .7f, .4f};
 	static final float[] TR_SHOT = {0, 0, 0, 0, .3f, .2f, .29f, .45f, .7f, .445f, .645f, 1, 1, .85f, .95f, 1};
+	/** Her muzzle 0076's cards: the channel-shifted LUTs print #FF2447 > #00B5F5 (tracer-effects.md: her side ends cyan, M). */
+	static final float[] TR_MUZZLE = {0, 0, 0, 0, .35f, 0, .07f, .74f, 1, 0, .71f, .96f};
+	/** The enemy's: ending #FF2447 (M). */
+	static final float[] TR_MUZZLE_ENEMY = {0, 0, 0, 0, .35f, .5f, .04f, .1f, 1, 1, .14f, .28f};
 	static final float[] TR_SHOT_ENEMY = {0, 0, 0, 0, .3f, .45f, .09f, .05f, .7f, 1, .194f, .103f, 1, 1, .75f, .6f};
 }

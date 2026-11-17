@@ -16,6 +16,10 @@ public final class TracerFx {
 	/** Its art, made ahead as the hero is picked (HeroFxArt). */
 	public static final java.util.List<EffectArt.Art> ART = java.util.List.of(
 		new EffectArt.Art("sombra_tracer", Palette.TR_SHOT, false),
+		new EffectArt.Art("tracer_muzzle_glow", Palette.TR_MUZZLE, true),
+		new EffectArt.Art("tracer_muzzle_a#3", Palette.TR_MUZZLE, false),
+		new EffectArt.Art("tracer_muzzle_b#4", Palette.TR_MUZZLE, false),
+		new EffectArt.Art("tracer_muzzle_c#3", Palette.TR_MUZZLE, false),
 		new EffectArt.Art("sombra_impact_spark#4", Palette.TR_SHOT, false),
 		new EffectArt.Art("sombra_impact_burst", Palette.TR_SHOT, false),
 		new EffectArt.Art("tracer_blink", Palette.TR_BLINK, false),
@@ -28,6 +32,10 @@ public final class TracerFx {
 		new EffectArt.Art("cat_streak", Palette.TR_BOMB, false));
 	public static final java.util.List<EffectArt.Art> ART_ENEMY = java.util.List.of(
 		new EffectArt.Art("sombra_tracer", Palette.TR_SHOT_ENEMY, false),
+		new EffectArt.Art("tracer_muzzle_glow", Palette.TR_MUZZLE_ENEMY, true),
+		new EffectArt.Art("tracer_muzzle_a#3", Palette.TR_MUZZLE_ENEMY, false),
+		new EffectArt.Art("tracer_muzzle_b#4", Palette.TR_MUZZLE_ENEMY, false),
+		new EffectArt.Art("tracer_muzzle_c#3", Palette.TR_MUZZLE_ENEMY, false),
 		new EffectArt.Art("sombra_impact_spark#4", Palette.TR_SHOT_ENEMY, false),
 		new EffectArt.Art("sombra_impact_burst", Palette.TR_SHOT_ENEMY, false),
 		new EffectArt.Art("tracer_blink", Palette.TR_BLINK_ENEMY, false),
@@ -52,7 +60,10 @@ public final class TracerFx {
 		Vec3 at = new Vec3(e.x(), e.y(), e.z());
 		Vec3 dir = new Vec3(e.dx(), e.dy(), e.dz());
 		switch (e.effect()) {
-			case "tracer_shot" -> line(at, at.add(dir), enemy);
+			case "tracer_shot" -> {
+				muzzle(at, dir, e.entity(), enemy);
+				line(at, at.add(dir), enemy);
+			}
 			case "tracer_hit" -> flash(at, enemy);
 			case "tracer_hit_block" -> blockHit(at, dir, enemy);
 			case "tracer_blink" -> blink(at, enemy);
@@ -64,6 +75,43 @@ public final class TracerFx {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * The muzzle 0076 at her pistol each shot (tracer-effects.md): a soft glow (team A7B6 0.5-1.6 m, the enemy's 210FD 2.7-3.1 m
+	 * drawn with the same mask: ours), flash 20848 (3 frames) 0.37-1.24 m, two of 207C2 (4) 0.32-0.42 m, two of 20847 (3)
+	 * 0.26-0.32 m, all 0.04-0.1 s, edging forward 0.07-0.18 m/s (H). In her own first-person view a third the size (ours, as
+	 * Sojourn's), so it doesn't fill the screen.
+	 */
+	private static void muzzle(Vec3 at, Vec3 aim, int shooter, boolean enemy) {
+		net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+		boolean own = mc.player != null && mc.player.getId() == shooter && mc.options.getCameraType().isFirstPerson();
+		// in her own view a sixth (ours: a third, as Sojourn's, still covered the pistols in white, played 2026-11-17)
+		float k = own ? 1 / 6f : 1;
+		Palette colour = enemy ? Palette.TR_MUZZLE_ENEMY : Palette.TR_MUZZLE;
+		Vec3 fwd = aim.lengthSqr() < 1.0E-6 ? Vec3.ZERO : aim.normalize();
+		Particle glow = own ? null : Fx.soft("tracer_muzzle_glow", colour);
+		if (glow != null) {
+			float size = enemy ? range(2.7f, 3.1f) : range(0.5f, 1.6f);
+			Fx.add(glow.at(at.add(fwd.scale(0.05))).life(0.06f).size(size * k, size * 0.4f * k).alpha(0.6f).fade(0.01f, 0.5f).nearFade(0.2f));
+		}
+		Particle a = Fx.particle("tracer_muzzle_a#3", colour);
+		if (a != null) {
+			Fx.add(a.at(at.add(fwd.scale(0.02))).velocity(fwd.scale(range(0.07f, 0.18f))).life(range(0.04f, 0.08f))
+				.size(range(0.37f, 1.24f) * k, 0.3f * k).spin(range(0, 6.28f), 0).loop(60).nearFade(0.2f));
+		}
+		for (int i = 0; i < 2; i++) {
+			Particle b = Fx.particle("tracer_muzzle_b#4", colour);
+			if (b != null) {
+				Fx.add(b.at(at).velocity(fwd.scale(range(0.07f, 0.18f))).life(range(0.08f, 0.1f)).size(range(0.32f, 0.42f) * k, 0.2f * k)
+					.spin(range(0, 6.28f), 0).loop(45).nearFade(0.2f));
+			}
+			Particle c = Fx.particle("tracer_muzzle_c#3", colour);
+			if (c != null) {
+				Fx.add(c.at(at).velocity(fwd.scale(range(0.07f, 0.18f))).life(range(0.04f, 0.08f)).size(range(0.26f, 0.32f) * k, 0.15f * k)
+					.spin(range(0, 6.28f), 0).loop(45).nearFade(0.2f));
+			}
+		}
 	}
 
 	/** The line 002C: a thin band from the muzzle to where the bullet ended, 0.1 s. */
