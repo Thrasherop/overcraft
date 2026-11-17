@@ -435,6 +435,11 @@ public final class EffectArt {
 		DVA_SD_ENEMY(HeroPalettes.DVA_SD_ENEMY),
 		/** D.Va's Micro Missiles: flame, smoke, hit (HeroPalettes). */
 		DVA_MISSILE(HeroPalettes.DVA_MISSILE),
+		/** D.Va's Fusion Cannons and Boosters (HeroPalettes). */
+		DVA_FUSION(HeroPalettes.DVA_FUSION),
+		DVA_FUSION_ENEMY(HeroPalettes.DVA_FUSION_ENEMY),
+		DVA_BOOST(HeroPalettes.DVA_BOOST),
+		DVA_BOOST_ENEMY(HeroPalettes.DVA_BOOST_ENEMY),
 		DVA_MISSILE_ENEMY(HeroPalettes.DVA_MISSILE_ENEMY),
 		DVA_SMOKE(HeroPalettes.DVA_SMOKE),
 		DVA_MISSILE_HIT(HeroPalettes.DVA_MISSILE_HIT),

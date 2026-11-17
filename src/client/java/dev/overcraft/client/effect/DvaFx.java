@@ -32,7 +32,11 @@ public final class DvaFx {
 		new EffectArt.Art("dva_smoke", Palette.DVA_SMOKE, true),
 		new EffectArt.Art("dva_solid", Palette.DVA_MISSILE_HIT, false),
 		new EffectArt.Art("dva_missile_fire#12", Palette.DVA_MISSILE_HIT, false),
-		new EffectArt.Art("spark", Palette.DVA_MISSILE_HIT, false));
+		new EffectArt.Art("spark", Palette.DVA_MISSILE_HIT, false),
+		new EffectArt.Art("dva_fusion_tracer", Palette.DVA_FUSION, false),
+		new EffectArt.Art("dva_fusion_flash#4", Palette.DVA_FUSION, false),
+		new EffectArt.Art("dva_fusion_glow", Palette.DVA_FUSION, false),
+		new EffectArt.Art("dva_boost_burst#7", Palette.DVA_BOOST, false));
 	public static final java.util.List<EffectArt.Art> ART_ENEMY = java.util.List.of(
 		new EffectArt.Art("dva_matrix_field", Palette.DVA_MATRIX_TUBE, false),
 		new EffectArt.Art("dva_solid", Palette.DVA_MATRIX_ENEMY, false),
@@ -50,7 +54,11 @@ public final class DvaFx {
 		new EffectArt.Art("dva_smoke", Palette.DVA_SMOKE, true),
 		new EffectArt.Art("dva_solid", Palette.DVA_MISSILE_HIT_ENEMY, false),
 		new EffectArt.Art("dva_missile_fire#12", Palette.DVA_MISSILE_HIT_ENEMY, false),
-		new EffectArt.Art("spark", Palette.DVA_MISSILE_HIT_ENEMY, false));
+		new EffectArt.Art("spark", Palette.DVA_MISSILE_HIT_ENEMY, false),
+		new EffectArt.Art("dva_fusion_tracer", Palette.DVA_FUSION_ENEMY, false),
+		new EffectArt.Art("dva_fusion_flash#4", Palette.DVA_FUSION_ENEMY, false),
+		new EffectArt.Art("dva_fusion_glow", Palette.DVA_FUSION_ENEMY, false),
+		new EffectArt.Art("dva_boost_burst#7", Palette.DVA_BOOST_ENEMY, false));
 
 	/** The field's ring frames D655 (2D61, H): their distance ahead (m), size and alpha (rows BC -> 59). */
 	private static final float[] RING_AT = {0.35f, 1, 2, 4, 6, 8, 9.5f};
@@ -93,6 +101,9 @@ public final class DvaFx {
 			Integer state = p.getAttached(dev.overcraft.hero.HeroManager.DVA_STATE);
 			if (state != null && (state & dev.overcraft.dva.Dva.MODE_MATRIX) != 0 && p.isAlive()) {
 				matrix(p, partial, KirikoFx.enemyOf(p));
+			}
+			if (state != null && (state & dev.overcraft.dva.Dva.MODE_BOOSTING) != 0 && p.isAlive()) {
+				boosters(p, partial, KirikoFx.enemyOf(p));
 			}
 		}
 	}
@@ -310,10 +321,101 @@ public final class DvaFx {
 		}
 	}
 
+	/**
+	 * A Fusion volley (H parts): the muzzle 18FE at the cannon that fired (hp 0005 / 0007 alternating: ours as 0.9 m to her side,
+	 * 0.5 m down, 0.8 m ahead of her eyes): the flipbook 4896 about 0.9 m and the glow 21E2 0.5 m, 0.05 s; four of the volley's
+	 * eleven tracers 10BB (0.04 m, 0.1 s: ours a third, along her spread to the first block, cosmetic: the server decides the
+	 * hits), each ending in a small puff where it struck (147A's flash).
+	 */
+	private static void fusion(Entity dva, Vec3 eye, Vec3 look, float spread, boolean right, boolean enemy) {
+		Minecraft mc = Minecraft.getInstance();
+		Palette colour = enemy ? Palette.DVA_FUSION_ENEMY : Palette.DVA_FUSION;
+		Vec3 side = look.cross(new Vec3(0, 1, 0));
+		side = side.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : side.normalize();
+		Vec3 muzzle = eye.add(side.scale(right ? 0.9 : -0.9)).add(0, -0.5, 0).add(look.scale(0.8));
+		boolean own = dva == mc.player && mc.options.getCameraType().isFirstPerson();
+		Particle flash = Fx.particle("dva_fusion_flash#4", colour);
+		if (flash != null) {
+			Fx.add(flash.at(muzzle).life(0.06f).size(own ? 0.4f : 0.9f, own ? 0.35f : 0.8f).loop(70).fade(0.01f, 0.5f).nearFade(own ? 0.4f : 0.8f));
+		}
+		Particle glow = Fx.particle("dva_fusion_glow", colour);
+		if (glow != null) {
+			Fx.add(glow.at(muzzle).life(0.06f).size(own ? 0.25f : 0.5f, 0.3f).fade(0.01f, 0.5f).nearFade(own ? 0.4f : 0.8f));
+		}
+		if (mc.level == null) {
+			return;
+		}
+		Vec3 up = side.cross(look).normalize();
+		for (int i = 0; i < 4; i++) {
+			double a = Fx.RANDOM.nextDouble() * Math.PI * 2;
+			double r = Math.tan(Math.toRadians(spread)) * Math.sqrt(Fx.RANDOM.nextDouble());
+			Vec3 dir = look.add(side.scale(Math.cos(a) * r)).add(up.scale(Math.sin(a) * r)).normalize();
+			Vec3 end = eye.add(dir.scale(dev.overcraft.dva.DvaStats.FUSION_RANGE));
+			net.minecraft.world.phys.BlockHitResult hit = mc.level.clip(new net.minecraft.world.level.ClipContext(eye, end,
+				net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE,
+				net.minecraft.world.phys.shapes.CollisionContext.empty()));
+			Vec3 stop = hit.getLocation();
+			Vec3 piece = stop.subtract(muzzle);
+			float len = (float) piece.length();
+			Particle line = Fx.particle("dva_fusion_tracer", colour);
+			if (line != null && len > 1) {
+				Fx.add(line.at(muzzle.add(piece.scale(0.5))).axis(piece).size(len, len).aspect(0.04f / len).life(0.1f).fade(0.01f, 0.6f)
+					.nearFade(0.6f));
+			}
+			if (hit.getType() == net.minecraft.world.phys.HitResult.Type.BLOCK) {
+				Particle puff = Fx.particle("dva_fusion_glow", colour);
+				if (puff != null) {
+					Fx.add(puff.at(stop.add(Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i()).scale(0.05))).life(0.15f).size(0.2f, 0.1f)
+						.fade(0.02f, 0.6f).nearFade(0.3f));
+				}
+			}
+		}
+	}
+
+	/**
+	 * Her Boosters' flight 1492 (H): at the thrusters (hp 007B / 007D / 007E / 0080: ours as four points low on her back, 0.4 m apart)
+	 * the flame burst 4C26 about 1 m, 20 a second, 0.2 s, drifting back at 1 m/s; behind her two trails 0.5 m wide (797 from 0078
+	 * / 007A), living 0.25 s. Not within 3 m of the camera in her own first person (the flames would fill her view).
+	 */
+	private static void boosters(Player p, float partial, boolean enemy) {
+		Minecraft mc = Minecraft.getInstance();
+		boolean own = p == mc.player && mc.options.getCameraType().isFirstPerson();
+		Palette colour = enemy ? Palette.DVA_BOOST_ENEMY : Palette.DVA_BOOST;
+		Vec3 pos = p.getPosition(partial);
+		Vec3 fwd = Vec3.directionFromRotation(0, p.getViewYRot(partial));
+		Vec3 side = fwd.cross(new Vec3(0, 1, 0)).normalize();
+		float dt = Fx.since(-(p.getId() * 8 + 3) - 1);
+		int flames = Math.round(20 * dt);
+		for (int k = 0; k < 4; k++) {
+			Vec3 at = pos.add(0, 1.1 + (k / 2) * 0.4, 0).add(side.scale((k % 2 == 0 ? -1 : 1) * 0.45)).subtract(fwd.scale(0.7));
+			if (own && at.distanceTo(mc.gameRenderer.mainCamera().position()) < 3) {
+				continue;
+			}
+			for (int i = 0; i < flames; i++) {
+				Particle flame = Fx.particle("dva_boost_burst#7", colour);
+				if (flame != null) {
+					Fx.add(flame.at(at).velocity(fwd.scale(-1)).life(0.22f).size(0.6f, 1).loop(32).fade(0.02f, 0.6f).nearFade(1));
+				}
+			}
+		}
+		if (!own) {
+			for (int k = 0; k < 2; k++) {
+				Vec3 at = pos.add(0, 1.3, 0).add(side.scale(k == 0 ? -0.45 : 0.45)).subtract(fwd.scale(0.7));
+				Fx.trail(p.getId() * 4 + 1 + k, at, "dva_boost_trail", colour, 0.5f, 0.25f, 0.7f);
+			}
+		}
+	}
+
 	/** Her effects from the server; false for others' names. */
 	static boolean dispatch(EffectPayload e, boolean enemy) {
 		if (e.effect().equals("dva_sd_field")) {
 			FIELDS.put(e.entity(), new Field(Fx.now(), e.variant() / 20f, enemy));
+			return true;
+		}
+		if (e.effect().equals("dva_fusion")) {
+			Entity dva = Minecraft.getInstance().level == null ? null : Minecraft.getInstance().level.getEntity(e.entity());
+			fusion(dva, new Vec3(e.x(), e.y(), e.z()), new Vec3(e.dx(), e.dy(), e.dz()), (e.variant() >> 1) / 100f, (e.variant() & 1) == 1,
+				enemy);
 			return true;
 		}
 		if (e.effect().equals("dva_missile_hit")) {

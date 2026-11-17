@@ -340,6 +340,8 @@ public final class HeroState {
 	public long dvaMatrixLineAt = -1;
 	/** Which arm her matrix's next absorb beam leaves from (DvaFx: 1506 alternates hp 003D / 003E). */
 	public int dvaAbsorbArm;
+	/** Which cannon fired her last volley (DvaFx: 18FE alternates hp 0005 / 0007). */
+	public boolean dvaFusionSide;
 	/** Whether the Fusion Cannons fired last tick (a burst's first volley and its end have their own sounds). */
 	public boolean dvaFusionBurst;
 	/** When Shield System's restore sound may play again (game time). */
