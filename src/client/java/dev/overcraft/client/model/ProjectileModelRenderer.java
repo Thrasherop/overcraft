@@ -130,6 +130,7 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 			case KunaiEntity kunai -> KirikoFx.kunaiFlight(kunai.getId(), at, dt, KirikoFx.enemyOf(kunai.getOwner()));
 			case dev.overcraft.entity.PulseBombEntity bomb -> dev.overcraft.client.effect.TracerFx.bombFlight(bomb.getId(), at,
 				bomb.tickCount / 20f, KirikoFx.enemyOf(bomb.getOwner()));
+			case dev.overcraft.entity.CaptiveSunEntity sun -> dev.overcraft.client.effect.IllariFx.ballFlight(sun.getId(), at);
 			case dev.overcraft.entity.DvaMissileEntity missile -> dev.overcraft.client.effect.DvaFx.missileFlight(missile.getId(), at,
 				missile.getDeltaMovement(), dt, KirikoFx.enemyOf(missile.getOwner()));
 			case SuzuEntity suzu -> KirikoFx.suzuFlight(suzu.getId(), at, dt, KirikoFx.enemyOf(suzu.getOwner()));
