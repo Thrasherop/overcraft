@@ -412,6 +412,9 @@ public final class ClientHero {
 		int offer = dev.overcraft.client.effect.JetpackCatFx.lifelineOffer(player);
 		if (offer >= 0 && drain(HeroControls.get(Action.INTERACT))) {
 			ClientPlayNetworking.send(new dev.overcraft.net.LifelineGrabPayload(offer));
+		} else if (ownTurretOut(player) && drain(HeroControls.get(Action.INTERACT))) {
+			// Torbjorn's turret out: Interact recalls it (#146)
+			interactPressed = true;
 		} else if (drain(HeroControls.get(Action.INTERACT))) {
 			interacting = true;
 			try {
@@ -421,8 +424,9 @@ public final class ClientHero {
 			}
 		}
 
-		int extra = ClientMercy.input(player) | ClientLifeweaver.input(player) | ClientBrigitte.input(player) | ClientJuno.input(player) | ClientSojourn.input(player)
+		int extra = (interactPressed ? dev.overcraft.net.HeroInputPayload.EXTRA_INTERACT : 0) | ClientMercy.input(player) | ClientLifeweaver.input(player) | ClientBrigitte.input(player) | ClientJuno.input(player) | ClientSojourn.input(player)
 			| ClientSigma.input(player) | ClientCassidy.extra(player, pressed);
+		interactPressed = false;
 		int wall = OwMovement.wallCode(player);
 		if (held != lastHeld || pressed != 0 || extra != 0 || wall != lastWall) {
 			lastHeld = held;
@@ -451,6 +455,18 @@ public final class ClientHero {
 	private static long perkPickedAt = -100;
 	/** The mouse button that picked a perk is still down. */
 	private static boolean perkClickHeld;
+
+	/** Interact was pressed for the kit this tick (Torbjorn's recall). */
+	private static boolean interactPressed;
+
+	/**
+	 * Torbjorn with his turret out (his sync's MODE_TURRET_OUT; the turret's owner isn't synced to clients): Interact recalls it
+	 * (#146).
+	 */
+	private static boolean ownTurretOut(net.minecraft.client.player.LocalPlayer player) {
+		return hero() == dev.overcraft.hero.Hero.TORBJORN && sync != null
+			&& (sync.mode() & dev.overcraft.torbjorn.Torbjorn.MODE_TURRET_OUT) != 0;
+	}
 
 	public static boolean perkMenuOpen() {
 		return perkMenu;
