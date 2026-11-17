@@ -4,6 +4,27 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-16: 0.3.67 on next (not on main yet)
+
+- **Play of the Game follows the music (#161):** the owner: the intro, lineup and POTG waited for the dragon to fly back to
+  the fountain and finish dying, while the music started at the killing blow, so they drifted apart. The POTG now starts
+  on the music's own cue, 7.22 s after the blow, and VICTORY's track runs on into it as one track. Everyone online gets
+  VICTORY and its music, wherever they are.
+- **POTG music no longer cut by a change of dimension (#161):** Minecraft stops every sound when the level changes, which
+  silenced the music when the POTG took a player elsewhere (the Nether). The music is kept through it; it stops with the
+  end screen, on leaving the world, or ~12 s after VICTORY when no POTG follows.
+- **No disconnect after a POTG:** a player near the dying dragon was dropped with "Network Protocol Error" when the world
+  thawed (the client had lost the dragon's health bar during the replay). Found while testing; fixed.
+- **POTG after an earlier POTG (#161):** each player keeps their top 5 highlights and their best since the last POTG, so a
+  second dragon fight still has a play to show.
+- **Every hero has a POTG intro (#161):** Sojourn, Sigma, D.Va, Lucio, Jetpack Cat, Mercy, Lifeweaver, Ana, Sombra,
+  Brigitte and Juno got their highlight intro from the game data (rebuild the asset pack for them).
+- **D.Va's Boosters past trees and corners (#148):** a trunk, a branch or a ledge her mech catches turns the flight aside
+  (she slips up to her width round it) instead of stopping it dead; on a dedicated server the slip had been rejected
+  ("moved wrongly") and she shook in place: now one move the server accepts. Played on a local dedicated server.
+- **D.Va's Fusion Cannons and Boosters effects from her data (#150):** muzzle flashes and tracers; thruster flames and trails.
+- Tested on a local dedicated server for the first time: Boosters, a whole POTG.
+
 ## 2026-11-16: 0.3.66 on next (not on main yet)
 
 - **Tracer's Pulse Bomb, Blink and Recall from her data (#150):** they drew Minecraft's sparks, portal particles and
