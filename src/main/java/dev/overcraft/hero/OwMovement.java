@@ -579,9 +579,12 @@ public final class OwMovement {
 				// no faster than she flies (0.6 m a tick): a wide slip curves her round over a few ticks, not in one jump; the
 				// next ticks pick the same way, now the nearer
 				double most = v.length();
-				entity.move(MoverType.SELF, slip.length() > most ? slip.normalize().scale(most) : slip);
+				slip = slip.length() > most ? slip.normalize().scale(most) : slip;
 			}
-			entity.move(MoverType.SELF, v);
+			// one move, slip and flight together: a dedicated server checks the tick's movement as one move from where she was,
+			// and two moves here (the slip, then the flight) ended somewhere its single one didn't, so it put her back each tick
+			// ("Kiriko moved wrongly!" x13 against a trunk on a dedicated server, 2026-11-16: she shook in place for the flight)
+			entity.move(MoverType.SELF, slip == null ? v : v.add(slip));
 			return;
 		}
 		if (pharahBarrage.test(entity)) {
