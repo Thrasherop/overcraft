@@ -130,6 +130,7 @@ public final class ReticleHud {
 		switch (hero) {
 			case SOJOURN -> sojourn(g, s, cx, cy, reticle);
 			case ILLARI -> illari(g, s, cx, cy, reticle);
+			case TORBJORN -> torbjorn(g, player, hero);
 			case SIGMA -> sigma(g, hero, s, cx, cy, reticle);
 			case BRIGITTE -> brigitte(g, player, hero, s, cx, cy, w, h, partial, reticle);
 			case MERCY -> mercy(g, player, hero, s, cx, cy, w, h, reticle);
@@ -257,6 +258,31 @@ public final class ReticleHud {
 		platedNumber(g, String.valueOf((int) Math.ceil(energy * 100)), cx, cy + 70, 22, emptied ? 0xFFE04040 : WHITE);
 		y = cy + 78;
 	}
+
+	/**
+	 * Torbjorn (#146: "no turret health widget"): while his turret is out, its health as a bar with its icon, as Sigma's barrier
+	 * (ours: his data's widget for it isn't read). His turret is the one whose synced owner is him.
+	 */
+	private static void torbjorn(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, Hero hero) {
+		if (player.level() == null) {
+			return;
+		}
+		dev.overcraft.entity.TurretEntity mine = null;
+		for (var t : player.level().getEntitiesOfClass(dev.overcraft.entity.TurretEntity.class, player.getBoundingBox().inflate(200),
+			t -> t.ownerEntityId() == player.getId() && t.isAlive())) {
+			mine = t;
+			break;
+		}
+		if (mine == null) {
+			return;
+		}
+		float share = mine.getMaxHealth() <= 0 ? 0 : Math.clamp(mine.getHealth() / mine.getMaxHealth(), 0, 1);
+		int ow = (int) Math.ceil(dev.overcraft.Ow.toOw(mine.getHealth()));
+		resourceBar(g, HeroArt.ability(hero, "deploy_turret"), share, String.valueOf(ow), TURRET_BAR);
+	}
+
+	/** His turret's bar: his warm orange (ours). */
+	private static final int TURRET_BAR = 0xFFF2A33A;
 
 	/** Illari's gold (her rifle's charge glow, 5FAC r1 #FAA956: tools/reference/illari-effects.md). */
 	private static final int ILLARI_GOLD = 0xFFFAA956;
