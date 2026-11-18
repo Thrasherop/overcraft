@@ -978,6 +978,12 @@ public final class Fx {
 	 * An effect mesh from the local pack (hero_models/<name>.glb: build_asset_pack.py's EFFECT_MODELS, the game's own
 	 * effect models: Kiriko's torii gate, Jetpack Cat's rings and cone), as triangles one metre wide; null without.
 	 */
+	/** The effect meshes read from models now gone (a reload): read again when next used. */
+	public static void forgetMeshes() {
+		MESHES.clear();
+		MESHES_FROM.clear();
+	}
+
 	public static float @Nullable [] mesh(String name) {
 		dev.overcraft.client.model.HeroModels.Loaded loaded = dev.overcraft.client.model.HeroModels.get(name);
 		if (loaded == null) {

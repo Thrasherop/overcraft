@@ -4,6 +4,15 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.94
+
+- **A resource reload no longer runs out of memory (#166, found testing):** with the local pack and the Minecraft launcher's
+  default 2 GB, F3+T (or changing a resource pack or the language) crashed with "Java heap space": the old models stayed
+  loaded while the new ones were read. The old ones are now freed first (heroes draw as plain players for the reload's few
+  seconds), and caches that kept freed models (first-person arms loaded again, shadow and effect meshes) let them go.
+  Reproduced at 2 GB on 0.3.93; on the fix two reloads in a row passed with the model count and heap flat (131 models,
+  ~1.3 GB), and Kiriko drew in first and third person after them.
+
 ## 2026-11-18: 0.3.93
 
 - **Animations take less memory (#166):** a clip's bones share one copy of its key times, and a bone that holds still through

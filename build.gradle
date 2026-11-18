@@ -27,7 +27,7 @@ loom {
 			vmArg "-Dovercraft.assetPack=${System.getenv('OC_ASSET_PACK') ?: file('local-assets/pack').absolutePath}"
 			// dev remote control for play-testing from scripts (tools/dev.py); never on outside runClient
 			vmArg "-Dovercraft.dev=true"
-			vmArg "-Xmx3G"
+			vmArg "-Xmx${System.getenv('OC_XMX') ?: '3G'}"
 			// one name, so one player across launches (a random one each launch was a new player each time: her hero,
 			// ult and pets didn't carry over)
 			programArgs "--username", "Kiriko"

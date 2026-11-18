@@ -153,6 +153,9 @@ public final class HeroModels {
 			new SimpleReloadListener<Map<String, Prepared>>() {
 				@Override
 				protected Map<String, Prepared> prepare(SharedState state) {
+					// the old models go before the new are read: both at once ran a player's default 2 GB heap out of memory on a
+					// reload (F3+T, a resource pack or language change; #166, played)
+					dropForReload();
 					return load(state.resourceManager());
 				}
 
@@ -497,10 +500,40 @@ public final class HeroModels {
 		return null;
 	}
 
+	/**
+	 * Before a reload reads the models again: the old ones, their textures and what's kept from them go now, on the render thread
+	 * (where they're drawn), so the heap holds one set at a time. Heroes draw as plain players until the reload's end.
+	 */
+	private static void dropForReload() {
+		Minecraft mc = Minecraft.getInstance();
+		if (!mc.isSameThread()) {
+			mc.submit(HeroModels::dropForReload).join();
+			return;
+		}
+		generation++;
+		TextureManager textures = mc.getTextureManager();
+		REGISTERED.forEach(textures::release);
+		REGISTERED.clear();
+		MODELS.clear();
+		EXTRA_MODELS.clear();
+		FIRST_PERSON.clear();
+		PROPS.clear();
+		forgetKept();
+	}
+
+	/** The caches made from models (aim sheets, shadow and effect meshes): made again from the models there are when next drawn. */
+	private static void forgetKept() {
+		AimSheet.clear();
+		HeroModelRenderer.forgetShadows();
+		dev.overcraft.client.effect.Fx.forgetMeshes();
+	}
+
 	/** A model no longer drawn: its own textures go (not the glow images, which a body shares with its arms and props). */
 	private static void release(Pool pool, String name) {
 		List<Identifier> ids = pool.loaded.remove(name);
 		EXTRA_MODELS.remove(name);
+		// its pieces' shadow meshes would keep it (an identity map keyed by piece)
+		HeroModelRenderer.forgetShadows();
 		if (ids != null) {
 			TextureManager textures = Minecraft.getInstance().getTextureManager();
 			for (Identifier id : ids) {
