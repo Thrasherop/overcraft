@@ -51,7 +51,8 @@ public final class EmoteProps {
 		}
 		for (var clip : data.emotes().get(emote).values()) {
 			for (EmoteData.Spawn spawn : clip) {
-				if (HeroModels.get(spawn.file()) != null) {
+				// in the pack, loaded yet or not (props load on first use, #166): the weapons go away as the emote starts
+				if (HeroModels.has(spawn.file())) {
 					return true;
 				}
 			}

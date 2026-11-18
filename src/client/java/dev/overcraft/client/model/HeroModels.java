@@ -144,7 +144,8 @@ public final class HeroModels {
 
 	/** A model that isn't a hero's (see {@link #EXTRAS}). */
 	public static @Nullable Loaded get(String name) {
-		return EXTRA_MODELS.get(name);
+		// an emote's prop loads when first drawn (#166): null for the frame or so it takes
+		return name.startsWith("prop_") ? lazy(name, PROPS, false) : EXTRA_MODELS.get(name);
 	}
 
 	public static void init() {
@@ -293,6 +294,7 @@ public final class HeroModels {
 	private static Map<String, Prepared> load(ResourceManager resources) {
 		Map<String, Prepared> out = new HashMap<>();
 		Map<String, NativeImage> glowImages = new HashMap<>();
+		java.util.Set<String> propsFound = new java.util.HashSet<>();
 		List<String> names = new ArrayList<>(EXTRAS);
 		// the emotes' props, by the ids the emote data names (prop_<model id>)
 		names.addAll(EmoteData.load(resources));
@@ -335,9 +337,18 @@ public final class HeroModels {
 		for (String name : names) {
 			// the first-person arms load when first drawn (firstPerson): only the current hero's is ever on screen, and all 21
 			// held ~0.86 GiB of textures (#166)
-			if (!firstPersonName(name)) {
-				loadOne(resources, name, glowImages, out);
+			if (firstPersonName(name)) {
+				continue;
 			}
+			// the emotes' props too (~0.5 GiB of textures, drawn only in an emote): only whether each is there
+			if (name.startsWith("prop_")) {
+				Identifier id = Identifier.tryBuild(Overcraft.MOD_ID, "hero_models/" + name + ".glb");
+				if (id != null && resources.getResource(id).isPresent()) {
+					propsFound.add(name);
+				}
+				continue;
+			}
+			loadOne(resources, name, glowImages, out);
 		}
 		// a pack from before these parts degrades quietly in play (critique_parts F): say so where it can be seen
 		for (String part : WeaponParts.names()) {
@@ -349,6 +360,7 @@ public final class HeroModels {
 			mergeClips(out, hero.id + "_clips", hero.id);
 			mergeClips(out, hero.id + "_intro_clips", hero.id);
 		}
+		propsFoundByLoad = propsFound;
 		return out;
 	}
 
@@ -389,69 +401,105 @@ public final class HeroModels {
 		}
 	}
 
-	// ---- first-person models, on first use (#166) ----
+	// ---- models loaded on first use (#166): first-person arms, emote props ----
 
 	/** The resources of the last reload, for the models loaded after it; its count, so a load begun before a reload is dropped. */
 	private static @Nullable ResourceManager lastResources;
 	private static int generation;
-	/** Being read in the background, and found to have no file (not asked for again until the next reload). */
-	private static final java.util.Set<String> FP_PENDING = new java.util.HashSet<>();
-	private static final java.util.Set<String> FP_MISSING = new java.util.HashSet<>();
-	/** The loaded ones and their textures, least recently drawn first: two kept (D.Va's mech and pilot arms swap back and forth). */
-	private static final Map<String, List<Identifier>> FP_LOADED = new java.util.LinkedHashMap<>(4, 0.75f, true);
-	private static final int FP_KEEP = 2;
 
-	/** {@code name}'s first-person model if it's loaded; else null, and it's asked for (drawn from a frame or so later). */
+	/**
+	 * A kind of model loaded when first drawn: those loaded and their own textures, least recently drawn first, at most {@code keep}
+	 * of them (the oldest freed past that); those being read in the background; those with no file (not asked for again until the
+	 * next reload).
+	 */
+	private static final class Pool {
+		final int keep;
+		final Map<String, List<Identifier>> loaded = new java.util.LinkedHashMap<>(8, 0.75f, true);
+		final java.util.Set<String> pending = new java.util.HashSet<>();
+		final java.util.Set<String> missing = new java.util.HashSet<>();
+
+		Pool(int keep) {
+			this.keep = keep;
+		}
+
+		void clear() {
+			loaded.clear();
+			pending.clear();
+			missing.clear();
+		}
+	}
+
+	/** First-person arms: two kept (D.Va's mech and pilot arms swap back and forth). Only the current hero's is ever on screen. */
+	private static final Pool FIRST_PERSON = new Pool(2);
+	/** Emote props (prop_<id>): enough for a few emotes' worth, as one emote can spawn several and nest them. */
+	private static final Pool PROPS = new Pool(16);
+	/** The prop models the pack has (read at the reload: their names only), for what asks whether an emote has props. */
+	private static final java.util.Set<String> PROPS_PRESENT = new java.util.HashSet<>();
+	/** The props the last load found (its thread), taken into PROPS_PRESENT as the reload's models are registered (the render thread). */
+	private static volatile java.util.Set<String> propsFoundByLoad = java.util.Set.of();
+
+	/** Whether the pack has this model, loaded or not: a prop's presence (EmoteProps.holds) shouldn't wait on its loading. */
+	public static boolean has(String name) {
+		return name.startsWith("prop_") ? PROPS_PRESENT.contains(name) : get(name) != null;
+	}
+
 	private static @Nullable Loaded firstPersonModel(String name) {
+		return lazy(name, FIRST_PERSON, true);
+	}
+
+	/** {@code name}'s model if it's loaded; else null, and it's asked for (drawn from a frame or so later). */
+	private static @Nullable Loaded lazy(String name, Pool pool, boolean clips) {
 		Loaded loaded = EXTRA_MODELS.get(name);
 		if (loaded != null) {
 			// drawn: the most recent
-			FP_LOADED.get(name);
+			pool.loaded.get(name);
 			return loaded;
 		}
 		ResourceManager resources = lastResources;
-		if (resources == null || FP_PENDING.contains(name) || FP_MISSING.contains(name)) {
+		if (resources == null || pool.pending.contains(name) || pool.missing.contains(name)) {
 			return null;
 		}
-		FP_PENDING.add(name);
+		pool.pending.add(name);
 		int gen = generation;
 		java.util.concurrent.CompletableFuture.supplyAsync(() -> {
 			Map<String, Prepared> out = new HashMap<>();
 			Map<String, NativeImage> glowImages = new HashMap<>();
 			loadOne(resources, name, glowImages, out);
-			loadOne(resources, name + "_clips", glowImages, out);
-			mergeClips(out, name + "_clips", name);
+			if (clips) {
+				loadOne(resources, name + "_clips", glowImages, out);
+				mergeClips(out, name + "_clips", name);
+			}
 			return out;
 		}, net.minecraft.util.Util.backgroundExecutor()).whenCompleteAsync((out, error) -> {
-			FP_PENDING.remove(name);
-			if (error != null || out == null) {
-				Overcraft.LOG.error("Couldn't load the {} model", name, error);
-				FP_MISSING.add(name);
-				return;
-			}
-			Prepared p = out.get(name);
 			if (gen != generation) {
-				// a reload came in meanwhile: its own resources may differ
-				out.values().forEach(HeroModels::close);
+				// a reload came in meanwhile: its own resources may differ (and it cleared the pool)
+				if (out != null) {
+					out.values().forEach(HeroModels::close);
+				}
 				return;
 			}
-			if (p == null) {
-				FP_MISSING.add(name);
+			pool.pending.remove(name);
+			Prepared p = out == null ? null : out.get(name);
+			if (error != null || p == null) {
+				if (error != null) {
+					Overcraft.LOG.error("Couldn't load the {} model", name, error);
+				}
+				pool.missing.add(name);
 				return;
 			}
-			while (FP_LOADED.size() >= FP_KEEP) {
-				releaseFirstPerson(FP_LOADED.keySet().iterator().next());
+			while (pool.loaded.size() >= pool.keep) {
+				release(pool, pool.loaded.keySet().iterator().next());
 			}
 			List<Identifier> ids = new ArrayList<>();
 			registerOne(Minecraft.getInstance().getTextureManager(), name, p, ids);
-			FP_LOADED.put(name, ids);
+			pool.loaded.put(name, ids);
 		}, Minecraft.getInstance());
 		return null;
 	}
 
-	/** A first-person model no longer drawn: its own textures go (not the glow images, which its body shares). */
-	private static void releaseFirstPerson(String name) {
-		List<Identifier> ids = FP_LOADED.remove(name);
+	/** A model no longer drawn: its own textures go (not the glow images, which a body shares with its arms and props). */
+	private static void release(Pool pool, String name) {
+		List<Identifier> ids = pool.loaded.remove(name);
 		EXTRA_MODELS.remove(name);
 		if (ids != null) {
 			TextureManager textures = Minecraft.getInstance().getTextureManager();
@@ -709,9 +757,10 @@ public final class HeroModels {
 		// the first-person models start over from these resources (their textures were in REGISTERED: gone above)
 		lastResources = resources;
 		generation++;
-		FP_PENDING.clear();
-		FP_MISSING.clear();
-		FP_LOADED.clear();
+		FIRST_PERSON.clear();
+		PROPS.clear();
+		PROPS_PRESENT.clear();
+		PROPS_PRESENT.addAll(propsFoundByLoad);
 		prepared.forEach((name, p) -> registerOne(textures, name, p, null));
 	}
 

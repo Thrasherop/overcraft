@@ -4,6 +4,13 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.91
+
+- **Emote props load when an emote first shows them (#166, step 2):** the 102 prop models (0.18 GiB of textures) are no
+  longer read at start; up to 16 stay loaded, older ones are freed. Startup now reads 172 models instead of 316. The memory
+  saved is small (a fresh client in a world: 7.52 -> 7.45 GB). Played: Kiriko's Pod Pet, its pod drawn beside her and her
+  weapons put away, as before.
+
 ## 2026-11-18: 0.3.90
 
 - **Less memory with the local asset pack (#166, step 1):** each hero's first-person arms now load when that hero is first
