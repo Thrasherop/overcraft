@@ -4,6 +4,10 @@
     py tools/build_asset_pack.py add kiriko <model file>    convert a model (.blend/.fbx/.gltf/.glb/.obj/.smd) into the pack
     py tools/build_asset_pack.py zip                        local-assets/overcraft-assets.zip, for a real install:
                                                             copy it to <.minecraft>/overcraft/overcraft-assets.zip
+    py tools/build_asset_pack.py zip --slim                 local-assets/overcraft-assets-slim.zip: the same pack with every
+                                                            model's textures over 2048 px halved and its animation index
+                                                            packed (tools/slim_glb.py); install it the same way, and the
+                                                            plain zip to go back
     py tools/build_asset_pack.py test                       check the Blender pipeline with a cube
     py tools/build_asset_pack.py ui <DataTool output dir>  the heroes' portraits and ability/perk icons, from DataTool's
                                                             extract-hero-icons (<dir>/HeroIcons/<Hero>/...), and the role
@@ -1811,11 +1815,30 @@ def main():
             # 0.3.50 shipped with only Ana's and Brigitte's sounds: a sounds step had dropped the rest from the pack
             sys.exit(f"{len(lost)} sounds in sounds.json have no file in the pack (first: {lost[0]}); rebuild them first")
         write_version()
-        out = LOCAL / "overcraft-assets.zip"
+        # --slim (owner, 2026-11-18): every model's textures over 2048 px halved and its animation index packed
+        # (tools/slim_glb.py), into overcraft-assets-slim.zip; the plain zip is built as before, so going back is using it
+        slim = "--slim" in sys.argv[2:]
+        out = LOCAL / ("overcraft-assets-slim.zip" if slim else "overcraft-assets.zip")
         with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
+            models = []
             for f in PACK.rglob("*"):
-                if f.is_file():
+                if not f.is_file():
+                    continue
+                if slim and f.suffix == ".glb":
+                    models.append(f)
+                else:
                     z.write(f, f.relative_to(PACK))
+            if models:
+                sys.path.insert(0, str(Path(__file__).resolve().parent))
+                import slim_glb
+                import tempfile
+                with tempfile.TemporaryDirectory(dir=LOCAL) as tmp:
+                    before = after = 0
+                    for path, data in slim_glb.iter_slim([str(m) for m in models], tmp):
+                        z.writestr(str(Path(path).relative_to(PACK)).replace("\\", "/"), data)
+                        before += os.path.getsize(path)
+                        after += len(data)
+                print(f"slim: {len(models)} models, {before / 1e9:.2f} GB -> {after / 1e9:.2f} GB")
         print("wrote", out, "- copy it to <.minecraft>/overcraft/overcraft-assets.zip")
     else:
         sys.exit(__doc__)

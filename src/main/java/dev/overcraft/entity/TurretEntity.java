@@ -364,6 +364,10 @@ public class TurretEntity extends Mob implements OwnableEntity, SurfaceStuck {
 
 	private void fight(ServerLevel level, ServerPlayer owner) {
 		fireIn = Math.max(0, fireIn - 1);
+		// hacked by an enemy Sombra: shut down for the hack (owner, 2026-11-18: "Hack should shut down turrets"; HACK_DEPLOYABLE)
+		if (dev.overcraft.sombra.Hack.hacked(this)) {
+			return;
+		}
 		LivingEntity target = tickCount % 2 == 0 || targetId != null ? target(level, owner) : null;
 		if (target == null) {
 			missilesLeft = 0;

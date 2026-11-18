@@ -35,6 +35,17 @@ public final class EnemyHeroSpawns {
 	/** Dev only: off, to see a night without them (and the rule's effect). */
 	public static boolean devOff;
 
+	/**
+	 * {@code /gamerule overcraft:enemy_hero_chance <0-100>}: the percent of natural night zombies, skeletons and husks that come as
+	 * an enemy hero instead (owner, 2026-11-18: "a gamerule for the chances of enemy heros, including a way to disable spawning mob
+	 * heros"). 0 turns them off; the default 8 is the old fixed 1 in 12 (EnemyHeroStats.SPAWN_ONE_IN). The cap (2 within 64 m of a
+	 * player) still holds at any chance.
+	 */
+	public static final net.minecraft.world.level.gamerules.GameRule<Integer> ENEMY_HERO_CHANCE =
+		net.fabricmc.fabric.api.gamerule.v1.GameRuleBuilder.forInteger(8).range(0, 100)
+			.category(net.minecraft.world.level.gamerules.GameRuleCategory.MOBS)
+			.buildAndRegister(dev.overcraft.Overcraft.id("enemy_hero_chance"));
+
 	public static void init() {
 		// a mark the spawner didn't add this tick (never expected) doesn't linger
 		ServerTickEvents.END_SERVER_TICK.register(server -> PENDING.clear());
@@ -50,7 +61,12 @@ public final class EnemyHeroSpawns {
 		if (!night(level)) {
 			return;
 		}
-		if (EnemyHeroStats.mayReplace(level.getRandom().nextInt(EnemyHeroStats.SPAWN_ONE_IN), 0)) {
+		int chance = level.getGameRules().get(ENEMY_HERO_CHANCE);
+		if (chance <= 0) {
+			return;
+		}
+		// the rule's percent: a roll of 0 replaces (mayReplace)
+		if (EnemyHeroStats.mayReplace(level.getRandom().nextInt(100) < chance ? 0 : 1, 0)) {
 			PENDING.add(mob);
 		}
 	}

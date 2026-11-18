@@ -152,7 +152,9 @@ public class EnemyTorbjorn extends EnemyHeroEntity {
 			}
 			return;
 		}
-		if (sees && turret == null && turretCooldown <= 0 && distance <= EnemyHeroStats.TORBJORN_TURRET_WITHIN && onGround()) {
+		// (not while hacked: no abilities, the critique of #46)
+		if (sees && turret == null && turretCooldown <= 0 && distance <= EnemyHeroStats.TORBJORN_TURRET_WITHIN && onGround()
+			&& !dev.overcraft.sombra.Hack.silenced(this)) {
 			turretCast = 0;
 			Combat.animate(this, "turret_throw");
 			play(level, "turret.throw", getEyePosition(), 40);

@@ -4,6 +4,32 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.119
+
+- **A hacked enemy hero uses no abilities (#46):** under Sombra's hack an enemy Tracer no longer Blinks, an enemy Torbjörn
+  doesn't throw his turret and an enemy Ashe doesn't fire her Coach Gun; their guns still fire, as a hacked player's do.
+  Pharah keeps her Hover Jets (a passive). Played: with no hack a summoned Torbjörn had his turret out within 5 s; hacked for
+  10 s, none at 3, 6 and 9 s, and he threw it once the hack ended.
+- **Dev only:** the asset pack's `zip --slim` build option (see the commit), for the owner's playtest of a smaller pack.
+
+## 2026-11-18: 0.3.118
+
+- **A game rule for enemy heroes (owner):** `/gamerule overcraft:enemy_hero_chance <0-100>`, the percent of natural night
+  zombies, skeletons and husks that come as an enemy hero instead. 0 turns them off; the default 8 is the old 1 in 12. The cap
+  (2 within 64 m of a player) still holds. Played: at 100, 40 s of night brought 55 enemy heroes and one zombie; at 0, none
+  (20 zombies, 26 skeletons).
+- **Sombra's hack shuts down turrets (owner):** Hotfix's hack and EMP now hack a Torbjörn's turret, an enemy hero's or an enemy
+  player's, and a hacked turret stops firing for the hack (10 s, the game data's). Before, a turret counted as a living thing,
+  so Hotfix tried to heal it. Played: an enemy turret fired 14 shots in 4 s at Sombra, none in the 4 s after her hack, and 13
+  again once the hack was over.
+
+## 2026-11-18: 0.3.117
+
+- **Enemy heroes leave at daybreak (#46, the owner's choice):** they come with the night and now go once day is here, in a
+  puff of smoke (checked once a second; a thunderstorm's dark keeps them, as it lets them spawn). One kept on purpose (a name
+  tag, or summoned with persistence) stays. Played: at midnight an enemy Cassidy and a kept Widowmaker; three seconds after
+  the time was set to day the Cassidy was gone and the Widowmaker still there.
+
 ## 2026-11-18: 0.3.116
 
 - **A dead enemy's frags and rockets still burst (#46):** once an enemy Junkrat or Pharah died and was removed (a second
