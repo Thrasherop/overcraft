@@ -4,6 +4,28 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.95 (on main; general play at 2 GB: techniques/testing/runs/genplay_0395/run.md)
+
+- **Reloads at 2 GB, the rest of it (#166):** a third reload in a row at the launcher's default 2 GB still ran out of memory
+  while reading a hero's model file: each hero's file describes ~77,000 animation buffers in 35-52 MB of text, and it was
+  read whole into memory first. Those two lists are now read as plain numbers as they stream in. Played at 2 GB: three
+  reloads in a row passed (133 models, heap 1.35-1.48 GB), and heroes, enemy heroes, a turret and Purr's effects drew after.
+
+## 2026-11-18: 0.3.94
+
+- **A resource reload no longer runs out of memory (#166, found testing):** with the local pack and the Minecraft launcher's
+  default 2 GB, F3+T (or changing a resource pack or the language) crashed with "Java heap space": the old models stayed
+  loaded while the new ones were read. The old ones are now freed first (heroes draw as plain players for the reload's few
+  seconds), and caches that kept freed models (first-person arms loaded again, shadow and effect meshes) let them go.
+  Reproduced at 2 GB on 0.3.93; on the fix two reloads in a row passed with the model count and heap flat (131 models,
+  ~1.3 GB), and Kiriko drew in first and third person after them.
+
+## 2026-11-18: 0.3.93
+
+- **Animations take less memory (#166):** a clip's bones share one copy of its key times, and a bone that holds still through
+  a clip keeps one key instead of hundreds. The clips' arrays went from 800 to 581 MB, and a fresh client from 7.45 to 7.27
+  GB. Animations sample the same: played Kiriko running, an emote, and her aim sheet (21 frames, 35 to -44 degrees, as before).
+
 ## 2026-11-18: 0.3.92 (on main; general play: techniques/testing/runs/genplay_0392/run.md)
 
 - **The communication wheel's page buttons take a quick click (found in the general play):** with T held, a fast click of the

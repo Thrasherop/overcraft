@@ -219,6 +219,7 @@ public final class SkinnedModel {
 			}
 		}
 
+		Map<Integer, float[]> timesByAccessor = new java.util.HashMap<>();
 		for (JsonElement a : glb.array("animations")) {
 			JsonObject anim = a.getAsJsonObject();
 			String name = anim.has("name") ? anim.get("name").getAsString() : "clip" + model.clips.size();
@@ -242,18 +243,39 @@ public final class SkinnedModel {
 					continue;
 				}
 				JsonObject sampler = samplers.get(ch.get("sampler").getAsInt()).getAsJsonObject();
-				float[] times = glb.floats(sampler.get("input").getAsInt());
+				// a clip's channels share their key times (one accessor for them all): read once, not once a channel (#166:
+				// the clips held ~0.8 GB of float arrays on the heap with the full pack)
+				float[] times = timesByAccessor.computeIfAbsent(sampler.get("input").getAsInt(), glb::floats);
 				float[] values = glb.floats(sampler.get("output").getAsInt());
 				boolean step = sampler.has("interpolation") && "STEP".equals(sampler.get("interpolation").getAsString());
 				if (kind == 'R') {
 					dropRotationSpikes(values);
 				}
-				channels.add(new Channel(target.get("node").getAsInt(), kind, times, values, step));
 				duration = Math.max(duration, times[times.length - 1]);
+				int width = kind == 'R' ? 4 : 3;
+				if (times.length > 1 && constant(values, width)) {
+					// the same key all through (most bones in most clips): one key samples the same at every time (Skeleton.sample)
+					times = ONE_KEY;
+					values = java.util.Arrays.copyOf(values, width);
+				}
+				channels.add(new Channel(target.get("node").getAsInt(), kind, times, values, step));
 			}
 			model.clips.put(name, new Clip(name, duration, channels));
 		}
 		return model;
+	}
+
+	/** A constant channel's one key time (any time: with one key, Skeleton.sample takes it whatever the time). Never written. */
+	private static final float[] ONE_KEY = {0};
+
+	/** Every key the same as the first (exactly: a moving bone's keys differ somewhere). */
+	private static boolean constant(float[] values, int width) {
+		for (int i = width; i < values.length; i++) {
+			if (values[i] != values[i % width]) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private static int[] sequence(int n) {

@@ -938,6 +938,11 @@ public final class HeroModelRenderer {
 	private static final float SHADOW_CELL = 0.035f;
 	private static final Map<SkinnedModel.Piece, ShadowMesh> SHADOW_MESHES = new IdentityHashMap<>();
 
+	/** The shadow meshes made from models now gone (a reload, a freed model: HeroModels): made again when next drawn. */
+	public static void forgetShadows() {
+		SHADOW_MESHES.clear();
+	}
+
 	private static ShadowMesh shadowMesh(SkinnedModel.Piece piece) {
 		float[] pos = piece.pos();
 		int n = piece.vertexCount();
@@ -1471,7 +1476,7 @@ public final class HeroModelRenderer {
 	}
 
 	/** Per view model: [right seen, right is "_L", left seen, left is "_L"], as last judged at rest. */
-	private static final Map<SkinnedModel, boolean[]> SEEN_HANDS = new IdentityHashMap<>();
+	private static final Map<SkinnedModel, boolean[]> SEEN_HANDS = new java.util.WeakHashMap<>(); // weak: freed view models go (#166)
 
 	private static Matrix4f[] judgeHands(PoseStack poseStack, HeroAnimator animator, SkinnedModel model) {
 		Minecraft mc = Minecraft.getInstance();

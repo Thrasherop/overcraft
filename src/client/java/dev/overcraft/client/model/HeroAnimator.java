@@ -2501,18 +2501,18 @@ public final class HeroAnimator {
 	 * io_scene_owm name the main bones) or the Source (ValveBiped) rigs of SFM ports.
 	 */
 	static final class UpperBody {
-		private static final Map<SkinnedModel, boolean[]> MASKS = new HashMap<>();
-		private static final Map<SkinnedModel, boolean[]> AIM_MASKS = new HashMap<>();
-		private static final Map<SkinnedModel, Integer> HEADS = new HashMap<>();
-		private static final Map<SkinnedModel, Integer> MOVERS = new HashMap<>();
-		private static final Map<SkinnedModel, Integer> EYES = new HashMap<>();
-		private static final Map<SkinnedModel, Integer> FINGERTIPS = new HashMap<>();
-		private static final Map<SkinnedModel, Integer> KUNAI_HANDS = new HashMap<>();
-		private static final Map<SkinnedModel, Integer> KUNAI_WRISTS = new HashMap<>();
-		private static final Map<SkinnedModel, Integer> ARMS = new HashMap<>();
-		private static final Map<SkinnedModel, Integer> ARMS_R = new HashMap<>();
-		private static final Map<SkinnedModel, Integer> OFUDA_WRISTS = new HashMap<>();
-		private static final Map<SkinnedModel, Integer> OFUDA_HANDS = new HashMap<>();
+		private static final Map<SkinnedModel, boolean[]> MASKS = new java.util.WeakHashMap<>(); // weak: a reloaded or freed model goes (#166)
+		private static final Map<SkinnedModel, boolean[]> AIM_MASKS = new java.util.WeakHashMap<>();
+		private static final Map<SkinnedModel, Integer> HEADS = new java.util.WeakHashMap<>();
+		private static final Map<SkinnedModel, Integer> MOVERS = new java.util.WeakHashMap<>();
+		private static final Map<SkinnedModel, Integer> EYES = new java.util.WeakHashMap<>();
+		private static final Map<SkinnedModel, Integer> FINGERTIPS = new java.util.WeakHashMap<>();
+		private static final Map<SkinnedModel, Integer> KUNAI_HANDS = new java.util.WeakHashMap<>();
+		private static final Map<SkinnedModel, Integer> KUNAI_WRISTS = new java.util.WeakHashMap<>();
+		private static final Map<SkinnedModel, Integer> ARMS = new java.util.WeakHashMap<>();
+		private static final Map<SkinnedModel, Integer> ARMS_R = new java.util.WeakHashMap<>();
+		private static final Map<SkinnedModel, Integer> OFUDA_WRISTS = new java.util.WeakHashMap<>();
+		private static final Map<SkinnedModel, Integer> OFUDA_HANDS = new java.util.WeakHashMap<>();
 
 		private static int first(SkinnedModel model, String... names) {
 			for (String name : names) {
