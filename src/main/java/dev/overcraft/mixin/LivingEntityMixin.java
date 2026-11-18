@@ -146,6 +146,13 @@ public abstract class LivingEntityMixin {
 	 * it: no hit at all (absorbed with 0 damage left, Minecraft still knocked her 3 m back and let the next arrow past her:
 	 * found playing), and a projectile stops at it.
 	 */
+	/** The hit is over: a Mercy's share of a boosted hit is credited only if it landed (Boosts.landed). */
+	@Inject(method = "hurtServer", at = @At("RETURN"))
+	private void overcraft$boostLanded(net.minecraft.server.level.ServerLevel level, net.minecraft.world.damagesource.DamageSource source,
+									   float damage, CallbackInfoReturnable<Boolean> cir) {
+		dev.overcraft.mercy.Boosts.landed((LivingEntity) (Object) this, cir.getReturnValueZ());
+	}
+
 	@Inject(method = "hurtServer", at = @At("HEAD"), cancellable = true)
 	private void overcraft$barrier(net.minecraft.server.level.ServerLevel level, net.minecraft.world.damagesource.DamageSource source,
 								   float damage, CallbackInfoReturnable<Boolean> cir) {

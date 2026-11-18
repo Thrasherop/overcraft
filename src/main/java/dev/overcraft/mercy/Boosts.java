@@ -59,11 +59,34 @@ public final class Boosts {
 		float raised = (float) (damage * factor);
 		UUID by = boostedBy(attacker);
 		net.minecraft.server.level.ServerPlayer mercy = by == null ? null : attacker.level().getServer().getPlayerList().getPlayer(by);
-		if (mercy != null) {
-			// her share of what was added, not Nano's
-			dev.overcraft.hero.Combat.credit(mercy, dev.overcraft.Ow.toOw((float) (damage * (mercyFactor(attacker) - 1))), victim);
+		if (mercy != null && victim instanceof net.minecraft.world.entity.LivingEntity hurt) {
+			// her share of what was added, not Nano's: credited once the hit lands (landed), at most what the victim had left. Credited
+			// here, every hit Minecraft then refused (its hit cooldown, a phased or dying target) counted in full (a critique)
+			PENDING.put(hurt, new Pending(mercy.getUUID(), dev.overcraft.Ow.toOw((float) (damage * (mercyFactor(attacker) - 1))),
+				dev.overcraft.Ow.toOw(hurt.getHealth() + hurt.getAbsorptionAmount())));
 		}
 		return raised;
+	}
+
+	private record Pending(UUID mercy, double points, double cap) {
+	}
+
+	/**
+	 * Shares waiting on their hit (by victim: a hit inside a hit, thorns, is another victim's). Server thread only. Weak: a hit
+	 * cancelled at hurtServer's head (a barrier, D.Va untargetable) never reaches landed, and its entry mustn't keep the victim.
+	 */
+	private static final java.util.Map<net.minecraft.world.entity.LivingEntity, Pending> PENDING = new java.util.WeakHashMap<>();
+
+	/** {@code victim}'s hit is over: its Mercy's share credited if it landed (LivingEntityMixin, hurtServer's return). */
+	public static void landed(net.minecraft.world.entity.LivingEntity victim, boolean hurt) {
+		Pending p = PENDING.remove(victim);
+		if (p == null || !hurt || victim.level().getServer() == null) {
+			return;
+		}
+		net.minecraft.server.level.ServerPlayer mercy = victim.level().getServer().getPlayerList().getPlayer(p.mercy());
+		if (mercy != null) {
+			dev.overcraft.hero.Combat.credit(mercy, Math.min(p.points(), p.cap()), victim);
+		}
 	}
 
 	/** The Mercy boosting this attacker now, or null. */

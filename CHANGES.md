@@ -4,6 +4,12 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.101
+
+- **Damage core, from an independent critique (#167, not yet verified in the game):** Ashe's Coach Gun (and the enemy
+  Ashe's) now lets armor take its 7 off each pellet, as Tracer's pistols and D.Va's cannons do, instead of once off the whole
+  blast; Mercy's damage boost now earns her ult charge only when the boosted hit lands, at most what the target had left.
+
 ## 2026-11-18: 0.3.100
 
 - **Hero select and rejoining, after an independent critique:** each reproduced in the game first, then replayed.
