@@ -311,26 +311,46 @@ public final class DevServer {
 				out.addProperty("ok", true);
 			}
 			case "cut" -> {
-				// dev only: "cut sleep|stun|hack|hinder <seconds>" on the local player, in the one-player world: what an enemy's dart, stun or EMP
-				// does, without a second client
+				// dev only: "cut sleep|stun|hack|hinder <seconds> [near]" on the local player, in the one-player world: what an enemy's dart,
+				// stun or EMP does, without a second client. "near": on the nearest mob within 32 m instead (sleep, stun, hack), to test an
+				// enemy hero held or hacked at a moment chosen by script (the critique of #46: their reactions ignored these)
 				String[] a = arg.split(" ");
 				double seconds = a.length > 1 ? Double.parseDouble(a[1]) : 2;
+				boolean near = a.length > 2 && a[2].equals("near");
 				var server = mc.getSingleplayerServer();
-				var target = server == null || player == null ? null : server.getPlayerList().getPlayer(player.getUUID());
-				if (target != null) {
+				var self = server == null || player == null ? null : server.getPlayerList().getPlayer(player.getUUID());
+				net.minecraft.world.entity.LivingEntity target = self;
+				if (near && self != null) {
+					target = null;
+					double best = 32 * 32;
+					for (var e : self.level().getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, self.getBoundingBox().inflate(32),
+						e -> !(e instanceof net.minecraft.world.entity.player.Player) && e.isAlive())) {
+						if (e.distanceToSqr(self) < best) {
+							best = e.distanceToSqr(self);
+							target = e;
+						}
+					}
+				}
+				var held = target;
+				if (held != null) {
 					server.execute(() -> {
 						switch (a[0]) {
-							case "sleep" -> dev.overcraft.hero.Sleep.put(target, seconds);
-							case "stun" -> dev.overcraft.hero.Sleep.stun(target, seconds);
-							case "hack" -> dev.overcraft.sombra.Hack.creature(target, seconds);
-							// (an enemy Cassidy's Flashbang hinder, its own 1.2 s)
-							case "hinder" -> dev.overcraft.cassidy.Hinder.apply(target);
+							case "sleep" -> dev.overcraft.hero.Sleep.put(held, seconds);
+							case "stun" -> dev.overcraft.hero.Sleep.stun(held, seconds);
+							case "hack" -> dev.overcraft.sombra.Hack.creature(held, seconds);
+							// (an enemy Cassidy's Flashbang hinder, its own 1.2 s: the player only)
+							case "hinder" -> {
+								if (held instanceof net.minecraft.world.entity.player.Player p) {
+									dev.overcraft.cassidy.Hinder.apply(p);
+								}
+							}
 							default -> {
 							}
 						}
 					});
+					out.addProperty("target", held.getType().toShortString());
 				}
-				out.addProperty("ok", target != null);
+				out.addProperty("ok", held != null);
 			}
 			case "bot" -> {
 				// dev only: a second player with no second client (DevBot)

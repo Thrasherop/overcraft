@@ -4,6 +4,14 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.115
+
+- **Held or hacked enemy heroes don't react (#46):** an enemy hero that's asleep, stunned, knocked down or hacked no longer
+  Blinks (Tracer) or Combat Rolls (Cassidy) when hit. Reproduced: a hacked enemy Cassidy rolled when hit from 2 m. Replayed:
+  no roll in three hacked rounds, and an unhacked one still rolled (rolls are rare in this test: a small sample, but the path
+  is clear). A stunned one already stood still.
+- **Dev only:** the harness's `cut sleep|stun|hack <seconds> near` holds or hacks the nearest mob, to test this on cue.
+
 ## 2026-11-18: 0.3.114
 
 - **Enemy heroes on Peaceful (#46):** switching to Peaceful removed the zombies but left the enemy heroes, which went on

@@ -149,8 +149,11 @@ public abstract class EnemyHeroEntity extends Monster {
 	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
 		boolean hurt = super.hurtServer(level, source, damage);
 		// (a monster's stray arrow isn't a fight: HurtByTargetGoal ignores it too, critique of c728bea)
+		// not while it's held (asleep, stunned, knocked down: Sleep) or hacked (no abilities: Hack): a Blink or a Combat Roll out of
+		// them was the critique of #46's (reproduced: a hacked enemy Cassidy rolled when hit from close)
 		if (hurt && isAlive() && source.getEntity() instanceof LivingEntity attacker && attacker != this
-			&& !(attacker instanceof net.minecraft.world.entity.monster.Enemy)) {
+			&& !(attacker instanceof net.minecraft.world.entity.monster.Enemy)
+			&& !dev.overcraft.hero.Sleep.asleep(this) && !dev.overcraft.sombra.Hack.silenced(this)) {
 			hurtBy(level, attacker);
 		}
 		return hurt;
