@@ -38,6 +38,10 @@ Numbers follow the live game (sources: Blizzard's patch notes and the Overwatch 
 ## Requirements
 - Minecraft 26.3, Fabric Loader 0.20.1+, Fabric API.
 - Needed on both the client and the server.
+- Memory: with the hero models from your own Overwatch install (the local asset pack), give the game **3-4 GB** in the
+  launcher (Installations, Edit, More options, JVM arguments: `-Xmx4G`). The launcher's default 2 GB works, but with little to
+  spare: measured on 0.3.95, about 1.7 of the 2 GB is in use on open terrain at night (#166). The pack also uses graphics and
+  system memory outside that (about 5 GB in all on a 16 GB machine).
 
 ## Building
 ```
