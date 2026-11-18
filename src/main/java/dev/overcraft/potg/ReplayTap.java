@@ -56,15 +56,17 @@ public final class ReplayTap {
 		ServerPlayer player = game.player;
 		boolean capture = CAPTURING.get() == connection;
 		if (!capture) {
-			if (PotgReplay.viewing(player) && (packet instanceof ClientboundTickingStatePacket || packet instanceof ClientboundSetTimePacket)) {
-				// the world is frozen for the showing, and the viewer's client mustn't hear it (design: "Freezing, with the
-				// news kept from the viewer"), or its clock and animators stop
-				return true;
-			}
 			ReplayViewer viewer = ((ReplayViewable) game).arcade_getViewingReplay();
 			if (viewer != null) {
-				// what the viewer is shown is the replay, never recorded again
+				// what the viewer is shown is the replay, never recorded again; its own recorded time and tick state go through
+				// (they were dropped with the live world's below: a midnight play replayed at noon, the POTG critique, reproduced).
+				// The viewer is out of the server's player list by then, so the live world's broadcasts don't come this way
 				return false;
+			}
+			if (PotgReplay.viewing(player) && (packet instanceof ClientboundTickingStatePacket || packet instanceof ClientboundSetTimePacket)) {
+				// the world is frozen for the showing (the card and intro, before the replay), and the viewer's client mustn't hear
+				// it (design: "Freezing, with the news kept from the viewer"), or its clock and animators stop
+				return true;
 			}
 		}
 		if (player.level().getServer().isSameThread()) {

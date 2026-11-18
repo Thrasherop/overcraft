@@ -57,6 +57,8 @@ public final class PlayScore {
 		int head;
 		String name = "";
 		double lastUlt;
+		/** The hero lastUlt was charged as: a hero change zeroes the charge, which isn't an ult (the POTG critique's 6). */
+		dev.overcraft.hero.Hero lastHero;
 		/** The server tick of a death whose kept window is taken again a second later. */
 		int diedAt = -1;
 	}
@@ -224,10 +226,12 @@ public final class PlayScore {
 				continue;
 			}
 			double cost = Combat.ultCost(s);
-			if (r.lastUlt >= cost && s.ultCharge < r.lastUlt - cost * 0.5) {
+			if (r.lastUlt >= cost && s.ultCharge < r.lastUlt - cost * 0.5 && r.lastHero == s.hero) {
 				r.now[Category.HIGH_SCORE.ordinal()] += PotgValues.ULT_START * PotgValues.ULT_SHARE;
+				Overcraft.LOG.info(String.format(Locale.ROOT, "[POTG] %s: +%.0f High Score (ult)", r.name, PotgValues.ULT_START * PotgValues.ULT_SHARE));
 			}
 			r.lastUlt = s.ultCharge;
+			r.lastHero = s.hero;
 		}
 		for (Map.Entry<UUID, Rows> e : ROWS.entrySet()) {
 			repinAfterDeath(server, e.getKey(), e.getValue());
@@ -243,6 +247,23 @@ public final class PlayScore {
 		nanos += d;
 		ticks++;
 		maxTickNanos = Math.max(maxTickNanos, d);
+	}
+
+	/**
+	 * Whether this player scored anything in the last WINDOW seconds: a play may be going on, so their recorder doesn't roll
+	 * its segment now (PotgRecorder; #170, the critique's 5: a window across a roll lost its start).
+	 */
+	public static boolean busy(UUID id) {
+		Rows r = ROWS.get(id);
+		if (!open || r == null) {
+			return false;
+		}
+		for (int c = 0; c < 4; c++) {
+			if (r.now[c] > 0 || windowSum(r.seconds[c]) > 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static void step(MinecraftServer server, UUID id, Rows r) {

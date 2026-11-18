@@ -39,6 +39,19 @@ public final class ClientPotg {
 		return active;
 	}
 
+	/** Wall clock: when the last showing ended here (0: none since connecting). */
+	private static long endedAt;
+
+	/**
+	 * Whether a login now is the replay engine logging this player back after a showing (it can land after the end screen:
+	 * the hero select opened after every watched highlight, found playing 0.3.109). Once: the next login is a join again.
+	 */
+	public static boolean backFromShowing() {
+		boolean back = endedAt > 0 && net.minecraft.util.Util.getMillis() - endedAt < 15_000;
+		endedAt = 0;
+		return back;
+	}
+
 	/**
 	 * In a showing's replay, the player the camera follows (the scorer, PotgReplay's camera lock), as the viewer's client
 	 * knows them; null otherwise. Their view is drawn as theirs: their hero's arms and HUD (#155, the owner: "No UI of the
@@ -91,6 +104,7 @@ public final class ClientPotg {
 
 	private static void finish(Minecraft mc) {
 		active = false;
+		endedAt = net.minecraft.util.Util.getMillis();
 		// the server holds the world until every viewer's end screen is over (critique 6): this one's is
 		if (mc.getConnection() != null && ClientPlayNetworking.canSend(HighlightsPayload.TYPE)) {
 			ClientPlayNetworking.send(new HighlightsPayload(HighlightsPayload.DONE, ""));
@@ -134,6 +148,7 @@ public final class ClientPotg {
 
 	public static void onDisconnect() {
 		active = false;
+		endedAt = 0;
 		PotgMusic.stop();
 		PotgCard.hide();
 	}

@@ -292,3 +292,15 @@ boosting bit every 0.04 s): held Shift ended Boosters at 0.57 s before the fix, 
 - **Don't `/tp` a hero mid-fall from an ability** (2026-11-18): a teleport of D.Va's pilot, still falling from the eject, put her on
   the ground on the server, which ended the eject's fall protection while her client went on falling; she died "doomed to fall".
   Let her land first. Played without the teleport: an eject off a 49 m ledge landed her unhurt.
+- **C: fills while a client runs** (2026-11-18): C: went from 9.5 GB free to 0 in ~20 minutes with one client at a 2 GB heap
+  (5.2 GB working set, 1 GB of RAM left), and came back the moment the client closed. Nothing on C: under the user's folders
+  grew, and the page file stayed at 20 GB allocated, so it's likely Windows' virtual memory under pressure. Claude Code's temp
+  folder is on C:, so tool output is lost when it's full. Check `Get-PSDrive C` and free RAM before a long session; close the
+  client between checks rather than leaving it idle.
+- **Highlights to watch** (2026-11-18): the Highlights menu (K) unlocks only after this world's dragon has died (any death,
+  `/kill` too). A play is kept only if its 12 s window beats the lowest of the saved five (~1100 by then: four kills at 3 s
+  apart score 1000 and aren't kept; add an ult). Segments roll every 5:00 of recorded ticks (the first ~5:15 after a launch);
+  the folder's `seg-N` directory time is the roll. Click the menu with the real mouse after `focus.ps1`.
+- **`giveult` is its own command** (`giveult @p 100`), not under `overcraft`; it fails silently in a harness `servercmd`.
+- **Clear mobs before a respawn test:** `kill @e[type=!player]` before `respawn`. A husk left from a death test kills again,
+  and a platform over the world spawn suffocates the respawned player (HeroBody then drops hero mode: "no room").

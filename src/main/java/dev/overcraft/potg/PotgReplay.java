@@ -411,7 +411,13 @@ public final class PotgReplay {
 		}
 		Overcraft.LOG.info("[POTG] showing {} to {} viewer(s), world frozen (was {})", show.highlight(), viewers.size(), wasFrozen);
 		var zipped = PotgRecorder.hold(server);
-		later(server, lead, () -> zipped.whenComplete((v, err) -> server.execute(() -> replay(server, show, viewers))));
+		// this showing's, when its zip finishes: a slow zip mustn't start its replay inside a later showing (#170, the critique's 7)
+		int gen = generation;
+		later(server, lead, () -> zipped.whenComplete((v, err) -> server.execute(() -> {
+			if (active && generation == gen) {
+				replay(server, show, viewers);
+			}
+		})));
 		return "Showing " + show.highlight();
 	}
 
@@ -428,8 +434,11 @@ public final class PotgReplay {
 		ServerPlayNetworking.send(player, new PotgPayload(PotgPayload.SOLO, h.player, show.hero(), h.category, lead / 1000f,
 			showData(server, show, List.of(player), false).toString()));
 		var zipped = PotgRecorder.holdOne(server, owner).thenCompose(v -> PotgRecorder.holdOne(server, player.getUUID()));
+		int gen = generation;
 		later(server, lead, () -> zipped.whenComplete((v, err) -> server.execute(() -> {
-			if (active) {
+			// still this showing (a slow zip after the dragon's POTG replaced it: #170), and the viewer alive and here (the void,
+			// /kill or a quit during the intro: no replay for a dead or gone viewer, the critique's 3)
+			if (active && generation == gen && player.isAlive() && !player.hasDisconnected()) {
 				replay(server, show, List.of(player));
 			}
 		})));
@@ -558,6 +567,9 @@ public final class PotgReplay {
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 			if (VIEWERS.contains(player.getUUID())) {
 				ServerPlayNetworking.send(player, new PotgPayload(PotgPayload.END, "", "", "", 0));
+				// the live world's time and weather again: the replay's own were shown (a night play replays at night), and the
+				// rejoin's were dropped while the showing was still active (ReplayTap), so a noon world stayed dark (found replaying)
+				server.getPlayerList().sendLevelInfo(player, player.level());
 				// held looks come again, as for someone who has just come to see them (the replay's hero_sync overwrote the
 				// viewer's own client state: the spike)
 				var map = ((dev.overcraft.mixin.ChunkMapAccessor) player.level().getChunkSource().chunkMap).overcraft$entityMap();
@@ -592,6 +604,14 @@ public final class PotgReplay {
 				((dev.overcraft.mixin.ServerGamePacketListenerAccessor) player.connection).overcraft$setAboveGroundTickCount(0);
 			}
 		}
+		// and once the replay has them they're out of the player list, but their listener still ticks: a dedicated server
+		// (allow-flight off) kicked a viewer held in the air for "flying" about 4 s in (#170, the critique's 2)
+		for (ReplayViewer v : ReplayViewers.viewers()) {
+			ServerPlayer player = v.getPlayer();
+			if (VIEWERS.contains(player.getUUID()) && player.connection != null) {
+				((dev.overcraft.mixin.ServerGamePacketListenerAccessor) player.connection).overcraft$setAboveGroundTickCount(0);
+			}
+		}
 		if (System.currentTimeMillis() > watchdogAt) {
 			end(server, "watchdog");
 		}
@@ -612,6 +632,22 @@ public final class PotgReplay {
 	/** A viewer's client: its end screen (or a solo's black) is over and its input is back. */
 	public static void viewerDoneWatching(ServerPlayer player) {
 		OUTRO.remove(player.getUUID());
+	}
+
+	/**
+	 * A viewer left the server (the vendored listener's onDisconnect, server thread): their viewer closes without finishing, so
+	 * they're no longer waited for; the last one still watching ends the showing now. Before, the others sat in the frozen
+	 * world until the watchdog, 13-20 s late (#170, the critique's 1).
+	 */
+	public static void viewerLeft(MinecraftServer server, UUID id) {
+		OUTRO.remove(id);
+		if (!active) {
+			return;
+		}
+		VIEWERS.remove(id);
+		if (WATCHING.remove(id) && WATCHING.isEmpty()) {
+			end(server, "the last viewer left");
+		}
 	}
 
 	/** Whether the POTG's end screen still holds the world (no highlight may start then: critique 1). */

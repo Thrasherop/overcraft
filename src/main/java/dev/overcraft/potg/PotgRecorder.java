@@ -39,6 +39,8 @@ public final class PotgRecorder {
 
 	/** A segment's length in recorded ticks (ours: one Flashback chunk, its 5 minutes). */
 	public static final int SEGMENT_TICKS = FlashbackIO.CHUNK_LENGTH;
+	/** Ours: how long past SEGMENT_TICKS a roll waits for a quiet 12 s (#170), so a long fight can't hold a segment open. */
+	public static final int ROLL_DEFER_TICKS = 60 * 20;
 
 	/** A place in a recording: which segment of whose, the recorded tick, the recorded player's entity id. */
 	public record Clip(String segment, int tick, int entityId) {
@@ -121,7 +123,9 @@ public final class PotgRecorder {
 					}
 				} else if (r.recorder == null || r.recorder.getStopped()) {
 					start(server, r, player);
-				} else if (r.recorder.recordedTicks() >= SEGMENT_TICKS) {
+				} else if (r.recorder.recordedTicks() >= SEGMENT_TICKS
+					&& (!PlayScore.busy(player.getUUID()) || r.recorder.recordedTicks() >= SEGMENT_TICKS + ROLL_DEFER_TICKS)) {
+					// not in the middle of a play (#170): a window across the roll lost its start, the old segment unkept
 					finish(server, r);
 					start(server, r, player);
 				}

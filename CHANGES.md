@@ -4,6 +4,63 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.113
+
+- **Play of the Game on a dedicated server (#170):** a player in the air when the showing began (Pharah hovering) was kicked
+  for flying 4 s into the replay ("Flying is not enabled on this server"). The server's floating check missed viewers once the
+  replay had taken them out of the player list. Reproduced on a dedicated server (allow-flight off): Pharah hovering at y 68.6
+  when the card appeared was kicked. Replayed on the fix: the same hover (y 69.8), the replay played through, and the showing
+  ended normally.
+- **A viewer who quits mid-replay (#170):** the others no longer wait 13-20 s for the timeout; the showing ends once nobody is
+  left watching. Not played yet: it needs a server and two clients, more memory than the machine had free today.
+- **Dev runs keep their temp files on E: (owner):** every dev client and server writes Java's temp files to the checkout's
+  `run/tmp`, not C:'s temp folder. Seen in use on the dedicated server.
+
+## 2026-11-18: 0.3.112
+
+- **Play of the Game, a stale replay (#170):** a showing's replay starts when its recording finishes zipping; if that took
+  longer than the intro and another showing had begun meanwhile (a watched highlight, then the dragon's Play of the Game),
+  the old replay could start inside the new one. Each showing now starts only its own replay. Not reproduced: the zip would
+  have to take over 5 s. Played after the change: a watched highlight and a full showing (`overcraft potg now`) both
+  replayed and ended normally.
+
+## 2026-11-18: 0.3.111
+
+- **Play of the Game segments (#170):** the recording rolled to a new 5-minute segment even in the middle of a fight, and a
+  play scored across the roll lost its start. The old segment, which no highlight used yet, was dropped, taking the play's
+  first kills with it (seen at a roll at 11:35:49). Now the roll waits while anything has scored in the last 12 s, at most a
+  minute past the 5. Played: kills every 3 s around a roll due at about 11:53:05; the next segment opened at 11:53:45, 13 s
+  after the last kill. Not checked yet: watching a kept highlight from such a play to see that it's whole.
+
+## 2026-11-18: 0.3.110
+
+- **Replays keep their time of day (#170):** a highlight recorded at midnight replayed in daylight, because the time packets
+  were held back from a watcher for the whole showing, the replay's own included. Now only the live world's are held back,
+  during the card and intro. When the showing ends, the watcher gets the live world's time and weather again. Reproduced
+  (`potg_night_live.png` vs `potg_night_replay.png`), then replayed: the replay is at night, and afterwards the world is back
+  at noon.
+- **No hero select after watching a highlight:** the replay engine logging the watcher back in counted as joining the world,
+  so the hero select opened after every showing. The build before this change did the same (checked as a control). Now the
+  login back from a showing isn't a join; a real join still opens the select.
+
+## 2026-11-18: 0.3.109
+
+- **Watching a highlight (POTG critique):** during a highlight's 5 s intro the watcher can't move, but the world runs on, and
+  nothing protected them. Reproduced: a husk took the watcher from 20 to 8 health behind the intro screen. Now a player can't
+  be hurt while watching (only /kill and the void still reach them), and the replay doesn't start for a watcher who died or
+  left. Replayed: 20 health through the whole intro with a husk beside them; once the showing ended, the husk hit normally.
+- **Changing hero with a full ult (POTG critique):** the drop in ult charge from a hero change counted as using the ult, worth
+  150 Play of the Game points. Reproduced: a full-ult Kiriko changed to Cassidy and logged "+150 High Score (ult)" without
+  using it. Now a hero change scores nothing, and a real Deadeye still logs its 150. Ult starts are now logged like the
+  other scoring events.
+
+## 2026-11-18: 0.3.108
+
+- **D.Va's armor under Shield System (#168):** with the perk's 100 shields over her armor, a hit that broke the last shields and
+  went on into the armor wasn't reduced at all. Now the part that reaches the armor is reduced by 7, as in Overwatch.
+  Reproduced with 5 shields left: a 50 hit took all 50. On the fix it takes 43 (5 on the shields, 45 − 7 on the armor). A
+  95 hit on full shields still takes 95, and a 50 hit fully on armor takes 43, as before.
+
 ## 2026-11-18: 0.3.107
 
 - **End crystals (#169):** a hitscan shot passed through an end crystal, so only projectiles could pop one. Now the first

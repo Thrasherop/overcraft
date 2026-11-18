@@ -177,7 +177,7 @@ public final class ClientHero {
 	}
 
 	public static void onJoin() {
-		if (ClientPotg.active()) {
+		if (ClientPotg.active() || ClientPotg.backFromShowing()) {
 			// the replay engine logging this player into a replay or back (PotgReplay): not a join, nothing to pick
 			return;
 		}

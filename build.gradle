@@ -20,6 +20,14 @@ loom {
 	}
 
 	runs {
+		// every dev run's Java temp files on this project's drive (E:), not C:'s temp folder: C: is the owner's small SSD and
+		// filled up during a session (owner, 2026-11-18: "all the data that is being generated is on E: for this project").
+		// Relative to the checkout, so a worktree keeps its own and CI isn't touched
+		def runTmp = file('run/tmp')
+		runTmp.mkdirs()
+		configureEach {
+			vmArg "-Djava.io.tmpdir=${runTmp.absolutePath}"
+		}
 		client {
 			// the local Overwatch asset pack (gitignored, never in the jar): see tools/build_asset_pack.py. A worktree can use
 			// another checkout's (OC_ASSET_PACK=<that checkout>/local-assets/pack): E: is exFAT, which has no links, and
