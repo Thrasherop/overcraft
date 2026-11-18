@@ -4,7 +4,12 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-17: 0.3.81 on next (not on main yet)
+## 2026-11-17: 0.3.82 on next (not on main yet)
+
+- **Torbjörn's Anchor Bolts on stairs (#146):** a turret thrown at a staircase or a slab step now lands on the step instead of
+  bolting sideways onto the half-block riser. Real walls and ceilings still take it.
+
+## 2026-11-17: 0.3.81 (on main, test build 262)
 
 - **Tracer fires on a quick click (found in the general play):** a fast tap of the left button sometimes fired nothing,
   because her pistols only looked at whether the button was held. A tap now fires a shot.
