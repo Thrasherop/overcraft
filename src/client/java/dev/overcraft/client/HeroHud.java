@@ -2190,7 +2190,7 @@ public final class HeroHud {
 			}
 			float alpha = (float) Math.clamp((ALLY_RANGE - distance) / 6, 0, 1);
 			String name = ally instanceof Player || ally.hasCustomName() ? ally.getName().getString().toUpperCase(Locale.ROOT) : null;
-			allyMarker(g, screen[0], screen[1], size, alpha, Ow.toOw(ally.getHealth()), Ow.toOw(ally.getMaxHealth()), name);
+			allyMarker(g, screen[0], screen[1], size, alpha, Ow.toOw(ally.getHealth()), Ow.toOw(ally.getMaxHealth()), name, hotfixPending(ally));
 		}
 	}
 
@@ -2198,8 +2198,28 @@ public final class HeroHud {
 	 * One ally's marker, its bottom at (x, y): from the top, the pips, the name in blue caps (players and named mobs), a
 	 * small open "v" (Overwatch's, the second critique).
 	 */
+	/**
+	 * Sombra's Hotfix still to come on this ally, in Overwatch health (#85): her heal graph binds 1 - healed / 175 (60FB #329, v76938) to
+	 * the band 0D86 on their health bar (#385, hers alone: a client-only presenter in her own graph), synced as her widgets' share and
+	 * share2 for her two slots. 0 for anyone else.
+	 */
+	private static float hotfixPending(LivingEntity ally) {
+		if (ClientHero.hero() != Hero.SOMBRA) {
+			return 0;
+		}
+		HeroSyncPayload.Widgets d = ClientHero.sync().widgets();
+		float share = d.target() == ally.getId() ? d.share() : d.target2() == ally.getId() ? d.share2() : 0;
+		return share * (float) dev.overcraft.sombra.SombraStats.HOTFIX_HEAL_TOTAL;
+	}
+
+	/**
+	 * Hotfix's band (0D86): its look isn't in the data (the .116 is empty), so ours: her heal's gold (the strands' middle stop,
+	 * SOMBRA_HOTFIX_STRAND 0.5: 1, .648, .094) over the pips from their health on, as far as the heal still to come reaches.
+	 */
+	private static final int HOTFIX_BAND = 0xFFA518;
+
 	private static void allyMarker(GuiGraphicsExtractor g, float x, float y, float size, float alpha, float health, float max,
-								   @Nullable String name) {
+								   @Nullable String name, float pending) {
 		g.pose().pushMatrix();
 		g.pose().translate(x, y);
 		g.pose().scale(size, size);
@@ -2222,6 +2242,12 @@ public final class HeroHud {
 				outline(g, px, -PIP_H, PIP_W, PIP_H, 1, alpha(0xFFFFFF, 0.3f * alpha));
 				if (held > 0) {
 					fill(g, px, -PIP_H, PIP_W * held, PIP_H, alpha(0xFFFFFF, alpha));
+				}
+			}
+			if (pending > 0) {
+				float to = Math.clamp((Math.min(max, health + pending) - i * per) / per, 0, 1);
+				if (to > held) {
+					fill(g, px + PIP_W * held, -PIP_H, PIP_W * (to - held), PIP_H, alpha(HOTFIX_BAND, 0.85f * alpha));
 				}
 			}
 		}

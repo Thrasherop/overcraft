@@ -410,7 +410,7 @@ public final class ReticleHud {
 	 * owner's frames 3 and 4): see stealthBar. 0D81 in her reticle, two slots (614C #1798, #1831: v3544 / v11652, each
 	 * Hotfix's ally v77182[n], else what she's hacking v536; the portrait, and its health 019C); the lockout, 00B1 (#2775: v6358 / v45433);
 	 * Hotfix's preview 013C (#593); over each ally Hotfix heals, 011F in the world (60FB #371, hers alone: the icon F5E, at their
-	 * hardpoint 0E + 0.4 m, no share bound). Its band on their health bar (0D86, #385) isn't drawn: the mod draws no allies' bars.
+	 * hardpoint 0E + 0.4 m, no share bound). Its band on their health bar (0D86, #385: the heal still to come, v76938) is on HeroHud's ally marker (hotfixPending).
 	 */
 	private static void sombra(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, HeroSyncPayload s, float cx, float cy, float w, float h,
 							   float partial, boolean reticle) {

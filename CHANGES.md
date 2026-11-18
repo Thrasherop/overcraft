@@ -4,7 +4,12 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-17: 0.3.76 on next (not on main yet)
+## 2026-11-17: 0.3.77 on next (not on main yet)
+
+- **Sombra's Hotfix band (#85):** while Hotfix heals an ally, the heal still to come shows as a gold band on their health pips
+  over their head, shrinking as it lands (from her data's Hotfix graph). It was the last missing piece of #85.
+
+## 2026-11-17: 0.3.76
 
 - **Torbjörn, Anchor Bolts (#146):** a turret thrown at a wall or a ceiling now sits on it as in Overwatch (sideways on a
   wall, upside down under a ceiling), turning to aim along it; if the block it's bolted to is mined or blown up it falls and

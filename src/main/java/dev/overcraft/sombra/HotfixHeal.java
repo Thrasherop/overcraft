@@ -35,6 +35,19 @@ public final class HotfixHeal {
 		return ids;
 	}
 
+	/**
+	 * What's left of her heal on that ally, as a share: the data's v76938 = 1 - v10379 / v10380 (60FB #329: healed over its 175,
+	 * bound to their health bar's band 0D86 at #385); 0 when she isn't healing them.
+	 */
+	public static float left(ServerPlayer sombra, int allyId) {
+		for (Heal heal : HEALS) {
+			if (heal.sombra == sombra && heal.ally.getId() == allyId) {
+				return (float) Math.clamp(1 - heal.healed[0] / HOTFIX_HEAL_TOTAL, 0, 1);
+			}
+		}
+		return 0;
+	}
+
 	public static void start(ServerPlayer sombra, LivingEntity ally) {
 		double[] healed = {0};
 		HEALS.add(new Heal(sombra, ally, ally.level().getGameTime() + Ow.ticks(HOTFIX_HEAL_TIME), healed));

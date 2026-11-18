@@ -131,11 +131,21 @@ Mercy's 08F3 on the soul Resurrect would take (00CA #1274, the portrait and the 
 (their conditions: v40 / v41 / self == the local player), so they ride the caster's own sync: `Widgets.share`, `share2`, `at` (a soul
 has no client entity, so its place is sent). **Lesson:** a world widget with a share needs the server's numbers (the client's effect
 packets carry no owner, so another Brigitte's packs would show); add fields to `Widgets` behind its old 10-argument constructor and no
-kit changes. Run record: [reticle_rest](../testing/runs/reticle_rest/run.md). Still open: Hotfix's health-bar band 0D86 (no allies'
-bars in the mod), Sigma's 0241 box.
+kit changes. Run record: [reticle_rest](../testing/runs/reticle_rest/run.md). Still open: Sigma's 0241 box. (Hotfix's band 0D86: done 2026-11-17, below.)
 
 Round 2026-11-14 (fix/two-client): the Cat's seeking icon, 5A8F #1066 (011F at 000E + 0.7 m, for the other players), over each
 allied cat seeking: `seekingCats`, from `JetpackCatFx.alliedSeekers` (the "lifeline_on" effect every client already gets).
 **Lesson:** a world icon over someone who also wears HeroHud's ally marker must clear it in screen space, from the highest of
 their box's top corners (as the marker does): the data's 0.7 m sat on her pips at 10 m, and the box's centre alone at 3 m.
 Played with two clients: [two_client_2026-11-14](../testing/runs/two_client_2026-11-14/run.md).
+
+## Hotfix's band on an ally's health bar, 0D86 (2026-11-17, #85)
+The note "no allies' bars in the mod" was stale: HeroHud's ally marker has drawn pips over allies since the fourth critique. 60FB #385 is
+a client-only `StateUXPresenter` of view model 0D86 (its `.116` empty, as every one), bound to the healed ally (45BA) and to **v76938**,
+which #329 sets to **1 - v10379 / v10380**: v10380 the heal's total (175, from #300's loadout read), v10379 the heal given so far
+(#378 adds each tick's heal, capped; #394 waits until it reaches the total). So the band is the share of Hotfix's heal still to come.
+Synced as Sombra's widgets `share` / `share2` (HotfixHeal.left); drawn by `HeroHud.hotfixPending` as her heal's gold (the strands'
+middle stop, ours) over the pips from their health to health + 175 x share. **Lesson:** the same four hex digits name different assets
+by type: 0D86.116 (this widget) is not Lucio's 0D86.00D (the overhealth effect); read the type before borrowing a note.
+Played: a villager at 2 / 20 Hotfixed with the right button: 4.25 white pips then gold to the 8th (25 + 175 = 200 of 250), and 2 s
+later 7.5 white with the gold ending at the same place (pixel rows read from `run/screenshots/hotfix_band_3.png` / `_4.png`).
