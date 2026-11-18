@@ -4,10 +4,10 @@ Read this with CLAUDE.md (the rules), CHANGES.md (the log, newest first) and tec
 done: a linked graph of notes). This file is the state of play and the path forward.
 
 ## Now (2026-11-18)
-- **Build 0.3.95 on `main`** (fea561d, test build passed). The roster is finished at **20 heroes** (the owner, 2026-11-13:
+- **Build 0.3.107 on `main`** (bf59922, test build passed); **0.3.108 on `next`** (3d01d2b: D.Va armor under Shield System, #168). The roster is finished at **20 heroes** (the owner, 2026-11-13:
   "enough for my group"); no new heroes unless the owner asks.
 - **Lately:** enemy heroes at night (#46: 8 heroes take turns replacing night spawns), sprays (#41, closed: Y and a SPRAYS
-  loadout tab), the second-player checks (#138, #146 closed; two clients run without the pack), and memory (#166): first-person
+  loadout tab), the second-player checks (#138, #146 closed; two clients run without the pack), critique fixes 0.3.98-0.3.108 (comms wheel, select and rejoin, damage core, perks, hero and Minecraft mode, hitscan: the dragon, point-blank, end crystals; #167-#169 closed), and memory (#166): first-person
   models and emote props load on first use, clip arrays shared, old models freed before a reload, model files streamed.
   A resource reload now survives the launcher's default 2 GB heap (it crashed before 0.3.94/0.3.95).
 - **Waiting on the owner** (asked on each issue): #166 step 3 (load hero bodies on first appearance: ~1.5 GB, a second of
