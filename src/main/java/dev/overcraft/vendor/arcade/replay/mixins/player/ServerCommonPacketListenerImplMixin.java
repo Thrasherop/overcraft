@@ -43,5 +43,7 @@ public abstract class ServerCommonPacketListenerImplMixin {
                 viewer.close();
             }
         }
+        // Overcraft: a showing stops waiting for them (close() never finishes their window: #170)
+        dev.overcraft.potg.PotgReplay.viewerLeft(this.server, this.playerProfile().id());
     }
 }

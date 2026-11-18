@@ -604,6 +604,14 @@ public final class PotgReplay {
 				((dev.overcraft.mixin.ServerGamePacketListenerAccessor) player.connection).overcraft$setAboveGroundTickCount(0);
 			}
 		}
+		// and once the replay has them they're out of the player list, but their listener still ticks: a dedicated server
+		// (allow-flight off) kicked a viewer held in the air for "flying" about 4 s in (#170, the critique's 2)
+		for (ReplayViewer v : ReplayViewers.viewers()) {
+			ServerPlayer player = v.getPlayer();
+			if (VIEWERS.contains(player.getUUID()) && player.connection != null) {
+				((dev.overcraft.mixin.ServerGamePacketListenerAccessor) player.connection).overcraft$setAboveGroundTickCount(0);
+			}
+		}
 		if (System.currentTimeMillis() > watchdogAt) {
 			end(server, "watchdog");
 		}
@@ -624,6 +632,22 @@ public final class PotgReplay {
 	/** A viewer's client: its end screen (or a solo's black) is over and its input is back. */
 	public static void viewerDoneWatching(ServerPlayer player) {
 		OUTRO.remove(player.getUUID());
+	}
+
+	/**
+	 * A viewer left the server (the vendored listener's onDisconnect, server thread): their viewer closes without finishing, so
+	 * they're no longer waited for; the last one still watching ends the showing now. Before, the others sat in the frozen
+	 * world until the watchdog, 13-20 s late (#170, the critique's 1).
+	 */
+	public static void viewerLeft(MinecraftServer server, UUID id) {
+		OUTRO.remove(id);
+		if (!active) {
+			return;
+		}
+		VIEWERS.remove(id);
+		if (WATCHING.remove(id) && WATCHING.isEmpty()) {
+			end(server, "the last viewer left");
+		}
 	}
 
 	/** Whether the POTG's end screen still holds the world (no highlight may start then: critique 1). */
