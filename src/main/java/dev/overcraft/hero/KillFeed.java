@@ -126,6 +126,10 @@ public final class KillFeed {
 			Hero hero = HeroManager.hero(player);
 			return hero == null ? "" : hero.id;
 		}
+		if (entity instanceof dev.overcraft.entity.enemy.EnemyHeroEntity enemy) {
+			// an enemy hero at night (#46): its portrait, as a player hero's
+			return enemy.hero().id;
+		}
 		return "";
 	}
 }

@@ -122,6 +122,9 @@ public class FragEntity extends OwProjectile {
 		needsSync = true;
 		if (getOwner() instanceof ServerPlayer owner) {
 			Junkrat.fragBounced(owner, this, hit.getLocation());
+		} else if (getOwner() instanceof dev.overcraft.entity.enemy.EnemyHeroEntity) {
+			// an enemy Junkrat's (#46): its clatter (fragBounced takes a player)
+			dev.overcraft.junkrat.JunkratSounds.all((ServerLevel) level(), "frag.bounce", hit.getLocation(), 40);
 		}
 	}
 
@@ -152,6 +155,9 @@ public class FragEntity extends OwProjectile {
 		done = true;
 		if (getOwner() instanceof ServerPlayer owner && owner.level() == level()) {
 			Junkrat.fragBurst(owner, this, at, direct);
+		} else if (getOwner() instanceof dev.overcraft.entity.enemy.EnemyHeroEntity mob && mob.level() == level()) {
+			// an enemy Junkrat's (#46): the same numbers, the mob's own rules (EnemyBlasts)
+			dev.overcraft.entity.enemy.EnemyBlasts.frag(mob, this, at, direct);
 		}
 		discard();
 	}

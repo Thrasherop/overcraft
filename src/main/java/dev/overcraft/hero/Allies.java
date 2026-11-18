@@ -58,6 +58,12 @@ public final class Allies {
 
 	/** On the hero's side by what it is, before asking what it's doing (players, their pets, the friendly kinds). */
 	private static boolean friendly(LivingEntity hero, Entity other) {
+		if (hero instanceof dev.overcraft.entity.enemy.EnemyHeroEntity) {
+			// an enemy hero (#46) is on the monsters' side: its shots pass through zombies and skeletons and take players, their
+			// pets, villagers and golems (ours). Without this a player with no scoreboard team was its ally (playersAllied, both
+			// teams null). Only asked with an enemy hero as the shooter: no player's rule changes
+			return other instanceof Enemy && !(other instanceof Player);
+		}
 		if (other instanceof Player player) {
 			return playersAllied(hero, player);
 		}

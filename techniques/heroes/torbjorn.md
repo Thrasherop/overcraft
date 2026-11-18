@@ -112,3 +112,7 @@ samples while holding the real W / S):
 
 **Not shown / not tried:** a critic; an Overwatch side by side; slopes, water, ladders, the
 Nether; a second player; the dragon; emotes and the Heroic intro.
+- **Slopes, 2026-11-17:** he walks up a stone staircase at full speed (3 steps, onto a platform). With Anchor Bolts, a turret thrown
+  at the stairs bolted sideways onto a stair's half-block riser (stuck, face 2, 0.14 m above the step). Fixed (`onlyAStep`: a face
+  no higher than Minecraft's 0.6 step is ground, not a wall); the same throw now lands on the step (y 65.0, on ground), and a stone
+  wall still takes it (stuck, face 3).

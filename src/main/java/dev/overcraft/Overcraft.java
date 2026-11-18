@@ -114,6 +114,7 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.serverboundPlay().register(CalloutPayload.TYPE, CalloutPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(VoiceLinePayload.TYPE, VoiceLinePayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(EmotePayload.TYPE, EmotePayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(dev.overcraft.net.SprayPayload.TYPE, dev.overcraft.net.SprayPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(dev.overcraft.net.LifelineGrabPayload.TYPE, dev.overcraft.net.LifelineGrabPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(PingPayload.TYPE, PingPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(PingPayload.TYPE, PingPayload.CODEC);
@@ -170,6 +171,14 @@ public class Overcraft implements ModInitializer {
 			(payload, context) -> dev.overcraft.comms.Pings.ping(context.player(), payload));
 		ServerPlayNetworking.registerGlobalReceiver(EmotePayload.TYPE,
 			(payload, context) -> Comms.emote(context.player(), payload.id()));
+		// a spray (#41): the player's current hero's, by name (a plain id: the client picks it from that hero's sprays)
+		ServerPlayNetworking.registerGlobalReceiver(dev.overcraft.net.SprayPayload.TYPE, (payload, context) -> {
+			var player = context.player();
+			var hero = dev.overcraft.hero.HeroManager.hero(player);
+			if (hero != null && dev.overcraft.hero.HeroManager.heroMode(player) && payload.name().matches("[a-z0-9_]{1,48}")) {
+				dev.overcraft.entity.SprayEntity.place(player, hero.id, payload.name());
+			}
+		});
 		ServerPlayNetworking.registerGlobalReceiver(dev.overcraft.net.LifelineGrabPayload.TYPE,
 			(payload, context) -> dev.overcraft.jetpackcat.JetpackCat.grab(context.player(), payload.cat()));
 		ServerPlayNetworking.registerGlobalReceiver(VoiceLinePayload.TYPE,

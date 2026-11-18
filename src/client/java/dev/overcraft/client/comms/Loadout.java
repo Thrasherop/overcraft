@@ -36,6 +36,8 @@ public final class Loadout {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	private static final Map<String, List<String>> VOICE_LINES = new HashMap<>();
 	private static final Map<String, List<String>> EMOTES = new HashMap<>();
+	/** Each hero's four equipped sprays (#41; Overwatch's Hero Gallery choice). */
+	private static final Map<String, List<String>> SPRAYS = new HashMap<>();
 	private static boolean loaded;
 
 	private Loadout() {
@@ -121,6 +123,33 @@ public final class Loadout {
 		save();
 	}
 
+	/**
+	 * The hero's sprays in the local pack (textures/sprays/<hero>/, the defaults from the player's own install: #41), the Icon first;
+	 * none without the pack.
+	 */
+	public static List<String> availableSprays(Hero hero) {
+		List<String> names = new ArrayList<>(Minecraft.getInstance().getResourceManager()
+			.listResources("textures/sprays/" + hero.id, id -> id.getPath().endsWith(".png")).keySet().stream()
+			.map(id -> id.getPath().substring(id.getPath().lastIndexOf('/') + 1, id.getPath().length() - 4))
+			.filter(n -> n.matches("[a-z0-9_]{1,48}")).sorted().toList());
+		if (names.remove("icon")) {
+			names.addFirst("icon");
+		}
+		return names;
+	}
+
+	/** The four equipped sprays (up, right, down, left); by default the first four available; an empty slot is "". */
+	public static List<String> sprays(Hero hero) {
+		return chosen(SPRAYS, hero, availableSprays(hero));
+	}
+
+	public static void setSpray(Hero hero, int slot, String id) {
+		List<String> chosen = new ArrayList<>(sprays(hero));
+		chosen.set(slot, id);
+		SPRAYS.put(hero.id, chosen);
+		save();
+	}
+
 	public static void setEmote(Hero hero, int slot, String id) {
 		List<String> chosen = new ArrayList<>(emotes(hero));
 		chosen.set(slot, id);
@@ -152,6 +181,7 @@ public final class Loadout {
 			JsonObject saved = GSON.fromJson(Files.readString(FILE), JsonObject.class);
 			read(saved == null ? null : saved.getAsJsonObject("voiceLines"), VOICE_LINES);
 			read(saved == null ? null : saved.getAsJsonObject("emotes"), EMOTES);
+			read(saved == null ? null : saved.getAsJsonObject("sprays"), SPRAYS);
 		} catch (IOException | RuntimeException e) {
 			Overcraft.LOG.warn("Couldn't read {}: {}", FILE, e.toString());
 		}
@@ -187,6 +217,7 @@ public final class Loadout {
 		JsonObject out = new JsonObject();
 		out.add("voiceLines", write(VOICE_LINES));
 		out.add("emotes", write(EMOTES));
+		out.add("sprays", write(SPRAYS));
 		try {
 			Files.createDirectories(FILE.getParent());
 			Files.writeString(FILE, GSON.toJson(out));

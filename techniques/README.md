@@ -67,7 +67,8 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
   rule, and what's ours.
 - **Play of the Game**: [design](potg/design.md), [the reference clip, measured](potg/potg_reference.md), [the look built from it](potg/potg_look.md) (lineup, intro from the data, white, overlay, card, black, end screen, the Highlights menu). The design of the POTG and its replay, not built yet (#44): what Overwatch's
   is, when ours happens, scoring, recorded packets redrawn with ghosts in the loaded world, what's unproven.
-- **Building**: [building](building/building.md). Gradle, editing safely, git on this checkout, resource names.
+- **Building**: [building](building/building.md). Gradle, editing safely, git on this checkout, resource names. A mob drawn and
+  played as a hero (enemy heroes): [mob-heroes](building/mob-heroes.md).
 - **Heroes**: [kiriko](heroes/kiriko.md), her hub; [lucio](heroes/lucio.md), his;
   [jetpack_cat](heroes/jetpack_cat.md), hers; [mercy](heroes/mercy.md), hers (her kit read node by node);
   [lifeweaver](heroes/lifeweaver.md), his (the fifth); [ana](heroes/ana.md), hers (the sixth); [sombra](heroes/sombra.md), hers (the seventh); [brigitte](heroes/brigitte.md), hers (the eighth); [juno](heroes/juno.md), hers (the ninth); [sojourn](heroes/sojourn.md), hers (the tenth and the first Damage hero; her Charged Shot on the press, from a key's event, #126,
@@ -80,6 +81,7 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
   [kiriko-voice](../tools/reference/kiriko-voice.md), [kiriko-effects](../tools/reference/kiriko-effects.md),
   [lucio-effects](../tools/reference/lucio-effects.md).
 - [sounds-round8](../tools/reference/sounds-round8.md), [music-round9](../tools/reference/music-round9.md).
+- [enemy-heroes-plan](../tools/reference/enemy-heroes-plan.md) (#46: enemy heroes at night, the defaults and kits).
 - [movement](../tools/reference/movement.md), [perks](../tools/reference/perks.md),
   [fonts](../tools/reference/fonts.md), [comms-reference](../tools/reference/comms-reference.md),
   [lucio](../tools/reference/lucio.md); D.Va's [dva](../tools/reference/dva.md), [dva-map](../tools/reference/dva-map.md),

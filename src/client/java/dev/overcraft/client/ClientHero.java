@@ -345,6 +345,7 @@ public final class ClientHero {
 			ofudaOn = false;
 			perkMenu = false;
 			CommsWheel.cancel();
+			dev.overcraft.client.comms.SprayWheel.cancel();
 			if (lastHeld != 0) {
 				lastHeld = 0;
 				ClientPlayNetworking.send(new HeroInputPayload(0, 0));
@@ -354,6 +355,8 @@ public final class ClientHero {
 
 		// the perk menu (#36): Left Alt held while a perk waits; the left or right mouse button picks the left or right
 		// perk (Overwatch's, whatever the fire buttons are bound to), and fires nothing meanwhile
+		// the spray key: a tap sprays, held opens its wheel (#41); the hero's keys stay live meanwhile
+		dev.overcraft.client.comms.SprayWheel.tick(mc);
 		if (perkMenu(mc) | CommsWheel.tick(mc)) {
 			HeroControls.drainAll();
 			ofudaOn = false;

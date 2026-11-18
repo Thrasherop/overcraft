@@ -4,7 +4,48 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-17: 0.3.81 on next (not on main yet)
+## 2026-11-17: 0.3.88 on next (not on main yet)
+
+- **Choose your sprays (#41):** the Voice Lines screen (Esc, Voice Lines) has a third tab, SPRAYS: pick one of the four
+  wheel slots, then any of the hero's sprays in your asset pack. The Y tap sprays the UP slot; the wheel shows all four.
+  Saved per hero with the voice lines and emotes. Played: Tracer's "pixel" put in LEFT, shown on the wheel's left, sprayed
+  on a wall, still equipped after a restart (screenshots loadout_pixel.png, spray_wheel_loadout.png, spray_pixel_wall.png,
+  loadout_sprays_title.png).
+
+- **Sprays (#41):** tap Y to spray your hero's icon on the wall or floor in front of you; hold Y for a wheel of four of the
+  hero's sprays, point at one and let go. One spray each: a new one, or switching hero, erases the last. The images are the
+  hero's default sprays read from your own Overwatch install into the local asset pack
+  (`py tools/build_asset_pack.py sprays` after `extract_sprays.py`); without them the hero's portrait stands in.
+
+## 2026-11-17: 0.3.86
+
+- **Four more enemy heroes at night (#46):** Ashe (aimed Viper shots at range, Coach Gun up close), Sojourn (Railgun bursts and
+  a Charged Shot once her energy is high), Torbjörn (rivets and a turret he throws, which shoots you and your pets, never
+  monsters) and Widowmaker (from 20-40 m, each shot after a 1.5 s aim you can see as a red line and dodge). Eight heroes now
+  take turns replacing night spawns. Summon: /summon overcraft:enemy_ashe (sojourn, torbjorn, widowmaker).
+
+## 2026-11-17: 0.3.85
+
+- **The kill feed shows an enemy hero's portrait (#46)** when you kill one, as it does for players.
+
+## 2026-11-17: 0.3.84
+
+- **Enemy Pharahs show their jet flames (#46)** while they hover, as a player Pharah does.
+
+## 2026-11-17: 0.3.83
+
+- **Enemy heroes at night (#46):** now and then a zombie or skeleton that spawns at night comes as an enemy Tracer,
+  Cassidy, Junkrat or Pharah instead: their own models, red names over their heads (only when you can see them), and a
+  cut-down kit (Tracer's pistol bursts and Blink; Cassidy's revolver and roll; Junkrat's frags; Pharah's rockets while
+  hovering). At most two near you. They hit a lot harder than skeletons, so watch out; kills give ult charge and show in
+  the kill feed. Summon one with /summon overcraft:enemy_tracer (cassidy, junkrat, pharah).
+
+## 2026-11-17: 0.3.82
+
+- **Torbjörn's Anchor Bolts on stairs (#146):** a turret thrown at a staircase or a slab step now lands on the step instead of
+  bolting sideways onto the half-block riser. Real walls and ceilings still take it.
+
+## 2026-11-17: 0.3.81 (on main, test build 262)
 
 - **Tracer fires on a quick click (found in the general play):** a fast tap of the left button sometimes fired nothing,
   because her pistols only looked at whether the button was held. A tap now fires a shot.

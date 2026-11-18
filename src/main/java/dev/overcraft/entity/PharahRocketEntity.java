@@ -118,6 +118,9 @@ public class PharahRocketEntity extends OwProjectile {
 		}
 		if (getOwner() instanceof ServerPlayer owner) {
 			Pharah.burst(owner, this, at, direct);
+		} else if (getOwner() instanceof dev.overcraft.entity.enemy.EnemyHeroEntity mob) {
+			// an enemy Pharah's (#46): the same numbers, the mob's own rules (EnemyBlasts)
+			dev.overcraft.entity.enemy.EnemyBlasts.rocket(mob, this, at, direct);
 		}
 		discard();
 	}

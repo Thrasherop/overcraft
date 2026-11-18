@@ -95,6 +95,10 @@ public final class OcEntities {
 			.noLootTable().noSave()
 			.sized((float) dev.overcraft.lifeweaver.LifeweaverStats.PLATFORM_RADIUS * 2, (float) dev.overcraft.lifeweaver.LifeweaverStats.PLATFORM_THICKNESS)
 			.clientTrackingRange(10).updateInterval(1));
+	/** A spray on a wall (#41): saved with its chunk (it lasts), drawn by the client from the local pack. */
+	public static final EntityType<dev.overcraft.entity.SprayEntity> SPRAY = register("spray",
+		EntityType.Builder.<dev.overcraft.entity.SprayEntity>of(dev.overcraft.entity.SprayEntity::new, MobCategory.MISC)
+			.noLootTable().sized(0.1f, 0.1f).clientTrackingRange(8).updateInterval(20));
 	public static final EntityType<dev.overcraft.entity.SeedEntity> SEED = register("seed",
 		EntityType.Builder.<dev.overcraft.entity.SeedEntity>of(dev.overcraft.entity.SeedEntity::new, MobCategory.MISC)
 			.noLootTable().noSave().sized(0.3f, 0.3f).clientTrackingRange(8).updateInterval(2));
@@ -222,6 +226,42 @@ public final class OcEntities {
 	public static final EntityType<KitsuneEntity> KITSUNE = register("kitsune", EntityType.Builder.<KitsuneEntity>of(KitsuneEntity::new, MobCategory.MISC)
 		.noLootTable().noSave().sized(0.8f, 0.8f).clientTrackingRange(8).updateInterval(1));
 
+	/**
+	 * The enemy heroes at night (#46, entity.enemy): monsters, a player's 0.6 x 1.8 box (ours: their models stand about a player's
+	 * height), their drops their own (EnemyHeroEntity.dropCustomDeathLoot). /summon overcraft:enemy_tracer (and _cassidy, _junkrat,
+	 * _pharah) brings one.
+	 */
+	public static final EntityType<dev.overcraft.entity.enemy.EnemyTracer> ENEMY_TRACER = register("enemy_tracer",
+		EntityType.Builder.<dev.overcraft.entity.enemy.EnemyTracer>of(dev.overcraft.entity.enemy.EnemyTracer::new, MobCategory.MONSTER)
+			.noLootTable().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
+	public static final EntityType<dev.overcraft.entity.enemy.EnemyCassidy> ENEMY_CASSIDY = register("enemy_cassidy",
+		EntityType.Builder.<dev.overcraft.entity.enemy.EnemyCassidy>of(dev.overcraft.entity.enemy.EnemyCassidy::new, MobCategory.MONSTER)
+			.noLootTable().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
+	public static final EntityType<dev.overcraft.entity.enemy.EnemyJunkrat> ENEMY_JUNKRAT = register("enemy_junkrat",
+		EntityType.Builder.<dev.overcraft.entity.enemy.EnemyJunkrat>of(dev.overcraft.entity.enemy.EnemyJunkrat::new, MobCategory.MONSTER)
+			.noLootTable().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
+	public static final EntityType<dev.overcraft.entity.enemy.EnemyPharah> ENEMY_PHARAH = register("enemy_pharah",
+		EntityType.Builder.<dev.overcraft.entity.enemy.EnemyPharah>of(dev.overcraft.entity.enemy.EnemyPharah::new, MobCategory.MONSTER)
+			.noLootTable().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
+	/** Batch 2 (#46): /summon overcraft:enemy_ashe (and _sojourn, _torbjorn, _widowmaker). */
+	public static final EntityType<dev.overcraft.entity.enemy.EnemyAshe> ENEMY_ASHE = register("enemy_ashe",
+		EntityType.Builder.<dev.overcraft.entity.enemy.EnemyAshe>of(dev.overcraft.entity.enemy.EnemyAshe::new, MobCategory.MONSTER)
+			.noLootTable().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
+	public static final EntityType<dev.overcraft.entity.enemy.EnemySojourn> ENEMY_SOJOURN = register("enemy_sojourn",
+		EntityType.Builder.<dev.overcraft.entity.enemy.EnemySojourn>of(dev.overcraft.entity.enemy.EnemySojourn::new, MobCategory.MONSTER)
+			.noLootTable().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
+	public static final EntityType<dev.overcraft.entity.enemy.EnemyTorbjorn> ENEMY_TORBJORN = register("enemy_torbjorn",
+		EntityType.Builder.<dev.overcraft.entity.enemy.EnemyTorbjorn>of(dev.overcraft.entity.enemy.EnemyTorbjorn::new, MobCategory.MONSTER)
+			.noLootTable().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
+	public static final EntityType<dev.overcraft.entity.enemy.EnemyWidowmaker> ENEMY_WIDOWMAKER = register("enemy_widowmaker",
+		EntityType.Builder.<dev.overcraft.entity.enemy.EnemyWidowmaker>of(dev.overcraft.entity.enemy.EnemyWidowmaker::new, MobCategory.MONSTER)
+			.noLootTable().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
+	/** An enemy Torbjorn's turret (EnemyTurretEntity): his turret's box; MISC, so it isn't counted as a monster spawn. */
+	public static final EntityType<dev.overcraft.entity.enemy.EnemyTurretEntity> ENEMY_TURRET = register("enemy_turret",
+		EntityType.Builder.<dev.overcraft.entity.enemy.EnemyTurretEntity>of(dev.overcraft.entity.enemy.EnemyTurretEntity::new, MobCategory.MISC)
+			.noLootTable().sized(dev.overcraft.torbjorn.TorbjornStats.TURRET_WIDTH, dev.overcraft.torbjorn.TorbjornStats.TURRET_HEIGHT)
+			.clientTrackingRange(10).updateInterval(1));
+
 	private OcEntities() {
 	}
 
@@ -234,5 +274,19 @@ public final class OcEntities {
 		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(BOB, dev.overcraft.entity.BobEntity.attributes());
 		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(TURRET,
 			dev.overcraft.entity.TurretEntity.attributes());
+		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(ENEMY_TRACER,
+			dev.overcraft.entity.enemy.EnemyTracer.createAttributes());
+		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(ENEMY_CASSIDY,
+			dev.overcraft.entity.enemy.EnemyCassidy.createAttributes());
+		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(ENEMY_JUNKRAT,
+			dev.overcraft.entity.enemy.EnemyJunkrat.createAttributes());
+		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(ENEMY_PHARAH,
+			dev.overcraft.entity.enemy.EnemyPharah.createAttributes());
+		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(ENEMY_ASHE, dev.overcraft.entity.enemy.EnemyAshe.createAttributes());
+		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(ENEMY_SOJOURN, dev.overcraft.entity.enemy.EnemySojourn.createAttributes());
+		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(ENEMY_TORBJORN, dev.overcraft.entity.enemy.EnemyTorbjorn.createAttributes());
+		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(ENEMY_WIDOWMAKER, dev.overcraft.entity.enemy.EnemyWidowmaker.createAttributes());
+		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(ENEMY_TURRET, dev.overcraft.entity.TurretEntity.attributes());
+		dev.overcraft.entity.enemy.EnemyHeroSpawns.init();
 	}
 }

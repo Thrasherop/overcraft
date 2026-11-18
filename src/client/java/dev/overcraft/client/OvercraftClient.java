@@ -270,6 +270,8 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.SLAG, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"torbjorn_slag", 0.4f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.TURRET, dev.overcraft.client.model.LifeweaverPropRenderer::turret);
+		// a spray on a wall (#41)
+		EntityRendererRegistry.register(OcEntities.SPRAY, dev.overcraft.client.model.SprayRenderer::new);
 		// Illari's Healing Pylon (134D8) and Captive Sun's ball (10BAE)
 		EntityRendererRegistry.register(OcEntities.HEALING_PYLON, dev.overcraft.client.model.LifeweaverPropRenderer::pylon);
 		EntityRendererRegistry.register(OcEntities.CAPTIVE_SUN, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
@@ -278,6 +280,16 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.DYNAMITE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"ashe_dynamite", 1f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.BOB, dev.overcraft.client.model.LifeweaverPropRenderer::bob);
+		// the enemy heroes at night (#46): drawn as their heroes (EnemyHeroRenderer)
+		EntityRendererRegistry.register(OcEntities.ENEMY_TRACER, dev.overcraft.client.model.EnemyHeroRenderer::new);
+		EntityRendererRegistry.register(OcEntities.ENEMY_CASSIDY, dev.overcraft.client.model.EnemyHeroRenderer::new);
+		EntityRendererRegistry.register(OcEntities.ENEMY_JUNKRAT, dev.overcraft.client.model.EnemyHeroRenderer::new);
+		EntityRendererRegistry.register(OcEntities.ENEMY_PHARAH, dev.overcraft.client.model.EnemyHeroRenderer::new);
+		EntityRendererRegistry.register(OcEntities.ENEMY_ASHE, dev.overcraft.client.model.EnemyHeroRenderer::new);
+		EntityRendererRegistry.register(OcEntities.ENEMY_SOJOURN, dev.overcraft.client.model.EnemyHeroRenderer::new);
+		EntityRendererRegistry.register(OcEntities.ENEMY_TORBJORN, dev.overcraft.client.model.EnemyHeroRenderer::new);
+		EntityRendererRegistry.register(OcEntities.ENEMY_WIDOWMAKER, dev.overcraft.client.model.EnemyHeroRenderer::new);
+		EntityRendererRegistry.register(OcEntities.ENEMY_TURRET, dev.overcraft.client.model.LifeweaverPropRenderer::turret);
 		// Widowmaker's Venom Mine (10A75) and grappling claw (0711, its rope drawn by WidowmakerFx.hook)
 		EntityRendererRegistry.register(OcEntities.VENOM_MINE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"widowmaker_mine", 0.3f, false, 1, false));
