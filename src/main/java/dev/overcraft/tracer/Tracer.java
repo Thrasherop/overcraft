@@ -453,7 +453,11 @@ public final class Tracer implements HeroKit {
 			// explosion types are on a player (easy x0.5 + 1: found playing, 51.8 came off as 38)
 			float dealt = Combat.damage(e, me ? Combat.blast(level, bomb, owner) : source, BOMB_DAMAGE * share * (me ? BOMB_SELF : 1), BOMB_BLOW);
 			if (!me && dealt > 0) {
-				Perks.add(owner, dealt);
+				// perk progress only off her enemies (the bomb gives no ult charge): a cow or an ally the blast reaches pays nothing
+				// (Allies, #168: a critique; it went straight to Perks.add)
+				if (!Allies.isBystander(owner, e) && !Allies.wasAlly(owner, e)) {
+					Perks.add(owner, dealt);
+				}
 				Combat.addFireForDamage(owner, dealt, e);
 				Effects.hitMarker(owner, e, false);
 				killed |= !e.isAlive();
@@ -474,7 +478,9 @@ public final class Tracer implements HeroKit {
 		if (target != null) {
 			float dealt = Combat.damage(target, level.damageSources().thrown(bomb, owner), BOMB_STICK, BOMB_BLOW);
 			if (dealt > 0) {
-				Perks.add(owner, dealt);
+				if (!Allies.isBystander(owner, target) && !Allies.wasAlly(owner, target)) {
+					Perks.add(owner, dealt);
+				}
 				Effects.hitMarker(owner, target, false);
 			}
 			TracerSounds.split(owner, "pulse_bomb.stick", at, 75);

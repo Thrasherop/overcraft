@@ -455,7 +455,8 @@ public final class ClientHero {
 	private static boolean perkLeftWas;
 	private static boolean perkRightWas;
 	/** A pick was sent: no other until the server's answer (game time), so a double click picks once. */
-	private static long perkPickedAt = -100;
+	/** When the last perk pick was sent (wall clock, ms: a world's game time stayed behind across worlds and locked picks). */
+	private static long perkPickedAt = -1000;
 	/** The mouse button that picked a perk is still down. */
 	private static boolean perkClickHeld;
 
@@ -482,7 +483,7 @@ public final class ClientHero {
 		// the physical buttons, or a hero key bound to them being held (what the dev harness presses)
 		boolean left = mc.mouseHandler.isLeftPressed() || HeroControls.mouseButtonHeld(InputConstants.MOUSE_BUTTON_LEFT);
 		boolean right = mc.mouseHandler.isRightPressed() || HeroControls.mouseButtonHeld(InputConstants.MOUSE_BUTTON_RIGHT);
-		if (open && perkMenu && mc.level != null && mc.level.getGameTime() - perkPickedAt > 10) {
+		if (open && perkMenu && mc.level != null && net.minecraft.util.Util.getMillis() - perkPickedAt > 500) {
 			// a press, not a button already held when the menu came up; or a click that came and went between two ticks (a
 			// quick click picked nothing: found playing 2026-11-17, a 20 ms click with the menu up)
 			boolean leftClick = HeroControls.mouseButtonClicked(InputConstants.MOUSE_BUTTON_LEFT);
@@ -491,7 +492,7 @@ public final class ClientHero {
 			java.util.List<Perk> choices = Perk.of(hero(), tier == 1 ? Perk.Tier.MINOR : Perk.Tier.MAJOR);
 			if (side >= 0 && side < choices.size()) {
 				ClientPlayNetworking.send(new PickPerkPayload(choices.get(side).ordinal()));
-				perkPickedAt = mc.level.getGameTime();
+				perkPickedAt = net.minecraft.util.Util.getMillis();
 				perkClickHeld = true;
 			}
 		}

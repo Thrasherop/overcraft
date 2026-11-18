@@ -160,6 +160,9 @@ public final class DevServer {
 					out.addProperty("potgMusic", dev.overcraft.client.PotgMusic.playing());
 					out.addProperty("perkLevel", s.perkLevel());
 					out.addProperty("perkProgress", s.perkProgress());
+					out.addProperty("perkReady", s.perkReady());
+					out.addProperty("minorPerk", s.minorPerk());
+					out.addProperty("majorPerk", s.majorPerk());
 					out.addProperty("primaryAmmo", s.primaryAmmo());
 					out.addProperty("primaryReload", s.primaryReload());
 					out.addProperty("meter", s.meter());

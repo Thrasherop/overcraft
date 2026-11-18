@@ -238,6 +238,10 @@ public class Overcraft implements ModInitializer {
 			Comms.forget(listener.player);
 		});
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+			if (alive) {
+				// coming back from the End alive isn't a respawn: no refill (a critique)
+				return;
+			}
 			boolean resurrected = Souls.resurrecting(newPlayer);
 			HeroManager.onRespawn(newPlayer, resurrected);
 			// a Mercy's Resurrect puts them back where they fell, with its health (after the kit, which sets the health)

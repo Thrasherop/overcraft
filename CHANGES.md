@@ -4,6 +4,16 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.103
+
+- **Perks, after an independent critique:**
+  - After picking a perk in one world, picks in a newer world (or a server whose clock was behind) did nothing for hours: the
+    menu opened but no click picked. Reproduced (a world at 97,221 ticks, then a new one at 284); fixed and replayed.
+  - Tracer's Pulse Bomb gave perk progress for blowing up cows and villagers. It now counts only enemies (a cow: +0.002, the
+    passive drift; a husk: +0.22).
+  - Not reproduced in the game, fixed from the code: no level-up chime when switching to a hero who had a higher saved level,
+    and coming back alive from the End no longer refills the hero as a respawn does.
+
 ## 2026-11-18: 0.3.102 (on main; general play at 2 GB: techniques/testing/runs/genplay_0102/run.md)
 
 - **No ult charge for hurting your own side (#168):** with the friendly-fire hero option on, damage to allies (players on

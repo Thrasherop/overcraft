@@ -131,6 +131,7 @@ public final class HeroHud {
 	private static long stepCastAt = -1;
 	/** The perk level last seen, for the level-up chime (0 before the first sync with a hero). */
 	private static int perkLevelSeen;
+	private static String perkHeroSeen = "";
 	/** Swift Step's screen flash: teal at the edges and streaks rushing in, as she steps (the reference, §2). */
 	private static final float STEP_FLASH = 0.45f;
 	/** Below this share of her health the screen's edges go red (the wiki: "~25-30% or lower ... blood appears"). */
@@ -302,6 +303,11 @@ public final class HeroHud {
 		}
 		// a perk level reached: a chime (ours: Aftermath describes "a subtle chime"; Overwatch's isn't extracted)
 		if (!s.heroId().isEmpty()) {
+			// (a new hero's saved level isn't one just reached: no chime on a switch, a critique)
+			if (!s.heroId().equals(perkHeroSeen)) {
+				perkHeroSeen = s.heroId();
+				perkLevelSeen = 0;
+			}
 			if (perkLevelSeen > 0 && s.perkLevel() > perkLevelSeen) {
 				Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.AMETHYST_BLOCK_CHIME, 1.2f, 1));
 			}
