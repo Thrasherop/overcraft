@@ -44,6 +44,9 @@ public final class Comms {
 	private static final int SPAM_WINDOW = 160;
 
 	private static final Map<UUID, Deque<Long>> RECENT = new HashMap<>();
+	/** An emote's start at most every this many ticks (ours), each player's last. */
+	private static final long EMOTE_GAP = 10;
+	private static final Map<UUID, Long> EMOTE_LAST = new HashMap<>();
 
 	private Comms() {
 	}
@@ -70,7 +73,8 @@ public final class Comms {
 	 */
 	public static void voiceLine(ServerPlayer player, String id) {
 		HeroState state = HeroManager.state(player);
-		if (state == null || state.hero == null || !id.matches("[a-z0-9_]{1,48}") || !allowed(player)) {
+		if (state == null || state.hero == null || !HeroManager.heroMode(player) || !player.isAlive() || player.isSpectator()
+			|| !id.matches("[a-z0-9_]{1,48}") || !allowed(player)) {
 			return;
 		}
 		Identifier sound = Overcraft.id(state.hero.id + ".voiceline." + id);
@@ -94,7 +98,13 @@ public final class Comms {
 			&& (dev.overcraft.dva.Dva.form(player) != dev.overcraft.dva.Dva.MECH || !HeroManager.heroMode(player))) {
 			return;
 		}
-		if (state != null && state.hero != null && id.matches("[a-z0-9_]{1,40}") && player.isAlive()) {
+		// a hero in hero mode, alive, not watching, and at most one start a half second (a critique, reproduced: an emote played in
+		// Minecraft mode from a request the wheel wouldn't send; each request went to everyone tracking them)
+		long now = player.level().getGameTime();
+		Long last = EMOTE_LAST.get(player.getUUID());
+		if (state != null && state.hero != null && id.matches("[a-z0-9_]{1,40}") && player.isAlive() && !player.isSpectator()
+			&& HeroManager.heroMode(player) && (last == null || now - last >= EMOTE_GAP || now < last)) {
+			EMOTE_LAST.put(player.getUUID(), now);
 			dev.overcraft.hero.Combat.animate(player, "emote:" + id);
 			EMOTING.put(player.getUUID(), new Emoting(id, player.level().getGameTime(), player.position()));
 		}

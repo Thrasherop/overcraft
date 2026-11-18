@@ -4,6 +4,18 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.99
+
+- **The communication wheel and loadout, after an independent critique:** each reproduced in the game first, then replayed.
+  - Turning the wheel's page with a mouse button and letting go of T while still holding it also fired the weapon (Kiriko threw
+    two kunai as her voice line played). The button now stays the wheel's until you let go of it.
+  - A mouse button pressed just after T, before the wheel opened, opened it on the wrong page. It opens on Communications.
+  - One broken entry in `overcraft-loadout.json` lost every choice after it (Kiriko's four emotes went back to Heroic alone), and
+    the next change would have saved over them. Now only the broken entry is skipped.
+  - A very quick tap of T now always sends "Good job!".
+  - The server no longer plays an emote or a voice line from a player in Minecraft mode, dead or spectating, and starts an
+    emote at most every half second.
+
 ## 2026-11-18: 0.3.98
 
 - **Sprays, after an independent critique (#41):** each reproduced in the game first, then replayed on the fix.

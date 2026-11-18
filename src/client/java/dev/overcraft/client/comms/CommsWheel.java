@@ -45,6 +45,8 @@ public final class CommsWheel {
 	public enum Page { COMMUNICATIONS, VOICE_LINES, EMOTES }
 
 	private static boolean held;
+	/** A fire button was held as the wheel closed: the buttons stay the wheel's until it's let go. */
+	private static boolean buttonsAfter;
 	private static long pressedAt;
 	private static boolean open;
 	private static Page page = Page.COMMUNICATIONS;
@@ -70,8 +72,28 @@ public final class CommsWheel {
 	 * then.
 	 */
 	public static boolean tick(Minecraft mc) {
-		boolean down = HeroControls.get(Action.COMMS).isDown();
+		var key = HeroControls.get(Action.COMMS);
+		boolean clicked = false;
+		while (key.consumeClick()) {
+			clicked = true;
+		}
+		boolean down = key.isDown();
 		long now = Util.getMillis();
+		boolean leftNow = mc.mouseHandler.isLeftPressed() || HeroControls.mouseButtonHeld(InputConstants.MOUSE_BUTTON_LEFT);
+		boolean rightNow = mc.mouseHandler.isRightPressed() || HeroControls.mouseButtonHeld(InputConstants.MOUSE_BUTTON_RIGHT);
+		if (buttonsAfter) {
+			// a fire button held as it closed stays the wheel's until let go: it threw kunai as a voice line was picked (a critique,
+			// reproduced: 15 -> 13 kunai)
+			if (leftNow || rightNow) {
+				return true;
+			}
+			buttonsAfter = false;
+		}
+		if (clicked && !down && !held) {
+			// a tap pressed and let go between two ticks, which isDown never saw: the tap's callout (as SprayWheel's tap)
+			send(Callout.GOOD_JOB);
+			return false;
+		}
 		if (down && !held) {
 			held = true;
 			pressedAt = now;
@@ -82,9 +104,12 @@ public final class CommsWheel {
 		}
 		if (held && down && !open && now - pressedAt > TAP_MS) {
 			open = true;
-			// clicks from before it opened don't turn its page
+			// clicks from before it opened don't turn its page, nor a button pressed before it opened and still held (it opened on
+			// Voice Lines: a critique, reproduced)
 			HeroControls.mouseButtonClicked(InputConstants.MOUSE_BUTTON_LEFT);
 			HeroControls.mouseButtonClicked(InputConstants.MOUSE_BUTTON_RIGHT);
+			leftWas = leftNow;
+			rightWas = rightNow;
 		}
 		if (held && open) {
 			boolean left = mc.mouseHandler.isLeftPressed() || HeroControls.mouseButtonHeld(InputConstants.MOUSE_BUTTON_LEFT);
@@ -125,8 +150,9 @@ public final class CommsWheel {
 				}
 			}
 			open = false;
+			buttonsAfter = leftNow || rightNow;
 		}
-		return held;
+		return held || buttonsAfter;
 	}
 
 	/** The mouse while the wheel is open: it moves the pointer, not the view (MouseHandlerMixin). */

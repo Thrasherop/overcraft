@@ -179,22 +179,34 @@ public final class Loadout {
 		}
 		try {
 			JsonObject saved = GSON.fromJson(Files.readString(FILE), JsonObject.class);
-			read(saved == null ? null : saved.getAsJsonObject("voiceLines"), VOICE_LINES);
-			read(saved == null ? null : saved.getAsJsonObject("emotes"), EMOTES);
-			read(saved == null ? null : saved.getAsJsonObject("sprays"), SPRAYS);
+			read(section(saved, "voiceLines"), VOICE_LINES);
+			read(section(saved, "emotes"), EMOTES);
+			read(section(saved, "sprays"), SPRAYS);
 		} catch (IOException | RuntimeException e) {
 			Overcraft.LOG.warn("Couldn't read {}: {}", FILE, e.toString());
 		}
 	}
 
-	private static void read(JsonObject from, Map<String, List<String>> into) {
+	/** A section of the file, or null when it's missing or not an object. */
+	private static @org.jspecify.annotations.Nullable JsonObject section(@org.jspecify.annotations.Nullable JsonObject saved, String name) {
+		return saved != null && saved.get(name) instanceof JsonObject o ? o : null;
+	}
+
+	private static void read(@org.jspecify.annotations.Nullable JsonObject from, Map<String, List<String>> into) {
 		if (from == null) {
 			return;
 		}
 		for (String hero : from.keySet()) {
 			List<String> ids = new ArrayList<>();
-			for (JsonElement id : from.getAsJsonArray(hero)) {
-				ids.add(id.getAsString());
+			try {
+				for (JsonElement id : from.getAsJsonArray(hero)) {
+					ids.add(id.isJsonNull() ? "" : id.getAsString());
+				}
+			} catch (RuntimeException e) {
+				// one bad entry skips that hero only: it threw out every section after it, and the next change saved over them
+				// (a critique, reproduced: Kiriko's emotes lost to a bad voice-line entry of Ana's)
+				Overcraft.LOG.warn("Skipped {}'s entry in {}: {}", hero, FILE, e.toString());
+				continue;
 			}
 			while (ids.size() < SLOTS) {
 				ids.add("");
