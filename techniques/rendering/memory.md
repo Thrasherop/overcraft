@@ -46,3 +46,6 @@ full GC, flat (no leak). Players: give the game 3-4 GB (README).
   alive; with models now freed and loaded again, that's a leak per load. Weak keys for classes with identity equality; a record
   key (value equality) needs clearing instead.
 - Something that asks "does this model exist" must not trigger its load: `HeroModels.has`.
+- **Rapid switches** (2026-11-18, 0.3.96, 2 GB): 30 hero changes 0.2 s apart in first person: 31 first-person loads, models
+  freed while frames drew, no exception in the log, the last hero's arms drawn. In third person nothing loads (the arms
+  aren't asked for): test in first person, and after an emote set `perspective first` again (the emote puts its camera back).
