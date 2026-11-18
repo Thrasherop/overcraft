@@ -4,7 +4,7 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-17: 0.3.88 on next (not on main yet)
+## 2026-11-17: 0.3.88 (on main; general play: techniques/testing/runs/genplay_0388/run.md)
 
 - **Choose your sprays (#41):** the Voice Lines screen (Esc, Voice Lines) has a third tab, SPRAYS: pick one of the four
   wheel slots, then any of the hero's sprays in your asset pack. The Y tap sprays the UP slot; the wheel shows all four.
