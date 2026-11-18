@@ -269,3 +269,7 @@ while the key wasn't down at the last tick). **Testing a held key:** computer us
 it can't reproduce this; `scratchpad/holdrepeat.ps1` (keybd_event: a keydown, a 0.5 s delay, then a keydown every 33 ms, then the
 keyup) does, as a real held key does (GLFW turns a keydown on a key already down into REPEAT). Timed with `boostlog.py` (her synced
 boosting bit every 0.04 s): held Shift ended Boosters at 0.57 s before the fix, 1.9 s after; a tap 2.06 s; a second tap still ends it.
+- **26.3 renamed the day cycle rule:** `gamerule advance_time false` (not `doDaylightCycle`, which fails as "Incorrect argument").
+- **A dead strip for computer use's clicks** (2026-11-17): real clicks at screen x >= ~935 (1456-wide frame) didn't reach the game
+  while ones left of it did; a window hidden by computer use sits there. `screenclick <gui x> <gui y>` reaches the screen directly
+  (GUI = (frame - window origin) x 1.318 / GUI scale 2 for the 854 x 480 window).

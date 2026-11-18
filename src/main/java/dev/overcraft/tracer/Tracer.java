@@ -499,7 +499,9 @@ public final class Tracer implements HeroKit {
 				s.primaryReload = -1;
 			}
 		}
-		boolean wants = able && s.primaryHeld && s.tracerRecall < 0 && s.tracerBombCast < 0 && s.primaryReload < 0;
+		// a tap fires too (primaryFresh): a quick click's press and release can both reach the server between two of its ticks, and
+		// primaryHeld alone never saw it (general play 2026-11-17: four real clicks fired nothing)
+		boolean wants = able && (s.primaryHeld || s.primaryFresh) && s.tracerRecall < 0 && s.tracerBombCast < 0 && s.primaryReload < 0;
 		if (s.tracerFiring && (!wants || s.primaryAmmo < AMMO_PER_SHOT)) {
 			// the burst's over: its tail, the 0.2 s before the next (D #2 -> #12), the dry click when it emptied (#62)
 			s.tracerFiring = false;
