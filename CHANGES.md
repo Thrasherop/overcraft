@@ -4,6 +4,14 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.112
+
+- **Play of the Game, a stale replay (#170):** a showing's replay starts when its recording finishes zipping; if that took
+  longer than the intro and another showing had begun meanwhile (a watched highlight, then the dragon's Play of the Game),
+  the old replay could start inside the new one. Each showing now starts only its own replay. Not reproduced: the zip would
+  have to take over 5 s. Played after the change: a watched highlight and a full showing (`overcraft potg now`) both
+  replayed and ended normally.
+
 ## 2026-11-18: 0.3.111
 
 - **Play of the Game segments (#170):** the recording rolled to a new 5-minute segment even in the middle of a fight, and a

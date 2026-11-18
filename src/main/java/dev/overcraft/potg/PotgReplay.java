@@ -411,7 +411,13 @@ public final class PotgReplay {
 		}
 		Overcraft.LOG.info("[POTG] showing {} to {} viewer(s), world frozen (was {})", show.highlight(), viewers.size(), wasFrozen);
 		var zipped = PotgRecorder.hold(server);
-		later(server, lead, () -> zipped.whenComplete((v, err) -> server.execute(() -> replay(server, show, viewers))));
+		// this showing's, when its zip finishes: a slow zip mustn't start its replay inside a later showing (#170, the critique's 7)
+		int gen = generation;
+		later(server, lead, () -> zipped.whenComplete((v, err) -> server.execute(() -> {
+			if (active && generation == gen) {
+				replay(server, show, viewers);
+			}
+		})));
 		return "Showing " + show.highlight();
 	}
 
@@ -428,9 +434,11 @@ public final class PotgReplay {
 		ServerPlayNetworking.send(player, new PotgPayload(PotgPayload.SOLO, h.player, show.hero(), h.category, lead / 1000f,
 			showData(server, show, List.of(player), false).toString()));
 		var zipped = PotgRecorder.holdOne(server, owner).thenCompose(v -> PotgRecorder.holdOne(server, player.getUUID()));
+		int gen = generation;
 		later(server, lead, () -> zipped.whenComplete((v, err) -> server.execute(() -> {
-			// still alive and here (the void, /kill or a quit during the intro: no replay for a dead or gone viewer, the critique's 3)
-			if (active && player.isAlive() && !player.hasDisconnected()) {
+			// still this showing (a slow zip after the dragon's POTG replaced it: #170), and the viewer alive and here (the void,
+			// /kill or a quit during the intro: no replay for a dead or gone viewer, the critique's 3)
+			if (active && generation == gen && player.isAlive() && !player.hasDisconnected()) {
 				replay(server, show, List.of(player));
 			}
 		})));
