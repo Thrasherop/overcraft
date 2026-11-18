@@ -248,7 +248,7 @@ public class TurretEntity extends Mob implements OwnableEntity, SurfaceStuck {
 	private void fly(ServerLevel level, @Nullable ServerPlayer owner) {
 		flight = flight.add(0, -Ow.accel(TURRET_GRAVITY), 0);
 		move(MoverType.SELF, flight);
-		if (anchored && (horizontalCollision || verticalCollision && flight.y > 0)) {
+		if (anchored && (horizontalCollision && !onlyAStep() || verticalCollision && flight.y > 0)) {
 			// Anchor Bolts: it holds where it touched a wall or a ceiling (D 16C5 #465's attach fields under 2502), its base on that
 			// face (play 2026-11-17: it stood upright against the wall)
 			net.minecraft.core.Direction face = horizontalCollision
@@ -268,7 +268,22 @@ public class TurretEntity extends Mob implements OwnableEntity, SurfaceStuck {
 		}
 	}
 
-	private void land(ServerLevel level) {
+	/**
+	 * What it hit sideways is no higher than a step: Minecraft walks up 0.6 (a slab, a stair's riser), so that's ground going up, not a wall
+	 * to bolt to (ours; play 2026-11-17: thrown at a staircase with Anchor Bolts, it bolted sideways onto a stair's half-block riser).
+	 */
+	private boolean onlyAStep() {
+		Vec3 across = new Vec3(flight.x, 0, flight.z);
+		if (across.lengthSqr() < 1.0E-6) {
+			return false;
+		}
+		// the box already touches the face: a little past it, a step up
+		Vec3 ahead = across.normalize().scale(0.1);
+		AABB above = getBoundingBox().move(ahead).move(0, 0.6, 0);
+		return level().noCollision(this, above);
+	}
+
+		private void land(ServerLevel level) {
 		flight = Vec3.ZERO;
 		setState(BUILDING);
 		TorbjornSounds.all(level, "turret.land", position(), 30);
