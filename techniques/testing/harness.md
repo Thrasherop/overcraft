@@ -273,6 +273,10 @@ boosting bit every 0.04 s): held Shift ended Boosters at 0.57 s before the fix, 
 - **A dead strip for computer use's clicks** (2026-11-17): real clicks at screen x >= ~935 (1456-wide frame) didn't reach the game
   while ones left of it did; a window hidden by computer use sits there. `screenclick <gui x> <gui y>` reaches the screen directly
   (GUI = (frame - window origin) x 1.318 / GUI scale 2 for the 854 x 480 window).
+- **Two clients with the full local pack don't fit in 16 GB** (2026-11-17, later): each loads the pack to ~3-4 GB; with 8.5 GB
+  free at launch both sat on the Mojang screen at 2-4 fps with 0.4 GB left. Start client 2 without `OC_ASSET_PACK` (stand-ins,
+  far less memory) for checks that read state (health, positions); a visual check from client 2 needs client 1 closed or a
+  smaller pack.
 - **Two clients need ~6 GB free** (2026-11-17): with a builder agent's Gradle build running in another worktree, client 2 died at
   launch ("insufficient memory ... malloc failed", `run2/hs_err_pid*.log`) with 1.6 of 15.6 GB free. Run the two-client pass when
   no other Gradle build is going (check free memory first: `Get-CimInstance Win32_OperatingSystem` FreePhysicalMemory).
