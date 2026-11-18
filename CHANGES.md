@@ -4,7 +4,11 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-17: 0.3.83 on next (not on main yet)
+## 2026-11-17: 0.3.84 on next (not on main yet)
+
+- **Enemy Pharahs show their jet flames (#46)** while they hover, as a player Pharah does.
+
+## 2026-11-17: 0.3.83
 
 - **Enemy heroes at night (#46):** now and then a zombie or skeleton that spawns at night comes as an enemy Tracer,
   Cassidy, Junkrat or Pharah instead: their own models, red names over their heads (only when you can see them), and a

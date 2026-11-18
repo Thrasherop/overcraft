@@ -291,7 +291,11 @@ public final class PharahFx {
 		});
 		LOOKS.keySet().removeIf(id -> mc.level.getEntity(id) == null);
 		POSED.keySet().removeIf(id -> mc.level.getEntity(id) == null);
-		for (Player p : mc.level.players()) {
+		// every Pharah: the players, and the enemy Pharahs that spawn at night (#46: her jets drew for players only)
+		for (Entity e : mc.level.entitiesForRendering()) {
+			if (!(e instanceof net.minecraft.world.entity.LivingEntity p)) {
+				continue;
+			}
 			Integer look = p.getAttached(HeroManager.PHARAH_STATE);
 			if (look == null || look == 0 || !p.isAlive()) {
 				Look l = LOOKS.get(p.getId());
@@ -323,7 +327,7 @@ public final class PharahFx {
 	 * (ours 0.5; 4DC7 r2); sparks 139C 60 a second (ours 10), 0.1-0.14 s, 2-2.9 m/s, 0.19 m (ramp 3200 x 00A0 r2); at the start a flash
 	 * 9EE 1.5 m, 0.29 s (ours: once at the jets' middle at 0.35 alpha, not six stacked). Down from her (ours: the data's along each jet).
 	 */
-	private static void hover(Player p, Look l, boolean start) {
+	private static void hover(net.minecraft.world.entity.LivingEntity p, Look l, boolean start) {
 		Vec3 middle = Vec3.ZERO;
 		for (int j = 0; j < JETS; j++) {
 			Vec3 at = jet(p, j).add(0, -0.05, 0);
@@ -456,7 +460,7 @@ public final class PharahFx {
 	 * Barrage held (008A, H): flames 139C 70 a second from the jets 002C-0031 (ours 20), 2 m/s, 0.55 m (PH_POD: ramp 31C0 x 8); at each
 	 * pod the blue glow 27BFD 0.2 m (20 a second in the data; ours one held glow at 0.5 alpha, PH_POD_GLOW 809D r6).
 	 */
-	private static void barrageHeld(Player p, Look l) {
+	private static void barrageHeld(net.minecraft.world.entity.LivingEntity p, Look l) {
 		int flames = l.rates[JETS * 3].take(20);
 		for (int i = 0; i < flames; i++) {
 			Particle f = Fx.particle("mercy_soft", Palette.PH_POD);
