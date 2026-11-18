@@ -4,6 +4,12 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.102
+
+- **No ult charge for hurting your own side (#168):** with the friendly-fire hero option on, damage to allies (players on
+  your side, pets, villagers) or to yourself filled your ultimate. It no longer does. Played: Cassidy killing an allied
+  villager gained only her passive charge (+13.75 over 2.5 s), against +263.75 on a husk.
+
 ## 2026-11-18: 0.3.101
 
 - **Damage core, from an independent critique (#167, not yet verified in the game):** Ashe's Coach Gun (and the enemy
