@@ -699,6 +699,10 @@ public final class Brigitte implements HeroKit {
 		float aimYaw = player.getYRot();
 		float aimPitch = player.getXRot();
 		for (net.minecraft.world.entity.Entity e : level.getEntities(player, player.getBoundingBox().inflate(FLAIL_RANGE + 1))) {
+			// the dragon's own box is 16 m wide: only its parts take a shot (it took every shot through the air beside it, quartered: a critique, reproduced)
+			if (e instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon) {
+				continue;
+			}
 			LivingEntity target = e instanceof EnderDragonPart part ? part.parentMob : e instanceof LivingEntity living ? living : null;
 			if (target == null || !target.isAlive() || !Allies.areaHits(player, target) || s.flailHit.contains(target.getId())) {
 				continue;

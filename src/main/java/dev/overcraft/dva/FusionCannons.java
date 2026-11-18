@@ -152,7 +152,9 @@ public final class FusionCannons {
 		// the creatures any pellet could reach: one search a volley, not one a pellet
 		double widen = Math.tan(Math.toRadians(FUSION_SPREAD)) * FUSION_RANGE + 2;
 		AABB area = new AABB(eye, eye.add(look.scale(FUSION_RANGE))).inflate(widen);
-		List<Entity> near = level.getEntities(player, area, e -> e instanceof LivingEntity || e instanceof EnderDragonPart);
+		// (not the dragon's own 16 m box: only its parts take a shot, a critique)
+		List<Entity> near = level.getEntities(player, area, e -> e instanceof LivingEntity && !(e instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon)
+			|| e instanceof EnderDragonPart);
 		Map<LivingEntity, Hit> hits = new LinkedHashMap<>();
 		Vec3 wall = null;
 		for (Vec3 dir : dirs) {

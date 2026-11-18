@@ -420,6 +420,10 @@ public final class Railgun {
 		List<Hit> hits = new ArrayList<>();
 		java.util.Set<LivingEntity> seen = new java.util.HashSet<>();
 		for (Entity e : level.getEntities(player, new AABB(eye, stop).inflate(CHARGED_RADIUS + 2))) {
+			// the dragon's own box is 16 m wide: only its parts take a shot (it took every shot through the air beside it, quartered: a critique, reproduced)
+			if (e instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon) {
+				continue;
+			}
 			LivingEntity target = e instanceof EnderDragonPart part ? part.parentMob : e instanceof LivingEntity living ? living : null;
 			if (target != null ? !target.isAlive() || !Allies.canHurt(player, target) || target == player
 				: !e.isPickable() || e.isRemoved()) {

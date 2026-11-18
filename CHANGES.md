@@ -4,6 +4,14 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.105
+
+- **Hitscan against the Ender Dragon, from an independent critique:** every hitscan weapon (Cassidy, Tracer, Widowmaker,
+  Sombra, Ashe, Illari, Sojourn, Juno, Brigitte's flail, D.Va) hit the dragon's whole 16 m wide box, so a shot through empty
+  air beside it still hurt it, always at a quarter. Now only its parts take a shot (its head the whole hit, its body a quarter,
+  as in Minecraft). Reproduced (three shots 7 m beside it: 2.4 each), replayed on a frozen dragon: beside it nothing, at its
+  body 2.4 a shot. Three smaller findings are in #169.
+
 ## 2026-11-18: 0.3.104
 
 - **Hero mode and plain Minecraft, after an independent critique** (checked on the fix in the game; not first reproduced on

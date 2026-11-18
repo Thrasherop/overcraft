@@ -386,6 +386,10 @@ public final class Ashe implements HeroKit {
 	static @Nullable Hit firstHit(ServerLevel level, Entity source, LivingEntity side, Vec3 from, Vec3 to, double radius) {
 		Hit best = null;
 		for (Entity e : level.getEntities(source, new AABB(from, to).inflate(1))) {
+			// the dragon's own box is 16 m wide: only its parts take a shot (it took every shot through the air beside it, quartered: a critique, reproduced)
+			if (e instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon) {
+				continue;
+			}
 			LivingEntity target = e instanceof EnderDragonPart part ? part.parentMob : e instanceof LivingEntity living ? living : null;
 			if (target == null || !target.isAlive() || target == source || target instanceof BobEntity || !Allies.canHurt(side, target)) {
 				continue;

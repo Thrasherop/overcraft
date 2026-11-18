@@ -321,6 +321,10 @@ public final class Cassidy implements HeroKit {
 		Vec3 block = blockHit.getLocation();
 		List<Object[]> hits = new ArrayList<>();
 		for (Entity e : level.getEntities(player, new AABB(eye, block).inflate(1))) {
+			// the dragon's own box is 16 m wide: only its parts take a shot (it took every shot through the air beside it, quartered: a critique, reproduced)
+			if (e instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon) {
+				continue;
+			}
 			LivingEntity target = e instanceof EnderDragonPart part ? part.parentMob : e instanceof LivingEntity living ? living : null;
 			if (target == null || !target.isAlive() || !Allies.canHurt(player, target)) {
 				continue;
