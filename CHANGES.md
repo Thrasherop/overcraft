@@ -4,6 +4,15 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.90
+
+- **Less memory with the local asset pack (#166, step 1):** each hero's first-person arms now load when that hero is first
+  shown in first person, instead of all 21 at start (about 0.86 GiB of textures, and only one is ever on screen). Two are kept
+  (D.Va's mech and pilot arms swap back and forth); older ones are freed. A fresh client in a world went from 8.5 to 7.5 GB;
+  after 21 loads in a row, switching through 8 heroes twice, it stayed at 8.3 GB (no leak: the second round added 0.01 GB).
+  Played: Kiriko, Tracer, D.Va's cockpit, D.Va's pilot after an eject, and Kiriko again after hers was freed, each drawn in
+  first person. Also frees the pure-black layer images that were skipped but never closed.
+
 ## 2026-11-18: 0.3.89
 
 - **Widowmaker's Grappling Hook lets go of a Jetpack Cat's rope (#142):** a player on her Lifeline who grapples away now leaves
