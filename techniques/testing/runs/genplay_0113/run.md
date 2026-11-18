@@ -30,5 +30,11 @@ again today in the separate POTG checks.
 - **Rejoin:** left at 11 health through the menu's Save and Leave (the menu showed 0.3.113), back with `openworld`: 11 health,
   Cassidy, hero mode. The join's select screen was offered; Esc kept Cassidy.
 - **F3+T at 2 GB:** 61 s until the last hero model loaded, no out-of-memory, 96 fps after.
+- **Real-input pass, after the owner left the PC** (same world, relaunched at 2 GB), real mouse and keys only:
+  - **Select screen:** a portrait click and Ready (it picked Mercy: the window sat smaller than expected), hero mode on.
+  - **Shots:** Cassidy (set by the harness) fired two left clicks at a still husk: 20 -> 8.98, 6 -> 4 rounds.
+  - **Minecraft mode:** G, then dirt placed with the right button and dug with the left held (the item dropped); a chest
+    placed and opened.
+  - **Hero mode:** G back, then F on the chest opened it as an empty hand would (0.3.104); Esc went back to the hero HUD.
 - **Not tried this time:** chests, crafting, ladders, boats, the Nether, night spawns, perks other than D.Va's, real-mouse
   digging (see above). Two players were checked separately today (LAN, the quitting-viewer case).
