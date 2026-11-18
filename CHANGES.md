@@ -4,6 +4,12 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.93
+
+- **Animations take less memory (#166):** a clip's bones share one copy of its key times, and a bone that holds still through
+  a clip keeps one key instead of hundreds. The clips' arrays went from 800 to 581 MB, and a fresh client from 7.45 to 7.27
+  GB. Animations sample the same: played Kiriko running, an emote, and her aim sheet (21 frames, 35 to -44 degrees, as before).
+
 ## 2026-11-18: 0.3.92 (on main; general play: techniques/testing/runs/genplay_0392/run.md)
 
 - **The communication wheel's page buttons take a quick click (found in the general play):** with T held, a fast click of the
