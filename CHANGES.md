@@ -4,6 +4,17 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.114
+
+- **Enemy heroes on Peaceful (#46):** switching to Peaceful removed the zombies but left the enemy heroes, which went on
+  shooting pets and villagers. Reproduced: an enemy Junkrat stayed and a villager beside him was down to 10 of 20. Now they go
+  as zombies do, and `/summon` on Peaceful brings none. Replayed: the Junkrat was gone within 3 s and the villager untouched.
+- **Enemy hitscan and player barriers (#46):** an enemy's shot stopped at a player's barrier but did the barrier no damage, so
+  it held for ever. Reproduced: an enemy Cassidy firing at a Sigma barrier for 12 s left it at 650 of 650 (the Sigma behind it
+  untouched; without the barrier he took 10 in 8 s). Now the barrier takes each shot (Cassidy, Widowmaker, Ashe and her Coach
+  Gun, Tracer, Sojourn's charged shot), and a shot that hits nothing behind it stops there too. Replayed: 650 -> 370 -> 90, and
+  then the barrier broke and the Sigma started taking hits.
+
 ## 2026-11-18: 0.3.113
 
 - **Play of the Game on a dedicated server (#170):** a player in the air when the showing began (Pharah hovering) was kicked

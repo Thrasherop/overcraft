@@ -187,7 +187,7 @@ public class EnemyAshe extends EnemyHeroEntity {
 		Vec3 look = bodyOf(target).subtract(eye).normalize();
 		// scoped, her shot has no spread (AsheStats, D #668): the difficulty's alone
 		Vec3 dir = dev.overcraft.sombra.Sombra.cone(look, spread(0), random);
-		Traced t = trace(level, eye, dir, REACH, RADIUS);
+		Traced t = trace(level, eye, dir, REACH, RADIUS, m -> Ashe.viperDamage(m, true, false));
 		Vec3 from = fromEyes(look, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD);
 		Effects.play(level, "ashe_shot", from, t.at().subtract(from), this, Ashe.SHOT_SCOPED, this);
 		if (t.target() != null) {
@@ -212,7 +212,7 @@ public class EnemyAshe extends EnemyHeroEntity {
 		Map<LivingEntity, Double> hitWith = new LinkedHashMap<>();
 		Map<LivingEntity, Double> metres = new LinkedHashMap<>();
 		for (Vec3 dir : Ashe.pellets(look, COACH_SPREAD / 2)) {
-			Traced t = trace(level, eye, dir, COACH_RANGE, COACH_PELLET_RADIUS);
+			Traced t = trace(level, eye, dir, COACH_RANGE, COACH_PELLET_RADIUS, m -> COACH_PELLET);
 			if (t.target() == null) {
 				if (t.block().getType() == HitResult.Type.BLOCK && random.nextInt(3) == 0) {
 					Effects.play(level, "ashe_hit", t.at(), Vec3.atLowerCornerOf(t.block().getDirection().getUnitVec3i()), null,

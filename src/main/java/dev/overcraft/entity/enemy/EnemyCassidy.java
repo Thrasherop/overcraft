@@ -131,7 +131,7 @@ public class EnemyCassidy extends EnemyHeroEntity {
 		Vec3 look = bodyOf(target).subtract(eye).normalize();
 		// his primary has no spread (CassidyStats): the difficulty's alone
 		Vec3 dir = dev.overcraft.sombra.Sombra.cone(look, spread(0), random);
-		Traced t = trace(level, eye, dir, REACH, RADIUS);
+		Traced t = trace(level, eye, dir, REACH, RADIUS, m -> Cassidy.peacekeeperDamage(m, false));
 		if (t.target() != null) {
 			boolean crit = Headshot.crossed(t.target(), t.at(), dir, RADIUS);
 			deal(t.target(), shotSource(null), Cassidy.peacekeeperDamage(t.metres(), crit), Blow.weapon(crit));

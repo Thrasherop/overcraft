@@ -230,11 +230,20 @@ public abstract class EnemyHeroEntity extends Monster {
 	public record Traced(@Nullable LivingEntity target, Vec3 at, double metres, BlockHitResult block) {
 	}
 
+	/** {@link #trace(ServerLevel, Vec3, Vec3, double, double, java.util.function.DoubleUnaryOperator)} with no damage: a look, not a shot. */
+	protected Traced trace(ServerLevel level, Vec3 from, Vec3 dir, double range, double radius) {
+		return trace(level, from, dir, range, radius, null);
+	}
+
 	/**
 	 * One hitscan line from {@code from} along {@code dir}: the first creature it may hurt (Allies.canHurt: not another monster)
-	 * whose box, grown by {@code radius}, it crosses before a block. A player's barrier between stops it (Barriers.between).
+	 * whose box, grown by {@code radius}, it crosses before a block. A player's barrier on the way stops it there and takes the
+	 * shot: {@code damageAt} of the metres to it (Overwatch points), as a player's hitscan charges one (Barriers.absorb) and the
+	 * enemy turret's does. Before, the line only dropped a creature behind a barrier: the barrier took nothing, so it held for
+	 * ever (the critique of #46, reproduced: an enemy Cassidy at a Sigma barrier for 12 s left it at 650 of 650).
 	 */
-	protected Traced trace(ServerLevel level, Vec3 from, Vec3 dir, double range, double radius) {
+	protected Traced trace(ServerLevel level, Vec3 from, Vec3 dir, double range, double radius,
+						   java.util.function.@Nullable DoubleUnaryOperator damageAt) {
 		Vec3 end = from.add(dir.scale(range));
 		BlockHitResult block = level.clip(new ClipContext(from, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
 		Vec3 stop = block.getLocation();
@@ -252,7 +261,17 @@ public abstract class EnemyHeroEntity extends Monster {
 				bestDist = hit.get().distanceToSqr(from);
 			}
 		}
-		if (best != null && Barriers.between(level, from, bestAt, this) != null) {
+		// a barrier before whatever the line reached (a creature, or the block when there's none) stops it there
+		Barriers.Shape barrier = Barriers.between(level, from, bestAt, this);
+		if (barrier != null) {
+			Vec3 on = Barriers.crossing(barrier, from, bestAt);
+			if (on != null) {
+				if (damageAt != null) {
+					barrier.barrierTake(damageAt.applyAsDouble(on.distanceTo(from)), on);
+				}
+				bestAt = on;
+				bestDist = on.distanceToSqr(from);
+			}
 			best = null;
 		}
 		return new Traced(best, bestAt, Math.sqrt(bestDist), block);
