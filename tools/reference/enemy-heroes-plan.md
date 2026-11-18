@@ -104,3 +104,16 @@ Minecraft's speed attribute by our measure of Minecraft's movement (44.05 x spee
 - Their hitscan isn't stopped by a Sigma / Brigitte shield in front of the target except through `Barriers.between`; whether
   that covers every barrier kind is untested.
 - No Overwatch side-by-side or critique yet (the QA method's next steps).
+
+## Played, 2026-11-17 (Normal, Torbjorn, real keys where marked)
+- **Cassidy:** drawn with his model and a red name; shot from 12 m about once a second, 2.24 health a hit on Torbjorn (35 less his
+  armour); killed him in ~10 shots. Death message "was shot" named nobody: fixed (enemy_shot's own message).
+- **Tracer:** Blinked in to 5 m at my side; bursts, ~1.1 health a second at range, ~5.3 up close.
+- **Junkrat:** frags 3.9-5 a hit at ~1.5 a second; knocked Torbjorn off the arena edge: "was doomed to fall by JUNKRAT".
+- **Pharah** (after the retune): rose 4.5 m and hovered, rockets 2.9 a hit about every 0.8 s, came down as her hover ended.
+- **Damage retuned** from 0.4 / 0.5 / 0.65 to 0.2 / 0.3 / 0.4 on those numbers (a 20-health player died in ~3 s to Junkrat).
+- **Names through walls:** reproduced (JUNKRAT behind stone), fixed, replayed (hidden).
+- **Natural spawns:** 90 s of midnight on Normal: 29 zombies, 19 skeletons, 16 creepers, 6 spiders, and 2 enemy heroes (Cassidy,
+  Junkrat): the cap of 2 near a player held.
+- **Not reproduced:** Tracer's Blink through a pane wall (she walked; fixed by reading). **Not tried:** a second player, a save and
+  reload with Pharah mid-hover (fixed by reading), Pharah's jet flames (PharahFx loops players only: none on her), kill feed portraits.

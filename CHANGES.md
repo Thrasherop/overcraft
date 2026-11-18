@@ -4,7 +4,15 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-17: 0.3.82 on next (not on main yet)
+## 2026-11-17: 0.3.83 on next (not on main yet)
+
+- **Enemy heroes at night (#46):** now and then a zombie or skeleton that spawns at night comes as an enemy Tracer,
+  Cassidy, Junkrat or Pharah instead: their own models, red names over their heads (only when you can see them), and a
+  cut-down kit (Tracer's pistol bursts and Blink; Cassidy's revolver and roll; Junkrat's frags; Pharah's rockets while
+  hovering). At most two near you. They hit a lot harder than skeletons, so watch out; kills give ult charge and show in
+  the kill feed. Summon one with /summon overcraft:enemy_tracer (cassidy, junkrat, pharah).
+
+## 2026-11-17: 0.3.82
 
 - **Torbjörn's Anchor Bolts on stairs (#146):** a turret thrown at a staircase or a slab step now lands on the step instead of
   bolting sideways onto the half-block riser. Real walls and ceilings still take it.
