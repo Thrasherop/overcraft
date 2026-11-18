@@ -531,6 +531,7 @@ public final class HeroModels {
 		AimSheet.clear();
 		HeroModelRenderer.forgetShadows();
 		dev.overcraft.client.effect.Fx.forgetMeshes();
+		SprayRenderer.forgetRatios();
 	}
 
 	/** A model no longer drawn: its own textures go (not the glow images, which a body shares with its arms and props). */

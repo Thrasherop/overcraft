@@ -38,6 +38,19 @@ public class SprayEntity extends Entity implements SurfaceStuck {
 
 	private @Nullable UUID owner;
 	private int age;
+	/** The block it's on (a fence's or wall's collision box reaches above its block: the hit point alone isn't in it). */
+	private @Nullable BlockPos on;
+	/** When it was put down (the overworld's game time, saved with the world): the newest one of its owner's stays. */
+	private long placed;
+	/**
+	 * Each owner's newest spray, by when it was put down. A spray in a chunk or dimension that wasn't loaded when its owner sprayed
+	 * again wasn't erased then (a critique, reproduced: spray, travel 1,100 m, spray, return: both there); it goes when it next
+	 * loads and meets a newer one (and the newest goes on with it across a restart, since each spray saves its time).
+	 */
+	private static final java.util.Map<UUID, Long> NEWEST = new java.util.HashMap<>();
+	/** The least time between two sprays of one player (ours: a client sending the packet in a loop made and broadcast a spray a packet). */
+	private static final long SPRAY_GAP = 10;
+	private static final java.util.Map<UUID, Long> LAST = new java.util.HashMap<>();
 
 	public SprayEntity(EntityType<? extends SprayEntity> type, Level level) {
 		super(type, level);
@@ -71,6 +84,14 @@ public class SprayEntity extends Entity implements SurfaceStuck {
 	public static boolean place(ServerPlayer player, String hero, String name) {
 		ServerLevel level = player.level();
 		Vec3 eye = player.getEyePosition();
+		if (!player.isAlive() || player.isSpectator()) {
+			return false;
+		}
+		long now = level.getServer().overworld().getGameTime();
+		Long last = LAST.get(player.getUUID());
+		if (last != null && now - last >= 0 && now - last < SPRAY_GAP) {
+			return false;
+		}
 		BlockHitResult hit = level.clip(new ClipContext(eye, eye.add(player.getLookAngle().scale(RANGE)), ClipContext.Block.COLLIDER,
 			ClipContext.Fluid.NONE, player));
 		if (hit.getType() != HitResult.Type.BLOCK) {
@@ -85,6 +106,10 @@ public class SprayEntity extends Entity implements SurfaceStuck {
 		spray.setPos(at.x, at.y, at.z);
 		spray.setYRot(face.getAxis().isHorizontal() ? face.toYRot() : player.getYRot());
 		spray.owner = player.getUUID();
+		spray.on = hit.getBlockPos();
+		spray.placed = now;
+		NEWEST.put(player.getUUID(), now);
+		LAST.put(player.getUUID(), now);
 		spray.entityData.set(HERO, hero);
 		spray.entityData.set(NAME, name);
 		spray.entityData.set(FACE, face.get3DDataValue());
@@ -94,9 +119,14 @@ public class SprayEntity extends Entity implements SurfaceStuck {
 
 	/** {@code player}'s spray goes (one each: a new one, or a new hero, erases it). */
 	public static void erase(ServerPlayer player) {
-		for (SprayEntity old : player.level().getEntities(OcEntities.SPRAY, e -> player.getUUID().equals(e.owner))) {
-			old.discard();
+		// every dimension's loaded sprays; an unloaded one goes when it loads (NEWEST)
+		for (ServerLevel level : player.level().getServer().getAllLevels()) {
+			for (SprayEntity old : level.getEntities(OcEntities.SPRAY, e -> player.getUUID().equals(e.owner))) {
+				old.discard();
+			}
 		}
+		// a hero change erases it with nothing newer placed: no spray of theirs from before now stays when it loads
+		NEWEST.put(player.getUUID(), player.level().getServer().overworld().getGameTime());
 	}
 
 	@Override
@@ -107,10 +137,20 @@ public class SprayEntity extends Entity implements SurfaceStuck {
 		}
 		// no timer: it stays until its player sprays again or changes hero (Overwatch's, tools/reference/sprays.md)
 		age++;
+		if (owner != null) {
+			Long newest = NEWEST.get(owner);
+			if (newest != null && newest > placed) {
+				discard();
+				return;
+			}
+			if (newest == null) {
+				NEWEST.put(owner, placed);
+			}
+		}
 		// the block it's on went: so does the spray
 		Direction face = stuckFace();
 		if (face != null && age % 10 == 0) {
-			BlockPos on = BlockPos.containing(position().subtract(Vec3.atLowerCornerOf(face.getUnitVec3i()).scale(0.05)));
+			BlockPos on = this.on != null ? this.on : BlockPos.containing(position().subtract(Vec3.atLowerCornerOf(face.getUnitVec3i()).scale(0.05)));
 			if (level.getBlockState(on).getCollisionShape(level, on).isEmpty()) {
 				discard();
 			}
@@ -120,6 +160,12 @@ public class SprayEntity extends Entity implements SurfaceStuck {
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
 		return false;
+	}
+
+	/** Pistons don't carry it off its face (it stays, or goes with the block). */
+	@Override
+	public net.minecraft.world.level.material.PushReaction getPistonPushReaction() {
+		return net.minecraft.world.level.material.PushReaction.IGNORE_ENTITY;
 	}
 
 	@Override
@@ -133,6 +179,9 @@ public class SprayEntity extends Entity implements SurfaceStuck {
 		entityData.set(NAME, input.getStringOr("SprayName", ""));
 		entityData.set(FACE, input.getIntOr("SprayFace", Direction.NORTH.get3DDataValue()));
 		age = input.getIntOr("SprayAge", 0);
+		placed = input.getLongOr("SprayPlaced", 0);
+		long block = input.getLongOr("SprayBlock", Long.MIN_VALUE);
+		on = block == Long.MIN_VALUE ? null : BlockPos.of(block);
 		owner = input.getString("SprayOwner").map(s -> {
 			try {
 				return UUID.fromString(s);
@@ -148,6 +197,10 @@ public class SprayEntity extends Entity implements SurfaceStuck {
 		output.putString("SprayName", sprayName());
 		output.putInt("SprayFace", entityData.get(FACE));
 		output.putInt("SprayAge", age);
+		output.putLong("SprayPlaced", placed);
+		if (on != null) {
+			output.putLong("SprayBlock", on.asLong());
+		}
 		if (owner != null) {
 			output.putString("SprayOwner", owner.toString());
 		}

@@ -49,9 +49,9 @@ public final class SprayWheel {
 		long now = Util.getMillis();
 		if (clicked && !down && !held) {
 			// a tap pressed and let go between two ticks, which isDown never saw (found playing: a quick Y put nothing down)
-			List<String> list = sprays();
-			if (!list.isEmpty() && ClientPlayNetworking.canSend(dev.overcraft.net.SprayPayload.TYPE)) {
-				ClientPlayNetworking.send(new dev.overcraft.net.SprayPayload(list.get(0)));
+			String first = first(sprays());
+			if (first != null && ClientPlayNetworking.canSend(dev.overcraft.net.SprayPayload.TYPE)) {
+				ClientPlayNetworking.send(new dev.overcraft.net.SprayPayload(first));
 			}
 			return false;
 		}
@@ -61,12 +61,12 @@ public final class SprayWheel {
 			pointerX = pointerY = 0;
 			sprays = sprays();
 		}
-		if (held && down && !open && now - pressedAt > TAP_MS && sprays.size() > 1) {
+		if (held && down && !open && now - pressedAt > TAP_MS && sprays.stream().filter(n -> !n.isEmpty()).count() > 1) {
 			open = true;
 		}
 		if (held && !down) {
 			held = false;
-			String name = open ? hovered() : sprays.isEmpty() ? null : sprays.get(0);
+			String name = open ? hovered() : first(sprays);
 			open = false;
 			if (name != null && ClientPlayNetworking.canSend(dev.overcraft.net.SprayPayload.TYPE)) {
 				ClientPlayNetworking.send(new dev.overcraft.net.SprayPayload(name));
@@ -96,9 +96,14 @@ public final class SprayWheel {
 		if (hero == null) {
 			return List.of();
 		}
+		// in their slots, an empty one left empty (dropping it moved the next into its place on the wheel: a critique)
 		List<String> names = new ArrayList<>(Loadout.sprays(hero));
-		names.removeIf(String::isEmpty);
-		return names.isEmpty() ? List.of("portrait") : List.copyOf(names);
+		return names.stream().allMatch(String::isEmpty) ? List.of("portrait") : List.copyOf(names);
+	}
+
+	/** The first spray set, or null: the one a tap sprays. */
+	private static @Nullable String first(List<String> list) {
+		return list.stream().filter(n -> !n.isEmpty()).findFirst().orElse(null);
 	}
 
 	private static @Nullable String hovered() {
@@ -107,7 +112,10 @@ public final class SprayWheel {
 		}
 		int best = -1;
 		float bestDot = -2;
-		for (int i = 0; i < sprays.size(); i++) {
+		for (int i = 0; i < sprays.size() && i < DIRS.length; i++) {
+			if (sprays.get(i).isEmpty()) {
+				continue;
+			}
 			float dot = (DIRS[i][0] * pointerX + DIRS[i][1] * pointerY) / (float) Math.hypot(pointerX, pointerY);
 			if (dot > bestDot) {
 				bestDot = dot;
@@ -125,8 +133,11 @@ public final class SprayWheel {
 		Hero hero = ClientHero.hero();
 		String hot = hovered();
 		float cx = w / 2, cy = h / 2;
-		for (int i = 0; i < sprays.size(); i++) {
+		for (int i = 0; i < sprays.size() && i < DIRS.length; i++) {
 			String name = sprays.get(i);
+			if (name.isEmpty()) {
+				continue;
+			}
 			float x = cx + DIRS[i][0] * SLOT, y = cy + DIRS[i][1] * SLOT;
 			boolean on = name.equals(hot);
 			HudDraw.fill(g, x - THUMB / 2 - 6, y - THUMB / 2 - 6, THUMB + 12, THUMB + 12, on ? 0xC0FFFFFF : 0x80101418);

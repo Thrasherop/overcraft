@@ -4,6 +4,17 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.98
+
+- **Sprays, after an independent critique (#41):** each reproduced in the game first, then replayed on the fix.
+  - An old spray left in a chunk you'd walked away from (or another dimension) survived your next spray: both were there when
+    you came back. Now the older one goes when it loads.
+  - A spray on the upper part of a fence or wall vanished half a second later. It stays now.
+  - Sprays glowed at night and in caves. They're lit like the blocks around them.
+  - A ceiling spray was upside down when you looked up at it. It reads upright.
+  - Holding the key in a loop could put down a spray every packet: at most one every half second now, and none while dead or
+    spectating. Pistons no longer push a spray off its wall. An empty loadout slot stays empty on the wheel.
+
 ## 2026-11-18: 0.3.97 (on main; general play at 2 GB: techniques/testing/runs/genplay_0397/run.md)
 
 - **The last of the reload leaks (#166, from an independent critique):** caches of mesh flags and projectile and prop meshes
