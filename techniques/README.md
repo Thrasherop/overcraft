@@ -80,6 +80,7 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
   [kiriko-voice](../tools/reference/kiriko-voice.md), [kiriko-effects](../tools/reference/kiriko-effects.md),
   [lucio-effects](../tools/reference/lucio-effects.md).
 - [sounds-round8](../tools/reference/sounds-round8.md), [music-round9](../tools/reference/music-round9.md).
+- [enemy-heroes-plan](../tools/reference/enemy-heroes-plan.md) (#46: enemy heroes at night, the defaults and kits).
 - [movement](../tools/reference/movement.md), [perks](../tools/reference/perks.md),
   [fonts](../tools/reference/fonts.md), [comms-reference](../tools/reference/comms-reference.md),
   [lucio](../tools/reference/lucio.md); D.Va's [dva](../tools/reference/dva.md), [dva-map](../tools/reference/dva-map.md),
