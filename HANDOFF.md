@@ -1,4 +1,4 @@
-﻿# Overcraft: handoff (2026-11-18; older sections below are history, from 2026-11-01 and before)
+# Overcraft: handoff (2026-11-18; older sections below are history, from 2026-11-01 and before)
 
 Read this with CLAUDE.md (the rules), CHANGES.md (the log, newest first) and techniques/README.md (how the work gets
 done: a linked graph of notes). This file is the state of play and the path forward.
@@ -25,9 +25,9 @@ done: a linked graph of notes). This file is the state of play and the path forw
   `main`. **Build 0.3.7 is on `main` (c67d2e4, 2026-10-27 night)**: the owner let me act as the repo's owner for the
   night, `next` deeply played by hand first (CHANGES.md 2026-10-27: LAN with a second client, then a general play in
   a fresh survival world). Its push makes the test build (GitHub pre-release). `production` untouched.
-  LÃºcio is on `feature/lucio` (work in progress, not merged).
+  Lúcio is on `feature/lucio` (work in progress, not merged).
 - Issues: #1 Juno, #2 Sojourn, #3 communication wheel, #4 emotes, #5 voice lines, #6 Overwatch assets, #7 select
-  screen, #8 HUD, #9 animations, #10 Mercy, #36 perks, #37 LÃºcio, #38 Jetpack Cat, #39 Lifeweaver, #40 pings, #41
+  screen, #8 HUD, #9 animations, #10 Mercy, #36 perks, #37 Lúcio, #38 Jetpack Cat, #39 Lifeweaver, #40 pings, #41
   sprays (later), #42 climb cancels reload, #43 hunger under the hidden food bar (the owner chose: it burns down to 4
   bars in hero mode; on `feature/kiriko`). `feature/kiriko` is ahead of `main` by two batches (CHANGES.md "After
   0.3.7"), each played; not yet through `next`.
@@ -41,21 +41,21 @@ done: a linked graph of notes). This file is the state of play and the path forw
   `run/build-0.3.17/` (0.3.17, `main` d1b78c5, 2026-10-28 15:07): Mercy, the fourth hero
   (her kit read from her statescript graphs: `E:\Overwatch Archive\research\mercy\kit_details.md`; her hub is
   `techniques/heroes/mercy.md`, her open items `tools/reference/mercy-plan.md`), and Jetpack Cat's cat finally drawn.
-  **For the owner's playtest tonight; Mercy isn't signed off.** The LÃºcio wall-ride recorder for the Workshop is in
+  **For the owner's playtest tonight; Mercy isn't signed off.** The Lúcio wall-ride recorder for the Workshop is in
   `tools/workshop/`.
-- Before it: `run/build-0.3.16/` (0.3.16): Jetpack Cat, and the fixes every hero needed. Before it, 0.3.15 (`main` cfc19db, test build 75): LÃºcio's movement
+- Before it: `run/build-0.3.16/` (0.3.16): Jetpack Cat, and the fixes every hero needed. Before it, 0.3.15 (`main` cfc19db, test build 75): Lúcio's movement
   reworked from the data and the Lucio-surf research (`tools/reference/lucio-movement-research.md`), the wall-ride
-  sounds 17 dB down. **Waiting on the owner's playtest of it.** Before it: 0.3.14 (emote sounds, LÃºcio's emotes,
+  sounds 17 dB down. **Waiting on the owner's playtest of it.** Before it: 0.3.14 (emote sounds, Lúcio's emotes,
   effects, voice), 0.3.13.
 - **Jetpack Cat (#38) in progress on `feature/jetpack-cat`** in the worktree `E:/claude/mods/overcraft_emotesnd`
   (which holds its own local pack, with her models). Her kit, flight, HUD, animation and perks are played and
   committed (19849b4); her sounds and effects are being read from the data (`tools/soundmaps/jetpack_cat.txt`,
   `tools/reference/jetpack_cat-effects.md`). Her hub: `techniques/heroes/jetpack_cat.md`. The same branch fixes bugs
-  every hero had: the hurt cooldown (26.x's `damageCooldownTime`: LÃºcio's volleys did a quarter of their damage),
+  every hero had: the hurt cooldown (26.x's `damageCooldownTime`: Lúcio's volleys did a quarter of their damage),
   airborne knockback from a stale server speed, and joining a world while dead.
 - **Main checkout on `next`.** Research added today: `research\emote-sounds` (each emote sound's Wwise decode,
   `sounds.json`), `research\lucio` effects (`effects-NOTES.md`), extractions `Effects\Lucio`, `ExtraSounds\*\Emotes`,
-  `Unlocks\Heroes\LÃºcio\{Emote,VoiceLine}`.
+  `Unlocks\Heroes\Lúcio\{Emote,VoiceLine}`.
 
 ## The local asset pack (never committed or shipped)
 Overwatch closed first (`Get-Process Overwatch, Battle.net`). From the archive's extraction of build 154088:
@@ -179,7 +179,7 @@ Steam library (game updates can't touch it); `E:\Overwatch Archive\README.txt` s
 - **Effects, fonts, sounds** (session 3): see "The local asset pack" above; surveys in tools/reference/.
 
 ## Owner's decisions so far
-- Fabric. Kiriko first, then LÃºcio, Sombra, Illari, then Juno, Sojourn. Mercy added (#10).
+- Fabric. Kiriko first, then Lúcio, Sombra, Illari, then Juno, Sojourn. Mercy added (#10).
 - **LMB kunai, RMB ofuda** (swapped from Overwatch's default on purpose, 2026-10-25). The options screen names them
   Overwatch's way (primary fire = Healing Ofuda, on RMB).
 - G toggles hero mode and switches key sets (2026-10-26); Esc in hero mode opens Overwatch's menu, in Minecraft mode
@@ -243,8 +243,8 @@ didn't spend enough time learning and refining Kiriko"). Refactoring for later h
    Callouts reach teammates (scoreboard team; every player when there are no teams) at any distance; the voice line
    plays in the world to everyone nearby. With it: an easy way for players to change teams, and a game rule letting
    non-operators change teams (default on) (owner, 2026-10-26).
-3. **LÃºcio (#37)** (`feature/lucio` has his kit in progress; `tools/reference/lucio-plan.md`, `lucio.md`; his default
-   skin is extracted to `E:\Overwatch Archive\extracted\154088\Heroes\LÃºcio`): his animation research runs meanwhile.
+3. **Lúcio (#37)** (`feature/lucio` has his kit in progress; `tools/reference/lucio-plan.md`, `lucio.md`; his default
+   skin is extracted to `E:\Overwatch Archive\extracted\154088\Heroes\Lúcio`): his animation research runs meanwhile.
    Build him after 1-2, turning "Kiriko in Minecraft" into "Overwatch heroes in Minecraft". LMB Sonic Amplifier, RMB
    Soundwave (owner: good); safe fall 8 blocks (owner). Every hero comes with its four perks (`Perk`, `Perks`).
 4. Jetpack Cat (#38). 5. Lifeweaver (#39). Later: Sombra, Illari (re-check patch notes), Juno (#1), Sojourn (#2),
