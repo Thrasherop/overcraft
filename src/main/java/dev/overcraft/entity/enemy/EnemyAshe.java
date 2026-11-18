@@ -225,7 +225,13 @@ public class EnemyAshe extends EnemyHeroEntity {
 		}
 		for (Map.Entry<LivingEntity, Double> e : hitWith.entrySet()) {
 			LivingEntity hit = e.getKey();
-			deal(hit, shotSource(null), e.getValue(), COACH_BLOW);
+			// armor takes its 7 off each pellet (Shields.pellets, as the player's Coach Gun)
+			dev.overcraft.hero.Shields.pellets = (int) Math.max(1, Math.round(e.getValue() / COACH_PELLET));
+			try {
+				deal(hit, shotSource(null), e.getValue(), COACH_BLOW);
+			} finally {
+				dev.overcraft.hero.Shields.pellets = 1;
+			}
 			play(level, "coach_gun.hit", hit.position(), 40);
 			double share = Ashe.coachPushShare(metres.get(hit));
 			if (hit.isAlive() && share > 0) {

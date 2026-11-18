@@ -561,9 +561,16 @@ public final class Ashe implements HeroKit {
 		boolean enemyPushed = false;
 		for (Map.Entry<LivingEntity, Double> en : hitWith.entrySet()) {
 			LivingEntity target = en.getKey();
-			// the pellets together, one hit (no crit: D m_6256F1D7 1)
-			float dealt = parts.containsKey(target) ? Combat.damagePart(level, parts.get(target), Combat.hitscan(player), en.getValue(), COACH_BLOW)
-				: Combat.damage(target, Combat.hitscan(player), en.getValue(), COACH_BLOW);
+			// the pellets together, one hit (no crit: D m_6256F1D7 1), but armor takes its 7 off each pellet (Shields.pellets, as Tracer's
+			// and the Fusion Cannons' do: a critique; summed it took 7 off all 15 together)
+			float dealt;
+			dev.overcraft.hero.Shields.pellets = (int) Math.max(1, Math.round(en.getValue() / COACH_PELLET));
+			try {
+				dealt = parts.containsKey(target) ? Combat.damagePart(level, parts.get(target), Combat.hitscan(player), en.getValue(), COACH_BLOW)
+					: Combat.damage(target, Combat.hitscan(player), en.getValue(), COACH_BLOW);
+			} finally {
+				dev.overcraft.hero.Shields.pellets = 1;
+			}
 			Combat.credit(player, dealt, target);
 			Combat.addFireForDamage(player, dealt, target);
 			if (dealt > 0) {

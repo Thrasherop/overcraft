@@ -19,7 +19,7 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * A spray on its face (#41): the image from the player's own install in the local asset pack, textures/sprays/<hero>/<name>.png,
- * a square on the face. On a wall its top is up; on a floor or a ceiling, toward where the sprayer faced. Without the pack, the
+ * a square on the face. On a wall its top is up; on a floor, toward where the sprayer faced; on a ceiling, toward the sprayer. Without the pack, the
  * hero's portrait stands in. Lit by the world, not full bright (ours).
  */
 public class SprayRenderer extends EntityRenderer<SprayEntity, SprayRenderer.State> {
@@ -33,6 +33,11 @@ public class SprayRenderer extends EntityRenderer<SprayEntity, SprayRenderer.Sta
 
 	/** Each image's width over height, read once. */
 	private static final java.util.Map<Identifier, Float> RATIOS = new java.util.HashMap<>();
+
+	/** The images of a pack now gone or rebuilt (a resource reload): read again. */
+	public static void forgetRatios() {
+		RATIOS.clear();
+	}
 
 	public static float ratio(Identifier id) {
 		return RATIOS.computeIfAbsent(id, k -> {
@@ -88,15 +93,20 @@ public class SprayRenderer extends EntityRenderer<SprayEntity, SprayRenderer.Sta
 		if (face.getAxis().isHorizontal()) {
 			up = new Vector3f(0, 1, 0);
 		} else {
-			// on a floor or a ceiling: its top toward where they faced
+			// on a floor: its top toward where they faced; on a ceiling, toward them, so it reads upright looking up at it (it was
+			// upside down: a critique)
 			float yaw = (float) Math.toRadians(state.yRot);
 			up = new Vector3f(-(float) Math.sin(yaw), 0, (float) Math.cos(yaw));
+			if (face == Direction.DOWN) {
+				up.negate();
+			}
 		}
 		Vector3f right = new Vector3f(up).cross(n).normalize();
 		// its larger side SIZE, the other kept to the image's ratio
 		float hw = SprayEntity.SIZE / 2 * Math.min(1, state.ratio), hh = SprayEntity.SIZE / 2 * Math.min(1, 1 / state.ratio);
 		int light = state.lightCoords;
-		collector.submitCustomGeometry(poseStack, FxRender.blended(state.texture), (pose, buffer) -> {
+		// lit by the world (FxRender.blended is the emissive eyes type: it glowed at night and in caves, a critique)
+		collector.submitCustomGeometry(poseStack, net.minecraft.client.renderer.rendertype.RenderTypes.entityTranslucent(state.texture), (pose, buffer) -> {
 			float[][] corners = {{-1, -1, 0, 1}, {1, -1, 1, 1}, {1, 1, 1, 0}, {-1, 1, 0, 0}};
 			for (float[] c : corners) {
 				float x = right.x * c[0] * hw + up.x * c[1] * hh, y = right.y * c[0] * hw + up.y * c[1] * hh, z = right.z * c[0] * hw + up.z * c[1] * hh;

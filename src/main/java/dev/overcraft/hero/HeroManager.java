@@ -429,7 +429,13 @@ public final class HeroManager {
 	 * bed, of the world spawn's area.
 	 */
 	public static boolean canChangeHero(ServerPlayer player, HeroState state) {
-		return state.freePick || state.hero == null || nearRespawn(player);
+		return freePickHere(player, state) || state.hero == null || nearRespawn(player);
+	}
+
+	/** The free pick still holds here: an operator's anywhere, the join's near where they joined. */
+	private static boolean freePickHere(ServerPlayer player, HeroState state) {
+		return state.freePick && (state.freePickAt == null
+			|| player.level().dimension() == state.freePickIn && player.position().distanceTo(state.freePickAt) <= CHANGE_HERO_RANGE + 0.5);
 	}
 
 	/**
@@ -464,16 +470,24 @@ public final class HeroManager {
 	public static void allowFreePick(ServerPlayer player) {
 		HeroState state = STATES.computeIfAbsent(player.getUUID(), id -> new HeroState());
 		state.freePick = true;
+		state.freePickAt = null;
 		state.canChangeHero = true;
 	}
 
 	public static void forceSelect(ServerPlayer player, Hero hero) {
-		STATES.computeIfAbsent(player.getUUID(), id -> new HeroState()).freePick = true;
+		HeroState forced = STATES.computeIfAbsent(player.getUUID(), id -> new HeroState());
+		forced.freePick = true;
+		forced.freePickAt = null;
 		select(player, hero);
 	}
 
 	public static void select(ServerPlayer player, @Nullable Hero hero) {
 		if (hero != null && (!hero.playable || kit(hero) == null)) {
+			return;
+		}
+		// not while dead: the pick's full health went to a dead player, and the death screen's Respawn was then refused (a critique,
+		// reproduced: a pick on the select screen open over a death left the player stuck)
+		if (!player.isAlive()) {
 			return;
 		}
 		HeroState state = STATES.computeIfAbsent(player.getUUID(), id -> new HeroState());
@@ -487,8 +501,9 @@ public final class HeroManager {
 		if (same) {
 			return; // picking the hero you already are changes nothing (no free refill)
 		}
-		// a new hero erases your spray (Overwatch's: tools/reference/sprays.md, #41)
+		// a new hero erases your spray (Overwatch's: tools/reference/sprays.md, #41), and ends an emote of the old one
 		dev.overcraft.entity.SprayEntity.erase(player);
+		dev.overcraft.comms.Comms.endEmote(player);
 		savePerks(player, state);
 		outOfPlay(player, state, HeroKit.OutOfPlay.SWITCH);
 		state.reset(hero);
@@ -564,18 +579,25 @@ public final class HeroManager {
 	}
 
 	public static void onJoin(ServerPlayer player) {
+		// the health they left with (a rejoin refilled it: a critique, reproduced: left at 7, back at 20); a dead one stays dead.
+		// Read first: dropping the old modifiers below can lower the max under it
+		float health = player.getHealth();
 		String saved = player.getAttached(HERO);
 		Hero hero = saved == null ? null : Hero.byId(saved);
 		HeroState state = STATES.computeIfAbsent(player.getUUID(), id -> new HeroState());
 		dropStaleModifiers(player);
 		state.reset(hero != null && hero.playable ? hero : null);
 		state.freePick = true;
+		state.freePickAt = player.position();
+		state.freePickIn = player.level().dimension();
+
 		Double charge = player.getAttached(ULT_CHARGE);
 		if (charge != null && state.hero != null) {
 			state.ultCharge = charge;
 		}
 		loadPerks(player, state);
 		applyKit(player, state, true);
+		player.setHealth(Math.min(health, player.getMaxHealth()));
 		if (state.hero != null && heroMode(player) && !player.onGround()) {
 			JOIN_FALLS.put(player.getUUID(), false);
 			player.resetFallDistance();

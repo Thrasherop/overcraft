@@ -735,6 +735,12 @@ public final class Combat {
 		if (target != null && Allies.isBystander(hero, target)) {
 			return;
 		}
+		// damage to themselves or an ally (with their friendly fire on, a hero option) earns nothing: it filled an ult off a
+		// teammate (#168). Every caller of this one passes damage dealt; heals go through credit(hero, points). wasAlly: an ally the
+		// hit just killed is still one
+		if (target == hero || target != null && Allies.wasAlly(hero, target)) {
+			return;
+		}
 		credit(hero, points * Tank.ultFactor(hero, target));
 	}
 

@@ -4,6 +4,51 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.102 (on main; general play at 2 GB: techniques/testing/runs/genplay_0102/run.md)
+
+- **No ult charge for hurting your own side (#168):** with the friendly-fire hero option on, damage to allies (players on
+  your side, pets, villagers) or to yourself filled your ultimate. It no longer does. Played: Cassidy killing an allied
+  villager gained only her passive charge (+13.75 over 2.5 s), against +263.75 on a husk.
+
+## 2026-11-18: 0.3.101
+
+- **Damage core, from an independent critique (#167, not yet verified in the game):** Ashe's Coach Gun (and the enemy
+  Ashe's) now lets armor take its 7 off each pellet, as Tracer's pistols and D.Va's cannons do, instead of once off the whole
+  blast; Mercy's damage boost now earns her ult charge only when the boosted hit lands, at most what the target had left.
+
+## 2026-11-18: 0.3.100
+
+- **Hero select and rejoining, after an independent critique:** each reproduced in the game first, then replayed.
+  - Picking a hero on a select screen left open over a death (a fall, a mob) brought the dead player back on the server while
+    the death screen stayed up, and Respawn was then refused: stuck until relog. A pick while dead is now ignored.
+  - The free pick you get on joining stayed usable anywhere until spent: Esc on the join screen, walk 2 km, press H, and the
+    select opened. It now holds only where you joined, like the bed rule.
+  - Rejoining refilled your health (left at 7, back at 20). You come back with what you left with.
+  - Changing hero now ends an emote you were doing.
+
+## 2026-11-18: 0.3.99
+
+- **The communication wheel and loadout, after an independent critique:** each reproduced in the game first, then replayed.
+  - Turning the wheel's page with a mouse button and letting go of T while still holding it also fired the weapon (Kiriko threw
+    two kunai as her voice line played). The button now stays the wheel's until you let go of it.
+  - A mouse button pressed just after T, before the wheel opened, opened it on the wrong page. It opens on Communications.
+  - One broken entry in `overcraft-loadout.json` lost every choice after it (Kiriko's four emotes went back to Heroic alone), and
+    the next change would have saved over them. Now only the broken entry is skipped.
+  - A very quick tap of T now always sends "Good job!".
+  - The server no longer plays an emote or a voice line from a player in Minecraft mode, dead or spectating, and starts an
+    emote at most every half second.
+
+## 2026-11-18: 0.3.98
+
+- **Sprays, after an independent critique (#41):** each reproduced in the game first, then replayed on the fix.
+  - An old spray left in a chunk you'd walked away from (or another dimension) survived your next spray: both were there when
+    you came back. Now the older one goes when it loads.
+  - A spray on the upper part of a fence or wall vanished half a second later. It stays now.
+  - Sprays glowed at night and in caves. They're lit like the blocks around them.
+  - A ceiling spray was upside down when you looked up at it. It reads upright.
+  - Holding the key in a loop could put down a spray every packet: at most one every half second now, and none while dead or
+    spectating. Pistons no longer push a spray off its wall. An empty loadout slot stays empty on the wheel.
+
 ## 2026-11-18: 0.3.97 (on main; general play at 2 GB: techniques/testing/runs/genplay_0397/run.md)
 
 - **The last of the reload leaks (#166, from an independent critique):** caches of mesh flags and projectile and prop meshes
@@ -12,7 +57,7 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
   closing resources any more (it could reopen and lock a zip pack). A prop whose file fails to load no longer puts the
   weapons away for nothing. Played: Fox Cuddles' fox and Kiriko's kunai drawn after two reloads.
 
-## 2026-11-18: 0.3.96
+## 2026-11-18: 0.3.96 (on main with 0.3.97)
 
 - **Animations' turns take half the memory (#166):** bone rotations, over half the animation data, are kept as 16-bit
   numbers (at most 0.004 degrees off). Live heap data with the full pack: 1.31 -> 1.20 GB, more room at the launcher's
@@ -25,7 +70,7 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
   read whole into memory first. Those two lists are now read as plain numbers as they stream in. Played at 2 GB: three
   reloads in a row passed (133 models, heap 1.35-1.48 GB), and heroes, enemy heroes, a turret and Purr's effects drew after.
 
-## 2026-11-18: 0.3.94
+## 2026-11-18: 0.3.94 (on main with 0.3.95)
 
 - **A resource reload no longer runs out of memory (#166, found testing):** with the local pack and the Minecraft launcher's
   default 2 GB, F3+T (or changing a resource pack or the language) crashed with "Java heap space": the old models stayed
@@ -34,7 +79,7 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
   Reproduced at 2 GB on 0.3.93; on the fix two reloads in a row passed with the model count and heap flat (131 models,
   ~1.3 GB), and Kiriko drew in first and third person after them.
 
-## 2026-11-18: 0.3.93
+## 2026-11-18: 0.3.93 (on main with 0.3.95)
 
 - **Animations take less memory (#166):** a clip's bones share one copy of its key times, and a bone that holds still through
   a clip keeps one key instead of hundreds. The clips' arrays went from 800 to 581 MB, and a fresh client from 7.45 to 7.27
