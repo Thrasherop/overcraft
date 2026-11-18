@@ -251,6 +251,7 @@ public final class HeroHud {
 		dev.overcraft.client.hud.DeadeyeHud.render(g, player, hero, w, h);
 		dev.overcraft.client.comms.Pings.render(g, w, h);
 		dev.overcraft.client.comms.CommsWheel.render(g, w, h);
+		dev.overcraft.client.comms.SprayWheel.render(g, w, h);
 		// the rest is laid out on a 1080-high strip along the bottom (taller screens than 16:9 have room above it)
 		g.pose().translate(0, h - REF_H);
 		health(g, player, hero);

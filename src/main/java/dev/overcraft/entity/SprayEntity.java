@@ -27,12 +27,10 @@ import org.jspecify.annotations.Nullable;
  * client without it draws a plain stand-in. Its numbers are ours until tools/reference/sprays.md gives Overwatch's.
  */
 public class SprayEntity extends Entity implements SurfaceStuck {
-	/** How far a spray reaches (ours, pending the reference). */
+	/** How far a spray reaches (ours: no public source or the data gives it, tools/reference/sprays.md). */
 	public static final double RANGE = 4.5;
-	/** Its width and height on the wall, metres (ours, pending the reference). */
+	/** Its larger side on the wall, metres (ours, as RANGE); the other side keeps the image's ratio. */
 	public static final float SIZE = 1.25f;
-	/** How long it stays, seconds (ours, pending the reference). */
-	public static final double LIFE = 600;
 
 	private static final EntityDataAccessor<String> HERO = SynchedEntityData.defineId(SprayEntity.class, EntityDataSerializers.STRING);
 	private static final EntityDataAccessor<String> NAME = SynchedEntityData.defineId(SprayEntity.class, EntityDataSerializers.STRING);
@@ -78,9 +76,7 @@ public class SprayEntity extends Entity implements SurfaceStuck {
 		if (hit.getType() != HitResult.Type.BLOCK) {
 			return false;
 		}
-		for (SprayEntity old : level.getEntities(OcEntities.SPRAY, e -> player.getUUID().equals(e.owner))) {
-			old.discard();
-		}
+		erase(player);
 		SprayEntity spray = new SprayEntity(OcEntities.SPRAY, level);
 		Direction face = hit.getDirection();
 		Vec3 n = Vec3.atLowerCornerOf(face.getUnitVec3i());
@@ -96,16 +92,21 @@ public class SprayEntity extends Entity implements SurfaceStuck {
 		return true;
 	}
 
+	/** {@code player}'s spray goes (one each: a new one, or a new hero, erases it). */
+	public static void erase(ServerPlayer player) {
+		for (SprayEntity old : player.level().getEntities(OcEntities.SPRAY, e -> player.getUUID().equals(e.owner))) {
+			old.discard();
+		}
+	}
+
 	@Override
 	public void tick() {
 		super.tick();
 		if (!(level() instanceof ServerLevel level)) {
 			return;
 		}
-		if (++age > LIFE * 20) {
-			discard();
-			return;
-		}
+		// no timer: it stays until its player sprays again or changes hero (Overwatch's, tools/reference/sprays.md)
+		age++;
 		// the block it's on went: so does the spray
 		Direction face = stuckFace();
 		if (face != null && age % 10 == 0) {

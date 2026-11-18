@@ -99,6 +99,22 @@ def slug(name):
     return "".join(c if c.isascii() and c.isalnum() else "_" for c in plain.lower()).strip("_")
 
 
+def add_sprays(source=None):
+    """Sprays (#41): each hero's default sprays, extracted from the player's own install into local-assets/sprays/<hero>/
+    (E:/Overwatch Archive/research/sprays/scripts/extract_sprays.py), copied to textures/sprays/<hero>/ where SprayRenderer
+    reads them. The shop sprays under <hero>/credits/ stay out (not owned by default: tools/reference/sprays.md)."""
+    src = Path(source) if source else LOCAL / "sprays"
+    dest = PACK / "assets" / "overcraft" / "textures" / "sprays"
+    n = 0
+    for hero in sorted(p for p in src.iterdir() if p.is_dir()):
+        for png in sorted(hero.glob("*.png")):
+            out = dest / hero.name / png.name
+            out.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(png, out)
+            n += 1
+    print(f"sprays: {n} copied to {dest}")
+
+
 def add_ui(source, only=None):
     """Copies each hero's icons (or only that hero's: `ui <source> <hero>`) to textures/gui/heroes/<hero>/: portrait, portrait_close, head, fullbody, card, bust,
     silhouette(_small), abilities/<ability>.png, perks/<perk>.png."""
@@ -1751,6 +1767,8 @@ def main():
         out = MODELS / f"{hero}.glb"
         convert(str(src), out)
         print("added:", out, out.stat().st_size // 1024, "KB")
+    elif cmd == "sprays":
+        add_sprays(sys.argv[2] if len(sys.argv) > 2 else None)
     elif cmd == "ui":
         add_ui(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
     elif cmd == "sounds":

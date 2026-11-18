@@ -4,7 +4,14 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-17: 0.3.86 on next (not on main yet)
+## 2026-11-17: 0.3.87 on next (not on main yet)
+
+- **Sprays (#41):** tap Y to spray your hero's icon on the wall or floor in front of you; hold Y for a wheel of four of the
+  hero's sprays, point at one and let go. One spray each: a new one, or switching hero, erases the last. The images are the
+  hero's default sprays read from your own Overwatch install into the local asset pack
+  (`py tools/build_asset_pack.py sprays` after `extract_sprays.py`); without them the hero's portrait stands in.
+
+## 2026-11-17: 0.3.86
 
 - **Four more enemy heroes at night (#46):** Ashe (aimed Viper shots at range, Coach Gun up close), Sojourn (Railgun bursts and
   a Charged Shot once her energy is high), Torbjörn (rivets and a turret he throws, which shoots you and your pets, never

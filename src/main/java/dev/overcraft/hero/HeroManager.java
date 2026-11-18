@@ -487,6 +487,8 @@ public final class HeroManager {
 		if (same) {
 			return; // picking the hero you already are changes nothing (no free refill)
 		}
+		// a new hero erases your spray (Overwatch's: tools/reference/sprays.md, #41)
+		dev.overcraft.entity.SprayEntity.erase(player);
 		savePerks(player, state);
 		outOfPlay(player, state, HeroKit.OutOfPlay.SWITCH);
 		state.reset(hero);

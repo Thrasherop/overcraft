@@ -26,6 +26,9 @@ public abstract class MouseHandlerMixin {
 	private void overcraft$wheelPointer(LocalPlayer player, double dx, double dy) {
 		if (CommsWheel.open()) {
 			CommsWheel.move(dx, dy);
+		} else if (dev.overcraft.client.comms.SprayWheel.open()) {
+			// the spray wheel's pointer (#41)
+			dev.overcraft.client.comms.SprayWheel.move(dx, dy);
 		} else if (EmoteCamera.active()) {
 			EmoteCamera.turn(dx, dy);
 		} else {
