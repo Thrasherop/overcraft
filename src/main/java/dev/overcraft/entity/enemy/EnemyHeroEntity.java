@@ -68,9 +68,14 @@ public abstract class EnemyHeroEntity extends Monster {
 
 	/** Its health (Overwatch's, at the mod's 250 = 20 scale), its run and its sight. */
 	public static AttributeSupplier.Builder attributes(int owHealth, double runMetresPerSecond) {
+		return attributes(owHealth, runMetresPerSecond, EnemyHeroStats.FOLLOW_RANGE);
+	}
+
+	/** The same with its own sight ({@code followRange} m: Widowmaker's, EnemyHeroStats.WIDOW_FOLLOW_RANGE). */
+	public static AttributeSupplier.Builder attributes(int owHealth, double runMetresPerSecond, double followRange) {
 		return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, Ow.hp(owHealth))
 			.add(Attributes.MOVEMENT_SPEED, EnemyHeroStats.speedAttribute(runMetresPerSecond))
-			.add(Attributes.FOLLOW_RANGE, EnemyHeroStats.FOLLOW_RANGE);
+			.add(Attributes.FOLLOW_RANGE, followRange);
 	}
 
 	public abstract Hero hero();

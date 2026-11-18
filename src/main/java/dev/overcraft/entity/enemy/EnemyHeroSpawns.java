@@ -19,19 +19,30 @@ import java.util.List;
 
 /**
  * Where enemy heroes come from (#46, the plan's "How often", ours): at night in the Overworld, a zombie, skeleton or husk that
- * Minecraft spawns naturally (EntitySpawnReason.NATURAL) is, 1 time in 12, replaced by one of the four enemy heroes, equally
+ * Minecraft spawns naturally (EntitySpawnReason.NATURAL) is, 1 time in 12, replaced by one of the eight enemy heroes, equally
  * likely, never in Peaceful, and never when a player within 64 m of it already has 2 within 64 m.
  * <p>
  * Minecraft has no hook for this, so MobMixin marks the mob from Mob.finalizeSpawn (before the spawner adds it to the world) and
  * the swap happens on the server's next tick: the hero is made at the mob's place and facing, finalized as a natural spawn, and
- * the mob is discarded unseen. Mobs made any other way (spawners, eggs, /summon, chunk generation, reinforcements) never change.
+ * the mob is discarded unseen. Marked, it's inert until then (no AI, no pickup, silent: the critique's finding 5 of batch 1, a
+ * zombie that lived a tick could take a swing or pick up an item); a swap that doesn't happen gives it all back.
+ * Mobs made any other way (spawners, eggs, /summon, chunk generation, reinforcements) never change.
  */
 public final class EnemyHeroSpawns {
 	private EnemyHeroSpawns() {
 	}
 
 	/** Marked this tick, swapped at its end (server thread only). */
-	private static final List<Mob> PENDING = new ArrayList<>();
+	private static final List<Pending> PENDING = new ArrayList<>();
+
+	/** A marked mob and what it had before it was made inert. */
+	private record Pending(Mob mob, boolean noAi, boolean pickUp, boolean silent) {
+		void restore() {
+			mob.setNoAi(noAi);
+			mob.setCanPickUpLoot(pickUp);
+			mob.setSilent(silent);
+		}
+	}
 
 	/** Dev only: off, to see a night without them (and the rule's effect). */
 	public static boolean devOff;
@@ -51,7 +62,11 @@ public final class EnemyHeroSpawns {
 			return;
 		}
 		if (EnemyHeroStats.mayReplace(level.getRandom().nextInt(EnemyHeroStats.SPAWN_ONE_IN), 0)) {
-			PENDING.add(mob);
+			PENDING.add(new Pending(mob, mob.isNoAi(), mob.canPickUpLoot(), mob.isSilent()));
+			// inert until the swap at the tick's end: it ticks once in the world before then
+			mob.setNoAi(true);
+			mob.setCanPickUpLoot(false);
+			mob.setSilent(true);
 		}
 	}
 
@@ -69,32 +84,45 @@ public final class EnemyHeroSpawns {
 		if (PENDING.isEmpty()) {
 			return;
 		}
-		List<Mob> marked = new ArrayList<>(PENDING);
+		List<Pending> marked = new ArrayList<>(PENDING);
 		PENDING.clear();
-		for (Mob mob : marked) {
-			if (mob.isRemoved() || !mob.isAlive() || !(mob.level() instanceof ServerLevel level) || mob.isPassenger() || mob.isVehicle()
-				|| !night(level) || crowded(level, mob)) {
-				// (a jockey keeps its rider: the swap would leave one of them alone)
-				continue;
+		for (Pending p : marked) {
+			Mob mob = p.mob();
+			if (!swap(mob)) {
+				p.restore();
 			}
-			EntityType<? extends EnemyHeroEntity> type = switch (level.getRandom().nextInt(4)) {
-				case 0 -> OcEntities.ENEMY_TRACER;
-				case 1 -> OcEntities.ENEMY_CASSIDY;
-				case 2 -> OcEntities.ENEMY_JUNKRAT;
-				default -> OcEntities.ENEMY_PHARAH;
-			};
-			EnemyHeroEntity hero = type.create(level, EntitySpawnReason.NATURAL);
-			if (hero == null) {
-				continue;
-			}
-			hero.snapTo(mob.getX(), mob.getY(), mob.getZ(), mob.getYRot(), 0);
-			if (!level.noCollision(hero)) {
-				continue;
-			}
-			hero.finalizeSpawn(level, level.getCurrentDifficultyAt(mob.blockPosition()), EntitySpawnReason.NATURAL, null);
-			level.addFreshEntity(hero);
-			mob.discard();
 		}
+	}
+
+	/** Swaps {@code mob} for an enemy hero; false when it stays. */
+	private static boolean swap(Mob mob) {
+		if (mob.isRemoved() || !mob.isAlive() || !(mob.level() instanceof ServerLevel level) || mob.isPassenger() || mob.isVehicle()
+			|| !night(level) || crowded(level, mob)) {
+			// (a jockey keeps its rider: the swap would leave one of them alone)
+			return false;
+		}
+		EntityType<? extends EnemyHeroEntity> type = switch (level.getRandom().nextInt(8)) {
+			case 0 -> OcEntities.ENEMY_TRACER;
+			case 1 -> OcEntities.ENEMY_CASSIDY;
+			case 2 -> OcEntities.ENEMY_JUNKRAT;
+			case 3 -> OcEntities.ENEMY_PHARAH;
+			case 4 -> OcEntities.ENEMY_ASHE;
+			case 5 -> OcEntities.ENEMY_SOJOURN;
+			case 6 -> OcEntities.ENEMY_TORBJORN;
+			default -> OcEntities.ENEMY_WIDOWMAKER;
+		};
+		EnemyHeroEntity hero = type.create(level, EntitySpawnReason.NATURAL);
+		if (hero == null) {
+			return false;
+		}
+		hero.snapTo(mob.getX(), mob.getY(), mob.getZ(), mob.getYRot(), 0);
+		if (!level.noCollision(hero)) {
+			return false;
+		}
+		hero.finalizeSpawn(level, level.getCurrentDifficultyAt(mob.blockPosition()), EntitySpawnReason.NATURAL, null);
+		level.addFreshEntity(hero);
+		mob.discard();
+		return true;
 	}
 
 	/** Whether a player within the cap's reach of {@code at} already has the cap's number of enemy heroes within it. */

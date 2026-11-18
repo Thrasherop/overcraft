@@ -117,3 +117,54 @@ Minecraft's speed attribute by our measure of Minecraft's movement (44.05 x spee
   Junkrat): the cap of 2 near a player held.
 - **Not reproduced:** Tracer's Blink through a pane wall (she walked; fixed by reading). **Not tried:** a second player, a save and
   reload with Pharah mid-hover (fixed by reading), Pharah's jet flames (PharahFx loops players only: none on her), kill feed portraits.
+
+## Batch 2: built (2026-11-17, not played)
+Four more, the same pattern (`entity/enemy/`), each kit's numbers from its Stats class; the spawn rotation is now 8, equally likely.
+`/summon overcraft:enemy_ashe`, `overcraft:enemy_sojourn`, `overcraft:enemy_torbjorn`, `overcraft:enemy_widowmaker`.
+- **Ashe** (`EnemyAshe`, 250 health): keeps 10-30 m; aims down the sights 0.5 s ("ads_in", `ads.in`), then one scoped Viper shot,
+  hitscan, `Ashe.viperDamage(m, scoped, crit)` (75, 35-55 m falloff to x0.3, x2 head), one each 1.2 s; 12 rounds, then
+  `Ashe.reloadSeconds(0)` (3.25 s). Coach Gun when her target is within 5 m and she's on the ground: 0.165 s into its cast,
+  `Ashe.pellets` (15 of 6, its rings), summed per creature, its push (`Ashe.coachPushShare`, 20 m/s along her aim + 5 up) and her
+  own 18 m/s back (`Ashe.coachSelf`, no fall damage until she lands); 10 s cooldown. Drops gold nuggets.
+- **Sojourn** (`EnemySojourn`, 225): keeps 8-20 m; her own `RailgunShotEntity` rounds (9, x2 head, 150 m/s) in bursts of 8 at her
+  16/s, spread `SPREAD_MAX` + the difficulty's; 45 rounds, 1.2 s reload. `RailgunShotEntity` got an enemy-Sojourn branch
+  (`roundHit` / `roundHitBlock`, as FragEntity's for Junkrat): +5 energy a hit, +10 a crit, held 9 s then -15/s. At 60 energy, between
+  bursts, her Charged Shot: hitscan, `sojournCharged(energy)` (20 + energy), 40-60 m falloff to half, x1.5 head, then 0.65 s lockout.
+  Energy saved with her. Drops glowstone dust.
+- **Torbjörn** (`EnemyTorbjorn`, 225 + 75 armor as health): keeps 6-18 m; his own `RivetEntity` (70, x2 head, 70 m/s, 9.8 m/s²) on
+  the `lob` arc to his target's middle, one each 1 s; 18 rivets, 2 s reload. `RivetEntity` got an enemy-Torbjörn branch
+  (`rivetHit`). His turret: `EnemyTurretEntity` (new type `overcraft:enemy_turret`, a subclass of `TurretEntity` with no player
+  owner, so none of a player's turret code runs; its flight, 2.5 s build, 225 health, model and renderer are TurretEntity's).
+  Thrown when his target is within 20 m and in sight, 3 m toward it on its 17 m/s / 20 m/s² arc; one at a time; after it's broken,
+  his 12 s cooldown before another. It's an `Enemy` (players' heroes take it as an enemy; monsters leave it; golems fight it) and
+  shoots for him: his target first, else the closest within 40 m in sight that `Allies.lockOn(him, e)` allows (players, their
+  pets, golems after him; never monsters or bystanders), 12 a shot every 0.256 s, through `deal` (the difficulty's factor).
+  It goes 2 s after he's gone. `TurretEntity` only gained `fired()` (its two lines of shot bookkeeping, now shared). Drops copper.
+- **Widowmaker** (`EnemyWidowmaker`, 225, sight 48 m): keeps 20-40 m; each shot is aimed 1.5 s, a red sight line
+  (`widow_enemy_aim`, new in WidowmakerFx) every 0.1 s from her rifle to her aim point, wider in the last 0.25 s when the aim holds
+  still; out of sight the aim starts over. The shot: hitscan, `widowShot` (a full charge's 120, 50-70 m falloff to half, x2.5 head)
+  x 0.5, spread half the difficulty's; 5 of her 35 rounds a shot, 1.5 s reload; 0.5 s recovery + 1 s before the next aim. Drops string.
+- **Spawn fix (critique finding 5):** a marked zombie/skeleton/husk is made inert at once (no AI, no pickup, silent) until the
+  tick-end swap; a swap that doesn't happen (crowded, a jockey, no room) gives it back what it had.
+- Tests: `EnemyHeroStatsTest` adds Ashe's Coach rule, the Charged Shot's 20 + energy, the energy hold and drain, Widowmaker's
+  halved shot and its falloff, her aim's hold, and the rivet's and turret throw's lobs landing.
+
+**Ours (batch 2):** every range kept (10-30, 8-20, 6-18, 20-40 m), Ashe's 1.2 s shot and 0.5 s aim, the 5 m Coach trigger, the
+60 m Ashe reach, Sojourn's 8-round bursts and 60-energy trigger and first-target-only Charged Shot, her muzzle offset, Torbjörn's
+1 s rivet, turret trigger (20 m, 3 m ahead), one-at-a-time turret and its 2 s orphan rule, his armor counted as health, Widowmaker's
+1.5 s aim, 0.25 s hold, 1 s extra pause, half damage, half spread, 80 m reach, 48 m sight and the sight line itself (Overwatch has
+none: her scope's glint), the drops (gold nuggets, glowstone dust, copper ingots, string).
+
+**Left out, and why:** Dynamite and B.O.B. (the brief); Power Slide (not trivial on a ground-navigating mob: its speed ramp, wall
+end and jump; the brief allowed leaving it), Disruptor Shot, Overclock; Torbjörn's alt fire, Forge Hammer, Overload (so no level 3
+turret), Molten Core; Widowmaker's hip fire, Grappling Hook (a ledge pull needs the hook entity, its 3 m ledge search and a pull
+the mob's navigation would fight: not simple), Venom Mine, Infra-Sight. Sojourn's Charged Shot doesn't pierce.
+
+**Check first in play (none of it has been):** each summons, is drawn as its hero with the pack, red name; Ashe's aim pause and
+Coach Gun push on a player (and her own launch, no fall damage); Sojourn's rounds hit and pass through zombies, her energy builds
+and the Charged Shot comes (its tracer, its damage ~80 at 60 energy x the factor); Torbjörn's rivets land on a target at 6-18 m
+rather than short or long (the lob through a mob's eye height), his turret lands in front of him and builds, shoots a player and a
+tamed wolf but never a zombie, is shot at by a player hero's lock-ons, breaks, and goes when he dies; whether his turret's 47 DPS
+(x0.3 on Normal: ~1.1 health a second) on top of his rivets is too much; Widowmaker finds a target at 40 m (her 48 m sight), the
+sight line shows from her rifle and holds still at the end, a sidestep in the last 0.25 s dodges, and behind cover the aim resets;
+the doomed mob's one inert tick doesn't show (a zombie standing still a tick) and a restored one fights again.

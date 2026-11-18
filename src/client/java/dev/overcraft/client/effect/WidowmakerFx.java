@@ -203,6 +203,10 @@ public final class WidowmakerFx {
 		switch (e.effect()) {
 			case "widow_shot" -> shot(entity, at, dir, e.variant(), enemy);
 			case "widow_hit" -> hit(at, dir, e.variant(), enemy);
+			// an enemy Widowmaker's aim (#46, ours: Overwatch draws no line): a thin red line, sent every 0.1 s while she aims, wider
+			// once it holds still (variant 1)
+			case "widow_enemy_aim" -> line("sombra_tracer", muzzle(entity, at), at.add(dir), Palette.WIDOW_LINE_ENEMY,
+				e.variant() == 1 ? 0.08f : 0.04f, 0.12f, 0.3f);
 			case "widow_mine_burst" -> burst(at, false, enemy);
 			case "widow_poison" -> {
 				POISONS.removeIf(p -> p.entity == e.entity());

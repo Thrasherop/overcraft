@@ -72,6 +72,9 @@ public class RailgunShotEntity extends OwProjectile {
 	protected void onHitEntity(EntityHitResult hit) {
 		if (level() instanceof ServerLevel && getOwner() instanceof ServerPlayer owner) {
 			Railgun.hit(owner, this, hit.getEntity(), hit.getLocation());
+		} else if (level() instanceof ServerLevel && getOwner() instanceof dev.overcraft.entity.enemy.EnemySojourn mob) {
+			// an enemy Sojourn's (#46): the same 9, her own energy (Railgun.hit takes a player)
+			mob.roundHit(this, hit.getEntity(), hit.getLocation());
 		}
 		discard();
 	}
@@ -84,6 +87,9 @@ public class RailgunShotEntity extends OwProjectile {
 				net.minecraft.core.Direction face = hit.getDirection();
 				Railgun.hitBlock(owner, hit.getLocation(),
 					new net.minecraft.world.phys.Vec3(face.getStepX(), face.getStepY(), face.getStepZ()));
+			} else if (getOwner() instanceof dev.overcraft.entity.enemy.EnemySojourn mob) {
+				net.minecraft.core.Direction face = hit.getDirection();
+				mob.roundHitBlock(hit.getLocation(), new net.minecraft.world.phys.Vec3(face.getStepX(), face.getStepY(), face.getStepZ()));
 			}
 			discard();
 		}

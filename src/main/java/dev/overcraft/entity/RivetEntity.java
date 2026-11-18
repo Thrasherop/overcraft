@@ -89,6 +89,11 @@ public class RivetEntity extends OwProjectile {
 			// its look on a creature: the rivet's 2650, a pellet's 05AF (TorbjornFx), facing back along the shot
 			Vec3 back = getDeltaMovement().lengthSqr() < 1.0E-6 ? Vec3.ZERO : getDeltaMovement().normalize().scale(-1);
 			dev.overcraft.hero.Effects.play(level, pellet() ? "torb_pellet_hit" : "torb_rivet_hit", hit.getLocation(), back, null, 0, owner);
+		} else if (level() instanceof ServerLevel level && getOwner() instanceof dev.overcraft.entity.enemy.EnemyTorbjorn mob) {
+			// an enemy Torbjörn's (#46): the same 70, the mob's own rules (Torbjorn.rivetHit takes a player)
+			mob.rivetHit(this, hit.getEntity(), hit.getLocation());
+			Vec3 back = getDeltaMovement().lengthSqr() < 1.0E-6 ? Vec3.ZERO : getDeltaMovement().normalize().scale(-1);
+			dev.overcraft.hero.Effects.play(level, pellet() ? "torb_pellet_hit" : "torb_rivet_hit", hit.getLocation(), back, null, 0, mob);
 		}
 		discard();
 	}

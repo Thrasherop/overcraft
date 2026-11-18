@@ -61,4 +61,71 @@ class EnemyHeroStatsTest {
 			assertEquals(to.y, p.y, 0.6, "lands near " + to);
 		}
 	}
+
+	// ---- batch 2 ----
+
+	@Test
+	void asheCoachesOnlyUpClose() {
+		assertTrue(EnemyHeroStats.asheCoach(4, true, 0));
+		assertTrue(EnemyHeroStats.asheCoach(5, true, 0));
+		assertFalse(EnemyHeroStats.asheCoach(6, true, 0));
+		assertFalse(EnemyHeroStats.asheCoach(3, false, 0));
+		assertFalse(EnemyHeroStats.asheCoach(3, true, 1));
+	}
+
+	@Test
+	void sojournChargedShotIsTwentyPlusEnergy() {
+		assertEquals(20, EnemyHeroStats.sojournCharged(0), 1e-9);
+		assertEquals(80, EnemyHeroStats.sojournCharged(60), 1e-9);
+		assertEquals(120, EnemyHeroStats.sojournCharged(100), 1e-9);
+		// clamped to her 100
+		assertEquals(120, EnemyHeroStats.sojournCharged(140), 1e-9);
+	}
+
+	@Test
+	void sojournEnergyHoldsNineSecondsThenDrains() {
+		assertEquals(50, EnemyHeroStats.sojournEnergyTick(50, 0), 1e-9);
+		assertEquals(50, EnemyHeroStats.sojournEnergyTick(50, 179), 1e-9);
+		assertEquals(50 - 0.75, EnemyHeroStats.sojournEnergyTick(50, 180), 1e-9);
+		assertEquals(0, EnemyHeroStats.sojournEnergyTick(0.5, 400), 1e-9);
+	}
+
+	@Test
+	void widowmakerShotIsHalfAFullCharge() {
+		// a full charge's 120, x2.5 on the head (WidowmakerStats), halved (ours)
+		assertEquals(60, EnemyHeroStats.widowShot(30, false), 1e-9);
+		assertEquals(150, EnemyHeroStats.widowShot(30, true), 1e-9);
+		// her 50-70 m falloff to half
+		assertEquals(30, EnemyHeroStats.widowShot(80, false), 1e-9);
+		// her aim follows, then holds still its last 0.25 s (5 ticks of 30)
+		assertTrue(EnemyHeroStats.widowTracks(0));
+		assertTrue(EnemyHeroStats.widowTracks(24));
+		assertFalse(EnemyHeroStats.widowTracks(25));
+	}
+
+	@Test
+	void rivetAndTurretLobsLand() {
+		lands(Ow.speed(dev.overcraft.torbjorn.TorbjornStats.RIVET_SPEED), Ow.accel(dev.overcraft.torbjorn.TorbjornStats.RIVET_GRAVITY),
+			new Vec3[] {new Vec3(18, 0, 0), new Vec3(6, -2, 5), new Vec3(10, 4, -3)});
+		lands(Ow.speed(dev.overcraft.torbjorn.TorbjornStats.TURRET_THROW_SPEED), Ow.accel(dev.overcraft.torbjorn.TorbjornStats.TURRET_GRAVITY),
+			new Vec3[] {new Vec3(3, -1.1, 0), new Vec3(-2, -1.1, 2)});
+	}
+
+	private static void lands(double v, double g, Vec3[] targets) {
+		for (Vec3 to : targets) {
+			Vec3 dir = EnemyHeroStats.lob(to, v, g);
+			Vec3 p = Vec3.ZERO, vel = dir.scale(v);
+			double flat = Math.sqrt(to.x * to.x + to.z * to.z);
+			Vec3 before = p;
+			for (int t = 0; t < 400 && Math.sqrt(p.x * p.x + p.z * p.z) < flat; t++) {
+				before = p;
+				vel = vel.add(0, -g, 0);
+				p = p.add(vel);
+			}
+			// its height where its path crosses the target's distance, between the ticks either side (a fast rivet steps 3.5 m a tick)
+			double a = Math.sqrt(before.x * before.x + before.z * before.z), b = Math.sqrt(p.x * p.x + p.z * p.z);
+			double y = b - a < 1.0E-9 ? p.y : before.y + (p.y - before.y) * (flat - a) / (b - a);
+			assertEquals(to.y, y, 0.6, "lands near " + to);
+		}
+	}
 }
