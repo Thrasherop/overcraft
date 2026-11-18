@@ -559,6 +559,9 @@ public final class PotgReplay {
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 			if (VIEWERS.contains(player.getUUID())) {
 				ServerPlayNetworking.send(player, new PotgPayload(PotgPayload.END, "", "", "", 0));
+				// the live world's time and weather again: the replay's own were shown (a night play replays at night), and the
+				// rejoin's were dropped while the showing was still active (ReplayTap), so a noon world stayed dark (found replaying)
+				server.getPlayerList().sendLevelInfo(player, player.level());
 				// held looks come again, as for someone who has just come to see them (the replay's hero_sync overwrote the
 				// viewer's own client state: the spike)
 				var map = ((dev.overcraft.mixin.ChunkMapAccessor) player.level().getChunkSource().chunkMap).overcraft$entityMap();

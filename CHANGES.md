@@ -4,6 +4,17 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.110
+
+- **Replays keep their time of day (#170):** a highlight recorded at midnight replayed in daylight, because the time packets
+  were held back from a watcher for the whole showing, the replay's own included. Now only the live world's are held back,
+  during the card and intro. When the showing ends, the watcher gets the live world's time and weather again. Reproduced
+  (`potg_night_live.png` vs `potg_night_replay.png`), then replayed: the replay is at night, and afterwards the world is back
+  at noon.
+- **No hero select after watching a highlight:** the replay engine logging the watcher back in counted as joining the world,
+  so the hero select opened after every showing. The build before this change did the same (checked as a control). Now the
+  login back from a showing isn't a join; a real join still opens the select.
+
 ## 2026-11-18: 0.3.109
 
 - **Watching a highlight (POTG critique):** during a highlight's 5 s intro the watcher can't move, but the world runs on, and
