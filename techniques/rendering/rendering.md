@@ -302,3 +302,10 @@ hero's effects reference and played:
 **How they were checked:** the harness's `state` field `fx` (the live particle count) sampled every 0.05-0.1 s around each moment,
 plus full-resolution `screenshot`s (`run/screenshots/il_*.png`, `tb_turret_gone.png`). **Lesson:** an effect at her feet or a 0.3 s
 burst is easy to miss in first person; the `fx` count says whether it drew at all, then F5 (third person) shows it.
+Then the effects #150 listed as never seen in play, all seen 2026-11-17 on 0.3.79 (live `fx` counts):
+- **Pharah:** Jump Jet (Shift: up 8 m, 14-17 jet particles); Barrage (Q: 70-103, rocket bursts, a husk eliminated:
+  `ph_barrage.png`).
+- **Junkrat:** Nitro Boost (Shift 2 s into RIP-Tire: mode 21 -> 37, 8-13 particles, `jr_nitro.png`); Total Mayhem (his death:
+  11-22 for under a second).
+- **Cassidy:** Silver Bullet (right button held 1.2 s, left click): a husk 20 -> 10.77 = 70 + 50 bleed through 2 armor (the small
+  bleed ticks lose more to armor: 5.51 + 3.7); the bleed's look 5-6 particles for about a second.
