@@ -4,6 +4,13 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.108
+
+- **D.Va's armor under Shield System (#168):** with the perk's 100 shields over her armor, a hit that broke the last shields and
+  went on into the armor wasn't reduced at all. Now the part that reaches the armor is reduced by 7, as in Overwatch.
+  Reproduced with 5 shields left: a 50 hit took all 50. On the fix it takes 43 (5 on the shields, 45 − 7 on the armor). A
+  95 hit on full shields still takes 95, and a 50 hit fully on armor takes 43, as before.
+
 ## 2026-11-18: 0.3.107
 
 - **End crystals (#169):** a hitscan shot passed through an end crystal, so only projectiles could pop one. Now the first

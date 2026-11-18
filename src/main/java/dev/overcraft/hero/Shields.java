@@ -74,17 +74,24 @@ public final class Shields {
 	public static final double ARMOR_CAP = 0.5;
 
 	/**
-	 * A hit (Minecraft health) on a hero with armor left: 7 smaller, at most halved (ours: the whole hit, where Overwatch reduces
-	 * only the part that lands on the armor, M; beams' -30% and damage over time not told apart yet).
+	 * A hit (Minecraft health) on a hero with armor left: the part of it that lands on the armor 7 smaller, at most halved (W Hit
+	 * points: Armor). With shields over the armor (D.Va's Shield System) what the shields take isn't reduced: only what gets past
+	 * them onto the armor (#168, reproduced: 5 shields left, a 50 hit took all 50, where 5 + (45 - 7) = 43 is Overwatch's). A hit
+	 * running past the armor into health is still reduced as a whole (ours, unchanged: no source read for that split yet). Beams'
+	 * -30% and damage over time not told apart yet.
 	 */
 	public static float armorReduce(ServerPlayer player, float damage) {
 		HeroState s = HeroManager.state(player);
-		if (s == null || s.hero == null || s.armor(player) == 0 || s.shield <= 0 || damage <= 0
-			|| bothLayers(player, s) && (shieldsLeft(player, s) > 0 || armorLeft(player, s) <= 0)) {
-			// (with shields over the armor, a hit on the shields isn't reduced: the armor's 7 is for hits on it)
+		if (s == null || s.hero == null || s.armor(player) == 0 || s.shield <= 0 || damage <= 0 || armorLeft(player, s) <= 0) {
 			return damage;
 		}
-		return (float) Ow.hp(armorReduce(Ow.toOw(damage), pellets));
+		double hit = Ow.toOw(damage);
+		// shieldsLeft is 0 with no shields over the armor: then the whole hit
+		double onArmor = Math.max(0, hit - shieldsLeft(player, s));
+		if (onArmor <= 0) {
+			return damage;
+		}
+		return (float) Ow.hp(hit - Math.min(ARMOR_FLAT * Math.max(1, pellets), onArmor * ARMOR_CAP));
 	}
 
 	/**
