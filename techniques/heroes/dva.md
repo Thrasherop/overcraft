@@ -536,6 +536,31 @@ the POTG card (not reached): unchanged by code only.
 **Still open:** the F1 black (above); the wall row was not seen on screen either way; whether 0276 #175 is an entity fade; real mouse
 and keys.
 
+## Her hands on the mech in the climb (#134, 2026-11-13)
+The owner on 0.3.42's screenshots: "baby dva grabs onto like handles to get in. In the screenshot she is not grabbing anything."
+**Cause: the climb was laid out at the wrong origin.** `DvaCallView` anchored 3134 on the mech's spot, but its Camera starts 2.06 m behind
+the clip's origin while 026A's MoveTo (#434 / #766) puts her 1.27 m behind the mech: the origin is **0.79 m past the spot**
+(`DvaStats.CALL_VIEW_AHEAD`), where 311F draws the landed body (its pelvis 0.8-1.1 m ahead of the mech's root). Anchored at the spot, her
+hands closed 0.8-0.9 m short. What she grabs is the mech's own cockpit rim, not a prop: no cosmetic entity or hardpoint in 026A / 0276,
+the pilot 1P model F32B holds only her arms (98C0) and sleeves (9FF7), and fce39b9's filter hides only her body (bones under bone_0887).
+Measured offline (bone world positions, scratchpad `bonepos.py`): at 1.6 s her wrists 1.26 m ahead, 1.18 up after the shift; the mech's
+built-in grips 1.38 / 1.24.
+
+**Played** (one client, harness keys; before on 5ca5da1 `dvagrab1`, after `dvagrab2`; screenshots at 1.0 / 1.2 / 1.4 / 1.6 / 1.75 s):
+before her hands close in the air in front of the mech's legs (`sheet_h0_grab.png`); after they close on the cockpit's lower rim at 1.2 s
+and on its chest plate at 1.4 s, then the view goes in as the fade starts (`sheet_h1_grab.png`). Third person unchanged (she dives in:
+`h1_3p_13.png`); the wreck, Self-Destruct and others' views use no code this touched.
+
+**The fade, timed to the shell (same day).** With the new anchor the camera ran into the mech's shell while the fade was half way (pink
+inner faces through the dark). Measured offline by skinning 311F (her body's pieces left out) against 3134's Camera, both from the spawn
+(scratchpad `shell.py`): the nearest shell vertex is 0.50 m at 1.20 s, 0.23 m at 1.30 s, **0.08 m at 1.35 s**, and the camera passes the
+front at 1.45 s. So the fade now runs from **1.2 s** (her hands have closed on the rim) to **fully black at 1.35 s**
+(`DvaStats.CALL_FADE_START` / `CALL_FADE_BLACK`, ours from that measurement), held through the link. Played twice (`dvafade1`, harness keys,
+shots 1.2-1.6 s after the press = 1.0-1.4 s of the clip, `sheet_k1.png`, `sheet_k2.png`): her hands close on the rim and the chest plate,
+then black (k1 at 1.6 fully black; k2 at 1.6 about 90 %, and brightened, `k2_16_bright.png`, only the plate's outside and her hands, no
+inner faces). The harness's shot times wander by about 0.1 s, so the ramp itself was caught only once. **Open:** an Overwatch side by side;
+real keys.
+
 ## Not yet
 Her **visual effects** (111) and the firing / matrix clips; the hologram colours (step 12's open list); real mouse-and-keys play of step 13. Open
 from steps 4-6: Kinetic Grasp onto `Barriers.absorbBox`; the Toggle Defense Matrix and Hold To Use Boosters options; a guardian's beam

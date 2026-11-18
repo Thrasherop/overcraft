@@ -1,0 +1,3 @@
+screenclick 66 232 1
+sleep 5
+screen

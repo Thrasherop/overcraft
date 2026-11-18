@@ -1,0 +1,22 @@
+MARK FX1b own pylon in the line (geometry fixed: the husk on the pylon's own x, aimed through the pylon's middle)
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 -60 0.5 0 0
+sleep 9
+cmd /execute as @s at @s anchored eyes facing 0.5 -60 6 run tp @s ~ ~ ~ ~ ~
+sleep 0.5
+key ability_2 down
+sleep 0.15
+key ability_2 up
+sleep 2.0
+ents Pylon
+cmd /execute at @e[type=overcraft:healing_pylon,limit=1] run summon husk ~ ~ ~2 {NoAI:1b,Tags:["p1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /execute as @s at @s anchored eyes facing entity @e[type=overcraft:healing_pylon,limit=1] feet run tp @s ~ ~ ~ ~ ~
+cmd /execute as @s at @s run tp @s ~ ~ ~ ~ ~-4
+sleep 1.2
+state
+key secondary_fire down
+sleep 0.12
+key secondary_fire up
+sleep 0.5
+hp @e[tag=p1,limit=1]
+state

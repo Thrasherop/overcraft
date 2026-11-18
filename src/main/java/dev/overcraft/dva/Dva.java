@@ -375,8 +375,8 @@ public final class Dva implements HeroKit {
 		// along her facing and 7.00 up; a boosted Self-Destruct flies on); her fall from it doesn't hurt
 		Vec3 back = facing.scale(-Ow.speed(EJECT_BACK));
 		player.setDeltaMovement(dev.overcraft.hero.Combat.motion(player).add(back.x, Ow.speed(EJECT_UP), back.z));
-		// straight to her client, which moves her (needsSync alone never reached it: found playing, she stayed put)
-		player.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(player));
+		// straight to her client, which moves her (needsSync alone never reached it: found playing, she stayed put; Combat.send, #109)
+		Combat.send(player);
 		// (her eject clip is her base state's: every client sees the form change, HeroAnimator)
 		s.softLanding = true;
 	}
@@ -416,8 +416,8 @@ public final class Dva implements HeroKit {
 		s.dvaCallYaw = player.getYRot();
 		s.dvaCallLevel = player.level().dimension();
 		player.setAttached(HeroManager.DVA_FORM, CALLING);
-		player.setDeltaMovement(0, Math.min(0, player.getDeltaMovement().y), 0);
-		player.needsSync = true;
+		player.setDeltaMovement(0, Math.min(0, Combat.motion(player).y), 0);
+		Combat.send(player);
 	}
 
 	/**
@@ -520,7 +520,7 @@ public final class Dva implements HeroKit {
 			player.teleportTo((ServerLevel) player.level(), spot.x, spot.y, spot.z, java.util.Set.of(), s.dvaCallYaw, player.getXRot(), true);
 		}
 		player.setDeltaMovement(Vec3.ZERO);
-		player.needsSync = true;
+		Combat.send(player);
 		// the Self-Destruct charge the last mech had (D 0276 #88 / 026A #775); Call Mech's starts again at 0 (#85)
 		s.ultCharge = s.dvaMechUlt;
 		s.ultActive = 0;

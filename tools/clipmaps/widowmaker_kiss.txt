@@ -1,0 +1,18 @@
+# Widowmaker's Widow's Kiss (entity 002A, model 00000000E003.00C, base 01D4, look 01DA; set 0029), on her hardpoint 000A, var 12BB;
+# its child 13F6 (model F64A, base 306C) on the gun's hardpoint 0068, var 1AFF.
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\widowmaker\ascripts\clipmaps_widowmaker.py from the
+# compacted blend-tree sets (research\widowmaker\work_assets\clipmap_widowmaker\compact_<set>.txt, build 154088); names from the alias
+# that holds each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips: listed as 'on another model'.
+# not extracted: 000000000159 = kiss_sm0_sm0   # 1.6333 s; set 0029 alias 2 (Widow's Kiss's base tree); sel[1] @2 sm[0] @800A4001 sm[0]; on 2 paths
+0-4_0000000001A6 = ads_in_1p   # 0.5 s; set 0029 alias 2 ((was kiss_sm0_sm1_sm0: 1P side sm[0] sm[1] sm[0]) Widow's Kiss's base tree); sel[1] @2 sm[0] @800A4001 sm[1] sm[0]; on 2 paths
+0-4_0000000001A7 = ads_out_1p   # 0.5667 s; set 0029 alias 2 ((was kiss_sm0_sm1_sm1: sm[1] sm[1]) Widow's Kiss's base tree); sel[1] @2 sm[0] @800A4001 sm[1] sm[1]; on 2 paths
+4-20_0000000001FC = add_kiss   # 1 s; set 0029 alias 2 ((was add_kiss_sm0_sm1_sm0: sm[1] +add (both sides, 1 s; L)) Widow's Kiss's base tree); sel[1] @2 sm[0] @800A4001 sm[1] +add() sm[0]; on 4 paths
+0-4_00000000387C = reload   # 1.5 s; set 0029 alias 2 ((was kiss_sm1_sm0_sm0: 3P side sm[0] sm[0] (1.5 s)) Widow's Kiss's base tree); sel[1] @2 sm[1] @800A4004 sm[0] sm[0]; on 2 paths
+0-4_00000000387D = reload_2   # 1.5 s; set 0029 alias 2 ((was kiss_sm1_sm0_sm1_sm0: sm[0] sm[1] sm[0]) Widow's Kiss's base tree); sel[1] @2 sm[1] @800A4004 sm[0] sm[1] sm[0]; on 2 paths
+0-4_000000003879 = reload_3   # 1.5 s; set 0029 alias 2 ((was kiss_sm1_sm0_sm1_sm1: sm[0] sm[1] sm[1]) Widow's Kiss's base tree); sel[1] @2 sm[1] @800A4004 sm[0] sm[1] sm[1]; on 2 paths
+0-4_000000006745 = ads_in   # 0.5 s; set 0029 alias 2 ((was kiss_sm1_sm1_sm0: 3P side sm[1] sm[1] sm[0]) Widow's Kiss's base tree); sel[1] @2 sm[1] @800A4004 sm[1] sm[0]; on 2 paths
+0-4_000000006746 = ads_out   # 0.5667 s; set 0029 alias 2 ((was kiss_sm1_sm1_sm1: sm[1] sm[1] sm[1]) Widow's Kiss's base tree); sel[1] @2 sm[1] @800A4004 sm[1] sm[1]; on 2 paths
+# Extracted under this model but in none of its sets (1, not named): 015CEB

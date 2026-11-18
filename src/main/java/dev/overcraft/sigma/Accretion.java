@@ -208,17 +208,6 @@ public final class Accretion {
 		Combat.send(e);
 	}
 
-	/**
-	 * A speed set on a player, to their own client now (Combat.send's note says why; played with two clients: a lifted player
-	 * never rose on syncVelocity alone).
-	 */
-	public static void sendSpeed(LivingEntity e) {
-		if (e instanceof net.minecraft.server.level.ServerPlayer p) {
-			p.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(p));
-			p.syncVelocity = false;
-		}
-	}
-
 	private static boolean inSight(ServerLevel level, Vec3 at, LivingEntity e) {
 		for (Vec3 to : new Vec3[] {e.getBoundingBox().getCenter(), e.getEyePosition()}) {
 			if (level.clip(new ClipContext(at, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e)).getType() == HitResult.Type.MISS) {

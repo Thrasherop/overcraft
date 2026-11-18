@@ -56,6 +56,18 @@ has the command), merged by `HeroModels` like `_clips`. Its two models (0797, 13
   works for any hero). Heroic holds five clips (BE1B / BE1C / BE1D / BF1D 3.867 s, C0CD 3.133 s): which one a match plays isn't read,
   BE1B taken (M). `hero_models/pharah_intro_clips.glb` (`tools/clipmaps/pharah_intro_clips.txt`), picked up by `HeroModels` with no
   code: any hero with a `<hero>_intro_clips.glb` holding `potg_intro` gets its intro. Not played in game yet.
+- **The other eleven (2026-11-16, #161):** Sigma, D.Va, Lúcio, Jetpack Cat, Mercy, Lifeweaver, Ana, Sombra, Brigitte, Juno and
+  Sojourn, each its Heroic opening (the clip maps' headers have the ids and why). Extracted in one go
+  (`research\potg_intros\scripts\extract_intros.ps1`, headers by `intro_clips.py`). Two reads did the picking, both from the data:
+  - **Which clips are the body**: a raw `.owanimclip`'s bone names (through the add-on's `BoneUtil.boneDict`) against the hero
+    glb's joints. Body clips match ~95% of their bones; the intro's props match a few. D.Va's Heroic animates both bodies: the
+    group 32 clips are the pilot's (201 / 234 bones), the group 36 BC5C the MEKA's (167 / 191): the MEKA's is kept.
+  - **Which is the opening**: the intro set's alias B33 `seq[0]` (each hero's `compact_<set>.txt`; Mercy's 42EF, Jetpack Cat's 4319,
+    Lifeweaver's 430E compacted now from their resolved sets), matched by length and priority/group. The opening's group varies
+    (Ana's and Lifeweaver's are 16/32, Sombra's 0/33), and it isn't always the lowest id (Sojourn's ABEF is in no step).
+  - **Juno's opening (E97D) flies her 8.8 m** (its root travel, read from the export): PotgCard plays the clip on the spot, so she'd
+    start out of the card. Her next step (F3F1, in place) is kept instead, by Kiriko's rule. Check root travel before taking one.
+  - Lúcio's set isn't dumped: BC40 taken by the pattern (M). None of these played in game yet.
 
 ## Played (2026-11-11, two dev clients over LAN, Overwatch and Battle.net checked closed, idle 28 min, the lock held)
 Raw driver output: [runs_look](runs_look/). Screenshots in the worktree's `run/screenshots` and `run2/screenshots`

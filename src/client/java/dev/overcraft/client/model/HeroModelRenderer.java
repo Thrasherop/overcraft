@@ -51,7 +51,8 @@ import java.util.Set;
 public final class HeroModelRenderer {
 	/** What to draw this frame, worked out while extracting the render state. */
 	/** {@code cull}: back faces left out before upload (not for the select screen's GUI view, whose camera isn't at the origin). */
-	public record Draw(HeroModels.Loaded loaded, Matrix4f[] skin, float climbShift, Set<Integer> hidden, boolean cull, boolean angryFace) {
+	public record Draw(HeroModels.Loaded loaded, Matrix4f[] skin, float climbShift, Set<Integer> hidden, boolean cull, boolean angryFace,
+		boolean squash) {
 	}
 
 	public static final RenderStateDataKey<Draw> DRAW = RenderStateDataKey.create(() -> "overcraft:hero_draw");
@@ -199,7 +200,12 @@ public final class HeroModelRenderer {
 			Skeleton.sample(intro, Math.min(previewClipAt, intro.duration() - 0.001f), showcase);
 			showcaseAt = 1000;
 		} else if (previewing) {
-			showcase = HeroAnimator.showcasePose(loaded.model(), showcaseAt);
+			// Illari's map names her hero file's select alias 0x477 "select" (DB91, its intro, cat 6E) and "select_2" (DB92, the
+			// default slot: its hold), as Junkrat's; read as the showcase's intro and hold for her (the critic, 2026-11-14: she stood
+			// side-on in her idle, unlike the others)
+			// Ashe's the same (ashe.txt: select C1AB, cat 6E, and select_2 C1AC on her hero file's 0x477, set 0F60), the Viper on its 00C9
+			showcase = preview == Hero.ILLARI || preview == Hero.ASHE ? HeroAnimator.showcasePose(loaded.model(), showcaseAt, "select", "select_2")
+				: HeroAnimator.showcasePose(loaded.model(), showcaseAt);
 		}
 		Matrix4f[] skin = showcase != null ? Skeleton.skin(loaded.model(), showcase, -1, null) : null;
 		if (skin == null) {
@@ -218,7 +224,8 @@ public final class HeroModelRenderer {
 			hidden = allProps(loaded.model());
 		}
 		state.setData(DRAW, new Draw(loaded, skin, animator.climbShift(), hidden, preview == null,
-			hero == Hero.JUNO && preview == null && dev.overcraft.client.ClientJuno.faceAngry(entity)));
+			hero == Hero.JUNO && preview == null && dev.overcraft.client.ClientJuno.faceAngry(entity),
+			previewing && previewClip != null));
 		float phase = hero == Hero.SOMBRA && !previewing ? dev.overcraft.client.ClientSombra.phase(entity, now) : 0;
 		state.setData(STEALTH, phase > 0 ? new float[] {phase, now} : null);
 		state.setData(SHADOW, previewing ? null : shadow(entity, partialTicks));
@@ -328,6 +335,128 @@ public final class HeroModelRenderer {
 				}
 				dev.overcraft.client.effect.SigmaFx.posed(entity, points);
 			}
+		}
+		if (hero == Hero.TORBJORN && !previewing && entity.isAlive()) {
+			// his Rivet Gun's muzzle (hp 0006) as held and his forge's vents, forge arm and hands, as posed, in the world
+			// (TorbjornFx.POINTS: Overload's and Molten Core's flames, the reload's glow)
+			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
+			if (pose != null) {
+				net.minecraft.world.phys.Vec3 base = entity.getPosition(partialTicks);
+				float turn = (float) Math.toRadians(-facing);
+				String[] names = dev.overcraft.client.effect.TorbjornFx.POINTS;
+				net.minecraft.world.phys.Vec3[] points = new net.minecraft.world.phys.Vec3[names.length];
+				for (int i = 0; i < names.length; i++) {
+					if (i >= dev.overcraft.client.effect.TorbjornFx.GUN_POINTS) {
+						points[i] = bone(loaded.model(), pose, names[i], base, facing, state.scale);
+						continue;
+					}
+					Vector3f held = weaponShown ? HeroWeapon.point(hero, animator, loaded.model(), false, now, names[i]) : null;
+					if (held != null) {
+						held.mul(state.scale).rotateY(turn);
+						points[i] = base.add(held.x, held.y, held.z);
+					}
+				}
+				dev.overcraft.client.effect.TorbjornFx.posed(entity, points);
+			}
+		}
+		if (hero == Hero.CASSIDY && !previewing && entity.isAlive()) {
+			// his revolver's muzzle (hp 0006) as held and his head, chest and right wrist, as posed, in the world (CassidyFx.POINTS:
+			// the muzzle and the reload's smoke, Deadeye's glint and glow, Silver Bullet's armed glow)
+			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
+			if (pose != null) {
+				net.minecraft.world.phys.Vec3 base = entity.getPosition(partialTicks);
+				float turn = (float) Math.toRadians(-facing);
+				String[] names = dev.overcraft.client.effect.CassidyFx.POINTS;
+				net.minecraft.world.phys.Vec3[] points = new net.minecraft.world.phys.Vec3[names.length];
+				for (int i = 0; i < names.length; i++) {
+					if (i >= dev.overcraft.client.effect.CassidyFx.GUN_POINTS) {
+						points[i] = bone(loaded.model(), pose, names[i], base, facing, state.scale);
+						continue;
+					}
+					Vector3f held = weaponShown ? HeroWeapon.point(hero, animator, loaded.model(), false, now, names[i]) : null;
+					if (held != null) {
+						held.mul(state.scale).rotateY(turn);
+						points[i] = base.add(held.x, held.y, held.z);
+					}
+				}
+				dev.overcraft.client.effect.CassidyFx.posed(entity, points);
+			}
+		}
+		if (hero == Hero.PHARAH && !previewing && entity.isAlive()) {
+			// her launcher's muzzle (hp 0006) as held and her jets, pods, wrist and body, as posed, in the world (PharahFx.POINTS: the
+			// launch, the hover, the jumps, Barrage's pods, Concussive's launch)
+			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
+			if (pose != null) {
+				net.minecraft.world.phys.Vec3 base = entity.getPosition(partialTicks);
+				float turn = (float) Math.toRadians(-facing);
+				String[] names = dev.overcraft.client.effect.PharahFx.POINTS;
+				net.minecraft.world.phys.Vec3[] points = new net.minecraft.world.phys.Vec3[names.length];
+				for (int i = 0; i < names.length; i++) {
+					if (i >= dev.overcraft.client.effect.PharahFx.GUN_POINTS) {
+						points[i] = bone(loaded.model(), pose, names[i], base, facing, state.scale);
+						continue;
+					}
+					Vector3f held = weaponShown ? HeroWeapon.point(hero, animator, loaded.model(), false, now, names[i]) : null;
+					if (held != null) {
+						held.mul(state.scale).rotateY(turn);
+						points[i] = base.add(held.x, held.y, held.z);
+					}
+				}
+				dev.overcraft.client.effect.PharahFx.posed(entity, points);
+			}
+		}
+		if (hero == Hero.JUNKRAT && !previewing && entity.isAlive()) {
+			// his Frag Launcher's muzzle and drum (hp 0006 / 006F) as held and his left hand (000B), as posed, in the world
+			// (JunkratFx.POINTS: the launch, the reload's sparks, the detonator, the tire's cast)
+			Skeleton.Pose pose = animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
+			if (pose != null) {
+				net.minecraft.world.phys.Vec3 base = entity.getPosition(partialTicks);
+				float turn = (float) Math.toRadians(-facing);
+				String[] names = dev.overcraft.client.effect.JunkratFx.POINTS;
+				net.minecraft.world.phys.Vec3[] points = new net.minecraft.world.phys.Vec3[names.length];
+				for (int i = 0; i < names.length; i++) {
+					if (i >= dev.overcraft.client.effect.JunkratFx.GUN_POINTS) {
+						points[i] = bone(loaded.model(), pose, names[i], base, facing, state.scale);
+						continue;
+					}
+					Vector3f held = weaponShown ? HeroWeapon.point(hero, animator, loaded.model(), false, now, names[i]) : null;
+					if (held != null) {
+						held.mul(state.scale).rotateY(turn);
+						points[i] = base.add(held.x, held.y, held.z);
+					}
+				}
+				dev.overcraft.client.effect.JunkratFx.posed(entity, points);
+			}
+		}
+		if (hero == Hero.ASHE && !previewing && entity.isAlive() && weaponShown) {
+			// the Viper's muzzle (hp 0006) as held, in the world (AsheFx.POINTS: her shots' muzzle and line)
+			net.minecraft.world.phys.Vec3 base = entity.getPosition(partialTicks);
+			float turn = (float) Math.toRadians(-facing);
+			String[] names = dev.overcraft.client.effect.AsheFx.POINTS;
+			net.minecraft.world.phys.Vec3[] points = new net.minecraft.world.phys.Vec3[names.length];
+			for (int i = 0; i < names.length; i++) {
+				Vector3f held = HeroWeapon.point(hero, animator, loaded.model(), false, now, names[i]);
+				if (held != null) {
+					held.mul(state.scale).rotateY(turn);
+					points[i] = base.add(held.x, held.y, held.z);
+				}
+			}
+			dev.overcraft.client.effect.AsheFx.posed(entity, points);
+		}
+		if (hero == Hero.WIDOWMAKER && !previewing && entity.isAlive() && weaponShown) {
+			// the Kiss's muzzle (hp 0006) and her hook launcher (hp 0055) as posed, in the world (WidowmakerFx.POINTS)
+			net.minecraft.world.phys.Vec3 base = entity.getPosition(partialTicks);
+			float turn = (float) Math.toRadians(-facing);
+			String[] names = dev.overcraft.client.effect.WidowmakerFx.POINTS;
+			net.minecraft.world.phys.Vec3[] points = new net.minecraft.world.phys.Vec3[names.length];
+			for (int i = 0; i < names.length; i++) {
+				Vector3f held = HeroWeapon.point(hero, animator, loaded.model(), false, now, names[i]);
+				if (held != null) {
+					held.mul(state.scale).rotateY(turn);
+					points[i] = base.add(held.x, held.y, held.z);
+				}
+			}
+			dev.overcraft.client.effect.WidowmakerFx.posed(entity, points);
 		}
 		if (hero == Hero.JETPACK_CAT && !previewing && entity.isAlive()) {
 			// her jetpack's flames and her paws' points, as posed, in the world (JetpackCatFx)
@@ -505,8 +634,12 @@ public final class HeroModelRenderer {
 		return white == null ? 0 : white;
 	}
 
-	/** How much of a stealthed hero shows to those who see her, and to her own eyes, fully phased out (ours). */
-	private static final float SEE_THROUGH = 0.38f, SEE_THROUGH_OWN = 0.6f;
+	/**
+	 * How much of a stealthed hero shows to those who see her, and to her own eyes: both OURS, no measurement exists. The owner's frames show a hooded skin (purple hood, navy glove, coloured nails, a cream
+	 * and purple gun) and ours is the default, so frames can't set her colour or opacity. The data's look (420C #29: 48AC on her first-person self, material 35C4; #30 48F0 on her weapon) only names compiled
+	 * .127 shader variants per material effect, no colour or opacity: 144 bytes each, a shader group (2C, D9, 32 .088), a slot (.03A) and a hash; nothing read says which of its 40-odd effect ids stealth uses.
+	 */
+	private static final float SEE_THROUGH = 0.38f, SEE_THROUGH_OWN = 0.8f;
 	/** Her phased-out tint (lilac, over her own colours), and her stealth's purple over it (A06C: M). */
 	private static final int STEALTH_TINT = 0xC8B4FF, STEALTH_GLOW = 0x9A55FF;
 	/** 1AD9's wipe edge row, by the fade (sombra-effects: #6D0000 #CE0000 #F6502B #00DFB6; read by age: M). */
@@ -562,30 +695,47 @@ public final class HeroModelRenderer {
 	 * Sombra stealthed (#87), as she shows to those who still see her and in her own view. The fades are the data's: 1AD9 / 1AD8
 	 * wipe her solid self away along A7BF's diagonal frames, with its edge row's colours lit on the frame reached (phase 0 solid, 1
 	 * phased out). What's held has no art in the data (16EA is empty, the invisibility a renderer state, STU_33A46033: M): ours, one
-	 * see-through lilac for all of her, a slow pulse, and A7BF's frames turning over her as faint digital glints.
+	 * see-through lilac for all of her, a slow pulse, and A7BF's frames turning over her as faint digital glints. In her own first person
+	 * ({@code own}), her real textures lit as usual and near solid, no lilac: the screen's multiply (HeroHud.stealthWash, 420C #851) tints them,
+	 * as the owner's frames show.
 	 */
 	static void submitStealth(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
 		Set<Integer> hidden, float phase, float time, int light, int overlay, boolean own) {
+		submitStealth(loaded, skin, poseStack, collector, hidden, phase, time, light, overlay, own, true);
+	}
+
+	/**
+	 * {@code cull}: false for what's held, as EmoteProps.submit draws it: no back-face culling, and not a hero's stowed prop. A small model on its own origin passes
+	 * isProp, so emit parked its triangles near the origin: her pistol came out as a few shards or nothing, in first and third person (sbsf_day_cycle*, sbsf_vday_3p_back),
+	 * and that read as "the clips put it away" from the first pass on.
+	 */
+	static void submitStealth(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
+		Set<Integer> hidden, float phase, float time, int light, int overlay, boolean own, boolean cull) {
 		phase = Math.clamp(phase, 0, 1);
 		boolean wipe = wipeMask();
 		float pulse = 0.5f + 0.5f * (float) Math.sin(time * Mth.TWO_PI * 0.7f);
-		float opacity = (own ? SEE_THROUGH_OWN : SEE_THROUGH) * (0.92f + 0.16f * pulse) * phase;
-		int phased = Math.clamp(Math.round(opacity * 255), 0, 255) << 24 | STEALTH_TINT;
+		float opacity = own ? SEE_THROUGH_OWN * phase : SEE_THROUGH * (0.92f + 0.16f * pulse) * phase;
+		int phased = Math.clamp(Math.round(opacity * 255), 0, 255) << 24 | (own ? 0xFFFFFF : STEALTH_TINT);
 		// what's left of her solid self, as vertex alpha against the wipe's mask (or plainly fading without the pack)
 		int solid = Math.clamp(Math.round((1 - phase) * 255), 0, 255) << 24 | 0xFFFFFF;
 		float fading = phase;
 		for (SkinnedModel.Piece piece : loaded.model().pieces) {
 			Identifier texture = piece.image() >= 0 ? loaded.textures()[piece.image()] : null;
-			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
+			boolean prop = cull && PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
 			if (texture == null || isEyeShadow(loaded, piece) || hiddenNow(loaded.model(), piece, hidden, prop)) {
 				continue;
 			}
 			if (fading < 1) {
 				collector.submitCustomGeometry(poseStack, wipe ? RenderTypes.entityCutoutDissolve(texture, WIPE_MASK) : RenderTypes.entityTranslucent(texture),
-					(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay, prop, solid, true, false));
+					(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay, prop, solid, cull, false));
 			}
-			collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(texture),
-				(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, phased, true, false));
+			if (own) {
+				collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucent(texture),
+					(pose, buffer) -> emit(piece, skin, pose, buffer, light, overlay, prop, phased, cull, false));
+			} else {
+				collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(texture),
+					(pose, buffer) -> emit(piece, skin, pose, buffer, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, prop, phased, cull, false));
+			}
 		}
 		if (wipe) {
 			// mid-fade the edge: the frame reached, lit in the row's colour by the fade; held, the frames turning slowly as glints
@@ -594,12 +744,15 @@ public final class HeroModelRenderer {
 			float along = phase * 3;
 			int from = Math.clamp((int) along, 0, 2);
 			int rgb = phase < 1 ? net.minecraft.util.ARGB.srgbLerp(along - from, WIPE_EDGE[from], WIPE_EDGE[from + 1]) & 0xFFFFFF : STEALTH_GLOW;
-			float strength = phase < 1 ? 0.85f * mid : 0.1f;
+			// (her own view's edge fainter, ours: at 0.85 it lit the whole pistol salmon, then cyan, 0.75 s long and half a screen wide: sbsf_vday_cycle03-06)
+			float strength = phase < 1 ? (own ? 0.3f : 0.85f) * mid : own ? 0 : 0.1f;
 			if (strength > 0.01f) {
 				submitField(loaded, skin, poseStack, collector, Math.round(strength * 255) << 24 | rgb, dev.overcraft.Overcraft.id("textures/effect/sombra_dissolve_" + frame + ".png"));
 			}
 		}
-		submitGlow(loaded, skin, poseStack, collector, hidden, 0.12f * phase, true, STEALTH_GLOW);
+		if (!own) {
+			submitGlow(loaded, skin, poseStack, collector, hidden, 0.12f * phase, true, STEALTH_GLOW, cull);
+		}
 	}
 
 	/** In place of LivingEntityRenderer.submit: false when there's nothing of ours to draw. */
@@ -666,7 +819,7 @@ public final class HeroModelRenderer {
 			if (held != null) {
 				poseStack.pushPose();
 				poseStack.mulPose(held.at());
-				submitStealth(held.loaded(), held.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false);
+				submitStealth(held.loaded(), held.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false, false);
 				poseStack.popPose();
 			}
 			// her magazine goes with the gun (critique_parts C9)
@@ -675,7 +828,7 @@ public final class HeroModelRenderer {
 				for (EmoteProps.Placed part : heldParts.props()) {
 					poseStack.pushPose();
 					poseStack.mulPose(part.at());
-					submitStealth(part.loaded(), part.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false);
+					submitStealth(part.loaded(), part.skin(), poseStack, collector, Set.of(), phase, time, light, overlay, false, false);
 					poseStack.popPose();
 				}
 			}
@@ -683,12 +836,23 @@ public final class HeroModelRenderer {
 			return true;
 		}
 		altGlow = draw.angryFace();
+		if (draw.squash()) {
+			// Play of the Game's intro (#155, the owner: "the allowed field of rendering is WAY too shallow ... Kiriko is missing an
+			// arm, hair"; their recording's first intro frames, her side-on: an arm and half her face cut away). It's drawn as
+			// Minecraft draws a menu's entity: an orthographic picture whose depth is +-1000 px, about 1.6 m either side of her
+			// at the intro's size. Her depth halved changes nothing on screen (orthographic) and doubles the room
+			poseStack.pushPose();
+			poseStack.scale(1, 1, 0.5f);
+		}
 		submitModel(draw.loaded(), draw.skin(), poseStack, collector, light, overlay, draw.hidden(), draw.cull());
 		altGlow = false;
 		if (state.outlineColor != 0) {
 			submitOutline(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), draw.cull(), state.outlineColor);
 		}
 		submitGlow(draw.loaded(), draw.skin(), poseStack, collector, draw.hidden(), white(state), draw.cull());
+		if (draw.squash()) {
+			poseStack.popPose();
+		}
 		EmoteProps.Held props = state.getData(EmoteProps.HELD);
 		if (props != null) {
 			EmoteProps.submit(props, poseStack, collector, light, overlay);
@@ -957,7 +1121,23 @@ public final class HeroModelRenderer {
 	public static boolean submitFirstPerson(float partialTicks, PoseStack poseStack, SubmitNodeCollector collector, int light,
 											float swayPitch, float swayYaw) {
 		// heroView, not controls: her arms stay while she dies (Minecraft's blocky arm took their place on the death screen)
-		return ClientHero.heroView() && submitArms(partialTicks, poseStack, collector, light, swayPitch, swayYaw, null, null);
+		return (dev.overcraft.client.ClientPotg.followed() != null || ClientHero.heroView())
+			&& submitArms(partialTicks, poseStack, collector, light, swayPitch, swayYaw, null, null);
+	}
+
+	/** Whose first person is drawn: a Play of the Game's scorer while the replay follows them (#155), else this player. */
+	private static net.minecraft.client.player.@Nullable AbstractClientPlayer viewed() {
+		net.minecraft.client.player.AbstractClientPlayer followed = dev.overcraft.client.ClientPotg.followed();
+		return followed != null ? followed : Minecraft.getInstance().player;
+	}
+
+	/** The viewed player's hero: the scorer's from their synced attachment, else this player's own. */
+	private static @Nullable Hero viewedHero(net.minecraft.client.player.AbstractClientPlayer player) {
+		if (player == Minecraft.getInstance().player) {
+			return ClientHero.hero();
+		}
+		String id = player.getAttached(dev.overcraft.hero.HeroManager.HERO);
+		return id == null ? null : Hero.byId(id);
 	}
 
 	/**
@@ -1030,9 +1210,8 @@ public final class HeroModelRenderer {
 	private static boolean submitArms(float partialTicks, PoseStack poseStack, SubmitNodeCollector collector, int light,
 									  float swayPitch, float swayYaw, @Nullable FirstPersonHandsAndItemsRenderState hands,
 									  @Nullable AvatarRenderState avatar) {
-		Minecraft mc = Minecraft.getInstance();
-		LocalPlayer player = mc.player;
-		Hero hero = ClientHero.hero();
+		net.minecraft.client.player.AbstractClientPlayer player = viewed();
+		Hero hero = player == null ? null : viewedHero(player);
 		if (player == null || hero == null) {
 			return false;
 		}
@@ -1048,7 +1227,7 @@ public final class HeroModelRenderer {
 		animator.swing = !minecraft || hands.attackHand == net.minecraft.world.InteractionHand.OFF_HAND ? 0
 			: HeroAnimator.SWING[4] > 0 ? HeroAnimator.SWING[4] : avatar.swingAnimation;
 		Matrix4f[] skin = animator.poseFirstPerson(loaded.model(), player, now, view);
-		if (hero == Hero.ANA && !minecraft && dev.overcraft.client.ClientAna.ownScope() >= 1) {
+		if ((hero == Hero.ANA || hero == Hero.WIDOWMAKER) && !minecraft && dev.overcraft.client.ClientAna.ownScope() >= 1) {
 			// fully scoped, Overwatch draws nothing of her: her view model goes (0B94 #199, M) and her scope's overlay fills
 			// the view (HeroHud.anaScope, #90). Her held pose 3B92 already takes the arms out of view (played); not drawing
 			// them makes sure no edge of the rifle shows inside the lens while she turns (the arms' sway)
@@ -1095,6 +1274,7 @@ public final class HeroModelRenderer {
 				}
 			}
 			viewPodsAt = Util.getMillis();
+			dev.overcraft.client.effect.JunoFx.viewPods(poseStack, collector, player, now);
 		}
 		// her own arms flash white when her Suzu cleanses her
 		float white = Cleansed.white(player.getId());
@@ -1124,7 +1304,7 @@ public final class HeroModelRenderer {
 				for (EmoteProps.Placed part : viewParts) {
 					poseStack.pushPose();
 					poseStack.mulPose(part.at());
-					submitStealth(part.loaded(), part.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay, true);
+					submitStealth(part.loaded(), part.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay, true, false);
 					poseStack.popPose();
 				}
 			} else {
@@ -1138,7 +1318,7 @@ public final class HeroModelRenderer {
 			if (stealth > 0) {
 				poseStack.pushPose();
 				poseStack.mulPose(weapon.at());
-				submitStealth(weapon.loaded(), weapon.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay, true);
+				submitStealth(weapon.loaded(), weapon.skin(), poseStack, collector, Set.of(), stealth, now, lit, overlay, true, false);
 				poseStack.popPose();
 			} else {
 				EmoteProps.submit(new EmoteProps.Held(java.util.List.of(weapon)), poseStack, collector, lit, overlay);
@@ -1336,7 +1516,7 @@ public final class HeroModelRenderer {
 	 * bone so it moves with her hand, no bigger than heldMax. Held to the view's corner the first-person way, items
 	 * floated beside her fist (the owner, 2026-10-27).
 	 */
-	private static void submitGripped(PoseStack poseStack, SubmitNodeCollector collector, int light, LocalPlayer player,
+	private static void submitGripped(PoseStack poseStack, SubmitNodeCollector collector, int light, net.minecraft.client.player.AbstractClientPlayer player,
 									  @org.jspecify.annotations.Nullable Matrix4f bone, boolean kunaiSide, ItemStack item,
 									  net.minecraft.client.renderer.item.ItemStackRenderState state) {
 		if (item.isEmpty() || bone == null) {
@@ -1642,6 +1822,12 @@ public final class HeroModelRenderer {
 	/** The same in this colour. */
 	public static void submitGlow(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
 		Set<Integer> hidden, float strength, boolean cull, int rgb) {
+		submitGlow(loaded, skin, poseStack, collector, hidden, strength, cull, rgb, true);
+	}
+
+	/** The same; {@code props} false for what's held, whose triangles near its origin aren't parked (submitStealth). */
+	public static void submitGlow(HeroModels.Loaded loaded, Matrix4f[] skin, PoseStack poseStack, SubmitNodeCollector collector,
+		Set<Integer> hidden, float strength, boolean cull, int rgb, boolean props) {
 		if (strength <= 0) {
 			return;
 		}
@@ -1652,7 +1838,7 @@ public final class HeroModelRenderer {
 			if (piece.image() < 0 || loaded.textures()[piece.image()] == null || isEyeShadow(loaded, piece)) {
 				continue;
 			}
-			boolean prop = PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
+			boolean prop = props && PROPS.computeIfAbsent(piece, HeroModelRenderer::isProp);
 			if (hiddenNow(loaded.model(), piece, hidden, prop)) {
 				continue;
 			}
@@ -1714,7 +1900,7 @@ public final class HeroModelRenderer {
 	private static long driftAt = -1;
 
 	/** Moves the arms' drift toward the player's velocity in view space, against it. */
-	private static void drift(LocalPlayer player, float partialTicks) {
+	private static void drift(net.minecraft.client.player.AbstractClientPlayer player, float partialTicks) {
 		Camera camera = Minecraft.getInstance().gameRenderer.mainCamera();
 		Vec3 v = player.getDeltaMovement().scale(20);
 		Vector3fc left = camera.leftVector();

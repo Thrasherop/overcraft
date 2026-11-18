@@ -91,12 +91,12 @@ Raw stamped output: [runs/junkrat/runs.txt](../testing/runs/junkrat/runs.txt), s
 5. **The select screen left out his passive**: Total Mayhem now listed (PASSIVE), as Kiriko's wall climb is.
 
 **Not fixed (open):**
-- **No launcher in third person or on the select screen** (`jr_front_big.png`, `jr2_back_big.png`): his launcher's clips key its root in the
+- **No launcher in third person or on the select screen** (2026-11-13, #91's play: drawn in his hands in 3P, `p91_jr_3p_front.png`; the select screen not rechecked) (`jr_front_big.png`, `jr2_back_big.png`): his launcher's clips key its root in the
   hero's space (idle at 1.62 m, reload_3p at 0.94 m: `glbroot.py` on junkrat_weapon.glb), so `HeroWeapon.bakedRoot` puts the root back at
   rest in third person, and it isn't drawn in his hands. Needs the hardpoint read for the third-person rig (as Ana's rifle and Sombra's pistol
   were); not done here.
-- No `junkrat_glow.json` (the glows run found 427 materials and wrote no Junkrat glow table): `build_asset_pack.py zip` will list it missing.
-- The mine in his left hand (10095) isn't drawn; the tire's drive / end stances and the trap's closing jaws aren't played.
+- ~~No `junkrat_glow.json`~~: `glow_maps.py` didn't list him; fixed for #91 ([weapon_parts](../animation/weapon_parts.md#audit-of-the-five-newer-heroes-91-2026-11-13)).
+- The mine in his left hand (10095) is drawn since #91 (weapon_parts.json, not while a mine is out); still, the tire's drive / end stances and the trap's closing jaws aren't played.
 
 **Not shown / not tried:**
 - **The real mouse and keys** (owed before the merge): every press here went through the harness's key mappings.

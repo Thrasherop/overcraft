@@ -36,7 +36,7 @@ values `work\gamevalues_log.txt`, `work\varvalues.json`, `work\lostats_out.txt`.
 | Quick melee | 40 (02D0) H | 40 | 40 |
 | Frag damage | direct 45 (0343) + splash 80 (0344), no crit (override 1) H/M | 45 + 80 = 125 | data |
 | Frag splash | 80 inside 0.5 m (2 x 1D3F 0.25), falling to 10 (1D2F 0.125) at 2 m (0347); linear M | 80 -> 10, 0.5-2 m | data |
-| Frag projectile | 30 m/s (0345), gravity 17 (M), lifetime 7 s, hero 0.1 m (28EE), world 0.2 + 0.12 = 0.32 m H | 30 m/s, 0.32 m, 0.16 m after 2nd bounce | data |
+| Frag projectile | 30 m/s (0345), gravity 17 (M), lifetime 7 s, enemies 0.2 (28ED) + 0.12 (28A4) = 0.32 m (m_57DAE1B5), world 0.1 m (28EE, m_1FFD8312: M) H (the labels were swapped before: #163) | 30 m/s, 0.32 m, 0.16 m after 2nd bounce | data |
 | Frag bounces | size x [1, 0.5] per bounce M, restitution 0.5 M; the count / 2nd-bounce rule not found L | 2 ground bounces, enemy contact, 4.5 s | W's rule, data's numbers |
 | Frag knockback | (5, 8) x a per-target scalar (1D2C / 1D2D), rings 0.5 m 1 / 2 m 0.75 H/L | 9.4 m/s; self 2.5 / 4 | data, self x0.5 (L) |
 | Self damage | "Deals no damage to self with explosives" (loadout text) H | none, knockback yes | none |

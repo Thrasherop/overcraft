@@ -84,7 +84,27 @@ public enum Perk {
 	JUNKRAT_NITRO_BOOST(Hero.JUNKRAT, Tier.MINOR, "nitro_boost"),
 	JUNKRAT_BOMB_VOYAGE(Hero.JUNKRAT, Tier.MINOR, "bomb_voyage"),
 	JUNKRAT_FRAG_CANNON(Hero.JUNKRAT, Tier.MAJOR, "frag_cannon"),
-	JUNKRAT_MINE_RECYCLING(Hero.JUNKRAT, Tier.MAJOR, "mine_recycling");
+	JUNKRAT_MINE_RECYCLING(Hero.JUNKRAT, Tier.MAJOR, "mine_recycling"),
+	// Torbjörn's, the live list's order (D 005D.177: 265C, 28BC; 2501, 2502; torbjorn-map.md)
+	TORBJORN_HAMMER_TIME(Hero.TORBJORN, Tier.MINOR, "hammer_time"),
+	TORBJORN_PRE_HEATED(Hero.TORBJORN, Tier.MINOR, "pre_heated"),
+	TORBJORN_OVERLOADED_TURRET(Hero.TORBJORN, Tier.MAJOR, "overloaded_turret"),
+	TORBJORN_ANCHOR_BOLTS(Hero.TORBJORN, Tier.MAJOR, "anchor_bolts"),
+	// Illari's, the live list's order (D 0064.177: 25B1, 25B2; 25B4, 26F8; illari-map.md)
+	ILLARI_RAPID_CONSTRUCTION(Hero.ILLARI, Tier.MINOR, "rapid_construction"),
+	ILLARI_SUMMER_SOLSTICE(Hero.ILLARI, Tier.MINOR, "summer_solstice"),
+	ILLARI_SUNBURN(Hero.ILLARI, Tier.MAJOR, "sunburn"),
+	ILLARI_SOLAR_FLARE(Hero.ILLARI, Tier.MAJOR, "solar_flare"),
+	// Ashe's, the live list's order (D loadouts 0CCF, 0E4F; 0B3E, 0B40; ashe-map.md)
+	ASHE_REMOTE_DETONATOR(Hero.ASHE, Tier.MINOR, "remote_detonator"),
+	ASHE_DOUBLE_BARRELED(Hero.ASHE, Tier.MINOR, "double_barreled"),
+	ASHE_VIPERS_STING(Hero.ASHE, Tier.MAJOR, "vipers_sting"),
+	ASHE_AIRBURST(Hero.ASHE, Tier.MAJOR, "airburst"),
+	// Widowmaker's, the live list's order (D 0060.177: 25A7, 2736; 2873, 2704; widowmaker-map.md)
+	WIDOWMAKER_SCOPED_EFFICIENCY(Hero.WIDOWMAKER, Tier.MINOR, "scoped_efficiency"),
+	WIDOWMAKER_SNIPERS_INSTINCT(Hero.WIDOWMAKER, Tier.MINOR, "snipers_instinct"),
+	WIDOWMAKER_WIDOWS_BITE(Hero.WIDOWMAKER, Tier.MAJOR, "widows_bite"),
+	WIDOWMAKER_SEEKER_MINE(Hero.WIDOWMAKER, Tier.MAJOR, "seeker_mine");
 
 	public enum Tier { MINOR, MAJOR }
 

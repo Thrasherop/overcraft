@@ -1,0 +1,14 @@
+# V2 which way the turret's model faces: a husk due +Z of it (south), the view from above, behind me (third person)
+cmd /kill @e[type=!player]
+cmd /effect give @s resistance 30 4 true
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 3.5 run tp @s ~ ~ ~ ~ ~
+sleep 12
+key ability_1 tap
+sleep 3.2
+cmd /summon husk 0.5 -60 12.5 {NoAI:1b,Tags:["v2"],attributes:[{id:"minecraft:max_health",base:400}],Health:400f}
+cmd /tp @s -6.5 -60 3.5 -90 0
+perspective back
+sleep 1.5
+screenshot tb_turret_dir.png
+perspective first

@@ -1,0 +1,22 @@
+dart: before health 20.00 barrier 300.0 up True asleep False
+dart at her through it: health 20.00 barrier 295.0 up True asleep False
+dart at vic behind: health 20.00 barrier 295.0 up True asleep False | vic health 20.00 hindered False asleep False x 1.10 y -60.00 z 7.30
+dart, barrier down (control): health 20.00 barrier 300.0 up False asleep True
+pistol at her 1.5 s: health 20.00 barrier 98.5 up True asleep False
+pistol at vic behind 1.5 s: health 20.00 barrier 105.0 up True asleep False | vic health 20.00 hindered False asleep False x 1.10 y -60.00 z 7.30
+flash before: vic health 20.00 hindered False asleep False x 1.10 y -60.00 z 7.30
+flashbang on her barrier: health 20.00 barrier 150.0 up True asleep False | vic health 20.00 hindered True asleep False x 1.10 y -60.00 z 7.30
+conc before: vic health 20.00 hindered False asleep False x 1.10 y -60.00 z 7.30
+concussive on her barrier: health 20.00 barrier 270.0 up True asleep False | vic health 20.00 hindered False asleep False x 2.31 y -60.00 z 11.69
+disruptor on her barrier, 4.5 s: health 20.00 barrier 300.0 up True asleep False | vic health 20.00 hindered False asleep False x 1.10 y -60.00 z 7.30
+boost before: health 20.00 barrier 300.0 up True asleep False
+boosters into her barrier: health 20.00 barrier 275.0 up True asleep False
+numb: 0.5 s after the dart: health 20.00 hindered False asleep False x 0.50 y -60.00 z 10.50
+numb: 2 s later, barrier between me and vic: health 18.00 hindered False asleep False x -2.38 y -60.00 z 12.42 | brig health 18.56 barrier 300.0 up True asleep False
+mine t0: 1568 0.69 -58.60 4.14 v -0.11 -0.01 1.24 t1 | 
+mine t1: 1568 0.57 -59.17 5.38 v 0.00 -0.20 0.00 t6 | 
+mine t2: 1568 0.57 -59.90 5.38 v 0.00 0.00 0.00 t14 | 
+mine t3: 1568 0.57 -59.90 5.38 v 0.00 0.00 0.00 t24 | 
+mine t4: 1568 0.57 -59.90 5.38 v 0.00 0.00 0.00 t34 | 
+mine t5: 1568 0.57 -59.90 5.38 v 0.00 0.00 0.00 t46 | 
+mine: brig health 20.00 barrier 300.0 up True asleep False

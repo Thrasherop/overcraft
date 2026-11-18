@@ -316,7 +316,7 @@ public final class GraviticFlux {
 		lifted.speed = e.getDeltaMovement();
 		// a fall or the void out of the lift is his kill ("To the void!": kill_feed.md "A death the world deals")
 		Combat.pushed(e, owner, BLOW);
-		Accretion.sendSpeed(e);
+		Combat.send(e);
 		if (e instanceof Mob mob) {
 			// its AI held off while lifted (holds)
 			mob.setTarget(null);
@@ -416,10 +416,9 @@ public final class GraviticFlux {
 				}
 				mob.needsSync = true;
 			} else {
-				// a player moves on their own client: their speed sent to it every tick (Accretion.sendSpeed: a lifted player's
+				// a player moves on their own client: their speed sent to it every tick (Combat.send: a lifted player's
 				// own client never rose, found in the release play), and to the others watching
-				e.needsSync = true;
-				Accretion.sendSpeed(e);
+				Combat.send(e);
 			}
 		}
 	}
@@ -460,6 +459,17 @@ public final class GraviticFlux {
 			p.removeAttached(HeroManager.ASLEEP);
 		}
 		e.resetFallDistance();
+	}
+
+	/** Life Grip took it out (#124: W Status effect "gravity effects", W Sigma rev 381123): let go now, no slam, its look ended. */
+	public static boolean free(LivingEntity e) {
+		Lifted l = LIFTED.get(e.getUUID());
+		if (l == null) {
+			return false;
+		}
+		release(l);
+		Effects.play((ServerLevel) e.level(), "sigma_lift_end", e.position(), Vec3.ZERO, e, 0, l.owner);
+		return true;
 	}
 
 	/** Leaving the world: nothing held over. */

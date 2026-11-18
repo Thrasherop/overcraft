@@ -1,0 +1,68 @@
+=== grip124 21:44:44 ONLY ['tether', 'flux', 'trap', 'strike', 'accretion'] MODES ['off', 'on']
+##### bot fix 124 off {'124': False}
+--- Catnapper carries the ally (real client, Mercy, blue); a bot Lifeweaver grips them
+  tethered carriedBy=cat1486 asleep=True x=20060.5 y=-60.0 z=1.02
+  gripped: carriedBy reads (0, 34, 39) x 20060.50 -> 20061.28 (weaver at 20068.5), y -60.00 -> -60.00 phase (0, 11, 10) knocked (0, 4, 4)
+  cat after ult=7424.0 its playing {'playing': ''}
+--- Gravitic Flux lifts the ally; a bot Lifeweaver grips them
+  lifted lifted=True x=20120.5 y=-58.43 speed=0.1 health=14.0
+  gripped: lifted reads (0, 35, 46) x 20120.50 -> 20127.25, y -58.22 -> -60.00 phase (0, 13, 19) speed min 0.05000000074505806
+  after 1.5 s more lifted=False speed=0.1 health=9.0 health at the grip 14.0
+--- Steel Trap roots the ally; a bot Lifeweaver grips them
+  rooted after 2.01 s rooted=False speed=0.1 x=20180.5 z=3.5 health=18.0
+  gripped: rooted reads None x 20180.50 -> 20187.25, z 3.50 -> 3.35 phase (0, 13, 21) speed end 0.10000000149011612
+  W held 0.5 s after: rooted=False speed=0.1 x=20187.25 z=6.06
+--- Hyper Strike floats the ally; a bot Lifeweaver grips them
+  struck asleep=True gravity=0.0 y=-59.51
+  gripped: held reads (0, 11, 17) gravity [0.0008, 0.08] x 20240.50 -> 20247.26, y -59.51 -> -60.00
+--- Accretion knocks the ally down; a bot Lifeweaver grips them (the knock-down should stay)
+  knocked after 1.00 s asleep=True x=20300.5 z=0.5
+  gripped: knocked reads (0, 17, 26) x 20300.50 -> 20307.25 phase (0, 14, 22)
+##### bot fix 124 on {'124': True}
+--- Catnapper carries the ally (real client, Mercy, blue); a bot Lifeweaver grips them
+  tethered carriedBy=cat1496 asleep=True x=20360.5 y=-59.92 z=0.36
+  gripped: carriedBy reads None x 20360.50 -> 20367.25 (weaver at 20368.5), y -59.89 -> -60.00 phase (0, 13, 21) knocked (0, 27, 42)
+  cat after ult=7424.0 its playing {'playing': ''}
+--- Gravitic Flux lifts the ally; a bot Lifeweaver grips them
+  lifted lifted=True x=20420.5 y=-58.64 speed=0.1 health=14.0
+  gripped: lifted reads None x 20420.50 -> 20427.25, y -58.52 -> -60.00 phase (0, 14, 22) speed min 0.10000000149011612
+  after 1.5 s more lifted=False speed=0.1 health=18.0 health at the grip 14.0
+--- Steel Trap roots the ally; a bot Lifeweaver grips them
+  rooted after 2.01 s rooted=False speed=0.1 x=20480.5 z=3.5 health=18.0
+  gripped: rooted reads None x 20480.50 -> 20487.25, z 3.50 -> 3.35 phase (0, 14, 19) speed end 0.10000000149011612
+  W held 0.5 s after: rooted=False speed=0.1 x=20487.25 z=6.33
+--- Hyper Strike floats the ally; a bot Lifeweaver grips them
+  struck asleep=True gravity=0.0 y=-59.4
+  gripped: held reads None gravity [0.08] x 20540.50 -> 20547.26, y -59.20 -> -60.00
+--- Accretion knocks the ally down; a bot Lifeweaver grips them (the knock-down should stay)
+  knocked after 0.83 s asleep=True x=20600.5 z=0.5
+  gripped: knocked reads (0, 19, 30) x 20600.50 -> 20607.25 phase (0, 13, 21)
+=== done 21:47:00
+=== grip124 21:47:24 ONLY ['trap'] MODES ['off', 'on']
+##### bot fix 124 off {'124': False}
+--- Steel Trap roots the ally; a bot Lifeweaver grips them
+  trap at ['20060.47', '-59.99', '7.85']
+  rooted after 0.05 s rooted=True speed=0.0 x=20060.47 z=7.85 health=10.0
+  gripped: rooted reads (0, 35, 53) x 20060.47 -> 20060.47, z 7.85 -> 7.85 phase None speed end 0.0
+  W held 0.5 s after: rooted=False speed=0.1 x=20060.47 z=7.85
+##### bot fix 124 on {'124': True}
+--- Steel Trap roots the ally; a bot Lifeweaver grips them
+  trap at ['20120.47', '-59.99', '7.85']
+  rooted after 0.03 s rooted=True speed=0.0 x=20120.47 z=7.85 health=10.0
+  gripped: rooted reads (0, 35, 49) x 20120.47 -> 20120.47, z 7.85 -> 7.85 phase None speed end 0.0
+  W held 0.5 s after: rooted=False speed=0.1 x=20120.47 z=7.85
+=== done 21:47:53
+=== grip124 21:48:01 ONLY ['trap'] MODES ['off', 'on']
+##### bot fix 124 off {'124': False}
+--- Steel Trap roots the ally; a bot Lifeweaver grips them
+  trap at ['20060.47', '-59.99', '7.85']
+  rooted after 0.03 s rooted=True speed=0.0 x=20060.47 z=7.85 health=10.0
+  gripped: rooted reads (0, 36, 51) x 20060.47 -> 20067.22, z 7.85 -> 7.70 phase (0, 14, 21) speed end 0.0
+  W held 0.5 s after: rooted=False speed=0.1 x=20067.22 z=7.93
+##### bot fix 124 on {'124': True}
+--- Steel Trap roots the ally; a bot Lifeweaver grips them
+  trap at ['20120.47', '-59.99', '7.85']
+  rooted after 0.03 s rooted=True speed=0.0 x=20120.47 z=7.85 health=10.0
+  gripped: rooted reads None x 20120.47 -> 20127.22, z 7.85 -> 7.70 phase (0, 14, 16) speed end 0.10000000149011612
+  W held 0.5 s after: rooted=False speed=0.1 x=20127.22 z=10.82
+=== done 21:48:30

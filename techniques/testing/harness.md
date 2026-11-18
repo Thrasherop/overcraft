@@ -117,6 +117,11 @@
   first (pause menu at 854x480: Save and Leave is `screenclick 59 189 1`).
 - **A `/fill` over the player suffocates them:** building a test stair where she stood cost 6 health inside the stone and
   looked like a slide's fall damage (2026-11-02). Move away (`/tp`) before filling, and read health before the test.
+- **Two clients, 2026-11-14 ([run](runs/two_client_2026-11-14/run.md)):** set `pauseOnLostFocus:false` in `run/options.txt` and
+  `run2/options.txt` first (only one window has focus; the other's pause menu filled every screenshot). Drive both from one
+  script holding a socket to each harness, so one client's screenshots land during the other's action. A `connect` left
+  running in the background reconnects later and reopens the select screen. The dev `players` shows each other player's
+  Lúcio ride (`wallSide`, `wallYaw`) and animator clip (`playing`) as this client draws them.
 - **Two clients (2026-10-29):** wait for the second client's title screen before `connect` (connecting while its
   resources load crashed it). After `openworld`, click READY only once the world has loaded: clicked during the loading
   screen it doesn't take, and the hero select stays up (its keys then do nothing: check `"screen"` in `state`). A
@@ -148,6 +153,9 @@
   (`/summon minecraft:oak_boat <x> <surface - 0.3> <z>`) and read its `Pos` before aiming (2026-11-02).
 - **On a fresh select screen, a click on the hero already chosen plays it** ("click again to play"): the READY click after
   it lands in the world (2026-11-02).
+- **`hero <id>` for the hero already picked seems not to turn hero mode back on** (inferred, not read directly): after a script that pressed G, health
+  curves are Minecraft mode's (Minecraft's food healing, +0.83 a half second at full food). Read `heroMode` in `state`
+  before trusting one ([#111's run](runs/respawn_111/record.md), 2026-11-13).
 - **Heap for one client with every hero's models: 3 GB** (2026-11-02, Sigma): `JAVA_TOOL_OPTIONS=-Xmx2G` ran out of memory
   loading the models (Juno's 46 MB glTF) and the client hung on its loading screen. A fresh `run` directory opens on the
   accessibility screen: `close` it before `newworld` / `openworld`.
@@ -197,6 +205,7 @@
 - **A wrong key name doesn't stop a script:** `key ability2` answers `{"error": ...}`, and a script ignoring it goes on. No Suzu flew in a whole "before" and it read as a reproduction (2026-11-05). Key names are the action ids: `ability_1`, `ability_2`, `quick_melee`. Log a cooldown beside every press. And a process check by `CommandLine -match fabric.dli.config` finds its own PowerShell: filter on `java`.
 - **`bot` reads and traps (2026-11-05, [polish4](polish4.md)):** `bot cc <name|me>` (asleep, silenced, glowing, anti-heal, cut, weak, phased, speed, gravity, lifted, health, the game tick), `bot held <name|me>` (the looks the server keeps for late viewers, and what this client draws), `bot fix <119|rally> on|off`. **`bot add` over a name still in use orphans the old player:** it stays in the player list and isn't a bot any more, so "me" in `cc`, `side`, `self` reads *it*, and for the rest of the session the real client read `asleep False` while it slept. Remove first; restart if it happened. **A bot's state stays with its name across remove and add** (a UUID from the name): a second dart from a new `anaE` is on the first's 14 s cooldown and silently does nothing. Fresh name per use. **Rally's raised barrier stops a Suzu** thrown past it, and the shockwave's cone stuns a Kiriko standing ahead of her: both looked like a failing cleanse. **A `bot` call waits for the next server tick:** two in a loop read every 0.1 s, so a stun "lasted 0.9 s" for 0.75; read the tick (`cc`'s `now`) and count. **A real Suzu aimed by a flat `look` at 8 m takes 0.8 s:** aim down near the ally for a short status. **`sed -i` in Git Bash turns a CRLF file into LF.** **After the critique:** `bot cc` also reads `held`, `fire`, `effects`, `stealth`, `carriedBy`, position; `bot playing [text]` lists the sounds running in this client. **A hero's phase refuses `/kill`:** a `respawn` after that swaps in a broken local player. **Launch by `scripts/p4_launch.ps1`:** it writes the commit for `TREE` lines.
 - **Second pass (2026-11-05):** `bot look <name> <yaw> <pitch>` (a `/tp` doesn't turn one either), `bot path <name> <vx> <vy> <vz> <ticks>` (carried by hand, its known movement set: a flying carrier as near as a bot gets). **Fights' creeper craters stay in the world:** a later test at the same spot stood in a pit and every shot missed: move to clean ground and fill it. **A harness `respawn` after a death in another dimension left the client on a broken local player** (max health stuck, hero mode false): restart it. Check who's who in a loop variable: `fixoff on` means the fix is off.
+- **Slowing a clip for looking (2026-11-05, [side_by_side](side_by_side_2026-11-05.md)):** `/tick rate 4` runs first-person clips at a fifth, so 16 shots a quarter second apart cover a 0.667 s cycle at 0.048 s; screenshots no longer land in gaps. A whole cycle with the same thing missing isn't a gap: read why. Research scripts need the venv's Python (`research\kiriko-anim\venv`).
 - **Three script traps (2026-11-05, [polish4](polish4.md)):** read a tagged entity with `sort=nearest,limit=1`, never `limit=1` alone: a stale one answers, which read as a game bug twice. Each request to the client takes 0.1 s or so: put the action first and the reads after, or a 0.75 s stun is over by the time five requests have gone (the action's late row is a free control). A `/execute if entity` read needs 0.3 s in a long session: at 0.08 s it read one mob short.
 - **`bot shots`, `bot sight` (2026-11-05, [polish4](polish4.md)):** `bot shots`: each Overwatch projectile as this client and as the server has it, and each deployable's hacked state. `bot sight`: from the real player's eyes to each mob near, `Combat.inSight` and vanilla's eye-to-eye. **A menu left open swallows every `key`, and a script reads on regardless:** two whole files were void by it (`screen OverwatchMenuScreen` in each `hero` log line gave it away): `p4_lib.pick` won't go on with a screen up. Grep a raw file for it before citing it.
 - **More traps (2026-11-05, [polish4](polish4.md)):** a `/tp` ends a soft landing even from mid-air, so it can't stand in for a climb. Lucio holding Space rides around a free wall's end and back, so to drop him let go or crouch where the wall runs on over nothing. Vines placed in open air break themselves: back them on a wall. `bot shottrace start`, then `bot shottrace`: each projectile's z per client tick, client and server. `p4_hlp`'s TREE line reads its own worktree's stamp: in another worktree it lies.
@@ -205,3 +214,62 @@
 - **Hero mode's crouch is `key crouch` (Left Ctrl), not `key sneak`; the world's bottom is -64: a `/fill` below it does nothing, silently (2026-11-06, [polish4](polish4.md)).**
 - **`presstrace` (2026-11-06, [sojourn](../heroes/sojourn.md#the-charged-shot-on-the-press-126-2026-11-06)):** `presstrace start`, `key x down`, `presstrace`: milliseconds on one clock from the press to the input sent, the server's shot, her sounds, the look, the clip, the next frame: a "not crisp" becomes a table. `presstrace energy <n>`, `ammo <n>`. Add `PressTrace.mark` for another hero. **Traps it found:** a client slowed to 10 fps (window not active) puts 100 ms on every server-sent look: read `fps` in the row. A hero falling 8 m five times with regeneration off died, and every later row read "lost press": guard health in the loop. `emote <id>` wants its name (`triumph`), not a clip's id: a wrong one answers ok and plays nothing: read `emoteClip`. Each request costs a frame: "0.55 s after" was likely past 0.65 s. **A rotation packet followed by a payload isn't ordered as you'd think:** the payload acted on the old aim 4 of 8 times at 30 fps (ours to carry the aim in the payload).
 - **`presstrace`, more (2026-11-06):** `lag <ms>`: her hero payloads held both ways, dev only, not real latency. `frames on|off`, `sample <ms>` (the client thread's stack into the log: read a hitch, don't guess it), `art` (effect art still coming), `sounding <text>`: channels actually running. **`bot playing` lists a stopped sound for 20 ticks from its start (`SoundEngine.soundDeleteTime`):** it can't show a stop. **A 1000-health target dies in a long script,** and every later "no hit" reads as a bug: re-summon it. **At a dev lag, setting energy right after a press happens before the shot spends it:** wait a ping.
+
+## A local dedicated server
+
+Some bugs show only on a dedicated server (the owner plays on one): the movement check, sync of non-synced fields, timers.
+In a checkout or worktree: `run/eula.txt` (`eula=true`) and `run/server.properties` with `online-mode=false`,
+`enable-rcon=true`, `rcon.port=25575`, `rcon.password=...`, `level-name=...`; start `gradlew.bat runServer --args=nogui`
+(minimized, output to a log), then the client (`runClient`, same `run/` folder is fine) and `py -I tools/dev.py "connect
+localhost:25565"`. The harness's `servercmd` is single-player only: drive the server over RCON (a 20-line Python client:
+login packet type 3, command type 2). `whitelist off` and `op <name>` first. Stop with RCON `stop`.
+
+From Git Bash, `cmd //c "cd /d E:\... & gradlew.bat ..."` silently doesn't run Gradle (no output, no error): build and
+compile through PowerShell (`Set-Location ...; & .\gradlew.bat build`) and check `$LASTEXITCODE`.
+
+## Lessons, 2026-11-17 (Junkrat #153, Ashe #137, the rope #142)
+- **`tp ... facing entity X` turns from the feet, not the eyes:** at 18 m it aimed 5.5° high, over a husk's head, and
+  every "miss" was the setup. Set yaw and pitch directly (`tp @p x y z 0 0`) or compute them from y + 1.62.
+- **A computer-use click at coordinates moves the cursor first, and Minecraft reads that as mouse look:** the aim
+  drifted between shots. Fire with `left_mouse_down` / `left_mouse_up` (no coordinates) when the aim matters.
+- **Computer-use actions are ~0.25 s apart at best:** too slow for sub-0.25 s windows (a detonate during a mine's throw).
+  Time those through the harness from one script (`key ... down` / `up` with sleeps), and keep the real keys for the
+  look-and-feel pass.
+- **A harness `key ... tap` can be too short for a press the server reads as held:** hold it (`down`, 0.1 s, `up`).
+- **In hero mode the action names don't match the mouse:** `primary_fire` is the right button, `secondary_fire` the
+  left (the server's slots: Kiriko's kunai are "primary"). Check `key`'s reply, which names the physical key.
+- **Focus first, then hold:** Minecraft releases held keys when the window changes focus, so a harness `down` sent
+  before `AppActivate` is lost. The Gradle console (`cmd.exe`) pops in front after a launch; minimize it.
+- **`heard` counts a looping sound twice a second** (Minecraft re-announces looping sounds to listeners every 10 ticks
+  for subtitles, SoundEngine:256): 19 "plays" of a loop in 14 s weren't restarts.
+- **`/damage` and `/kill` on the dragon:** `/damage` without `by <player>` doesn't reach its health (it takes damage
+  through its parts, a quarter on the body); `/kill` removes it without its death (no VICTORY, no POTG). A `NoAI` dragon
+  took no hits from projectiles. End crystals heal it back. For a real kill, a flying dragon and a hero's own damage
+  (Deadeye locks on by itself).
+- **`publish` takes `[allowCommands] [port]`:** `publish false 25565`; a game mode there fails with "Expected integer".
+- **Leftover test builds block shots:** a pool's hollow stone walls stood between Ashe and the husk; clear arenas.
+- **The select screen doesn't pause:** left open through a relaunch at night, mobs killed the player behind it.
+
+## Lessons, 2026-11-17 (Widowmaker's play)
+- **A `mouse_move` leaves the OS cursor off centre, and Minecraft reads it as a look when it next takes focus:** a headshot went
+  7.6° wide after a fight where I'd moved the cursor. After a `tp ... facing` didn't turn her while she was scoped, `tp x y z <yaw>
+  <pitch>` did. Read `yaw`/`pitch` from `state` before a precise shot.
+- **A stuck projectile's position is the bottom of its box:** to remove "the block it's on", use the block at its middle
+  (`centre - normal * (half height + a little)`), not the one at its `Pos` (the first stuck-mine test removed the block below it).
+- **`OwProjectile` expires anything older than `lifetime()` ticks, counted from its spawn:** something that sits stuck and later moves
+  again needs its stuck time left out (Venom Mine's `heldTicks`), or it vanishes the moment it moves.
+- **A roofed test arena is dark enough for spiders even with `doMobSpawning` off** (mobs spawned before it): light it (a glowstone
+  ceiling) and clear hostiles, or the death screen eats the next input.
+- **H changes hero only at her bed:** set `/spawnpoint @p` where she stands to test H mid-game.
+
+## Held keys repeat (2026-11-17, #148)
+Minecraft counts every key event but the release as a click (`KeyboardHandler.keyPress`: action != 0 -> `KeyMapping.click`), so a
+key held past Windows' repeat delay (~0.5 s) clicks about 30 times a second. Hero presses are now edges (`ClientHero.drain`: a click
+while the key wasn't down at the last tick). **Testing a held key:** computer use's `hold_key` sends one keydown and no repeats, so
+it can't reproduce this; `scratchpad/holdrepeat.ps1` (keybd_event: a keydown, a 0.5 s delay, then a keydown every 33 ms, then the
+keyup) does, as a real held key does (GLFW turns a keydown on a key already down into REPEAT). Timed with `boostlog.py` (her synced
+boosting bit every 0.04 s): held Shift ended Boosters at 0.57 s before the fix, 1.9 s after; a tap 2.06 s; a second tap still ends it.
+- **26.3 renamed the day cycle rule:** `gamerule advance_time false` (not `doDaylightCycle`, which fails as "Incorrect argument").
+- **A dead strip for computer use's clicks** (2026-11-17): real clicks at screen x >= ~935 (1456-wide frame) didn't reach the game
+  while ones left of it did; a window hidden by computer use sits there. `screenclick <gui x> <gui y>` reaches the screen directly
+  (GUI = (frame - window origin) x 1.318 / GUI scale 2 for the 854 x 480 window).

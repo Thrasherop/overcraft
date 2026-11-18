@@ -11,8 +11,7 @@ The owner, 2026-11-02: "most heros have some kind of UI under/around/near the cr
 A `StateUXPresenter` node shows one view model (`m_F2160520`, `.116`) in a layer (`m_D44EB181`) with named bindings (`m_77CF91F7`):
 **the data says which widget, in which layer, bound to what, and when (the node's state and its `m_condition`).**
 The `.116` assets themselves are empty at every depth: no art, no position, no size, no colour. So **every shape, size, colour and place in
-`ReticleHud` is ours**, built from frames and memory of the game, and marked so. Don't go looking for the layout again: the 2026-11-02 audit
-and this round both looked. Quick way to read one: print the node's `m_EC32138E` (the scratch `rt_ux.py` filtered every hero's by id).
+`ReticleHud` is ours**, built from frames and memory of the game, and marked so. **Corrected 2026-11-05:** a compiled UI library exists (`000000000003.10F`, [side_by_side](../testing/side_by_side_2026-11-05.md)), so "the layout isn't in the data" was too strong; what's true is that no way from a `.116` into it is found (every 4- and 8-byte value of 0613, 05BE and 0A82 was searched for in it: only generic STU table words hit). And **the live game beats a schema's reading:** 0277 / 008B read as a ring was wrong; live it's a wide bar. Quick way to read one: print the node's `m_EC32138E` (the scratch `rt_ux.py` filtered every hero's by id).
 
 Layers: `v11821` a hero's reticle container (`v40842` for Kiriko and Jetpack Cat); `v40843` the centre layer; `v40845` the ability bar;
 `<...>.v36881` the world (on an entity). Shared widgets and their bindings, one meaning across heroes:
@@ -26,7 +25,7 @@ Layers: `v11821` a hero's reticle container (`v40842` for Kiriko and Jetpack Cat
 | 013C | a target's preview, in the world on them | `68E9` where, `1D1` button, `6181` text |
 | 0258, 052B, 0BA3, 0D81, 0257 | a target's panel | `4447` / `67DA` portrait (a hero's, or the texture 1BDC2 for a non-hero), `2E4B` / `67DC` name, `406` the team colours 0252 |
 
-Logical buttons: `xD128396E` primary, `xB42D90B7` secondary, `x4F81E1BD` jump, `x19C8495B` interact, `x2ADDA7B1` ability 2, `xCBF0F815` the weapon's.
+Logical buttons: `xD128396E` primary, `xB42D90B7` secondary, `x4F81E1BD` jump, `x19C8495B` interact, `xCBF0F815` ability 1 (Tracer's Blink, Junkrat's mine, D.Va's Boosters: their kit maps), `x2ADDA7B1` ability 2, `x2DFEDC52` ultimate.
 
 **Prompt wording is the data's.** DataTool's `dump-strings` works offline on the archived build (`DataTool.exe --online=false "E:\Overwatch Archive\build-154088" dump-strings`, 14 s, Overwatch and Battle.net closed), giving `research\strings\strings-154088.txt`, lines `00000001B3C0.07C: CANCEL`. Used here: 1B3C0 CANCEL (Juno's glide), 177F0 FIRE and 04CC CANCEL (torpedoes), 1701B BUILD and 1701C CANCEL (the tree), 4ED9 and 1DE77 CONFIRM (Flux), 2B2F6 POUNCE and 2B2F7 CANCEL (Catnapper), 161DC BASH, 2A226 GRAPPLED, 2A472 Detach, 1894B "Resurrect %1$s", F7A FUEL, 16195 NANO BOOST and 16196 CANCEL (Ana's confirm flow, not built), 31330 CANCEL (Life Grip's held ally, not built), 5FCE a number format.
 
@@ -50,17 +49,21 @@ To add a widget: read its node, draw it with `timedBar`, `resourceBar`, `panel`,
 | Sigma (023F: its role unconfirmed, see below) | barrier's bar and health while out; Flux's aim bar and "CONFIRM"; Grasp's hold bar (ours: no widget in the data); Hyper Strike's five pips and "HYPER STRIKE" (its place is ours: the data's in the ability bar) | 0275, 2155 #12; 0237, 1E41 #1152; 00DB, #1283; 0243, 51E0 #425 |
 | Brigitte (00F2, 145B #51) | Barrier Shield's box with health band and broken seconds, turning into Bash while it's up; Repair Pack's box with charges and the next one's recharge; charges at the reticle; Inspire icon (with Inspire on her alone too) and count; barrier's bar; Rally's bar; "BASH"; Repair's preview | 0243 / 0240, 0EE3 #1150, #558; 00F3, 0EDD #472; 0C7A, 12D8 #479; 0275, 2152 #7; 0237, 12BE #188; 00DB, 0EE3 #848; 013C, 0EDD #469 |
 | Mercy (0256, 0071 #443) | beam target's panel with health, a strip gold or blue by mode (ours), the edge the ally cyan; "RESURRECT X" with key and soul count, a hero's face for a player's soul; Guardian Angel's momentum; Valkyrie's bar. Resurrect's cast bar is ours: 0693 (00CA #1072) is a panel with no fraction | 0258, 006B #1263; 019C, 006B #1315; 052B, 00CA #306; 0275, 006E #910; 0237, 10DA #486 |
-| Sombra (00A3, 018D #595) | stealth ring in place of her crosshair's (0277 is in her reticle's own layer), share of the time set, so full after a refill; two target slots with health: Hotfix's allies, or what she's hacking; lockout bar; Hotfix's preview | 0277 / 008B, 420C #1057; 0D81, 614C #1798, #1831 (v77182[n], else v536); 00B1, #2775; 013C, #593 |
-| Juno (091C, 4441 #563) | glide and lock bars (moved here from `HeroHud`); "[Shift] CANCEL"; both buttons' "FIRE": the data has FIRE and CANCEL, swapped by an option, but in the mod either fires | 0237, 47B7 #641, 4695 #1225, #1283; 00DB, 47B7 #637, 4695 #867, #1051 |
+| Sombra (00A3, 018D #595) | stealth's bar and INVISIBLE under her small crosshair (0277 / 008B, a bool and a share: measured from the owner's frames, not a ring; share of the time set, so full after a refill); two target slots with health: Hotfix's allies, or what she's hacking; lockout bar; Hotfix's preview | 0277 / 008B, 420C #1057; 0D81, 614C #1798, #1831 (v77182[n], else v536); 00B1, #2775; 013C, #593 |
+| Juno (091C, 4441 #563) | glide's bar; the lock's time as an arc left of the crosshair, FIRE and CANCEL either side of it, her lock marks (0727) and corner curves: measured from the owner's frames, the art ours ([side_by_side](../testing/side_by_side_2026-11-05.md)); "[Shift] CANCEL" | 0237, 47B7 #641, 4695 #1225, #1283; 00DB, 47B7 #637, 4695 #867, #1051 |
 | Jetpack Cat (0BA2, 59DC #43) | Lifeline's panel with health; fuel bar under full; Purr's and Catnapper's bars; "POUNCE / CANCEL" (the ult key cancels in the mod); towed ally's GRAPPLED, and "Detach" only from 0.6 s, only on Lifeline; crosshair from her volley (the wiki) | 0BA3, 5A8F #1097; 019C, #1098; 0275, 214F #5; 0237, 5A7E #320, 5B7B #63; 00DB, 5B7B #34; 00CF, 5A8F #1225 |
 | Lifeweaver (072D, 21C6 #844) | while the blossom is held: a charge ring and plated heal number; on the panel when there's no reticle; blossom and Life Grip previews; "BUILD / CANCEL" | 072E, 21C6 #1122; 013C, 21C6 #913, 21EF #704; 00DB, 36A4 #901 |
 | Lúcio (027B, 010C #311) | allies in his song, on a disc between its circles; Amp It Up's bar; Soundwave Rider's charge, gold when full | 0263, 0266 #374; 0237, 0277 #396; 0275, 5162 #450 |
 | Ana (0987, 0C6B #34) | Nano's preview, only over the lens when scoped (ours). No panel: #373, #381 and #384 bind v8070, set by #324 after the press, with the texts NANO BOOST / CANCEL: the confirm option v29052, off by default, not in the mod | 013C, 0B9E #377 |
 | Kiriko (05BF) | nothing new: the "+" is measured from Overwatch, her counter and target were already drawn. The data shows her no bar (30D8 is not decompiled, so unproven) | |
-| D.Va | on her branch: [her list](../heroes/dva.md) | |
+| D.Va (mech CF / pilot E0: shapes ours) | in the mech: Defense Matrix's bar under the crosshair while up or not full (pink up, grey cooling, its number); Boosters' bar and "[Shift] CANCEL" the whole flight; a wide ring crosshair (the cannons' 3.375 deg), the pilot a "+". For anyone within 21 m of a Self-Destruct: her icon at the mech + 2 m in a pulsing ring, red inside 6 m. No countdown: 0031 binds no time | 04F0, 02CC #433 (ability-bar layer: the place is ours); 0237, 047E #374; 00DB, 047E #373 (xCBF0F815, 161D8 CANCEL); 0031, 0B2F #339 (68E9, 6378) |
+| Pharah | fuel as an arc left of the crosshair while not full, blue, red under 20 (ours: her data has no reticle or centre widget; fuel is engine-drawn on Hover Jets' box 0025 #316, 0240; a bar under the crosshair ran into her launcher) | none |
+| Tracer (0235, 003D #232) | Blink's charges as three orange pips under the crosshair, first person only. Recall: no widget but its box (001A #160 / #205; #354 is Stadium) | 026F, 0024 #410 (000B = v11, the count) |
+| Cassidy (0AB8, 01EC #46) | Deadeye's 7 s bar and "[LMB] FIRE [RMB] CANCEL", gone while it fires; the locks were already DeadeyeHud's (01EE #158, 012C). Fan the Hammer: nothing at the reticle in the data (01D2 has only boxes) | 0237, 022F #578; 00DB, 022F #577 (1619F FIRE, 161A0 CANCEL) |
+| Junkrat | RIP-Tire's 10 s bar; once armed (1.6 s) "[LMB] DETONATE [RMB] DETONATE", or with Nitro Boost ready "DETONATE / [Shift] Nitro Boost"; his own mine's and trap's icons in the world. Mine charges stay on the box (096A #355, 0243). The trapped enemy's 0497 (25B4 #381, in v29073) is the victim's HUD | 0237, 0233 #659; 00DB, 0233 #658 / #689 / #675 (161A8 DETONATE, 232B5 Nitro Boost, perk check #677); 011F, 096B #464, 09BB #654 |
 
 ## What a critic should check
-- **Against Overwatch, side by side:** still not done. No frames of the real game for these heroes. Every shape is from memory or invented; Kiriko's crosshair alone is measured.
+- **Against Overwatch, side by side:** done for Sombra's, Juno's and Ana's scope only ([side_by_side](../testing/side_by_side_2026-11-05.md)); the rest no frames. Every other shape is from memory or invented; Kiriko's crosshair is measured.
 - **Lifeweaver's hold-only is a choice:** 072E's condition `STU_9D240539{self}` still isn't understood. The critique's reading (the hold) is what's drawn.
 - **A closed-up marker** around the crosshair (`rt6_brigitte_inspire`, `rt6n_mercy_valkyrie`) is our rule, unseen in the game. Its cyan is the weakest thing on a light target.
 - **The critique's "gold ring lost to observers" doesn't stand:** that `LifeweaverFx.markers` block ran only for the local player (`mc.player`, his own client). Nothing to restore.
@@ -90,10 +93,59 @@ Found playing the fixes: the markers' room was cleared before the hero's markers
 **Not tried:** a real tow, a real Catnapper victim, Resurrect on a player's soul (`hero:` face), so a second player; the physical mouse; Overcharged; water, lava, boats, the Nether; GUI scales; a night in survival.
 
 ## Still open
-World widgets, not built: souls' markers (08F3), icons over the Cat for allies (0C3D / 011F), over a repaired or Hotfixed ally (011F), Hotfix's band on their health bar (0D86), Juno's lock marker 0727. Sigma's Barrier as an ability box with its broken icon (0241, 1FC8A). Sombra's 00DB 017B #596, 0237 #528, 0275 0164 #447 and 0064 3692 / 3698: the health pack entity 0216's (kit_pistol_hotfix.md), and the mod has no packs. Lúcio's 0234 #433: a timer, undecoded. **"Accelerando's meter" was a wrong label:** 5162 #450 is Soundwave Rider's ([polish3](../testing/polish3.md)); Accelerando has no widget. Juno's and Life Grip's cancels: in the data (04CC, 31330), not in the mod, so not prompted: worth a mechanics issue. 013C's "Disabled" text (319B2). A mob with no `MobFaces` entry gets a plus: 1BDC2 is in `extracted\154088\UITextures` but not the pack.
+World widgets, not built: souls' markers (08F3), icons over the Cat for allies (0C3D / 011F), over a repaired or Hotfixed ally (011F), Hotfix's band on their health bar (0D86), Juno's lock marker 0727. A blocked ability box (0786, 630E) is a general state in `HeroHud.ability` now, but a hack's silence isn't in it: `Hack.silenced` isn't synced to the client that has it. Sigma's Barrier as an ability box with its broken icon (0241, 1FC8A). Sombra's 00DB 017B #596, 0237 #528, 0275 0164 #447 and 0064 3692 / 3698: the health pack entity 0216's (kit_pistol_hotfix.md), and the mod has no packs. Lúcio's 0234 #433: a timer, undecoded (the same node is in Junkrat's dump as his tire's graph 0234, a 3 / 1.5 / 2 s timer under gates: not drawn). **"Accelerando's meter" was a wrong label:** 5162 #450 is Soundwave Rider's ([polish3](../testing/polish3.md)); Accelerando has no widget. Juno's and Life Grip's cancels: in the data (04CC, 31330), not in the mod, so not prompted: worth a mechanics issue. 013C's "Disabled" text (319B2). A mob with no `MobFaces` entry gets a plus: 1BDC2 is in `extracted\154088\UITextures` but not the pack.
+
+Still open after the 2026-11-13 round (D.Va, Pharah, Tracer, Cassidy, Junkrat): Kiriko's own widgets, Sigma's barrier box, the
+world widgets above. Not in the data, so not drawn: a Recall timer, a Barrage or Concussive Blast indicator, a Self-Destruct countdown,
+Fan the Hammer at the reticle. Pharah's fuel arc is ours and unchecked against the game. Boosters' prompt shows the whole flight (the
+press only ends it from 0.4 s; #373's condition unread). The 0031 warning's sight / team test isn't applied (21 m alone).
+
+## Round 2026-11-13 (fix/reticle-new, from next 5010167)
+`ReticleHud` cases DVA, PHARAH, TRACER, CASSIDY, JUNKRAT, `selfDestruct` (drawn for any hero, before the emote check), `worldIcon`;
+Junkrat's sync sets MODE_TIRE_ARMED / MODE_NITRO_READY (defined, unset before). Nodes listed by a scratch script over every
+`StateUXPresenter` in `research\<hero>\work_kit\decomp_*.txt` (layer, view model, bindings). One dev client, harness keys
+(`dev.py`), flat survival worlds `rt85a` / `rt85b` / `rt85c`, day, resistance on; screenshots in `overcraft_reticle2/run/screenshots`,
+read as mid-screen crop sheets:
+- D.Va: `rt85_dva_ready` (no bar), `_matrix_up` (pink, 60), `_matrix_cooling` (grey, 55), `_matrix_refill` (73), `_boost` (matrix 87,
+  Boosters 1.2, "[LSHIFT] CANCEL"), `_boost_cool` (none); Self-Destruct `rt85_dva_sd2_near` (red), `_mid` / `_far` (orange), `_gone`.
+  **Found playing:** the first warning (`rt85_dva_sd_inner`) was her bunny on a thin ring on the mech's own bunny decal: unreadable;
+  now a thick pulsing ring. Right after the eject she's above the mech, so the icon sits low near the ult meter (`rt85_dva_sd_b`).
+- Pharah: `rt85_pharah_full` (none), `_hover`, `_low`, `_empty`, `_jumpjet`, `_refill` (none). **Found playing:** the first version,
+  a bar under the crosshair, ran into her launcher (the first `rt85_pharah_hover`, overwritten): now the arc.
+- Tracer: `rt85_tracer_3`, `_2`, `_0`, `_recall` (0), `_refill` (1, matching the box's corner), `_3p` (none in third person).
+- Cassidy: `rt85_cass_ready`, `_deadeye1` (6.1), `_deadeye4` (3.0), `_cancelled` (none after RMB), `_firing` (none while firing), `_after`.
+- Junkrat: `rt85_junk_mine_trap` (both icons), `_turned`, `_tire_cast` (9.1, no prompt before the arm), `_tire_armed`, `_tire_late`,
+  `_tire_after` (none). Nitro Boost's prompt not seen (the perk not taken).
+**Not tried:** night, GUI scales, the physical mouse, a second player (another's Self-Destruct), real fights, Nitro Boost, Extended
+Boosters, water / Nether.
 
 ## Cancels (#112, 2026-11-05)
 Juno's lock now says "[LMB] FIRE [RMB] CANCEL" (#1051), the buttons doing what they say; a player held by Life Grip sees "[SPACE] CANCEL" from 0.65 s (21EE #617). This closes the two "not built" lines above: [juno](../heroes/juno.md), [lifeweaver](../heroes/lifeweaver.md).
 
 ## Soundwave Rider and Hyper Strike, second pass (2026-11-05)
 Rider's bar draws only at the reticle (in third person it crossed his body). A part charge now waits 3 s, then drains: [polish3](../testing/polish3.md). Sigma's pips are narrower than Brigitte's (they touched his spheres at 720p), and empty pips are 0x66 white on a heavier edge, read at night in `sheet_c_pips`, for Brigitte's too (shared; hers not re-shot).
+
+## Round 2026-11-14 (fix/reticle-rest): the world widgets
+011F over the allies Brigitte's packs heal (0EE1 #611, its 9A share as a draining ring) and over Sombra's Hotfixed allies (60FB #371);
+Mercy's 08F3 on the soul Resurrect would take (00CA #1274, the portrait and the Resurrect key). All three are for the caster alone
+(their conditions: v40 / v41 / self == the local player), so they ride the caster's own sync: `Widgets.share`, `share2`, `at` (a soul
+has no client entity, so its place is sent). **Lesson:** a world widget with a share needs the server's numbers (the client's effect
+packets carry no owner, so another Brigitte's packs would show); add fields to `Widgets` behind its old 10-argument constructor and no
+kit changes. Run record: [reticle_rest](../testing/runs/reticle_rest/run.md). Still open: Sigma's 0241 box. (Hotfix's band 0D86: done 2026-11-17, below.)
+
+Round 2026-11-14 (fix/two-client): the Cat's seeking icon, 5A8F #1066 (011F at 000E + 0.7 m, for the other players), over each
+allied cat seeking: `seekingCats`, from `JetpackCatFx.alliedSeekers` (the "lifeline_on" effect every client already gets).
+**Lesson:** a world icon over someone who also wears HeroHud's ally marker must clear it in screen space, from the highest of
+their box's top corners (as the marker does): the data's 0.7 m sat on her pips at 10 m, and the box's centre alone at 3 m.
+Played with two clients: [two_client_2026-11-14](../testing/runs/two_client_2026-11-14/run.md).
+
+## Hotfix's band on an ally's health bar, 0D86 (2026-11-17, #85)
+The note "no allies' bars in the mod" was stale: HeroHud's ally marker has drawn pips over allies since the fourth critique. 60FB #385 is
+a client-only `StateUXPresenter` of view model 0D86 (its `.116` empty, as every one), bound to the healed ally (45BA) and to **v76938**,
+which #329 sets to **1 - v10379 / v10380**: v10380 the heal's total (175, from #300's loadout read), v10379 the heal given so far
+(#378 adds each tick's heal, capped; #394 waits until it reaches the total). So the band is the share of Hotfix's heal still to come.
+Synced as Sombra's widgets `share` / `share2` (HotfixHeal.left); drawn by `HeroHud.hotfixPending` as her heal's gold (the strands'
+middle stop, ours) over the pips from their health to health + 175 x share. **Lesson:** the same four hex digits name different assets
+by type: 0D86.116 (this widget) is not Lucio's 0D86.00D (the overhealth effect); read the type before borrowing a note.
+Played: a villager at 2 / 20 Hotfixed with the right button: 4.25 white pips then gold to the 8th (25 + 175 = 200 of 250), and 2 s
+later 7.5 white with the gold ending at the same place (pixel rows read from `run/screenshots/hotfix_band_3.png` / `_4.png`).

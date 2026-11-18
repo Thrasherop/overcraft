@@ -117,6 +117,8 @@ public final class HeroHud {
 	private static float ability1Seen;
 	private static float ability2Seen;
 	private static long ability1ReadyAt = -1;
+	/** Illari's pylon cooldown as it started, and as last seen (its HUD fill's whole). */
+	private static float illariPylonTotal = (float) dev.overcraft.illari.IllariStats.PYLON_COOLDOWN, illariPylonLast;
 	private static long ability2ReadyAt = -1;
 	private static long ability3ReadyAt = -1;
 	private static float ability3Seen;
@@ -158,9 +160,26 @@ public final class HeroHud {
 		return Math.min(guiHeight / REF_H, guiWidth / REF_W);
 	}
 
+	/** The frame's graphics the HUD last drew on: it draws once a frame, from whichever slot comes first. */
+	private static @Nullable GuiGraphicsExtractor drawnOn;
+
+	/** A Play of the Game's replay: the spectating viewer has no hotbar slot, so the scorer's HUD comes from here (#155). */
+	public static void renderFollowed(GuiGraphicsExtractor g, DeltaTracker delta) {
+		if (ClientPotg.followed() != null) {
+			render(g, delta);
+		}
+	}
+
 	public static void render(GuiGraphicsExtractor g, DeltaTracker delta) {
+		if (drawnOn == g) {
+			return;
+		}
+		drawnOn = g;
 		Minecraft mc = Minecraft.getInstance();
-		LocalPlayer player = mc.player;
+		// in a Play of the Game's replay, the scorer's HUD: their health from their own entity, their numbers from their
+		// recorded sync (ClientHero.sync takes it as it comes: #155)
+		net.minecraft.client.player.AbstractClientPlayer followed = ClientPotg.followed();
+		net.minecraft.client.player.AbstractClientPlayer player = followed != null ? followed : mc.player;
 		Hero hero = ClientHero.hero();
 		if (player == null || hero == null || player.isSpectator()) {
 			return;
@@ -168,7 +187,7 @@ public final class HeroHud {
 		HudShapes.ensure();
 		HeroSyncPayload s = ClientHero.sync();
 		track(s, hero);
-		if (!ClientHero.heroView()) {
+		if (followed == null && !ClientHero.heroView()) {
 			minecraftMode(g, s, hero);
 			return;
 		}
@@ -179,24 +198,22 @@ public final class HeroHud {
 		g.pose().scale(scale, scale);
 		// Ana scoped in: her scope over the view, under every widget and the screen's hurt tints (under its surround they were
 		// lost: critique M6), in place of the crosshair once it shows, eased between the sync's ticks (#90)
-		float scope = hero == Hero.ANA ? ClientAna.ownScopeEased() : 0;
+		float scope = hero == Hero.ANA || hero == Hero.WIDOWMAKER ? ClientAna.ownScopeEased() : 0;
 		if (scope > SCOPE_SHOWN) {
+			// Widowmaker's lens: Ana's for now (ours, L: her own scope art isn't read from her data yet)
 			anaScope(g, w, h, Math.clamp((scope - SCOPE_SHOWN) / (1 - SCOPE_SHOWN), 0, 1));
+		}
+		if (hero == Hero.WIDOWMAKER && s.secondaryReload() >= 0 && scope >= 0.99f) {
+			// Take Aim's charge under the crosshair, as Overwatch's percent (0-100, 125 with Widow's Bite: Widowmaker.sync)
+			int percent = (int) Math.floor(s.secondaryReload());
+			HudText.outlined(g, Face.NUMBERS, percent + "%", w / 2, h / 2 + 64, 22, percent >= 100 ? 0xFFFF5A7A : 0xFFE6E8EE, 0xB3000000, 1.5f,
+				Align.CENTER);
 		}
 		g.pose().popMatrix();
 		screenEffects(g, s, player);
 		g.pose().pushMatrix();
 		g.pose().scale(scale, scale);
-		// scoped, ally marks only over the lens: over its black surround they marked nothing to be seen (critique M6)
-		boolean lens = scope >= 1;
-		float lensAt = Math.min(w, h) / 2 - SCOPE_MARGIN;
-		if (lens) {
-			g.enableScissor(Math.round(w / 2 - lensAt), Math.round(h / 2 - lensAt), Math.round(w / 2 + lensAt), Math.round(h / 2 + lensAt));
-		}
 		allyMarkers(g, player, w, h, delta.getGameTimeDeltaPartialTick(true));
-		if (lens) {
-			g.disableScissor();
-		}
 		// Overwatch's kill feed sits where Minecraft's toasts and status-effect icons do: below any showing (toasts 32 GUI
 		// units a slot; the icons' rows end 25 or 50 units down). The weakness icon hid a line's victim (found playing)
 		int toastSlots = ((ToastManagerAccessor) mc.gui.toastManager()).overcraft$occupiedSlots().length();
@@ -297,49 +314,41 @@ public final class HeroHud {
 
 	/** Her scope overlay shows from 80% scoped in (D 0B94 #278: op73(v169, 0.8)). */
 	public static final float SCOPE_SHOWN = 0.8f;
-	/** The lens's rim from the screen's short side (reference pixels, ours: from memory the lens nearly fills the height). */
-	public static final float SCOPE_MARGIN = 20;
 
 	/**
-	 * Ana's scope (#90). Her data shows UX view model 0613.116 on the HUD root from 80% scoped (0B94 #278), with her skin's
-	 * reticle (E615: base 0A82.116, CVGetSkinOverride) and a style (9C89); neither it nor the reticle holds any art at any
-	 * depth, and none is in her GUI export, so the look is ours after Overwatch's: the view through a round lens, dark beyond
-	 * its rim, her reticle (a fine ring round a centre dot, fine lines out to the sides and down) at its centre, fading in
-	 * over the last 20% of the scope-in. The rifle is out of view meanwhile (her view model is not drawn fully scoped:
-	 * HeroModelRenderer, 0B94 #199).
+	 * Her scope, scoped in (#90). The data says when (0B94 #278 shows 0613.116 from op73(v169, 0.8), H) and not what: 0613, 05BE and 0A82 hold no texture and nothing of them
+	 * is found in the UI library .10F; its textures were looked at as thumbnails (1,262 dumped and 50 of the 72 undumped; the other 22 ids aren't files in the build), with none of this art, though its vector shapes aren't excluded; rifle 10B96's 30 textures; her effects
+	 * (techniques/testing/side_by_side_2026-11-05.md). So all of this is OURS, redrawn from the owner's frame 1 (2000 x 1121, crosshair (1001, 562), measured). No surround: the
+	 * view stays, under a blue wash (stealthWash) and these lines. Drawn on the reference grid, so any size of screen; mirrored about the crosshair.
 	 */
 	private static void anaScope(GuiGraphicsExtractor g, float w, float h, float shown) {
 		float cx = w / 2;
 		float cy = h / 2;
-		float r = Math.min(w, h) / 2 - SCOPE_MARGIN;
-		float half = r / HudShapes.SCOPE_CLEAR;
-		int dark = alpha(0x050608, 0.96f * shown);
-		image(g, HudShapes.SCOPE, cx - half, cy - half, half * 2, half * 2, dark);
-		// beyond the square: solid
-		fill(g, 0, 0, cx - half, h, dark);
-		fill(g, cx + half, 0, w - cx - half, h, dark);
-		fill(g, cx - half, 0, half * 2, cy - half, dark);
-		fill(g, cx - half, cy + half, half * 2, h - cy - half, dark);
-		// the lens rim, a faint cool grey
-		image(g, HudShapes.SCOPE_RIM, cx - half, cy - half, half * 2, half * 2, alpha(0xB8C4CC, 0.45f * shown));
-		// her reticle: a dark outline under white, as the crosshair's
-		int white = alpha(0xFFFFFF, 0.95f * shown);
-		int shade = alpha(0x000000, 0.55f * shown);
-		float ring = 30;
-		image(g, HudShapes.RING_THIN, cx - ring - 1, cy - ring - 1, ring * 2 + 2, ring * 2 + 2, shade);
-		image(g, HudShapes.RING_THIN, cx - ring, cy - ring, ring * 2, ring * 2, white);
-		image(g, HudShapes.DISC, cx - 3.5f, cy - 3.5f, 7, 7, shade);
-		image(g, HudShapes.DISC, cx - 2.5f, cy - 2.5f, 5, 5, white);
-		float gap = ring + 14;
-		float side = 150;
-		float down = 110;
-		for (int pass = 0; pass < 2; pass++) {
-			float o = pass == 0 ? 1 : 0;
-			int color = pass == 0 ? shade : white;
-			fill(g, cx - gap - side - o, cy - 1 - o, side + 2 * o, 2 + 2 * o, color);
-			fill(g, cx + gap - o, cy - 1 - o, side + 2 * o, 2 + 2 * o, color);
-			fill(g, cx - 1 - o, cy + gap - o, 2 + 2 * o, down + 2 * o, color);
-		}
+		dev.overcraft.client.hud.AnaScopeArt.ensure();
+		// on the reference grid, centred; a narrower screen than 16:9 fits its width (ours: no frame of one)
+		float fit = Math.min(1, w / dev.overcraft.client.hud.AnaScopeArt.W);
+		int W = dev.overcraft.client.hud.AnaScopeArt.W;
+		int H = dev.overcraft.client.hud.AnaScopeArt.H;
+		g.pose().pushMatrix();
+		g.pose().translate(cx - W * fit / 2, cy - H * fit / 2);
+		g.pose().scale(fit, fit);
+		g.blit(SCOPE_ART, dev.overcraft.client.hud.AnaScopeArt.TEXTURE, 0, 0, 0, 0, W, H, W, H, W, H, Math.round(255 * shown) << 24 | 0xFFFFFF);
+		g.pose().popMatrix();
+		// the crosshair: four ticks about 6 long round a gap of 4 (measured from frame 1; its green is the owner's setting, ours is the plain white)
+		int colour = alpha(0xFFFFFF, shown);
+		int edge = alpha(0x000000, 0.5f * shown);
+		float k = 1080f / 1121;
+		float gap = 4 * k;
+		float tick = 6 * k;
+		float t = 2 * k;
+		fill(g, cx - t / 2 - 1, cy - gap - tick - 1, t + 2, tick + 2, edge);
+		fill(g, cx - t / 2 - 1, cy + gap - 1, t + 2, tick + 2, edge);
+		fill(g, cx - gap - tick - 1, cy - t / 2 - 1, tick + 2, t + 2, edge);
+		fill(g, cx + gap - 1, cy - t / 2 - 1, tick + 2, t + 2, edge);
+		fill(g, cx - t / 2, cy - gap - tick, t, tick, colour);
+		fill(g, cx - t / 2, cy + gap, t, tick, colour);
+		fill(g, cx - gap - tick, cy - t / 2, tick, t, colour);
+		fill(g, cx + gap, cy - t / 2, tick, t, colour);
 	}
 
 	// ---- the screen itself ----
@@ -348,7 +357,7 @@ public final class HeroHud {
 	 * Tints over the whole view (the reference, §2): stepping, the edges flash teal and streaks rush in; in Kitsune
 	 * Rush's path, a white-cyan mist at the edges and light streaks flying past. Low on health, the edges glow red.
 	 */
-	private static void screenEffects(GuiGraphicsExtractor g, HeroSyncPayload s, LocalPlayer player) {
+	private static void screenEffects(GuiGraphicsExtractor g, HeroSyncPayload s, net.minecraft.client.player.AbstractClientPlayer player) {
 		int w = g.guiWidth();
 		int h = g.guiHeight();
 		float health = player.getHealth() / Math.max(1, player.getMaxHealth());
@@ -364,15 +373,6 @@ public final class HeroHud {
 		}
 		// the view's own effects belong to the first-person view (in third person they tinted the whole frame)
 		boolean firstPerson = Minecraft.getInstance().options.getCameraType().isFirstPerson();
-		if (firstPerson && ClientHero.hero() == Hero.SOMBRA) {
-			// stealthed, her own view's edges tinted (1A75 held while stealthed: a dim screen quad, its colour L; ours her
-			// stealth's purple, as Overwatch's stealthed view is), with her arms phased out (#87)
-			float phase = ClientSombra.phase(player, (player.level().getGameTime() + Minecraft.getInstance().getDeltaTracker()
-				.getGameTimeDeltaPartialTick(true)) / 20f);
-			if (phase > 0) {
-				image(g, HudShapes.VIGNETTE, 0, 0, w, h, alpha(0x5A1E9C, 0.3f * phase));
-			}
-		}
 		float step = since(stepCastAt);
 		if (firstPerson && step < STEP_FLASH) {
 			// teal at the edges only and streaks rushing in (the second critique: the centre stays readable)
@@ -502,6 +502,51 @@ public final class HeroHud {
 	}
 
 	/**
+	 * Sombra's stealth over her own first-person view, under the HUD: a multiply of the whole screen (#87). D: 420C #851 STU_1B93D61B, colour
+	 * R .8431 G .5451 B 1.0, amount 0.7, own first person only (H node, M role). A linear multiply by lerp(1, colour, 0.7), which is about
+	 * (0.945, 0.843, 1.0) in display values and predicts white -> (241, 214, 255); a white wall in the owner's frame 4 is (249, 215, 255).
+	 * It fades with her stealth's phase (ours: the node's m_2D8ADFF8 200, m_2068FD7A 0.2 and m_EC1A7839 1.2 are unread, L).
+	 */
+	public static void stealthWash(GuiGraphicsExtractor g, DeltaTracker delta) {
+		Minecraft mc = Minecraft.getInstance();
+		if (mc.player == null || !mc.options.getCameraType().isFirstPerson()) {
+			return;
+		}
+		if (ClientHero.hero() == Hero.ANA) {
+			float scope = ClientAna.ownScopeEased();
+			if (scope > SCOPE_SHOWN) {
+				float k = Math.clamp((scope - SCOPE_SHOWN) / (1 - SCOPE_SHOWN), 0, 1);
+				int colour = 0xFF000000 | Math.round(255 * (1 + (SCOPE_WASH_R - 1) * k)) << 16 | Math.round(255 * (1 + (SCOPE_WASH_G - 1) * k)) << 8 | 0xFF;
+				g.fill(STEALTH_WASH, 0, 0, g.guiWidth(), g.guiHeight(), colour);
+				g.nextStratum();
+				int lift = 0xFF000000 | Math.round(255 * SCOPE_LIFT_G * k) << 8 | Math.round(255 * SCOPE_LIFT_B * k);
+				g.fill(SCREEN_WASH, 0, 0, g.guiWidth(), g.guiHeight(), lift);
+				g.nextStratum();
+			}
+			return;
+		}
+		if (ClientHero.hero() != Hero.SOMBRA) {
+			return;
+		}
+		float phase = ClientSombra.phase(mc.player, (mc.player.level().getGameTime() + delta.getGameTimeDeltaPartialTick(true)) / 20f);
+		if (phase <= 0) {
+			return;
+		}
+		float amount = STEALTH_WASH_AMOUNT * phase;
+		int colour = 0xFF000000 | display(1 + (STEALTH_WASH_R - 1) * amount) << 16 | display(1 + (STEALTH_WASH_G - 1) * amount) << 8
+			| display(1 + (STEALTH_WASH_B - 1) * amount);
+		g.fill(STEALTH_WASH, 0, 0, g.guiWidth(), g.guiHeight(), colour);
+		// the GUI sorts a stratum's quads by pipeline: without this the HUD drawn after would come out under the multiply
+		g.nextStratum();
+	}
+
+	/** A linear 0-1 as sRGB's 0-255. */
+	private static int display(float linear) {
+		double v = linear <= 0.0031308f ? 12.92 * linear : 1.055 * Math.pow(linear, 1 / 2.4) - 0.055;
+		return (int) Math.clamp(Math.round(v * 255), 0, 255);
+	}
+
+	/**
 	 * In Kitsune Rush's path, a white-cyan mist at the screen's edges and light streaks flying past (the reference, §2):
 	 * for every player in it, Kiriko's allies too, not only heroes (the second critique: the ally saw nothing). Its own
 	 * HUD element, drawn whatever HUD the player has.
@@ -557,7 +602,7 @@ public final class HeroHud {
 
 	// ---- bottom left: portrait, health, pips ----
 
-	private static void health(GuiGraphicsExtractor g, LocalPlayer player, Hero hero) {
+	private static void health(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, Hero hero) {
 		// the portrait, cut to a shield with a light-blue border
 		Identifier portrait = HudShapes.portrait(hero);
 		// the gable's peak under the head near y 902, the point at 1015 (the owner's frames, the eighth critique: 6% larger
@@ -778,6 +823,41 @@ public final class HeroHud {
 			}
 		}
 	}
+
+	/**
+	 * Her scope's wash: a small multiply, then a blue screen blend, which lifts darks toward blue and leaves brights alone. A multiply alone can't: frame 1's dark stairs read
+	 * (59, 63, 96) and its white box (251, 253, 254) (research/side_by_side_2026-11-05/data_read/frame1_spots.txt). Ours, tuned by those spots; no unwashed frame of the same spot exists.
+	 */
+	private static final float SCOPE_WASH_R = 0.96f, SCOPE_WASH_G = 0.98f, SCOPE_LIFT_G = 0.02f, SCOPE_LIFT_B = 0.15f;
+	/** Adds the art's own light by its alpha. */
+	private static final com.mojang.renderpearl.api.pipeline.RenderPipeline SCOPE_ART = net.minecraft.client.renderer.RenderPipelines.register(
+		com.mojang.renderpearl.api.pipeline.RenderPipeline.builder(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED_SNIPPET)
+			.withLocation(dev.overcraft.Overcraft.id("pipeline/gui_add_textured"))
+			.withColorTargetState(new com.mojang.renderpearl.api.pipeline.ColorTargetState(com.mojang.renderpearl.api.pipeline.BlendFunction.LIGHTNING))
+			.build());
+	/** A screen blend: 1 - (1 - scene)(1 - colour). */
+	private static final com.mojang.renderpearl.api.pipeline.RenderPipeline SCREEN_WASH = net.minecraft.client.renderer.RenderPipelines.register(
+		com.mojang.renderpearl.api.pipeline.RenderPipeline.builder(net.minecraft.client.renderer.RenderPipelines.GUI_SNIPPET)
+			.withLocation(dev.overcraft.Overcraft.id("pipeline/gui_screen"))
+			.withColorTargetState(new com.mojang.renderpearl.api.pipeline.ColorTargetState(new com.mojang.renderpearl.api.pipeline.BlendFunction(
+				com.mojang.renderpearl.api.pipeline.BlendFactor.ONE, com.mojang.renderpearl.api.pipeline.BlendFactor.ONE_MINUS_SRC_COLOR,
+				com.mojang.renderpearl.api.pipeline.BlendOp.ADD, com.mojang.renderpearl.api.pipeline.BlendFactor.ZERO,
+				com.mojang.renderpearl.api.pipeline.BlendFactor.ONE, com.mojang.renderpearl.api.pipeline.BlendOp.ADD)))
+			.build());
+	/** A blocked ability's red (measured from the owner's frame 2), and how long her beacon's throw blocks the rest (0C19 #145 v8349 = 0.4 s, H). */
+	private static final int LOCKED_RED = 0xFFF53757, ACTIVE_ORANGE = 0xFFFC805F;
+	private static final float SOMBRA_THROW_LOCK = 0.4f;
+	/** 420C #851 (D): see stealthWash. */
+	private static final float STEALTH_WASH_R = 0.8431f, STEALTH_WASH_G = 0.5451f, STEALTH_WASH_B = 1, STEALTH_WASH_AMOUNT = 0.7f;
+	/** Multiplies what's already on the screen by its colour. */
+	private static final com.mojang.renderpearl.api.pipeline.RenderPipeline STEALTH_WASH = net.minecraft.client.renderer.RenderPipelines.register(
+		com.mojang.renderpearl.api.pipeline.RenderPipeline.builder(net.minecraft.client.renderer.RenderPipelines.GUI_SNIPPET)
+			.withLocation(dev.overcraft.Overcraft.id("pipeline/gui_multiply"))
+			.withColorTargetState(new com.mojang.renderpearl.api.pipeline.ColorTargetState(new com.mojang.renderpearl.api.pipeline.BlendFunction(
+				com.mojang.renderpearl.api.pipeline.BlendFactor.DST_COLOR, com.mojang.renderpearl.api.pipeline.BlendFactor.ZERO,
+				com.mojang.renderpearl.api.pipeline.BlendOp.ADD, com.mojang.renderpearl.api.pipeline.BlendFactor.ZERO,
+				com.mojang.renderpearl.api.pipeline.BlendFactor.ONE, com.mojang.renderpearl.api.pipeline.BlendOp.ADD)))
+			.build());
 
 	/** Overwatch's perk menu orange: the brackets round the discs, and the perks' names (the owner's screenshot). */
 	private static final int PERK_ARC = 0xFFF0781E;
@@ -1044,6 +1124,24 @@ public final class HeroHud {
 				(float) dev.overcraft.tracer.TracerStats.RECALL_COOLDOWN, ability2ReadyAt);
 			return;
 		}
+		if (hero == Hero.ILLARI) {
+			// Outburst (Shift) and Healing Pylon (E, lit while it's out: E takes it back), in Kiriko's two places (ours)
+			ability(g, hero, w, "outburst", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.illari.IllariStats.OUTBURST_COOLDOWN, ability1ReadyAt);
+			// its fill against the cooldown it started with: 7 from a throw, 14 from its destruction, 5 / 12 with Rapid Construction (the
+			// critic, 2026-11-14: always out of 14)
+			float pylonCd = s.ability2Cooldown();
+			if (pylonCd > illariPylonLast + 0.05f) {
+				illariPylonTotal = pylonCd;
+			}
+			illariPylonLast = pylonCd;
+			ability(g, hero, w, "healing_pylon", w - 563, 906, HeroControls.get(Action.ABILITY_2), pylonCd,
+				Math.max(pylonCd, illariPylonTotal), ability2ReadyAt);
+			if ((s.mode() & dev.overcraft.illari.Illari.MODE_PYLON_OUT) != 0) {
+				song(g, true, false, w - 563, 906, w);
+			}
+			return;
+		}
 		if (hero == Hero.JUNKRAT) {
 			// Concussion Mine (Shift) with its charges in the corner and the next one's recharge as a band, its time shown only with none left
 			// (Tracer's Blink's way), lit while a mine is out (the right button sets it off), and Steel Trap (E), in Kiriko's two places (ours)
@@ -1059,6 +1157,49 @@ public final class HeroHud {
 			}
 			ability(g, hero, w, "steel_trap", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
 				(float) dev.overcraft.junkrat.JunkratStats.TRAP_COOLDOWN, ability2ReadyAt);
+			return;
+		}
+		if (hero == Hero.ASHE) {
+			// Coach Gun (Shift, lit while Double-Barreled's second shot is open) and Dynamite (E, lit while a stick is out with Remote
+			// Detonator: E sets it off), in Kiriko's two places (ours)
+			ability(g, hero, w, "coach_gun", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.ashe.AsheStats.COACH_COOLDOWN, ability1ReadyAt);
+			if ((s.mode() & dev.overcraft.ashe.Ashe.MODE_DOUBLE) != 0) {
+				song(g, true, false, w - 641, 903, w);
+			}
+			ability(g, hero, w, "dynamite", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.ashe.AsheStats.DYNAMITE_COOLDOWN, ability2ReadyAt);
+			if ((s.mode() & dev.overcraft.ashe.Ashe.MODE_DYNAMITE_OUT) != 0
+				&& s.minorPerk() == dev.overcraft.hero.Perk.index(dev.overcraft.hero.Perk.ASHE_REMOTE_DETONATOR)) {
+				song(g, true, false, w - 563, 906, w);
+			}
+			return;
+		}
+		if (hero == Hero.WIDOWMAKER) {
+			// Grappling Hook (Shift) and Venom Mine (E, lit while her mine is out), in Kiriko's two places (ours)
+			ability(g, hero, w, "grappling_hook", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				(float) dev.overcraft.widowmaker.WidowmakerStats.HOOK_COOLDOWN, ability1ReadyAt);
+			ability(g, hero, w, "venom_mine", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.widowmaker.WidowmakerStats.MINE_COOLDOWN, ability2ReadyAt);
+			if ((s.mode() & dev.overcraft.widowmaker.Widowmaker.MODE_MINE_OUT) != 0) {
+				song(g, true, false, w - 563, 906, w);
+			}
+			return;
+		}
+		if (hero == Hero.TORBJORN) {
+			// Deploy Turret (Shift: lit while his turret is out) and Overload (E: lit while it runs), in Kiriko's two places (ours)
+			// (the ring over the cooldown running now: 6 s from a throw, 12 s after a turret lost in combat; ability3Cooldown carries it)
+			ability(g, hero, w, "deploy_turret", w - 641, 903, HeroControls.get(Action.ABILITY_1), s.ability1Cooldown(),
+				s.ability3Cooldown() > 0 ? s.ability3Cooldown() : (float) dev.overcraft.torbjorn.TorbjornStats.TURRET_COOLDOWN_CALM,
+				ability1ReadyAt);
+			if ((s.mode() & dev.overcraft.torbjorn.Torbjorn.MODE_TURRET_OUT) != 0) {
+				song(g, true, false, w - 641, 903, w);
+			}
+			ability(g, hero, w, "overload", w - 563, 906, HeroControls.get(Action.ABILITY_2), s.ability2Cooldown(),
+				(float) dev.overcraft.torbjorn.TorbjornStats.OVERLOAD_COOLDOWN, ability2ReadyAt);
+			if ((s.mode() & dev.overcraft.torbjorn.Torbjorn.MODE_OVERLOAD) != 0) {
+				song(g, true, false, w - 563, 906, w);
+			}
 			return;
 		}
 		if (hero == Hero.CASSIDY) {
@@ -1373,7 +1514,23 @@ public final class HeroHud {
 		curve(g, cx, base + 36, slopeAt(960 - (w - cx)));
 		Identifier icon = HeroArt.ability(hero, ability);
 		boolean ready = cooldown <= 0;
-		if (ready || cooldown > total - CAST_TIME) {
+		if (abilityLocked(hero, ability)) {
+			// blocked (0786, 630E on each ability box: 47B7 #500, #860, 0C19 #597, a general flag, M). Measured from the owner's frame 2 (over a backdrop of (78, 79, 111), the box reads
+			// (160, 70, 88) at its top, (194, 65, 85) at its foot, (175, 67, 86) mean): see-through, reddening downward, edged in (245, 55, 87), its icon that red, slashed, a line at its foot
+			float y = base + 3;
+			float h = 66;
+			dev.overcraft.client.hud.HudDraw.gradient(g, x, y, size, h, 0x99D73F49, 0xBFE93C4C);
+			dev.overcraft.client.hud.HudDraw.outline(g, x, y, size, h, 2, LOCKED_RED);
+			iconOrName(g, icon, ability, x, y + 1, size, LOCKED_RED);
+			g.pose().pushMatrix();
+			g.pose().translate(cx, y + h / 2);
+			g.pose().rotate((float) Math.atan2(-h, size));
+			fill(g, -44, -1.5f, 88, 3, 0xCCF5A0AA);
+			g.pose().popMatrix();
+			fill(g, x, y + h + 5, size, 2.5f, LOCKED_RED);
+		} else if (abilityActive(hero, ability)) {
+			activeBox(g, icon, ability, x, base + 3, size, 66, "");
+		} else if (ready || cooldown > total - CAST_TIME) {
 			float y = base + 3;
 			float h = 66;
 			if (!ready) {
@@ -1408,6 +1565,49 @@ public final class HeroHud {
 			keyLabel(g, key, cx, base + 98, 0, ready);
 		}
 		g.pose().popMatrix();
+	}
+
+	/**
+	 * Whether this ability can't be used for what she's doing now: a general state of the boxes (see ability), each case read from the frames and the kit. Juno: while
+	 * she locks, Glide Boost (the issue's frame); Sombra: throwing the beacon, Cyberspace (frame 2, for its 0.4 s move: 0C19 #145 v8349). Being hacked isn't here: the
+	 * silence isn't synced to the client that has it (Hack.silenced).
+	 */
+	private static boolean abilityLocked(Hero hero, String ability) {
+		return locked(hero, ability);
+	}
+
+	/** Solid orange, its icon dark, seconds over it if any: an ability in use (measured from the owner's frame 2, Translocator's box: (252, 128, 95)). */
+	private static void activeBox(GuiGraphicsExtractor g, @Nullable Identifier icon, String ability, float x, float y, float size, float h, String seconds) {
+		box(g, x, y, size, h, ACTIVE_ORANGE);
+		iconOrName(g, icon, ability, x, y + 1, size, seconds.isEmpty() ? 0xF21A1B2E : 0x661A1B2E);
+		if (!seconds.isEmpty()) {
+			brush(g, seconds, x + size / 2, y + h / 2 + 15, 31);
+			HudText.plain(g, Face.NUMBERS, seconds, x + size / 2, y + h / 2 + 15, 31, WHITE, Align.CENTER);
+		}
+	}
+
+	/** Her beacon in the throw: Translocator's box is the active one (frame 2); the rest are locked (0C19 #145 v8349 = 0.4 s, H). */
+	private static boolean sombraThrowing() {
+		Minecraft mc = Minecraft.getInstance();
+		return mc.player != null && dev.overcraft.client.model.HeroAnimator.of(mc.player).since("throw",
+			(mc.player.level().getGameTime() + mc.getDeltaTracker().getGameTimeDeltaPartialTick(true)) / 20f) < SOMBRA_THROW_LOCK;
+	}
+
+	private static boolean abilityActive(Hero hero, String ability) {
+		return hero == Hero.SOMBRA && ability.equals("translocator") && sombraThrowing();
+	}
+
+	private static boolean locked(Hero hero, String ability) {
+		Minecraft mc = Minecraft.getInstance();
+		if (mc.player == null) {
+			return false;
+		}
+		HeroSyncPayload s = ClientHero.sync();
+		return switch (hero) {
+			case JUNO -> ability.equals("glide_boost") && s != null && (s.mode() & dev.overcraft.juno.Juno.MODE_LOCK) != 0;
+			case SOMBRA -> !ability.equals("translocator") && sombraThrowing();
+			default -> false;
+		};
 	}
 
 	private static void iconOrName(GuiGraphicsExtractor g, @Nullable Identifier icon, String ability, float x, float y,
@@ -1462,10 +1662,48 @@ public final class HeroHud {
 				dev.overcraft.sojourn.SojournStats.RAILGUN_AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;
 		}
+		if (hero == Hero.TORBJORN) {
+			// the Rivet Gun's 18 (the left button) where Kiriko's kunai are; with the hammer out, the hammer (no ammo); in Molten Core his
+			// slag left
+			int mode = s.mode();
+			if ((mode & dev.overcraft.torbjorn.Torbjorn.MODE_MOLTEN) != 0) {
+				weapon(g, hero, w, "molten_core", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.secondaryAmmo(),
+					dev.overcraft.torbjorn.TorbjornStats.SLAG_SHOTS, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			} else if ((mode & dev.overcraft.torbjorn.Torbjorn.MODE_HAMMER) != 0) {
+				weapon(g, hero, w, "forge_hammer", w - 307, 938.5f, 251, 65, 40, 40, w - 81, -1, 0,
+					HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			} else {
+				weapon(g, hero, w, "rivet_gun", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+					dev.overcraft.torbjorn.TorbjornStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			}
+			return;
+		}
+		if (hero == Hero.ILLARI) {
+			// the healing beam (the right button) where Kiriko's ofuda panel is, its solar energy along the panel's foot (Sojourn's bar);
+			// the Solar Rifle's 14 (the left) where her kunai are
+			weapon(g, hero, w, "healing_beam", w - 484, 923.5f, 169, 64, 40, 40, w - 342, -1, 0,
+				HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
+			railgunEnergy(g, s.meter(), w - 484, 923.5f, 169, w);
+			weapon(g, hero, w, "solar_rifle", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+				dev.overcraft.illari.IllariStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
 		if (hero == Hero.JUNKRAT) {
 			// the Frag Launcher's 5 (the left button) where Kiriko's kunai are
 			weapon(g, hero, w, "frag_launcher", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
 				dev.overcraft.junkrat.JunkratStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
+		if (hero == Hero.ASHE) {
+			// The Viper's 12 (the left button; the right aims it) where Kiriko's kunai are
+			weapon(g, hero, w, "the_viper", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+				dev.overcraft.ashe.AsheStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
+			return;
+		}
+		if (hero == Hero.WIDOWMAKER) {
+			// Widow's Kiss's 35 (the left button; the right scopes it) where Kiriko's kunai are
+			weapon(g, hero, w, "widow_s_kiss", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
+				dev.overcraft.widowmaker.WidowmakerStats.AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;
 		}
 		if (hero == Hero.CASSIDY) {
@@ -1495,6 +1733,7 @@ public final class HeroHud {
 			// her kunai are
 			weapon(g, hero, w, "pulsar_torpedoes", w - 484, 923.5f, 169, 64, 40, 40, w - 342, -1, 0,
 				HeroControls.get(Action.PRIMARY_FIRE), w - 355, 1009);
+			torpedoCount(g, s, w);
 			weapon(g, hero, w, "mediblaster", w - 307, 938.5f, 251, 65, 109, 36, w - 81, s.primaryAmmo(),
 				dev.overcraft.juno.JunoStats.MEDIBLASTER_AMMO, HeroControls.get(Action.SECONDARY_FIRE), w - 96, 1026);
 			return;
@@ -1577,9 +1816,10 @@ public final class HeroHud {
 		line(g, x, y + height - 3, width, false);
 		float mid = y + height / 2;
 		Identifier icon = HeroArt.ability(hero, weapon);
+		int tint = hero == Hero.SOMBRA && weapon.equals("hotfix") && sombraThrowing() ? LOCKED_RED : WHITE;
 		if (icon != null) {
 			// the kunai's icon a little further in than the ofuda's card (the eighth critique, the owner's frames)
-			image(g, icon, x + (iconW > 100 ? 21 : 16), mid - iconH / 2, iconW, iconH, WHITE);
+			image(g, icon, x + (iconW > 100 ? 21 : 16), mid - iconH / 2, iconW, iconH, tint);
 		}
 		if (clip > 0) {
 			// a weapon with no ammo (Mercy's staff) shows none
@@ -1593,6 +1833,25 @@ public final class HeroHud {
 		}
 		g.pose().popMatrix();
 		mouse(g, fire, mouseX, mouseY);
+	}
+
+	/** The torpedo slot counts down: an orange box with the lock's seconds while she locks (the note's frames, eye-read), its cooldown after, plain. The place in the panel is ours. */
+	private static void torpedoCount(GuiGraphicsExtractor g, HeroSyncPayload s, float w) {
+		Minecraft mc = Minecraft.getInstance();
+		float cx = w - 484 + 169 / 2f;
+		float mid = 923.5f + 64 / 2f;
+		g.pose().pushMatrix();
+		curve(g, cx, mid, slopeAt(960 - (w - cx)));
+		if ((s.mode() & dev.overcraft.juno.Juno.MODE_LOCK) != 0 && mc.player != null) {
+			float now = (mc.player.level().getGameTime() + mc.getDeltaTracker().getGameTimeDeltaPartialTick(true)) / 20f;
+			float left = (float) dev.overcraft.juno.JunoStats.LOCK_WINDOW - dev.overcraft.client.model.HeroAnimator.of(mc.player).since("torpedo_lock", now);
+			activeBox(g, HeroArt.ability(Hero.JUNO, "pulsar_torpedoes"), "pulsar_torpedoes", w - 484 + 8, 923.5f + 2, 56, 58, String.valueOf(Math.max(1, (int) Math.ceil(left))));
+		} else if (s.ability3Cooldown() > 0) {
+			String seconds = String.valueOf((int) Math.ceil(s.ability3Cooldown()));
+			brush(g, seconds, w - 484 + 36, mid + 12, 26);
+			HudText.plain(g, Face.NUMBERS, seconds, w - 484 + 36, mid + 12, 26, WHITE, Align.CENTER);
+		}
+		g.pose().popMatrix();
 	}
 
 	/**
@@ -1787,7 +2046,7 @@ public final class HeroHud {
 	 * Swift Step's target: four cyan corner brackets in a diamond around the ally it would go to, with its key under
 	 * them, on the ally (not the crosshair).
 	 */
-	private static void swiftStepTarget(GuiGraphicsExtractor g, LocalPlayer player, HeroSyncPayload s, float w, float h,
+	private static void swiftStepTarget(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, HeroSyncPayload s, float w, float h,
 										float partial) {
 		if (s.ability1Cooldown() > 0) {
 			return;
@@ -1807,7 +2066,7 @@ public final class HeroHud {
 	 * (more than 4 m away and within her range + 10 m), else the ally nearest the crosshair within 30 degrees and her range,
 	 * in sight, more than 4 m away. Souls aren't marked (ours: the client doesn't know them).
 	 */
-	private static void guardianAngelTarget(GuiGraphicsExtractor g, LocalPlayer player, HeroSyncPayload s, float w, float h,
+	private static void guardianAngelTarget(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, HeroSyncPayload s, float w, float h,
 											float partial) {
 		ClientMercy.State m = ClientMercy.state(player);
 		if (s.ability1Cooldown() > 0 || m == null || m.has(dev.overcraft.mercy.Mercy.FLAG_GA)
@@ -1891,7 +2150,7 @@ public final class HeroHud {
 	 * "v" under a row of white pips, one per 25 health): players and pets always, within ALLY_RANGE; villagers, golems
 	 * and allays only when hurt or close, or a village would be a wall of bars. Smaller further away.
 	 */
-	private static void allyMarkers(GuiGraphicsExtractor g, LocalPlayer player, float w, float h, float partial) {
+	private static void allyMarkers(GuiGraphicsExtractor g, net.minecraft.client.player.AbstractClientPlayer player, float w, float h, float partial) {
 		Vec3 eye = player.getEyePosition(partial);
 		for (LivingEntity ally : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(ALLY_RANGE),
 			e -> Allies.isAlly(player, e) && !e.isInvisible())) {
@@ -1931,7 +2190,7 @@ public final class HeroHud {
 			}
 			float alpha = (float) Math.clamp((ALLY_RANGE - distance) / 6, 0, 1);
 			String name = ally instanceof Player || ally.hasCustomName() ? ally.getName().getString().toUpperCase(Locale.ROOT) : null;
-			allyMarker(g, screen[0], screen[1], size, alpha, Ow.toOw(ally.getHealth()), Ow.toOw(ally.getMaxHealth()), name);
+			allyMarker(g, screen[0], screen[1], size, alpha, Ow.toOw(ally.getHealth()), Ow.toOw(ally.getMaxHealth()), name, hotfixPending(ally));
 		}
 	}
 
@@ -1939,8 +2198,28 @@ public final class HeroHud {
 	 * One ally's marker, its bottom at (x, y): from the top, the pips, the name in blue caps (players and named mobs), a
 	 * small open "v" (Overwatch's, the second critique).
 	 */
+	/**
+	 * Sombra's Hotfix still to come on this ally, in Overwatch health (#85): her heal graph binds 1 - healed / 175 (60FB #329, v76938) to
+	 * the band 0D86 on their health bar (#385, hers alone: a client-only presenter in her own graph), synced as her widgets' share and
+	 * share2 for her two slots. 0 for anyone else.
+	 */
+	private static float hotfixPending(LivingEntity ally) {
+		if (ClientHero.hero() != Hero.SOMBRA) {
+			return 0;
+		}
+		HeroSyncPayload.Widgets d = ClientHero.sync().widgets();
+		float share = d.target() == ally.getId() ? d.share() : d.target2() == ally.getId() ? d.share2() : 0;
+		return share * (float) dev.overcraft.sombra.SombraStats.HOTFIX_HEAL_TOTAL;
+	}
+
+	/**
+	 * Hotfix's band (0D86): its look isn't in the data (the .116 is empty), so ours: her heal's gold (the strands' middle stop,
+	 * SOMBRA_HOTFIX_STRAND 0.5: 1, .648, .094) over the pips from their health on, as far as the heal still to come reaches.
+	 */
+	private static final int HOTFIX_BAND = 0xFFA518;
+
 	private static void allyMarker(GuiGraphicsExtractor g, float x, float y, float size, float alpha, float health, float max,
-								   @Nullable String name) {
+								   @Nullable String name, float pending) {
 		g.pose().pushMatrix();
 		g.pose().translate(x, y);
 		g.pose().scale(size, size);
@@ -1963,6 +2242,12 @@ public final class HeroHud {
 				outline(g, px, -PIP_H, PIP_W, PIP_H, 1, alpha(0xFFFFFF, 0.3f * alpha));
 				if (held > 0) {
 					fill(g, px, -PIP_H, PIP_W * held, PIP_H, alpha(0xFFFFFF, alpha));
+				}
+			}
+			if (pending > 0) {
+				float to = Math.clamp((Math.min(max, health + pending) - i * per) / per, 0, 1);
+				if (to > held) {
+					fill(g, px + PIP_W * held, -PIP_H, PIP_W * (to - held), PIP_H, alpha(HOTFIX_BAND, 0.85f * alpha));
 				}
 			}
 		}
@@ -2036,7 +2321,7 @@ public final class HeroHud {
 	}
 
 	/** Where Minecraft's status-effect icons end, in GUI units from the top (0 with none): as Hud.extractEffects lays them. */
-	private static float effectRowsBottom(LocalPlayer player) {
+	private static float effectRowsBottom(net.minecraft.client.player.AbstractClientPlayer player) {
 		boolean beneficial = false;
 		boolean harmful = false;
 		for (MobEffectInstance effect : player.getActiveEffects()) {

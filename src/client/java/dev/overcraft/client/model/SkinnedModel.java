@@ -198,6 +198,14 @@ public final class SkinnedModel {
 				float[] normal = attrs.has("NORMAL") ? glb.floats(attrs.get("NORMAL").getAsInt()) : new float[count * 3];
 				float[] uv = attrs.has("TEXCOORD_0") ? glb.floats(attrs.get("TEXCOORD_0").getAsInt()) : new float[count * 2];
 				int[] joint4 = attrs.has("JOINTS_0") ? glb.ints(attrs.get("JOINTS_0").getAsInt()) : new int[count * 4];
+				// a vertex naming a joint past the skin's last is held to that last (Captive Sun's ball, 10BAE, one joint, named joint 1 and
+				// crashed the game drawing it, 2026-11-14)
+				int lastJoint = Math.max(0, joints.length - 1);
+				for (int ji = 0; ji < joint4.length; ji++) {
+					if (joint4[ji] > lastJoint) {
+						joint4[ji] = lastJoint;
+					}
+				}
 				float[] weight4 = attrs.has("WEIGHTS_0") ? glb.floats(attrs.get("WEIGHTS_0").getAsInt()) : new float[count * 4];
 				if (!skinned) {
 					for (int v = 0; v < count; v++) {

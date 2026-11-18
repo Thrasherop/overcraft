@@ -131,6 +131,15 @@ public final class CassidyStats {
 	 * enemies, then 50 bleed over 1.5 s; 8 s; Combat Roll and Deadeye reset it (D 01D2 / 5FDA H; BZ 2026-06-16; W) H. The bleed in
 	 * steps of 0.2 s (W 6.4 per 0.192 s; ours the tick-rounded step).
 	 */
+	/**
+	 * Silver Bullet's aim, held on the right button (#164, the owner: "isn't ADS ... like in the game"; graph 01D2's perk branch
+	 * 2723.134, research 2026-11-17): up at 5/s (0.2 s, #969), down in 0.1666 s (#970), no new raise while it comes down (v8036
+	 * #1020); the view zooms to 40 vertical degrees (v172 #965, the camera node Ana's scope uses with 30) by clamp(2 x the aim)
+	 * (op107, M); the mouse at 0.6 fully raised (#966); 20% slower while it's up at all (v23184 += 0.2, #1041 / #1045); the shot
+	 * only fully raised (#1101 -> #1120). His sets bind no raise pose (no 45D / 45E / category 81): the view only (H).
+	 */
+	public static final double SILVER_AIM_UP = 0.2, SILVER_AIM_DOWN = 0.1666, SILVER_FOV = 40, SILVER_SENSITIVITY = 0.6,
+		SILVER_SLOW = 0.2;
 	public static final double SILVER_DAMAGE = 70, SILVER_BLEED = 50, SILVER_BLEED_TIME = 1.5, SILVER_BLEED_STEP = 0.2,
 		SILVER_COOLDOWN = 8;
 

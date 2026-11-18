@@ -1,0 +1,261 @@
+# Ashe's voice: <sound id> = <file under E:/Overwatch Archive/extracted/154088/> (build 154088). Same format as illari.txt;
+# build_asset_pack.py sounds copies / mixes them into the local pack. Read 2026-11-14 offline (Overwatch and Battle.net
+# checked closed before every archive read and TankLib run). Scripts: E:/Overwatch Archive/research/ashe/scripts/sounds/
+# (voiceset_ashe.py, ashe_voice.py, ashe_voice_gen.py, which writes this file; Illari's voice pipeline retargeted); data:
+# research/ashe/work/voiceset_01B9.05F.json and stim078.json, research/ashe/sounds/voice_lines.json. Her sound effects
+# (and B.O.B.'s) are in ashe_sfx.txt.
+
+# ===== Voice (HeroVoice/Ashe): the voice set 01B9.05F's lines by moment (349 stimuli, 1064 lines; from ashe_voice.py:
+# each line's 0B2, stimulus, weight and decoded criteria; files from DataTool's extract-hero-voice --subtitles-with-sounds,
+# in research/ashe/extract). w = the line's weight. Lines with criteria are left out, as Illari's are (hero interactions,
+# skins, maps, Overwatch Classic, scripted moments: counted per moment), except 'NOT ScriptedEvent 191E', treated as
+# always true (kiriko-voice.md), and the A1E8 / A1E9 identifiers her own graph 14FF sets before B.O.B.'s farewell line.
+# Stimulus numbers (the .078): priority, radius m, volume dB, interrupt, cooldown s (m_A73F2EBE-m_DD27AC95 read as min-max,
+# M); Voice.java's table takes priority, cooldown and interrupt.
+# Ult lines (B.O.B.): her own copy 1837 is what Ashe says for herself ('Bob! Do something!'); allies hear 0A90 ('Get in
+# there, Bob!'), enemies 0A56 ('Bob! Do something!') (1536 #310 STU_37D754C8 keys F1AC / F1AB / F1AA, as Illari's 3CAB
+# #1084). Each has a second line ('Fred! I mean Bob...' / 'Get in there, F...') behind a celebration condition: left out.
+# B.O.B. has no voice of his own: his voice set 01CD.05F (25C3 STUVoiceSetComponent) holds no lines (work/bob/); his
+# sounds are effects, in ashe_sfx.txt.
+# Not mapped: 0AAB ('Back off!' / 'Mind your distance', the Coach Gun's look; no graph of hers raises it, L), 1706 ('Fred!',
+# 1536 #444 after B.O.B.'s state #436: one line, read as a skin / event line, L), 1890 (1536 #368, not in her voice set),
+# 0575 (a teammate's ult ready), 11E1 ('I like you on my team', category 31, no graph raises it), 1173 (last one alive),
+# 0A28 ('My name's Ashe...'), the Voicelines (the wheel's sprays of lines), the match / objective / PvE / Junkenstein lines.
+# Elimination 0008: 18 files; prio 70, 30 m, +2 dB, interrupt 0, cooldown 15-15 s; left out: 26 a hero interaction, 5 a scripted condition
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/000000055137.0B2-Right on schedule.ogg | w=0.05
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/000000055136.0B2-Don't waste my time.ogg | w=0.05
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/000000055135.0B2-You need to learn the rules.ogg | w=0.02
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/000000055134.0B2-Courtesy of the Deadlock Gang.ogg | w=0.05
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/000000055132.0B2-I stick up for my crew.ogg | w=0.01
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/00000005B9FE.0B2-Bless your heart.ogg | w=0.05
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/00000005FA01.0B2-Busy work.ogg | w=1
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/00000005FA02.0B2-Tell the devil I said howdy.ogg | w=1
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/00000005FA00.0B2-Dead as a doornail.ogg | w=1
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/00000005FA05.0B2-That one's on the house.ogg | w=1
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/000000061715.0B2-Outclassed.ogg | w=1
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/0000000616F2.0B2-No sweat off my brow.ogg | w=1
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/000000061711.0B2-Know your place.ogg | w=1
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/00000006172F.0B2-Have a nice day.ogg | w=1
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/0000000616F1.0B2-Riding ahead of the herd.ogg | w=1
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/0000000616FE.0B2-I'll be keepin' the change.ogg | w=1
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/00000006170B.0B2-Remember who's in charge.ogg | w=1
+ashe.voice.elimination = ../../research/ashe/extract/HeroVoice/Ashe/Elimination/00000006171F.0B2-Maybe next time, sugar.ogg | w=0.1
+# Multikill 00C9: 3 files; prio 70, 35 m, +2 dB, interrupt 0, cooldown 15-20 s
+ashe.voice.multikill = ../../research/ashe/extract/HeroVoice/Ashe/Multikill/00000005FA0A.0B2-They don't call me an outlaw for nothing.ogg | w=1
+ashe.voice.multikill = ../../research/ashe/extract/HeroVoice/Ashe/Multikill/00000006170C.0B2-Don't all volunteer at once, now.ogg | w=1
+ashe.voice.multikill = ../../research/ashe/extract/HeroVoice/Ashe/Multikill/0000000688C3.0B2-Now, who's next_.ogg | w=1
+# MeleeEnemyKilledRemark 0032 (an enemy killed in melee range): 4 files; prio 65, 30 m, +2 dB, interrupt 0, cooldown 10-14 s; left out: 2 a hero interaction, 1 a scripted condition
+ashe.voice.melee_kill = ../../research/ashe/extract/HeroVoice/Ashe/MeleeEnemyKilledRemark/00000005512D.0B2-I'm not afraid to get my hands dirty.ogg | w=0.1
+ashe.voice.melee_kill = ../../research/ashe/extract/HeroVoice/Ashe/MeleeEnemyKilledRemark/00000005FA09.0B2-Pushover.ogg | w=1
+ashe.voice.melee_kill = ../../research/ashe/extract/HeroVoice/Ashe/MeleeEnemyKilledRemark/000000061718.0B2-Ugh, get out of my way.ogg | w=1
+ashe.voice.melee_kill = ../../research/ashe/extract/HeroVoice/Ashe/MeleeEnemyKilledRemark/000000065431.0B2-Clobbered.ogg | w=1
+# On Fire 0583: 4 files; prio 60, 35 m, +2 dB, interrupt 0, cooldown 2-5 s; left out: 2 Overwatch Classic only
+ashe.voice.on_fire = ../../research/ashe/extract/HeroVoice/Ashe/OnFire/000000055191.0B2-I'm on fire!.ogg | w=1
+ashe.voice.on_fire = ../../research/ashe/extract/HeroVoice/Ashe/OnFire/000000061708.0B2-Can't handle the heat_ Stay out of my way!.ogg | w=1
+ashe.voice.on_fire = ../../research/ashe/extract/HeroVoice/Ashe/OnFire/000000061713.0B2-My fuse is lit!.ogg | w=1
+ashe.voice.on_fire = ../../research/ashe/extract/HeroVoice/Ashe/OnFire/0000000616F6.0B2-My coals are red hot!.ogg | w=1
+# Respawn 002C: 10 files; prio 40, 35 m, +0 dB, interrupt 0, cooldown 15-15 s; left out: 8 Overwatch Classic only, 1 a scripted condition
+ashe.voice.respawn = ../../research/ashe/extract/HeroVoice/Ashe/Respawn/00000005FA21.0B2-I'm about to pitch a fit.ogg | w=1
+ashe.voice.respawn = ../../research/ashe/extract/HeroVoice/Ashe/Respawn/00000005FA29.0B2-Back from the bone orchard.ogg | w=1
+ashe.voice.respawn = ../../research/ashe/extract/HeroVoice/Ashe/Respawn/00000005FA22.0B2-I don't take kindly to being knocked down.ogg | w=1
+ashe.voice.respawn = ../../research/ashe/extract/HeroVoice/Ashe/Respawn/00000005FA23.0B2-Let's get back in the saddle.ogg | w=1
+ashe.voice.respawn = ../../research/ashe/extract/HeroVoice/Ashe/Respawn/00000005FA24.0B2-You won't get the best of me.ogg | w=1
+ashe.voice.respawn = ../../research/ashe/extract/HeroVoice/Ashe/Respawn/00000005FA1E.0B2-I ain't a quitter.ogg | w=1
+ashe.voice.respawn = ../../research/ashe/extract/HeroVoice/Ashe/Respawn/00000005FA1F.0B2-I'm not ready to ride into the sunset.ogg | w=1
+ashe.voice.respawn = ../../research/ashe/extract/HeroVoice/Ashe/Respawn/00000005FA20.0B2-I know one thing_ someone's gonna pay.ogg | w=1
+ashe.voice.respawn = ../../research/ashe/extract/HeroVoice/Ashe/Respawn/00000005FA1C.0B2-This town just ain't big enough.ogg | w=1
+ashe.voice.respawn = ../../research/ashe/extract/HeroVoice/Ashe/Respawn/00000005FA1D.0B2-Now to show 'em that I mean business.ogg | w=1
+# Melee shout 0023 (the shared melee VoiceStimulus): 9 files; prio 35, 35 m, +0 dB, interrupt 0, cooldown 0.5-0.5 s
+ashe.voice.melee = ../../research/ashe/extract/HeroVoice/Ashe/Melee/000000055425.0B2-(shouts).ogg | w=0.7
+ashe.voice.melee = ../../research/ashe/extract/HeroVoice/Ashe/Melee/000000055424.0B2-(shouts).ogg | w=0.7
+ashe.voice.melee = ../../research/ashe/extract/HeroVoice/Ashe/Melee/000000055423.0B2-(shouts).ogg | w=0.7
+ashe.voice.melee = ../../research/ashe/extract/HeroVoice/Ashe/Melee/000000055427.0B2-(shouts).ogg | w=0.7
+ashe.voice.melee = ../../research/ashe/extract/HeroVoice/Ashe/Melee/000000055426.0B2-(shouts).ogg | w=0.7
+ashe.voice.melee = ../../research/ashe/extract/HeroVoice/Ashe/Melee/000000055422.0B2-(shouts).ogg | w=0.7
+ashe.voice.melee = ../../research/ashe/extract/HeroVoice/Ashe/Melee/000000064319.0B2-(shouts).ogg | w=1
+ashe.voice.melee = ../../research/ashe/extract/HeroVoice/Ashe/Melee/000000064317.0B2-(shouts).ogg | w=1
+ashe.voice.melee = ../../research/ashe/extract/HeroVoice/Ashe/Melee/000000064318.0B2-(shouts).ogg | w=1
+# Hero select 002B: 1 files; prio 100, 35 m, +0 dB, interrupt 0, cooldown 1-1 s; left out: 1 Overwatch Classic only
+ashe.voice.select = ../../research/ashe/extract/HeroVoice/Ashe/HeroSelect/00000005FA15.0B2-I'm the last one you'll ever cross.ogg | w=1
+# Death 0001: 6 files; prio 90, 60 m, +2 dB, interrupt 0, cooldown 2-5 s
+ashe.voice.death = ../../research/ashe/extract/HeroVoice/Ashe/Death/00000005544B.0B2-(dying sounds).ogg | w=1
+ashe.voice.death = ../../research/ashe/extract/HeroVoice/Ashe/Death/00000005544A.0B2-(dying sounds).ogg | w=1
+ashe.voice.death = ../../research/ashe/extract/HeroVoice/Ashe/Death/000000055449.0B2-(dying sounds).ogg | w=1
+ashe.voice.death = ../../research/ashe/extract/HeroVoice/Ashe/Death/000000055448.0B2-(dying sounds).ogg | w=1
+ashe.voice.death = ../../research/ashe/extract/HeroVoice/Ashe/Death/000000055447.0B2-(dying sounds).ogg | w=1
+ashe.voice.death = ../../research/ashe/extract/HeroVoice/Ashe/Death/00000005545A.0B2-(dying sounds).ogg | w=1
+# Pain 0003 / 0004: 19 files; prio 40, 35 m, -3 dB, interrupt 0, cooldown 1-2.5 s
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/000000055420.0B2-(grunts).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/00000005541F.0B2-(grunts).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/00000005541E.0B2-(grunts).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/00000005541D.0B2-(grunts).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/000000055421.0B2-(grunts).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/00000005541C.0B2-(grunts).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/00000005541B.0B2-(grunts).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/00000005541A.0B2-(grunts).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/000000055419.0B2-(grunts).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/00000005542C.0B2-(painful grunt).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/00000005542E.0B2-(painful grunt).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/000000055443.0B2-(painful grunt).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/00000005542F.0B2-(painful grunt).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/000000055442.0B2-(painful grunt).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/00000005543D.0B2-(painful grunt).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/000000055441.0B2-(painful grunt).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/000000055440.0B2-(painful grunt).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/00000005543F.0B2-(painful grunt).ogg | w=1
+ashe.voice.pain = ../../research/ashe/extract/HeroVoice/Ashe/Pain/00000005543E.0B2-(painful grunt).ogg | w=1
+# Resurrected 005A (what she says when a Mercy brings her back): 2 files; prio 75, 35 m, +0 dB, interrupt 0, cooldown 10-10 s
+ashe.voice.resurrected = ../../research/ashe/extract/HeroVoice/Ashe/Resurrected/000000055159.0B2-I owe you one.ogg | w=1
+ashe.voice.resurrected = ../../research/ashe/extract/HeroVoice/Ashe/Resurrected/000000057091.0B2-Hallelujah!.ogg | w=1
+# Ultimate/Ready 02E7 (the wheel line): 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s; left out: 1 a scripted condition
+ashe.voice.ult_ready = ../../research/ashe/extract/HeroVoice/Ashe/Ultimate/Ready/000000055166.0B2-My ultimate is ready!.ogg | w=1
+# Ultimate/Charging 0574: 3 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+ashe.voice.call_ult_charging = ../../research/ashe/extract/HeroVoice/Ashe/Ultimate/Charging/00000005516A.0B2-Bob's not ready yet.ogg | w=0.3
+ashe.voice.call_ult_charging = ../../research/ashe/extract/HeroVoice/Ashe/Ultimate/Charging/000000055175.0B2-My ultimate is charging.ogg | w=1
+ashe.voice.call_ult_charging = ../../research/ashe/extract/HeroVoice/Ashe/Ultimate/Charging/000000055168.0B2-Bob's taking a breather.ogg | w=0.3
+# Ultimate/AlmostReady 05A7: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s; left out: 1 a scripted condition
+ashe.voice.call_ult_almost = ../../research/ashe/extract/HeroVoice/Ashe/Ultimate/AlmostReady/00000005516C.0B2-My ultimate is almost ready.ogg | w=1
+# Hello 01CF: 7 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+ashe.voice.call_hello = ../../research/ashe/extract/HeroVoice/Ashe/Hello/000000055149.0B2-Hey.ogg | w=1
+ashe.voice.call_hello = ../../research/ashe/extract/HeroVoice/Ashe/Hello/000000055148.0B2-Hello.ogg | w=0.3
+ashe.voice.call_hello = ../../research/ashe/extract/HeroVoice/Ashe/Hello/00000005BA19.0B2-How y'all doing_.ogg | w=0.3
+ashe.voice.call_hello = ../../research/ashe/extract/HeroVoice/Ashe/Hello/000000063D43.0B2-Hey.ogg | w=1
+ashe.voice.call_hello = ../../research/ashe/extract/HeroVoice/Ashe/Hello/000000063D44.0B2-Howdy.ogg | w=0.01
+ashe.voice.call_hello = ../../research/ashe/extract/HeroVoice/Ashe/Hello/000000063D45.0B2-How's it going_.ogg | w=1
+ashe.voice.call_hello = ../../research/ashe/extract/HeroVoice/Ashe/Hello/000000063D46.0B2-Howdy.ogg | w=0.01
+# Thanks 01D0: 4 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+ashe.voice.call_thanks = ../../research/ashe/extract/HeroVoice/Ashe/Thanks/00000005516E.0B2-Thanks.ogg | w=1
+ashe.voice.call_thanks = ../../research/ashe/extract/HeroVoice/Ashe/Thanks/00000005516D.0B2-Thank you.ogg | w=1
+ashe.voice.call_thanks = ../../research/ashe/extract/HeroVoice/Ashe/Thanks/000000063D4C.0B2-Thank you kindly.ogg | w=1
+ashe.voice.call_thanks = ../../research/ashe/extract/HeroVoice/Ashe/Thanks/000000063D4D.0B2-Thanks.ogg | w=1
+# Sorry 05E1: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+ashe.voice.call_sorry = ../../research/ashe/extract/HeroVoice/Ashe/Sorry/000000057090.0B2-My mistake.ogg | w=1
+ashe.voice.call_sorry = ../../research/ashe/extract/HeroVoice/Ashe/Sorry/00000005708E.0B2-Sorry about that.ogg | w=1
+# No 01D2: 3 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+ashe.voice.call_no = ../../research/ashe/extract/HeroVoice/Ashe/No/00000005709D.0B2-No.ogg | w=1
+ashe.voice.call_no = ../../research/ashe/extract/HeroVoice/Ashe/No/0000000578FD.0B2-Nuh uh.ogg | w=1
+ashe.voice.call_no = ../../research/ashe/extract/HeroVoice/Ashe/No/0000000570D2.0B2-Nope.ogg | w=1
+# GroupUp 02C6: 3 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+ashe.voice.call_group_up = ../../research/ashe/extract/HeroVoice/Ashe/GroupUp/00000005514A.0B2-Everybody come over here.ogg | w=1
+ashe.voice.call_group_up = ../../research/ashe/extract/HeroVoice/Ashe/GroupUp/00000005514B.0B2-Get over here!.ogg | w=1
+ashe.voice.call_group_up = ../../research/ashe/extract/HeroVoice/Ashe/GroupUp/000000063D42.0B2-Get on over here!.ogg | w=1
+# AssistanceRequired 0427: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+ashe.voice.call_need_help = ../../research/ashe/extract/HeroVoice/Ashe/AssistanceRequired/00000005709C.0B2-Need a little help here!.ogg | w=1
+ashe.voice.call_need_help = ../../research/ashe/extract/HeroVoice/Ashe/AssistanceRequired/00000005709B.0B2-Help me!.ogg | w=1
+# Healing 0045: 3 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+ashe.voice.call_need_healing = ../../research/ashe/extract/HeroVoice/Ashe/Healing/00000005515C.0B2-I need healing!.ogg | w=1
+ashe.voice.call_need_healing = ../../research/ashe/extract/HeroVoice/Ashe/Healing/00000005515B.0B2-Someone get me some healing!.ogg | w=1
+ashe.voice.call_need_healing = ../../research/ashe/extract/HeroVoice/Ashe/Healing/000000063D47.0B2-I'm hurt over here!.ogg | w=1
+# ping 11D9: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+ashe.voice.ping = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/11D9.078/000000063D36.0B2-Over there!.ogg | w=1
+# ping warning 11DA: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+ashe.voice.ping_warning = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/11DA.078/000000063D37.0B2-Watch here!.ogg | w=1
+ashe.voice.ping_warning = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/11DA.078/000000063D38.0B2-Heads up!.ogg | w=1
+ashe.voice.ping_warning = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/11DA.078/000000063D39.0B2-Watch out!.ogg | w=1
+# ping enemy 1117: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+ashe.voice.ping_enemy = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/1117.078/000000063217.0B2-Enemy here!.ogg | w=1
+ashe.voice.ping_enemy = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/1117.078/000000063218.0B2-There's one here!.ogg | w=1
+ashe.voice.ping_enemy = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/1117.078/000000063216.0B2-Enemy spotted!.ogg | w=1
+# DamageBoosted 00CC (what she says when a Mercy boosts her): 3 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 30-30 s
+ashe.voice.damage_boosted = ../../research/ashe/extract/HeroVoice/Ashe/DamageBoosted/0000000557C8.0B2-I get the idea.ogg | w=1
+ashe.voice.damage_boosted = ../../research/ashe/extract/HeroVoice/Ashe/DamageBoosted/0000000557C7.0B2-Just point me in the right direction.ogg | w=1
+ashe.voice.damage_boosted = ../../research/ashe/extract/HeroVoice/Ashe/DamageBoosted/0000000557C6.0B2-Let me handle it.ogg | w=1
+# NanoBoosted 05E2 (what she says when an Ana nanos her): 3 files; prio 95, 80 m, +3 dB, interrupt 1, cooldown 2-2 s
+ashe.voice.nano_boosted = ../../research/ashe/extract/HeroVoice/Ashe/NanoBoosted/0000000616FD.0B2-There is no stopping me.ogg | w=1
+ashe.voice.nano_boosted = ../../research/ashe/extract/HeroVoice/Ashe/NanoBoosted/000000061709.0B2-You should be quakin' in your boots!.ogg | w=1
+ashe.voice.nano_boosted = ../../research/ashe/extract/HeroVoice/Ashe/NanoBoosted/0000000616F3.0B2-Line 'em up!.ogg | w=1
+# Dynamite thrown 0A57 Bomb/Activate ('Dynamite out!' / 'Hey! Catch!'; 14FD #107 at the throw, H): 5 files; prio 60, 60 m, +0 dB, interrupt 0, cooldown 10-10 s; left out: 1 a scripted condition
+ashe.voice.dynamite = ../../research/ashe/extract/HeroVoice/Ashe/Bomb/Activate/000000055123.0B2-Smoke 'em outta there.ogg | w=0.3
+ashe.voice.dynamite = ../../research/ashe/extract/HeroVoice/Ashe/Bomb/Activate/000000055121.0B2-Here it comes!.ogg | w=0.3
+ashe.voice.dynamite = ../../research/ashe/extract/HeroVoice/Ashe/Bomb/Activate/00000005F9EF.0B2-Dynamite out!.ogg | w=1
+ashe.voice.dynamite = ../../research/ashe/extract/HeroVoice/Ashe/Bomb/Activate/00000005F9F0.0B2-She's gonna blow!.ogg | w=0.8
+ashe.voice.dynamite = ../../research/ashe/extract/HeroVoice/Ashe/Bomb/Activate/00000005F9F1.0B2-Hey! Catch!.ogg | w=0.8
+# Dynamite / burn kill 0A91 Bomb/Elimination ('I enjoy a good roast' / 'Out with a bang'; 14FD #206 message 1B27, M): 3 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 10-15 s; left out: 1 a scripted condition
+ashe.voice.dynamite_kill = ../../research/ashe/extract/HeroVoice/Ashe/Bomb/Elimination/00000005F9F2.0B2-I enjoy a good roast.ogg | w=1
+ashe.voice.dynamite_kill = ../../research/ashe/extract/HeroVoice/Ashe/Bomb/Elimination/00000005F9F3.0B2-Out with a bang.ogg | w=1
+ashe.voice.dynamite_kill = ../../research/ashe/extract/HeroVoice/Ashe/Bomb/Elimination/00000005F9F4.0B2-Never said it'd be pretty.ogg | w=1
+# Dynamite shot early 0A97 ('Short fuse' / 'Cutting to the chase' / 'Boom!'; 14FD #133 message -> #220 (a status 09EB / 2855 on her) -> #219, M node, M meaning): 8 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 10-10 s
+ashe.voice.dynamite_shot = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A97.078/00000005511D.0B2-Nailed it.ogg | w=0.5
+ashe.voice.dynamite_shot = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A97.078/00000005511C.0B2-Didn't feel like waiting around.ogg | w=0.5
+ashe.voice.dynamite_shot = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A97.078/00000005511B.0B2-Cutting to the chase.ogg | w=0.5
+ashe.voice.dynamite_shot = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A97.078/000000057083.0B2-(laughs).ogg | w=0.5
+ashe.voice.dynamite_shot = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A97.078/00000005F9F5.0B2-Enjoy the fireworks.ogg | w=1
+ashe.voice.dynamite_shot = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A97.078/00000005F9F6.0B2-Short fuse.ogg | w=1
+ashe.voice.dynamite_shot = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A97.078/00000005F9F7.0B2-Boom!.ogg | w=1
+ashe.voice.dynamite_shot = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A97.078/0000000688C2.0B2-Sometimes you gotta light your own fuse.ogg | w=1
+# Coach Gun fired 0A92 ('(coach gun)', an effort sound; 1513 #153, H): 3 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 10-10 s
+ashe.voice.coach_gun = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A92.078/00000005554C.0B2-(coach gun).ogg | w=1
+ashe.voice.coach_gun = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A92.078/00000005554D.0B2-(coach gun).ogg | w=1
+ashe.voice.coach_gun = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A92.078/00000005554E.0B2-(coach gun).ogg | w=1
+# Coach Gun kill 0AAC ('Knocked down' / 'Up and out'; 1513 #328 message 1B27, M): 3 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 10-10 s; left out: 2 a scripted condition
+ashe.voice.coach_gun_kill = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/AAC.078/00000005707D.0B2-You just went boom.ogg | w=1
+ashe.voice.coach_gun_kill = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/AAC.078/00000005F9FB.0B2-Knocked down.ogg | w=1
+ashe.voice.coach_gun_kill = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/AAC.078/00000005F9FC.0B2-Up and out.ogg | w=1
+# B.O.B. gone, he got kills 0A93 ('Thanks, Bob' / 'Attaboy, Bob!'; 14FF #151 message 1C22 v41446 >= 1 -> #161 sets ScriptedEvent A1E8 -> #162; the free lines plus A1E8's, M): 6 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 10-10 s; left out: 3 a scripted condition
+ashe.voice.bob_end_kills = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A93.078/000000055140.0B2-Thanks, Bob.ogg | w=1
+ashe.voice.bob_end_kills = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A93.078/00000005513E.0B2-I can always count on you, Bob.ogg | w=1
+ashe.voice.bob_end_kills = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A93.078/00000005705C.0B2-Bob, get out of there!.ogg | w=1
+ashe.voice.bob_end_kills = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A93.078/00000006269C.0B2-Attaboy, Bob!.ogg | w=1
+ashe.voice.bob_end_kills = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A93.078/00000006269E.0B2-Enough, Bob.ogg | w=1
+ashe.voice.bob_end_kills = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A93.078/0000000626A0.0B2-Good shooting, Bob!.ogg | w=1
+# B.O.B. gone, no kills 0A93 ('Step it up, Bob!' / 'Dangit, Bob!'; 14FF #161 with v41446 == 0 sets A1E9; the free lines plus A1E9's, M): 6 files; prio 50, 35 m, +0 dB, interrupt 0, cooldown 10-10 s; left out: 3 a scripted condition
+ashe.voice.bob_end_no_kills = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A93.078/000000055140.0B2-Thanks, Bob.ogg | w=1
+ashe.voice.bob_end_no_kills = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A93.078/00000005513F.0B2-Dangit, Bob!.ogg | w=1
+ashe.voice.bob_end_no_kills = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A93.078/00000005705C.0B2-Bob, get out of there!.ogg | w=1
+ashe.voice.bob_end_no_kills = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A93.078/00000006269D.0B2-Step it up, Bob!.ogg | w=1
+ashe.voice.bob_end_no_kills = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A93.078/00000006269E.0B2-Enough, Bob.ogg | w=1
+ashe.voice.bob_end_no_kills = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/A93.078/00000006269F.0B2-Bob, I've had it with you!.ogg | w=0.25
+# B.O.B. destroyed 12A4 ('They got Bob! Dammit' / 'Not again'; 14FF #187 message 1E6F sets v45300 -> #190 false -> #192, M): 4 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 10-10 s
+ashe.voice.bob_destroyed = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/12A4.078/00000006542A.0B2-(frustrated) You'll pay for that.ogg | w=1
+ashe.voice.bob_destroyed = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/12A4.078/00000006542C.0B2-They got Bob! Dammit.ogg | w=1
+ashe.voice.bob_destroyed = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/12A4.078/000000064DD7.0B2-Not again.ogg | w=1
+ashe.voice.bob_destroyed = ../../research/ashe/extract/HeroVoice/Ashe/Unknown/12A4.078/00000006542D.0B2-Well that's just grand.ogg | w=1
+# B.O.B., her own copy 1837 ('Bob! Do something!'; 1536 #310 STU_37D754C8 key F1AC, the own key, H): 1 files; prio 95, 80 m, +8 dB, interrupt 0, cooldown 1-1 s; left out: 1 a scripted condition, 1 a skin / celebration
+ashe.voice.ultimate = ../../research/ashe/extract/HeroVoice/Ashe/Ultimate/00000006975F.0B2-Bob! Do something!.ogg | w=1
+# B.O.B. line, allies 0A90 ('Get in there, Bob!'; 1536 #310 key F1AB, the friendly key, H): 1 files; prio 95, 60 m, +6 dB, interrupt 0, cooldown 1-1 s; left out: 1 a skin / celebration
+ashe.ult.friendly = ../../research/ashe/extract/HeroVoice/Ashe/Ultimate/00000005705D.0B2-Get in there, Bob!.ogg | w=1
+# B.O.B. line, enemies 0A56 ('Bob! Do something!'; 1536 #310 key F1AA, the enemy key, H): 1 files; prio 95, 80 m, +8 dB, interrupt 0, cooldown 1-1 s; left out: 1 a scripted condition, 1 a skin / celebration
+ashe.ult.enemy = ../../research/ashe/extract/HeroVoice/Ashe/Ultimate/000000055126.0B2-Bob! Do something!.ogg | w=1
+# GOOD JOB (the wheel key's tap): as Junkrat's, ours are her Teammate/KillSeen 001B lines (a teammate's kill seen) with
+#  no criteria. Her set also has 11E1 ('I like you on my team' / 'You're right on target!', category 31), unmapped as Illari's.
+ashe.voice.call_good_job = ../../research/ashe/extract/HeroVoice/Ashe/Teammate/KillSeen/000000055199.0B2-Can't put a price on good help.ogg | w=0.5
+ashe.voice.call_good_job = ../../research/ashe/extract/HeroVoice/Ashe/Teammate/KillSeen/000000055187.0B2-You should join my crew.ogg | w=1
+ashe.voice.call_good_job = ../../research/ashe/extract/HeroVoice/Ashe/Teammate/KillSeen/00000005FA12.0B2-Color me impressed.ogg | w=1
+# Voice subtitles: one per event (its lines vary); ours describe the moment, quoting a line where the pool says one thing.
+$ashe.voice.elimination = Ashe remarks on a takedown
+$ashe.voice.multikill = Ashe remarks on a multikill
+$ashe.voice.melee_kill = Ashe remarks on a melee kill
+$ashe.voice.on_fire = Ashe is on fire
+$ashe.voice.respawn = Ashe is back
+$ashe.voice.melee = Ashe shouts
+$ashe.voice.select = Ashe: I'm the last one you'll ever cross
+$ashe.voice.death = Ashe dies
+$ashe.voice.pain = Ashe grunts
+$ashe.voice.resurrected = Ashe: I owe you one
+$ashe.voice.ult_ready = Ashe: My ultimate is ready!
+$ashe.voice.call_ult_charging = Ashe: My ultimate is charging
+$ashe.voice.call_ult_almost = Ashe: My ultimate is almost ready
+$ashe.voice.call_hello = Ashe: Hello
+$ashe.voice.call_thanks = Ashe: Thanks
+$ashe.voice.call_sorry = Ashe: My mistake
+$ashe.voice.call_no = Ashe: No
+$ashe.voice.call_group_up = Ashe: Group up here
+$ashe.voice.call_need_help = Ashe: Need a little help here!
+$ashe.voice.call_need_healing = Ashe: I need healing!
+$ashe.voice.ping = Ashe: Over there
+$ashe.voice.ping_warning = Ashe: Watch here
+$ashe.voice.ping_enemy = Ashe: Enemy here!
+$ashe.voice.damage_boosted = Ashe is damage boosted
+$ashe.voice.nano_boosted = Ashe is nano boosted
+$ashe.voice.dynamite = Ashe: Dynamite out!
+$ashe.voice.dynamite_kill = Ashe remarks on a dynamite kill
+$ashe.voice.dynamite_shot = Ashe: Short fuse
+$ashe.voice.coach_gun = Ashe grunts (Coach Gun)
+$ashe.voice.coach_gun_kill = Ashe remarks on a Coach Gun kill
+$ashe.voice.bob_end_kills = Ashe: Thanks, Bob
+$ashe.voice.bob_end_no_kills = Ashe: Step it up, Bob!
+$ashe.voice.bob_destroyed = Ashe: They got Bob!
+$ashe.voice.ultimate = Ashe: Bob! Do something!
+$ashe.voice.call_good_job = Ashe compliments a teammate
+$ashe.ult.friendly = Ashe: Get in there, Bob!
+$ashe.ult.enemy = Ashe: Bob! Do something!

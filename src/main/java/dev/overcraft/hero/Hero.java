@@ -27,7 +27,9 @@ public enum Hero {
 	// her kit is being built (#65), step by step on her branch: playable there, not merged until it's whole
 	BRIGITTE("brigitte", "Brigitte", Role.SUPPORT, "survivor",
 		dev.overcraft.brigitte.BrigitteStats.HEALTH + dev.overcraft.brigitte.BrigitteStats.ARMOR, true, 0xFFC7432E),
-	ILLARI("illari", "Illari", Role.SUPPORT, "survivor", 250, false, 0xFFF2C14E),
+	// her kit (#135): Survivor (D tag 1173, 01C7 #2564); colour her data's hero colour (#A58C54, heroes.txt sRGB #D2C49B: ours the
+	// warmer gold kept)
+	ILLARI("illari", "Illari", Role.SUPPORT, "survivor", dev.overcraft.illari.IllariStats.HEALTH, true, 0xFFF2C14E),
 	// her kit is being built (#1), step by step on her branch: playable there, not merged until it's whole
 	JUNO("juno", "Juno", Role.SUPPORT, "survivor", dev.overcraft.juno.JunoStats.HEALTH + dev.overcraft.juno.JunoStats.SHIELDS, true,
 		0xFFE85A9B),
@@ -41,7 +43,14 @@ public enum Hero {
 	// the fourth Damage hero (#72), Sharpshooter (D tag 1188; BZ 2026-02-10); colour ours (his serape's red)
 	CASSIDY("cassidy", "Cassidy", Role.DAMAGE, "sharpshooter", dev.overcraft.cassidy.CassidyStats.HEALTH, true, 0xFFB8392B),
 	// the fifth Damage hero (#73), Specialist (D tag 116F, 01C7 #2567; BZ 2026-02-10); colour ours (his explosives' yellow)
-	JUNKRAT("junkrat", "Junkrat", Role.DAMAGE, "specialist", dev.overcraft.junkrat.JunkratStats.HEALTH, true, 0xFFE8B51F);
+	JUNKRAT("junkrat", "Junkrat", Role.DAMAGE, "specialist", dev.overcraft.junkrat.JunkratStats.HEALTH, true, 0xFFE8B51F),
+	// the sixth Damage hero (#136), Specialist (D tag 116F, 01C7 #2567; BZ 2026-02-10): 225 + 75 armor; colour ours (his forge's orange)
+	TORBJORN("torbjorn", "Torbjörn", Role.DAMAGE, "specialist",
+		dev.overcraft.torbjorn.TorbjornStats.HEALTH + dev.overcraft.torbjorn.TorbjornStats.ARMOR, true, 0xFFD9752B),
+	// the sixth Damage hero (#137), Sharpshooter (D tag 1188, loadout 0DDD; BZ 2026-02-10; W); colour ours (her white hair's silver)
+	ASHE("ashe", "Ashe", Role.DAMAGE, "sharpshooter", dev.overcraft.ashe.AsheStats.HEALTH, true, 0xFFC9C3B8),
+	// the last Damage hero (#138), Sharpshooter (D tag 1188, loadout 0DDD; BZ 2026-02-10; W); colour ours (her skin's violet)
+	WIDOWMAKER("widowmaker", "Widowmaker", Role.DAMAGE, "sharpshooter", dev.overcraft.widowmaker.WidowmakerStats.HEALTH, true, 0xFF8A6FD1);
 
 	public enum Role { TANK, DAMAGE, SUPPORT }
 
@@ -76,7 +85,7 @@ public enum Hero {
 	 */
 	public int armor() {
 		// D.Va's: the MEKA's 325 (as the pilot she has none: HeroState.armor(player) reads her body)
-		return this == BRIGITTE ? dev.overcraft.brigitte.BrigitteStats.ARMOR : this == DVA ? dev.overcraft.dva.DvaStats.MECH_ARMOR : 0;
+		return this == BRIGITTE ? dev.overcraft.brigitte.BrigitteStats.ARMOR : this == TORBJORN ? dev.overcraft.torbjorn.TorbjornStats.ARMOR : this == DVA ? dev.overcraft.dva.DvaStats.MECH_ARMOR : 0;
 	}
 
 	/** The top layer of owHealth: shields or armor. */

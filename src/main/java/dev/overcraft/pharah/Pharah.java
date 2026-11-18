@@ -20,7 +20,6 @@ import dev.overcraft.hero.Sleep;
 import dev.overcraft.hero.Voice;
 import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroSyncPayload;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -180,6 +179,8 @@ public final class Pharah implements HeroKit {
 			if (s.pharahFuel > 0 && s.pharahFuel <= drain) {
 				// the drain runs out: 0025 #30 StateChaseVar onFinished -> #724 effect 5939 (B050, pharah_sfx.txt)
 				PharahSounds.all(player.level(), "hover.empty", player.position(), 40);
+				// the jets sputtering (0185, L which event plays it: PharahFx)
+				Effects.play(player.level(), "pharah_hover_empty", player.position(), Vec3.ZERO, player, 0, player);
 			}
 			s.pharahFuel = Math.max(0, s.pharahFuel - drain);
 		} else if (s.pharahFuel > FUEL_MAX && now - s.pharahOverfuelAt > Ow.ticks(OVERFUEL_HOLD)) {
@@ -228,6 +229,10 @@ public final class Pharah implements HeroKit {
 			endJet(player, s);
 		}
 		startJet(player, s, JUMP_JET, JET_FUEL);
+		// its look 00F2 at her jets (PharahFx: the flash, the ring under her, 0.33 s of flames, 0.67 s of smoke)
+		Effects.play(player.level(), "pharah_jump_jet", player.position(), Vec3.ZERO, player, 0, player);
+		// a movement ability lets go of a Jetpack Cat's rope (W; #142)
+		dev.overcraft.jetpackcat.JetpackCat.letGo(player);
 		Combat.animate(player, "jump_jet");
 		PharahSounds.split(player, "jump_jet", player.position(), 60);
 		Voice.say(player, "jump_jet", 1);
@@ -242,7 +247,12 @@ public final class Pharah implements HeroKit {
 		}
 		// no fuel of its own; Fuel Stores gives it 50 (D 0025 #758)
 		startJet(player, s, JET_DASH, s.has(Perk.PHARAH_FUEL_STORES) ? STORES_FUEL : 0);
+		// its look 5910 (00F2's renderers, H: PharahFx); the ring upright behind her along her look (her client picks the dash's
+		// way from her input: ours)
+		Effects.play(player.level(), "pharah_jet_dash", player.position(), new Vec3(0, 1, 0).cross(sideOf(player)), player, 0, player);
 		// the same clips as Jump Jet (D 4B92 #65 / #346 / #509)
+		// a movement ability lets go of a Jetpack Cat's rope (W; #142)
+		dev.overcraft.jetpackcat.JetpackCat.letGo(player);
 		Combat.animate(player, "jump_jet");
 		PharahSounds.split(player, "jet_dash", player.position(), 60);
 		Voice.say(player, "jet_dash", 1);
@@ -293,6 +303,8 @@ public final class Pharah implements HeroKit {
 		Vec3 aim = aimPoint(player, 200);
 		Vec3 from = muzzle(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD);
 		shoot(player, Kind.ROCKET, from, aim.subtract(from), ROCKET_SPEED);
+		// the launch 0091 at the launcher's hp 0006 (PharahFx)
+		Effects.play(player.level(), "pharah_launch", from, aim.subtract(from).normalize(), player, 0, player);
 		Combat.animate(player, "fire");
 		PharahSounds.split(player, "rocket.fire", from, 80);
 		if (s.pharahSalvoUntil >= now) {
@@ -322,6 +334,8 @@ public final class Pharah implements HeroKit {
 			double side = (i == 0 ? -1 : 1) * SALVO_APART / 2;
 			Vec3 from = muzzle(player, MUZZLE_RIGHT + side, MUZZLE_UP, MUZZLE_AHEAD);
 			shoot(player, Kind.SALVO, from, aim.add(sideOf(player).scale(side)).subtract(from), SALVO_SPEED);
+			// 7769 has no launch effect (H): the rocket's launch at half size (variant 1, ours: PharahFx)
+			Effects.play(player.level(), "pharah_launch", from, aim.subtract(from).normalize(), player, 1, player);
 		}
 		PharahSounds.split(player, "perk.salvo", player.getEyePosition(), 60);
 	}
@@ -346,6 +360,8 @@ public final class Pharah implements HeroKit {
 			Vec3 aim = aimPoint(player, 300);
 			Vec3 from = muzzle(player, -CONCUSSIVE_LEFT, CONCUSSIVE_UP_OFF, CONCUSSIVE_AHEAD);
 			shoot(player, Kind.CONCUSSIVE, from, aim.subtract(from), CONCUSSIVE_SPEED);
+			// its launch 012F at her wrist 0038 (PharahFx: blue to her side, red to her enemies)
+			Effects.play(player.level(), "pharah_conc_launch", from, aim.subtract(from).normalize(), player, 0, player);
 		}
 	}
 
@@ -371,10 +387,13 @@ public final class Pharah implements HeroKit {
 		Vec3 aim = aimPoint(player, 200);
 		while (s.pharahBarrageClock >= 1) {
 			s.pharahBarrageClock -= 1;
-			double[] pod = BARRAGE_PODS[s.pharahPod++ % BARRAGE_PODS.length];
+			int which = s.pharahPod++ % BARRAGE_PODS.length;
+			double[] pod = BARRAGE_PODS[which];
 			Vec3 from = pod(player, pod);
 			Vec3 dir = spread(aim.subtract(from).normalize(), BARRAGE_SPREAD, player.getRandom());
 			shoot(player, Kind.BARRAGE, from, dir, BARRAGE_SPEED);
+			// the pod's flash (008A; the variant the pod in turn: PharahFx poses it)
+			Effects.play(player.level(), "pharah_pod", from, dir, player, which, player);
 		}
 		if (s.pharahBarrage % 4 == 0) {
 			PharahSounds.split(player, "barrage.fire", player.getEyePosition(), 100);
@@ -606,10 +625,8 @@ public final class Pharah implements HeroKit {
 				dealt(owner, dealt, e);
 			}
 		}
-		level.sendParticles(ParticleTypes.EXPLOSION, at.x, at.y, at.z, 1, 0, 0, 0, 0);
-		if (kind != Kind.BARRAGE) {
-			level.sendParticles(ParticleTypes.FLAME, at.x, at.y, at.z, 6, 0.3, 0.3, 0.3, 0.02);
-		}
+		// the rocket's blast 0115, a mini-rocket's 0081 (Barrage's and Salvo's share it, H: PharahFx)
+		Effects.play(level, kind == Kind.ROCKET ? "pharah_rocket_burst" : "pharah_mini_burst", at, Vec3.ZERO, null, 0, owner);
 		PharahSounds.all(level, kind == Kind.BARRAGE ? "barrage.burst" : "rocket.burst", at, 150);
 		if (target != null && kind == Kind.ROCKET) {
 			PharahSounds.split(owner, "rocket.hit_enemy", at, 100);
@@ -629,7 +646,9 @@ public final class Pharah implements HeroKit {
 				continue;
 			}
 			double d = Math.sqrt(e.getBoundingBox().distanceToSqr(at));
-			if (d > CONCUSSIVE_BLAST || !inSight(level, at, e) || !me && Barriers.between(level, at, e.getBoundingBox().getCenter(), owner) != null) {
+			// any enemy barrier between, Brigitte's too (Barrier.shields asks Barriers.between first): one behind hers was
+			// thrown (#104's sweep); Concussive Blast isn't among what pierces barriers (the wiki's Barrier page, rev 406358)
+			if (d > CONCUSSIVE_BLAST || !inSight(level, at, e) || !me && dev.overcraft.brigitte.Barrier.shields(e, owner, at)) {
 				continue;
 			}
 			if (force && !me) {
@@ -649,8 +668,8 @@ public final class Pharah implements HeroKit {
 				s.softLanding = true;
 			}
 		}
-		level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y, at.z, 1, 0, 0, 0, 0);
-		level.sendParticles(ParticleTypes.CLOUD, at.x, at.y, at.z, 30, 1.5, 1.0, 1.5, 0.15);
+		// its burst 0116 (PharahFx: blue to her side, red to her enemies)
+		Effects.play(level, "pharah_conc_burst", at, Vec3.ZERO, null, 0, owner);
 		PharahSounds.all(level, "concussive.burst", at, 150);
 	}
 

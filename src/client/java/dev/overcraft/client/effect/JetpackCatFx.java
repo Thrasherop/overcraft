@@ -18,6 +18,82 @@ import java.util.Map;
  * renderer, and each client tick (the rope, the boost trails, Catnapper's target).
  */
 public final class JetpackCatFx {
+	/** Its art, made ahead as the hero is picked (HeroFxArt, #128): what its first uses made (the client log) and what this class names. */
+	public static final java.util.List<EffectArt.Art> ART = java.util.List.of(
+		new EffectArt.Art("cat_arc_flash", Palette.CAT_ARC_FLASH, false),
+		new EffectArt.Art("cat_arc_lines", Palette.CAT_ARC_LINES, false),
+		new EffectArt.Art("cat_bell_band", Palette.CAT_BELL_GOLD, false),
+		new EffectArt.Art("cat_blob#4", Palette.CAT_SPARK_GOLD, false),
+		new EffectArt.Art("cat_blob#4", Palette.CAT_SPARK_PALE, false),
+		new EffectArt.Art("cat_bubble_band", Palette.CAT_BUBBLE, false),
+		new EffectArt.Art("cat_claw_flame#4", Palette.CAT_SHOCK_FLAME, false),
+		new EffectArt.Art("cat_cone_line", Palette.CAT_DIVE_CYAN, false),
+		new EffectArt.Art("cat_cone_noise", Palette.CAT_HOOK, false),
+		new EffectArt.Art("cat_crack_glow", Palette.CAT_HALO, false),
+		new EffectArt.Art("cat_dust_puff#4", Palette.NATURAL, true),
+		new EffectArt.Art("cat_flame_tube#8", Palette.CAT_FLAME, false),
+		new EffectArt.Art("cat_flame_tube#8", Palette.CAT_FLAME_GOLD, true),
+		new EffectArt.Art("cat_flame_tube#8", Palette.CAT_FLAME_TEAL, false),
+		new EffectArt.Art("cat_flare", Palette.CAT_FLASH_BLUE, false),
+		new EffectArt.Art("cat_flare", Palette.CAT_HALO, false),
+		new EffectArt.Art("cat_flare", Palette.CAT_STAMP_GOLD, false),
+		new EffectArt.Art("cat_glow_noise", Palette.CAT_FLASH_BLUE, false),
+		new EffectArt.Art("cat_glow_noise", Palette.CAT_HALO, false),
+		new EffectArt.Art("cat_glow_noise", Palette.CAT_PURR_BLUE, false),
+		new EffectArt.Art("cat_ground_flash", Palette.CAT_NAP_GROUND, false),
+		new EffectArt.Art("cat_hex_frame", Palette.CAT_HEX, false),
+		new EffectArt.Art("cat_nap_line", Palette.CAT_NAP_MARKER, false),
+		new EffectArt.Art("cat_nap_ring", Palette.CAT_NAP_MARKER, false),
+		new EffectArt.Art("cat_noise", Palette.CAT_HALO, false),
+		new EffectArt.Art("cat_paw_marker_full", Palette.CAT_MARKER, false),
+		new EffectArt.Art("cat_paw_toe", Palette.CAT_PAW_PRINT, false),
+		new EffectArt.Art("cat_paw_toe", Palette.CAT_PAW_PRINT_BLUE, false),
+		new EffectArt.Art("cat_purr_streak", Palette.CAT_PURR_GOLD, false),
+		new EffectArt.Art("cat_purr_wall_band", Palette.CAT_PURR_GOLD, false),
+		new EffectArt.Art("cat_ring", Palette.CAT_FLAME, false),
+		new EffectArt.Art("cat_ring", Palette.CAT_HALO, false),
+		new EffectArt.Art("cat_ring", Palette.CAT_PURR_GOLD, false),
+		new EffectArt.Art("cat_ring", Palette.CAT_PURR_RING, false),
+		new EffectArt.Art("cat_ring", Palette.CAT_RIBBON, false),
+		new EffectArt.Art("cat_ring_band", Palette.CAT_MARKER, false),
+		new EffectArt.Art("cat_ring_line", Palette.CAT_FLASH_BLUE, false),
+		new EffectArt.Art("cat_ring_line", Palette.CAT_TETHER, false),
+		new EffectArt.Art("cat_rope", Palette.CAT_TETHER, false),
+		new EffectArt.Art("cat_rope_braid", Palette.CAT_TETHER, false),
+		new EffectArt.Art("cat_shock_sphere", Palette.CAT_SHOCK, false),
+		new EffectArt.Art("cat_slash_band", Palette.CAT_SLASH, false),
+		new EffectArt.Art("cat_soft", Palette.CAT_CORE, false),
+		new EffectArt.Art("cat_soft", Palette.CAT_FLAME, false),
+		new EffectArt.Art("cat_soft", Palette.CAT_HALO, false),
+		new EffectArt.Art("cat_soft", Palette.CAT_HEAL_GOLD, false),
+		new EffectArt.Art("cat_soft", Palette.CAT_NAP_IMPACT, false),
+		new EffectArt.Art("cat_soft", Palette.CAT_PURR_BLUE, false),
+		new EffectArt.Art("cat_soft", Palette.CAT_PURR_GOLD, false),
+		new EffectArt.Art("cat_soft", Palette.CAT_STAMP_BLUE, false),
+		new EffectArt.Art("cat_soft", Palette.CAT_TETHER, false),
+		new EffectArt.Art("cat_soft", Palette.NATURAL, true),
+		new EffectArt.Art("cat_star", Palette.CAT_TETHER, false),
+		new EffectArt.Art("cat_streak", Palette.CAT_FLASH_BLUE, false),
+		new EffectArt.Art("cat_streak", Palette.CAT_HEAL_GOLD, false),
+		new EffectArt.Art("cat_streak", Palette.CAT_PAW_PRINT, false),
+		new EffectArt.Art("cat_streak", Palette.CAT_SPARK, false),
+		new EffectArt.Art("cat_tracer", Palette.CAT_TRACER, false),
+		new EffectArt.Art("cat_trail_ribbon", Palette.CAT_RIBBON, false),
+		new EffectArt.Art("lucio_glow", Palette.CAT_HALO, false),
+		new EffectArt.Art("smoke#48", Palette.NATURAL, true),
+		new EffectArt.Art("spark#4", Palette.CAT_CLAW_SPARK, false),
+		new EffectArt.Art("spark#4", Palette.CAT_SHOCK_SPARK, false),
+		new EffectArt.Art("spark#4", Palette.CAT_SPARK, false));
+	/** And as an enemy sees it, for a client seeing another player play the hero. */
+	public static final java.util.List<EffectArt.Art> ART_ENEMY = java.util.List.of(
+		new EffectArt.Art("cat_bubble_band", Palette.CAT_TETHER_ENEMY, false),
+		new EffectArt.Art("cat_claw_flame#4", Palette.CAT_SHOCK_FLAME_ENEMY, false),
+		new EffectArt.Art("cat_cone_line", Palette.CAT_DIVE_ENEMY, false),
+		new EffectArt.Art("cat_cone_noise", Palette.CAT_TETHER_ENEMY, false),
+		new EffectArt.Art("cat_ground_flash", Palette.CAT_NAP_GROUND_ENEMY, false),
+		new EffectArt.Art("cat_slash_band", Palette.CAT_SLASH_ENEMY, false),
+		new EffectArt.Art("spark#4", Palette.CAT_CLAW_SPARK_ENEMY, false));
+
 	/** Whether the effect being made is an enemy hero's (drawn in the enemy red and orange). */
 	private static boolean enemy;
 	/** Each Jetpack Cat towing or carrying someone: her entity id -> {theirs, 1 if she's an enemy's}. */
@@ -31,7 +107,7 @@ public final class JetpackCatFx {
 	 * How long a Jetpack Cat's Lifeline has towed the local player (s), -1 not towed: their Detach prompt (#85). Catnapper's carry
 	 * (a tether's third value) isn't a tow: jump does nothing there.
 	 */
-	public static float towedFor(net.minecraft.client.player.LocalPlayer player) {
+	public static float towedFor(net.minecraft.client.player.AbstractClientPlayer player) {
 		boolean towed = devTowed;
 		for (int[] tether : TETHERS.values()) {
 			towed |= tether[0] == player.getId() && tether[2] == 0;
@@ -147,7 +223,7 @@ public final class JetpackCatFx {
 	 * The Jetpack Cat whose Lifeline the local player could take now (Interact: LifelineGrabPayload), or -1: an ally's,
 	 * on and towing nobody, with the player in its cylinder (the server checks again: sight, the lock-out).
 	 */
-	public static int lifelineOffer(net.minecraft.client.player.LocalPlayer player) {
+	public static int lifelineOffer(net.minecraft.client.player.AbstractClientPlayer player) {
 		for (Map.Entry<Integer, Boolean> e : SEEKING.entrySet()) {
 			if (e.getValue() || TETHERS.containsKey(e.getKey()) || e.getKey() == player.getId()) {
 				continue;
@@ -162,6 +238,17 @@ public final class JetpackCatFx {
 			}
 		}
 		return -1;
+	}
+
+	/** Allied Jetpack Cats seeking now (Lifeline on, towing nobody), not the local player: for the icon over each (ReticleHud). */
+	public static java.util.List<Integer> alliedSeekers(net.minecraft.client.player.AbstractClientPlayer player) {
+		java.util.List<Integer> out = new java.util.ArrayList<>();
+		for (Map.Entry<Integer, Boolean> e : SEEKING.entrySet()) {
+			if (!e.getValue() && !TETHERS.containsKey(e.getKey()) && e.getKey() != player.getId()) {
+				out.add(e.getKey());
+			}
+		}
+		return out;
 	}
 
 	/** Jetpack Cats with Lifeline on and towing nobody (their seeking marker and hook glow: seekers). */

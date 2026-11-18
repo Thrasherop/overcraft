@@ -1,0 +1,60 @@
+---- Minecraft Crash Report ----
+// Shall we play a game?
+
+Time: 2026-11-13 19:18:46
+Description: Exception in server tick loop
+
+java.lang.IllegalStateException: Tried to get player before player joined
+	at knot//dev.overcraft.vendor.arcade.replay.recorder.player.ReplayPlayerRecorder.getPlayerOrThrow(ReplayPlayerRecorder.kt:86)
+	at knot//dev.overcraft.vendor.arcade.replay.recorder.player.ReplayPlayerRecorder.takeSnapshot(ReplayPlayerRecorder.kt:161)
+	at knot//dev.overcraft.vendor.arcade.replay.io.writer.flashback.FlashbackWriter.startNewReplayChunk(FlashbackWriter.kt:256)
+	at knot//dev.overcraft.vendor.arcade.replay.io.writer.flashback.FlashbackWriter.tick(FlashbackWriter.kt:108)
+	at knot//dev.overcraft.vendor.arcade.replay.recorder.ReplayRecorder.tick(ReplayRecorder.kt:560)
+	at knot//dev.overcraft.vendor.arcade.replay.recorder.player.ReplayPlayerRecorder.tick(ReplayPlayerRecorder.kt:153)
+	at knot//dev.overcraft.vendor.arcade.replay.recorder.player.ReplayPlayerRecorders.tickAll(ReplayPlayerRecorders.kt:221)
+	at knot//dev.overcraft.potg.PotgRecorder.tick(PotgRecorder.java:130)
+	at knot//dev.overcraft.Overcraft.lambda$onInitialize$12(Overcraft.java:208)
+	at knot//net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.lambda$static$3(ServerTickEvents.java:55)
+	at knot//net.minecraft.server.MinecraftServer.handler$znl000$fabric-lifecycle-events-v1$onEndTick(MinecraftServer.java:4916)
+	at knot//net.minecraft.server.MinecraftServer.tickServer(MinecraftServer.java:1004)
+	at knot//net.minecraft.client.server.IntegratedServer.tickServer(IntegratedServer.java:139)
+	at knot//net.minecraft.server.MinecraftServer.processPacketsAndTick(MinecraftServer.java:1013)
+	at knot//net.minecraft.client.server.IntegratedServer.processPacketsAndTick(IntegratedServer.java:107)
+	at knot//net.minecraft.server.MinecraftServer.runServer(MinecraftServer.java:752)
+	at knot//net.minecraft.server.MinecraftServer.lambda$spin$0(MinecraftServer.java:310)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- System Details --
+Details:
+	Minecraft Version: 26.3
+	Minecraft Version ID: 26.3
+	Operating System: Windows 11 (amd64) version 10.0
+	Java Version: 25.0.4.1, Eclipse Adoptium
+	Java VM Version: OpenJDK 64-Bit Server VM (mixed mode, sharing), Eclipse Adoptium
+	Memory: 1682884712 bytes (1604 MiB) / 3221225472 bytes (3072 MiB) up to 3221225472 bytes (3072 MiB)
+	Memory (heap): init: 252MiB, used: 1466MiB, committed: 3072MiB, max: 3072MiB
+	Memory (non-heap): init: 007MiB, used: 239MiB, committed: 261MiB, max: 000MiB
+	CPUs: 16
+	Processor Vendor: GenuineIntel
+	Processor Name: 12th Gen Intel(R) Core(TM) i7-12650H
+	Identifier: Intel64 Family 6 Model 154 Stepping 3
+	Microarchitecture: Alder Lake
+	Frequency (GHz): 2.69
+	Number of physical packages: 1
+	Number of physical CPUs: 10
+	Number of logical CPUs: 16
+	Graphics card #0 name: NVIDIA GeForce RTX 3070 Laptop GPU
+	Graphics card #0 vendor: NVIDIA
+	Graphics card #0 VRAM (MiB): 8192.00
+	Graphics card #0 deviceId: VideoController1
+	Graphics card #0 versionInfo: 32.0.15.6607
+	Graphics card #1 name: Intel(R) UHD Graphics
+	Graphics card #1 vendor: Intel Corporation
+	Graphics card #1 VRAM (MiB): 1024.00
+	Graphics card #1 deviceId: VideoController2
+	Graphics card #1 versionInfo: 31.0.101.3962
+	Memory slot #0 capacity (MiB): 8192.00

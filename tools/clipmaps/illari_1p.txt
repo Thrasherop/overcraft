@@ -1,0 +1,78 @@
+# Illari, first person (the same model 000000000117.118 with look 80B.119, on entity 48CC (Gameplay1P); set 0F5D; entity fields
+# 45 / 1.275 / 0.8925 / 1.0; the rifle 53DA on hardpoint 0078).
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\illari\scripts\clipmaps_illari.py from the
+# compacted blend-tree sets (research\illari\work\clipmap_illari\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+0-36_00000000D4E8 = jump   # 0.2333 s; set 0F5D alias 6 ((was jump_takeoff: alias 6 seq[0] take-off) 1P jump: seq[0] take-off, seq[1] / sm[1] the fall (H tree)); sel[4] @85 sm[0] @6 sm[0] seq[0]; on 3 paths
+0-36_00000000D4E9 = fall   # 0.4333 s; set 0F5D alias 6 ((was jump_fall: alias 6 seq[1] / sm[1] fall) 1P jump: seq[0] take-off, seq[1] / sm[1] the fall (H tree)); sel[4] @85 sm[0] @6 sm[0] seq[1]; on 6 paths
+0-37_00000000D04E = run   # 1.0667 s; set 0F5D alias 9 ((was stand_move: alias 9 df18 cat5, the move) 1P stand / move (df18 cat9 stand, cat5 move) (M)); sel[4] @85 sm[1] @9 df18=cat5; on 3 paths
+0-60_00000000CF5E = idle   # 0.3 s; set 0F5D alias 9 ((was stand_stand: alias 9 df18 cat9, the stand (0.3 s held pose)) 1P stand / move (df18 cat9 stand, cat5 move) (M)); sel[4] @85 sm[1] @9 df18=cat9; on 3 paths
+4-6_00000000DAAE = add_stand   # 0.1667 s; set 0F5D alias 9 (1P stand / move (df18 cat9 stand, cat5 move) (M)); sel[4] @85 sm[1] @9 df18:+add(); on 4 paths
+4-6_00000000D4EB = add_stand_2   # 0.4667 s; set 0F5D alias 9 (1P stand / move (df18 cat9 stand, cat5 move) (M)); sel[4] @85 sm[1] @9 df18:+add(); on 4 paths
+4-4_00000000D4EF = add_stand_3   # 1 s; set 0F5D alias 9 (1P stand / move (df18 cat9 stand, cat5 move) (M)); sel[4] @85 sm[1] @9 df18:+add() +add(); on 4 paths
+4-5_00000000DB14 = add_idle   # 4.2333 s; set 0F5D alias 85 ((was add_base_85: alias 85's additive (4.2 s breathing layer, M)) the locomotion tree under alias 2 (M)); sel[4] @85 +add(); on 2 paths
+4-4_00000000D4EA = add_base_85_tr01   # 0.4 s; set 0F5D alias 85 (the locomotion tree under alias 2 (M)); sel[4] @85 +add() tr[0>1]; on 2 paths
+4-20_000000000C63 = add_layer_140_sm0_sm0   # 1.3333 s; set 0F5D alias 140 (1P generic layer (L)); +add(df102) @83D741F8 @83D741F4 @83D741ED @83D741E7 @83D7418B @140 +add(dfBC4) sm[0] sm[0]; on 4 paths
+4-4_000000005687 = add_layer_140_tr041   # 0.6667 s; set 0F5D alias 140 (1P generic layer (L)); +add(df102) @83D741F8 @83D741F4 @83D741ED @83D741E7 @83D7418B @140 +add(dfBC4) tr[0, 4>1]; on 2 paths
+4-4_000000003B47 = add_layer_140_sm0_sm0_2   # 0.5667 s; set 0F5D alias 140 (1P generic layer (L)); +add(df102) @83D741F8 @83D741F4 @83D741ED @83D741E7 @83D7418B @140 +add() sm[0] sm[0]; on 4 paths
+4-20_000000003B43 = add_layer_140_sm1_sm0_se0_sm0   # 0.3333 s; set 0F5D alias 140 (1P generic layer (L)); +add(df102) @83D741F8 @83D741F4 @83D741ED @83D741E7 @83D7418B @140 +add() sm[1] sm[0] seq[0] sm[0]; on 2 paths
+4-20_000000003B44 = add_layer_140_sm1_sm0_se0_sm1   # 0.3333 s; set 0F5D alias 140 (1P generic layer (L)); +add(df102) @83D741F8 @83D741F4 @83D741ED @83D741E7 @83D7418B @140 +add() sm[1] sm[0] seq[0] sm[1]; on 4 paths
+4-20_000000003B45 = add_layer_140_sm1_tr01   # 0.4333 s; set 0F5D alias 140 (1P generic layer (L)); +add(df102) @83D741F8 @83D741F4 @83D741ED @83D741E7 @83D7418B @140 +add() sm[1] tr[0>1]; on 2 paths
+4-28_00000000D4A2 = add_base   # 0.0667 s; set 0F5D alias 2 (the base tree (locomotion + layers)); +add(df102) @83D741F8 @83D741F4 @83D741ED @83D741E7 +add({'bound': '0000000000E8.013'}) @83D741B8
+4-4_00000000DE5C = add_base_2   # 2 s; set 0F5D alias 2 (the base tree (locomotion + layers)); +add(df102) @83D741F8 @83D741F4 @83D741ED +add({'bound': '0000000001AC.013'}) @83D741EE
+4-28_00000000D495 = add_base_3   # 0.0333 s; set 0F5D alias 2 (the base tree (locomotion + layers)); +add(df102) @83D741F8 @83D741F4 +add({'bound': '000000000126.013'}) @83D741F5
+4-4_00000000D015 = add_base_4   # 1.4667 s; set 0F5D alias 2 (the base tree (locomotion + layers)); +add(df102) @83D741F8 +add({'bound': '0000000000E8.013'}) @83D741F9
+0-36_00000000F44A = stun   # 1.0667 s; set 0F5D alias 70 (shared CC); -
+0-32_00000000DD5F = reload   # 1.4667 s; set 0F5D alias 4 ((was reload: alias 4 (1.47 s)) Solar Rifle reload (3A65 #2152, 1.5 s) (H)); -
+128-32_00000000D306 = melee   # 0.7333 s; set 0F5D alias D ((was melee: alias D) quick melee (shared 0043, 1D blend by pitch) (H, as Junkrat's)); -
+4-0_000000006197 = add_knockdown_end   # 1 s; set 0F5D alias 66 (shared CC); -
+4-4_000000006196 = add_knockdown   # 0.6667 s; set 0F5D alias 65 (shared CC); -
+4-0_000000006195 = add_knockdown_start   # 1 s; set 0F5D alias 64 (shared CC); -
+4-4_000000008424 = add_a726   # 0.5672 s; set 0F5D alias 726 (L); -
+0-36_000000008B8B = a6d2   # 0.5 s; set 0F5D alias 6D2 (L); -
+0-32_000000008BB5 = a6d1   # 0.4 s; set 0F5D alias 6D1 (L); -
+0-32_00000000D597 = ball_fire   # 0.6 s; set 0F5D alias 691 ((was ball_fire: alias 691) Captive Sun ball shot (3CAB #753, 0.6 s; 1D by pitch) (H)); -
+0-32_00000000D592 = ult_launch   # 1.1667 s; set 0F5D alias 1B8 ((was ult_launch: alias 1B8) Captive Sun launch (3CAB #822, 1.2 s) (H)); -
+128-33_00000000D095 = outburst   # 0.7667 s; set 0F5D alias 677 ((was outburst: alias 677) Outburst (3B38 #635, 0.8 s) (H)); -
+0-37_00000000D595 = flight   # 3.6 s; set 0F5D alias 60F ((was flight: alias 60F (3.6 s)) Captive Sun flight with the ball ready (3CAB #828, 3.6 s loop; 2D blend by move direction) (H)); -
+0-36_00000000D1B3 = pylon_throw   # 0.4667 s; set 0F5D alias 479 ((was pylon_throw: alias 479) Healing Pylon throw (3DF4 #89; 1D blend by aim pitch) (H)); -
+4-4_00000000DD72 = add_beam   # 0.3667 s; set 0F5D alias 16F (secondary healing beam (3A65 #2936 / #2937 / #2957) (H)); @83D7419D df19D=cat6E @83D741D8 df583=cat192 @83D741B7
+4-4_00000000DD71 = add_beam_2   # 0.5 s; set 0F5D alias 16F (secondary healing beam (3A65 #2936 / #2937 / #2957) (H)); @83D7419D df19D=cat6E @83D741D8 df583=cat1A5 @83D7419E
+4-4_00000000D538 = add_beam_3   # 0.5 s; set 0F5D alias 16F (secondary healing beam (3A65 #2936 / #2937 / #2957) (H)); @83D7419D df19D=cat6E @83D741D8 df583=default[2] @83D741D9
+4-4_00000000D4A3 = add_beam_4   # 0.3 s; set 0F5D alias 16F (secondary healing beam (3A65 #2936 / #2937 / #2957) (H)); @83D7419D df19D=cat82 @83D741A0
+4-28_00000000D53B = add_beam_hold   # 0.3333 s; set 0F5D alias 16F ((was add_beam: alias 16F df19D default) secondary healing beam (3A65 #2936 / #2937 / #2957) (H)); @83D7419D df19D=default[2] @83D7419F; on 2 paths
+4-12_00000000D547 = add_beam_5   # 1 s; set 0F5D alias 16F (secondary healing beam (3A65 #2936 / #2937 / #2957) (H)); +add({'bound': '0000000000E8.013'}) @83D741A5 @83D741A4
+4-4_0000000060E9 = add_a467_se0_ra0   # 3.6 s; set 0F5D alias 467 (1P fidgets, 3 random picks (L)); seq[0] rand[0]
+4-4_000000005E41 = add_a467_se0_ra1   # 2.4333 s; set 0F5D alias 467 (1P fidgets, 3 random picks (L)); seq[0] rand[1]
+4-4_00000000612D = add_a467_se0_ra2   # 2.6667 s; set 0F5D alias 467 (1P fidgets, 3 random picks (L)); seq[0] rand[2]
+4-4_00000000DD70 = add_charge   # 0.3 s; set 0F5D alias 16E (Solar Rifle charge layer (3A65 #2932 / #2927 / #2926; dfC5 cat6E charging, cat82 just fired) (H)); df19D=cat6E @83D741EF df583=cat192 @83D74199
+4-4_00000000DED9 = add_charge_2   # 0.4333 s; set 0F5D alias 16E (Solar Rifle charge layer (3A65 #2932 / #2927 / #2926; dfC5 cat6E charging, cat82 just fired) (H)); df19D=cat6E @83D741EF df583=cat1A5 @83D741D7
+4-4_00000000D010 = add_charge_3   # 0.4 s; set 0F5D alias 16E (Solar Rifle charge layer (3A65 #2932 / #2927 / #2926; dfC5 cat6E charging, cat82 just fired) (H)); df19D=cat6E @83D741EF df583=default[2] @83D741F0
+4-5_00000000D006 = add_fire   # 0.3 s; set 0F5D alias 4A8 ((was add_fire: alias 4A8 under 16E df19D cat82 (the shot)) Solar Rifle shot: under alias 16E dfC5 cat82 (the shot's recoil; M: no StateAnim names it, as Cassidy's fire)); df19D=cat82 @4A8; on 2 paths
+4-28_00000000D478 = add_charge_hold   # 2.0667 s; set 0F5D alias 16E ((was add_charge: alias 16E df19D default (2.07 s, the charge)) Solar Rifle charge layer (3A65 #2932 / #2927 / #2926; dfC5 cat6E charging, cat82 just fired) (H)); df19D=default[2] @83D74197; on 2 paths
+4-4_00000000DDD2 = add_beam_end   # 0.3 s; set 0F5D alias 40A (after heavy beam use (3A65 #3005, 0.6 s) (H)); df583=cat192 @83D741EC
+4-4_00000000D496 = add_beam_end_2   # 0.2 s; set 0F5D alias 40A (after heavy beam use (3A65 #3005, 0.6 s) (H)); df583=default[1] @83D741EA
+0-36_00000000DF2B = hello   # 1.1667 s; set 0F5D alias 1EE (the comms wheel's Hello); -
+4-4_00000000DF35 = add_hello_add   # 1.1667 s; set 0F5D alias 2DE (Hello additive); -
+4-4_000000000C4F = add_sway_sm0_sm0_up   # 1.2333 s; set 0F5D alias C8 (weapon sway / hit reaction (shared)); dfE5=cat8D @83D74204 sm[0] sm[0] blend1d(dfF0) 1d@1.0; on 3 paths
+4-4_0000000000F4 = add_sway_sm0_sm1   # 0.5 s; set 0F5D alias C8 (weapon sway / hit reaction (shared)); dfE5=cat8D @83D74204 sm[0] sm[1] blend1d({'bound': '000000000044.013'}); on 3 paths
+4-4_0000000000F2 = add_sway_sm0_sm1_up   # 0.5 s; set 0F5D alias C8 (weapon sway / hit reaction (shared)); dfE5=cat8D @83D74204 sm[0] sm[1] blend1d({'bound': '000000000044.013'}) 1d@1.0; on 3 paths
+4-4_0000000000F5 = add_sway_sm0_sm2   # 0.5 s; set 0F5D alias C8 (weapon sway / hit reaction (shared)); dfE5=cat8D @83D74204 sm[0] sm[2] blend1d({'bound': '000000000044.013'}); on 3 paths
+4-4_0000000000F3 = add_sway_sm0_sm2_up   # 0.5 s; set 0F5D alias C8 (weapon sway / hit reaction (shared)); dfE5=cat8D @83D74204 sm[0] sm[2] blend1d({'bound': '000000000044.013'}) 1d@1.0; on 3 paths
+4-4_0000000000EB = add_sway_sm0_sm3   # 0.5 s; set 0F5D alias C8 (weapon sway / hit reaction (shared)); dfE5=cat8D @83D74204 sm[0] sm[3] blend1d({'bound': '000000000044.013'}); on 3 paths
+4-4_000000000074 = add_sway_sm0_sm3_up   # 0.5 s; set 0F5D alias C8 (weapon sway / hit reaction (shared)); dfE5=cat8D @83D74204 sm[0] sm[3] blend1d({'bound': '000000000044.013'}) 1d@1.0; on 3 paths
+4-4_0000000000E9 = add_sway_sm0_sm4   # 0.5 s; set 0F5D alias C8 (weapon sway / hit reaction (shared)); dfE5=cat8D @83D74204 sm[0] sm[4] blend1d({'bound': '000000000044.013'}); on 3 paths
+4-4_000000000076 = add_sway_sm0_sm4_up   # 0.5 s; set 0F5D alias C8 (weapon sway / hit reaction (shared)); dfE5=cat8D @83D74204 sm[0] sm[4] blend1d({'bound': '000000000044.013'}) 1d@1.0; on 3 paths
+4-4_0000000000EC = add_sway_sm0_sm5   # 0.5 s; set 0F5D alias C8 (weapon sway / hit reaction (shared)); dfE5=cat8D @83D74204 sm[0] sm[5] blend1d({'bound': '000000000044.013'}); on 3 paths
+4-4_000000000075 = add_sway_sm0_sm5_up   # 0.5 s; set 0F5D alias C8 (weapon sway / hit reaction (shared)); dfE5=cat8D @83D74204 sm[0] sm[5] blend1d({'bound': '000000000044.013'}) 1d@1.0; on 3 paths
+4-4_0000000000EA = add_sway_sm0_sm6   # 0.5 s; set 0F5D alias C8 (weapon sway / hit reaction (shared)); dfE5=cat8D @83D74204 sm[0] sm[6] blend1d({'bound': '000000000044.013'}); on 3 paths
+4-4_000000000073 = add_sway_sm0_sm6_up   # 0.5 s; set 0F5D alias C8 (weapon sway / hit reaction (shared)); dfE5=cat8D @83D74204 sm[0] sm[6] blend1d({'bound': '000000000044.013'}) 1d@1.0; on 3 paths
+4-6_0000000000F6 = add_sway   # 0.1667 s; set 0F5D alias C8 (weapon sway / hit reaction (shared)); dfE5=cat8D @83D74204 +add(); on 3 paths
+0-36_0000000174AB = solar_flare   # 0.8 s; set 0F5D alias ACC (Solar Flare perk (51F3 #482, 0.8 s) (H)); -
+4-4_000000000957 = add_knockdown_shared   # 1 s; set 0F5D alias 1DE (); -
+4-4_000000000959 = add_knockdown_shared_2   # 0.6667 s; set 0F5D alias 1DF (); -
+4-4_000000000958 = add_knockdown_shared_3   # 1 s; set 0F5D alias 1E0 (); -
+# Extracted under this model but in none of its sets (233, not named): 000037 000847 000848 000849 0008CD 000998 000999 00099A 00099B 00099C 00099D 00099E 00099F 0009A0 000FCF 000FD0 00187D 0027AD 0027AE 00395B 008539 00CFC2 00D01E 00D01F 00D020 00D069 00D089 00D091 00D092 00D096 00D0E4 00D13D 00D1B4 00D23F 00D246 00D264 00D265 00D266 00D26B 00D2D8 00D300 00D301 00D302 00D307 00D35B 00D35D 00D482 00D484 00D485 00D486 00D487 00D48B 00D48C 00D48D 00D48E 00D48F 00D499 00D4D2 00D4D3 00D4D5 00D4D6 00D4D7 00D4D8 00D4D9 00D526 00D527 00D528 00D529 00D52A 00D52B 00D52C 00D52D 00D58B 00D598 00D5F3 00D5F9 00D660 00D667 00D668 00D669 00D66A 00D66F 00D670 00D671 00D672 00D89F 00D9CD 00D9CE 00D9CF 00D9FE 00DA03 00DA04 00DA93 00DAB0 00DAB1 00DAB2 00DAB4 00DAFA 00DAFB 00DAFC 00DAFD 00DB01 00DB02 00DB03 00DB04 00DB63 00DB77 00DB7D 00DB91 00DB92 00DC11 00DC24 00DC25 00DC29 00DC2F 00DC33 00DC34 00DC35 00DC36 00DC37 00DC38 00DC3E 00DC54 00DC55 00DC56 00DC74 00DD43 00DD60 00DD7C 00DDBD 00DDBE 00DDBF 00DDC0 00DDC1 00DDC2 00DDC3 00DDC4 00DDC5 00DDC6 00DDC7 00DDC8 00DDC9 00DDCA 00DDCB 00DDCC 00DDCD 00DDCE 00DDCF 00DDD0 00DDE0 00DDE1 00DDE3 00DDF5 00DE0C 00DE0D 00DE0E 00DE0F 00DE10 00DE14 00DE19 00DE97 00DE98 00DE99 00DE9A 00DE9B 00DE9C 00DE9D 00DE9E 00DE9F 00DEA2 00DEA4 00DEA5 00DEA6 00DEA7 00DEA8 00DEA9 00DEAA 00DEAB 00DEAF 00DECA 00DED5 00DED6 00DEEB 00DEF7 00DEF8 00DEF9 00DEFA 00DEFB 00DEFC 00DEFD 00DF20 00DF28 00DF2F 00DF5F 00DF6B 00DF73 00DF74 00DF75 00DF76 00DF77 00DF78 00DF79 00DF7A 00DFCE 00DFCF 00DFD0 00DFD2 00DFD4 00DFD6 00DFD9 00DFDA 00DFDB 00DFDC 00DFDD 00DFDE 00DFDF 00DFEF 00DFF0 00DFF1 00DFF2 00DFF3 00DFF4 00DFF5 00DFF6 00DFFC 00E04C 00E10A 00E119 00E1AE 015E02 0174B4 01A390 01ABC2

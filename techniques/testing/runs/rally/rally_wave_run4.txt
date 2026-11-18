@@ -1,0 +1,31 @@
+/difficulty normal ['The difficulty did not change; it is already set to Normal']
+/gamerule spawn_monsters false ['Game rule spawn_monsters is already set to false']
+/gamerule natural_health_regeneration false ['Game rule natural_health_regeneration is already set to false']
+/time set noon ['Set minecraft:overworld to time marker minecraft:noon']
+/weather clear ['Set the weather to clear']
+/team add red ['A team already exists by that name']
+/team add blue ['A team already exists by that name']
+/team join red @s ['Added Kiriko to team [red]']
+/overcraft team join red ['You joined team [red]']
+/gamemode survival @s []
+hero brigitte mode True screen  hp 20.0
+TIME 18:44:47
+--- fix on
+  fix on | bashed 14.4 | behind the wall 20.0 | in the open 20.0
+  fix on barrier False | bashed 14.4 | bot 20.0 -> 14.96 stunned(read late) False | her barrier 300.0 -> 300.0 up False | zombie behind her 14.4
+  fix on barrier True | bashed 14.4 | bot 20.0 -> 20.0 stunned(read late) False | her barrier 300.0 -> 300.0 up True | zombie behind her 20.0
+  fix on barrier False | bot stunned ticks (2572, 2586, 15) | bot health 14.96
+  fix on barrier True | bot stunned ticks None | bot health 20.0
+--- fix off
+  fix off | bashed 8.799999 | behind the wall 14.4 | in the open 14.4
+  fix off barrier False | bashed 8.799999 | bot 20.0 -> 14.96 stunned(read late) False | her barrier 300.0 -> 300.0 up False | zombie behind her 14.4
+  fix off barrier True | bashed 14.4 | bot 20.0 -> 20.0 stunned(read late) False | her barrier 300.0 -> 160.0 up True | zombie behind her 20.0
+  fix off barrier False | bot stunned ticks (3743, 3757, 15) | bot health 14.96
+  fix off barrier True | bot stunned ticks (3981, 3995, 15) | bot health 20.0
+--- fix on
+  fix on | bashed 14.4 | behind the wall 20.0 | in the open 20.0
+  fix on barrier False | bashed 14.4 | bot 20.0 -> 14.96 stunned(read late) False | her barrier 300.0 -> 300.0 up False | zombie behind her 14.4
+  fix on barrier True | bashed 14.4 | bot 20.0 -> 20.0 stunned(read late) False | her barrier 300.0 -> 300.0 up True | zombie behind her 20.0
+  fix on barrier False | bot stunned ticks (4914, 4928, 15) | bot health 14.96
+  fix on barrier True | bot stunned ticks None | bot health 20.0
+DONE

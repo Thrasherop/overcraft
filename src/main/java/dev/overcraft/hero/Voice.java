@@ -34,6 +34,13 @@ public final class Voice {
 	 * about 0.5-2.5 s ("Nice" to "The Kitsune is ready to be unleashed").
 	 */
 	private static final int LINE_TICKS = 40;
+	/**
+	 * How long a pain grunt holds it (ticks, ours): the 308 pain files in the local pack run 0.23-1.45 s, median 0.61 s.
+	 * At LINE_TICKS, a hero under fire (a grunt every 1-2.5 s) would hardly ever be free for a kill line.
+	 */
+	private static final int PAIN_TICKS = 20;
+	/** Dev only ("bot fix 129 off"): Minecraft's hurt sound on every hit, as before #129, to show the fix makes the difference. */
+	public static boolean devPainEveryHit;
 	/** A second enemy kill within this many ticks of the last is a multikill (ours: 4 s; Overwatch gives no number). */
 	private static final int KILL_CHAIN = 80;
 
@@ -62,6 +69,8 @@ public final class Voice {
 		java.util.Map.entry("select", new Stimulus(100, 1, 1, false)), // 002B
 		java.util.Map.entry("resurrected", new Stimulus(75, 10, 10, false)), // 005A, a Mercy's Resurrect
 		java.util.Map.entry("death", new Stimulus(90, 2, 5, false)), // 0001 (the Mercy pass: shared, every hero's)
+		// light pain; heavy pain 0004 is 0.5-1 s, but which a hit raises is the engine's (scripted events 0608 / 0609, no
+		// threshold in the data), and the mod's one "pain" event holds both stimuli's lines (#129)
 		java.util.Map.entry("pain", new Stimulus(40, 1, 2.5f, false)), // 0003
 		java.util.Map.entry("damage_boosted", new Stimulus(60, 30, 30, false)), // 00CC, a Mercy's damage boost
 		// the communication wheel and pings: category 31, interrupt 1
@@ -222,7 +231,27 @@ public final class Voice {
 		java.util.Map.entry("junkrat.mine_kill", new Stimulus(60, 10, 10, false)), // 0415
 		java.util.Map.entry("junkrat.trap", new Stimulus(60, 1, 1, false)), // 043D (09BB #791)
 		java.util.Map.entry("junkrat.tire_kill", new Stimulus(75, 5, 5, false)), // 0414
-		java.util.Map.entry("junkrat.ultimate", new Stimulus(95, 1, 1, false))); // 184C (0232 #572, the own key F1AC)
+		java.util.Map.entry("junkrat.ultimate", new Stimulus(95, 1, 1, false)), // 184C (0232 #572, the own key F1AC)
+		// Torbjörn's (tools/soundmaps/torbjorn.txt; priorities and cooldowns ours, as Junkrat's like kinds)
+		java.util.Map.entry("torbjorn.nano_boosted", new Stimulus(95, 2, 2, true)),
+		java.util.Map.entry("torbjorn.overload", new Stimulus(60, 2, 5, false)),
+		java.util.Map.entry("torbjorn.turret_build", new Stimulus(60, 10, 15, false)),
+		java.util.Map.entry("torbjorn.turret_upgrade", new Stimulus(60, 5, 10, false)),
+		java.util.Map.entry("torbjorn.turret_destroyed", new Stimulus(60, 5, 10, false)),
+		java.util.Map.entry("torbjorn.turret_kill", new Stimulus(60, 10, 15, false)),
+		java.util.Map.entry("torbjorn.turret_repair", new Stimulus(50, 15, 20, false)),
+		java.util.Map.entry("torbjorn.hammer_kill", new Stimulus(60, 5, 10, false)),
+		java.util.Map.entry("torbjorn.ultimate", new Stimulus(95, 1, 1, false)),
+		// Illari's (tools/soundmaps/illari.txt; her stimuli's .078)
+		java.util.Map.entry("illari.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("illari.pylon", new Stimulus(95, 0.1f, 0.1f, false)), // 13E0 (3DF4 #116)
+		java.util.Map.entry("illari.pylon_destroyed", new Stimulus(60, 2, 5, false)), // 13E1 (3DF5 #428)
+		java.util.Map.entry("illari.pylon_moved", new Stimulus(60, 10, 10, false)), // 1465 (3DF5 #428)
+		java.util.Map.entry("illari.outburst_hit", new Stimulus(50, 20, 25, false)), // 1461 (3B38 #874)
+		java.util.Map.entry("illari.outburst", new Stimulus(45, 1, 1, false)), // 1462 (3B38 #905)
+		java.util.Map.entry("illari.beam_hurt_ally", new Stimulus(60, 15, 20, false)), // 1463 (3A65 #2804)
+		java.util.Map.entry("illari.beam_empty", new Stimulus(60, 30, 30, false)), // 1464 (3A65 #2560)
+		java.util.Map.entry("illari.ultimate", new Stimulus(95, 1, 1, false))); // 1848 (3CAB #1084, the own key F1AC)
 
 	/** The communication wheel's lines ("call_*": Thanks, Hello ...): category 31, priority 70, no cooldown, interrupt 1. */
 	private static final Stimulus CALL = new Stimulus(70, 0, 0, true);
@@ -304,7 +333,7 @@ public final class Voice {
 		}
 		float cooldown = stimulus.cooldownMin() + player.getRandom().nextFloat() * (stimulus.cooldownMax() - stimulus.cooldownMin());
 		state.voiceReadyAt.put(moment, now + Math.round(cooldown * 20));
-		state.speakingUntil = now + LINE_TICKS;
+		state.speakingUntil = now + (moment.equals("pain") ? PAIN_TICKS : LINE_TICKS);
 		state.speakingPriority = stimulus.priority();
 		state.speakingLine = BuiltInRegistries.SOUND_EVENT.getKey(line);
 		state.voiceAt = now;
@@ -347,8 +376,8 @@ public final class Voice {
 	/**
 	 * A hero player killed an enemy (a hostile mob or an enemy player: Overwatch's lines are for enemies, not a cow): a
 	 * multikill line on the burst's second kill (within KILL_CHAIN, once per burst, not again for 15-20 s), else a melee
-	 * remark or an elimination line, a headshot's or a kill in the air's among them. (Their own pain and death cries
-	 * are their hurt and death sounds: PlayerMixin.) Called by KillFeed with the hero the kill is credited to and the blow
+	 * remark or an elimination line, a headshot's or a kill in the air's among them. (Their own death cry is their death sound,
+	 * their pain grunt a "pain" line said from their hurt sound: PlayerMixin.) Called by KillFeed with the hero the kill is credited to and the blow
 	 * that made it, so a fall after a boop counts as the hero's kill here too (its line, the multikill chain, Overclock's
 	 * count). Multikill used to fire on any two kills of anything within 4 s, on
 	 * every kill of a chain: "Now I'm having fun" seemed to come with every kill (#13).
@@ -372,6 +401,14 @@ public final class Voice {
 			if (state.hero == Hero.JUNKRAT) {
 				// Specialist, Mine Recycling and his mine's kill line
 				dev.overcraft.junkrat.Junkrat.killed(killer, state, blow);
+			}
+			if (state.hero == Hero.TORBJORN) {
+				// Specialist and his hammer's kill line
+				dev.overcraft.torbjorn.Torbjorn.killed(killer, state, blow);
+			}
+			if (state.hero == Hero.WIDOWMAKER && blow != null && "venom_mine".equals(blow.icon())) {
+				// her mine's kill line (11E3: widowmaker.voice.mine_kill)
+				say(killer, "mine_kill", 1);
 			}
 			if (state.hero == Hero.DVA) {
 				// her own: Call Mech's "Squished!", the pilot's "No mech? No problem!"

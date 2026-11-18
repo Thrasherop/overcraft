@@ -412,6 +412,9 @@ public final class ClientHero {
 		int offer = dev.overcraft.client.effect.JetpackCatFx.lifelineOffer(player);
 		if (offer >= 0 && drain(HeroControls.get(Action.INTERACT))) {
 			ClientPlayNetworking.send(new dev.overcraft.net.LifelineGrabPayload(offer));
+		} else if (ownTurretOut(player) && drain(HeroControls.get(Action.INTERACT))) {
+			// Torbjorn's turret out: Interact recalls it (#146)
+			interactPressed = true;
 		} else if (drain(HeroControls.get(Action.INTERACT))) {
 			interacting = true;
 			try {
@@ -421,8 +424,9 @@ public final class ClientHero {
 			}
 		}
 
-		int extra = ClientMercy.input(player) | ClientLifeweaver.input(player) | ClientBrigitte.input(player) | ClientJuno.input(player) | ClientSojourn.input(player)
+		int extra = (interactPressed ? dev.overcraft.net.HeroInputPayload.EXTRA_INTERACT : 0) | ClientMercy.input(player) | ClientLifeweaver.input(player) | ClientBrigitte.input(player) | ClientJuno.input(player) | ClientSojourn.input(player)
 			| ClientSigma.input(player) | ClientCassidy.extra(player, pressed);
+		interactPressed = false;
 		int wall = OwMovement.wallCode(player);
 		if (held != lastHeld || pressed != 0 || extra != 0 || wall != lastWall) {
 			lastHeld = held;
@@ -452,6 +456,18 @@ public final class ClientHero {
 	/** The mouse button that picked a perk is still down. */
 	private static boolean perkClickHeld;
 
+	/** Interact was pressed for the kit this tick (Torbjorn's recall). */
+	private static boolean interactPressed;
+
+	/**
+	 * Torbjorn with his turret out (his sync's MODE_TURRET_OUT; the turret's owner isn't synced to clients): Interact recalls it
+	 * (#146).
+	 */
+	private static boolean ownTurretOut(net.minecraft.client.player.LocalPlayer player) {
+		return hero() == dev.overcraft.hero.Hero.TORBJORN && sync != null
+			&& (sync.mode() & dev.overcraft.torbjorn.Torbjorn.MODE_TURRET_OUT) != 0;
+	}
+
 	public static boolean perkMenuOpen() {
 		return perkMenu;
 	}
@@ -464,8 +480,11 @@ public final class ClientHero {
 		boolean left = mc.mouseHandler.isLeftPressed() || HeroControls.mouseButtonHeld(InputConstants.MOUSE_BUTTON_LEFT);
 		boolean right = mc.mouseHandler.isRightPressed() || HeroControls.mouseButtonHeld(InputConstants.MOUSE_BUTTON_RIGHT);
 		if (open && perkMenu && mc.level != null && mc.level.getGameTime() - perkPickedAt > 10) {
-			// a press, not a button already held when the menu came up
-			int side = left && !perkLeftWas ? 0 : right && !perkRightWas ? 1 : -1;
+			// a press, not a button already held when the menu came up; or a click that came and went between two ticks (a
+			// quick click picked nothing: found playing 2026-11-17, a 20 ms click with the menu up)
+			boolean leftClick = HeroControls.mouseButtonClicked(InputConstants.MOUSE_BUTTON_LEFT);
+			boolean rightClick = HeroControls.mouseButtonClicked(InputConstants.MOUSE_BUTTON_RIGHT);
+			int side = left && !perkLeftWas || leftClick ? 0 : right && !perkRightWas || rightClick ? 1 : -1;
 			java.util.List<Perk> choices = Perk.of(hero(), tier == 1 ? Perk.Tier.MINOR : Perk.Tier.MAJOR);
 			if (side >= 0 && side < choices.size()) {
 				ClientPlayNetworking.send(new PickPerkPayload(choices.get(side).ordinal()));
@@ -575,11 +594,24 @@ public final class ClientHero {
 		}
 	}
 
+	/** The hero keys that were down at the last tick (drain's edge). */
+	private static final java.util.Set<KeyMapping> WAS_DOWN = new java.util.HashSet<>();
+
+	/**
+	 * Whether {@code key} was pressed since the last tick: a click while it wasn't already down. Minecraft counts every key event
+	 * but the release as a click (KeyboardHandler.keyPress: action != 0 -> KeyMapping.click), so a key held past Windows' repeat
+	 * delay clicked ~30 times a second: held Shift ended D.Va's Boosters 0.57 s in (#148, reproduced with real auto-repeat). A tap
+	 * between two ticks still counts (it clicked, and it wasn't down before).
+	 */
 	private static boolean drain(KeyMapping key) {
 		boolean any = false;
 		while (key.consumeClick()) {
 			any = true;
 		}
-		return any;
+		boolean held = !WAS_DOWN.add(key);
+		if (!key.isDown()) {
+			WAS_DOWN.remove(key);
+		}
+		return any && !held;
 	}
 }

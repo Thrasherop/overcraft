@@ -19,7 +19,6 @@ import dev.overcraft.net.DeadeyePayload;
 import dev.overcraft.net.HeroInputPayload;
 import dev.overcraft.net.HeroSyncPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -57,6 +56,10 @@ public final class Cassidy implements HeroKit {
 		MODE_FIRING = 32, MODE_CASTING = 64;
 	/** The synced mode's bits from here: the packets seen (CassidyState.pressSeen), and from CUT_SHIFT the rolls refused or cut. */
 	public static final int SEEN_SHIFT = 8, CUT_SHIFT = 16;
+	/** Every client's look of him (HeroManager.CASSIDY_LOOK): Silver Bullet armed (6E6B), Deadeye held (0610) (CassidyFx). */
+	public static final int LOOK_SILVER = 1, LOOK_DEADEYE = 2;
+	/** The shot effect's variants (CassidyFx): Peacekeeper (18D7 + 057A), Fan the Hammer (356A + 356B), Silver Bullet (6DB8 + 6DD4), Deadeye (060D); and no smoke band. */
+	static final int SHOT_PEACEKEEPER = 0, SHOT_FAN = 1, SHOT_SILVER = 2, SHOT_DEADEYE = 3, SHOT_NO_SMOKE = 8;
 
 	static final Blow FAN_BLOW = Blow.weapon("fan_the_hammer", false).by(Hero.CASSIDY);
 	static final Blow FLASH_BLOW = Blow.ability("flashbang").by(Hero.CASSIDY);
@@ -65,6 +68,7 @@ public final class Cassidy implements HeroKit {
 
 	private static final Identifier DEADEYE_SPEED = Overcraft.id("deadeye_slow");
 	private static final Identifier GIDDY_SPEED_ID = Overcraft.id("giddy_up");
+	private static final Identifier SILVER_SLOW_ID = Overcraft.id("silver_bullet_aim");
 
 	/** Silver Bullet's bleeds under way: what, by whom, its steps left. */
 	private record Bleed(LivingEntity target, UUID owner, int[] left) {
@@ -126,6 +130,11 @@ public final class Cassidy implements HeroKit {
 			// only his own (found playing, T12c: he heard both his and the allies' line)
 			ultLine(player);
 		}
+		int look = (c.silverAim ? LOOK_SILVER : 0) | (c.deadeye >= 0 ? LOOK_DEADEYE : 0);
+		Integer was = player.getAttached(HeroManager.CASSIDY_LOOK);
+		if (was == null ? look != 0 : was != look) {
+			player.setAttached(HeroManager.CASSIDY_LOOK, look);
+		}
 	}
 
 	/** Deadeye's cast line: his own copy in his head, the allies' and the enemies' from him (HeroSounds.ultLine's way). */
@@ -164,7 +173,20 @@ public final class Cassidy implements HeroKit {
 			return;
 		}
 		boolean silverPerk = s.has(Perk.CASSIDY_SILVER_BULLET);
-		c.silverAim = silverPerk && able && s.secondaryHeld && c.silverCooldown <= 0 && c.roll < 0;
+		// the aim comes up while the right button is held and Silver Bullet is ready (not rolling, not empty), and goes down
+		// otherwise; the shot needs it fully up (#164)
+		boolean wantAim = silverPerk && able && s.secondaryHeld && c.silverCooldown <= 0 && c.roll < 0 && s.primaryAmmo > 0;
+		if (wantAim && !c.silverLowering) {
+			c.silverProgress = Math.min(1, c.silverProgress + 1.0 / Ow.ticks(SILVER_AIM_UP));
+		} else if (c.silverProgress > 0) {
+			c.silverLowering = true;
+			c.silverProgress = Math.max(0, c.silverProgress - 1 / (SILVER_AIM_DOWN * 20));
+		}
+		if (c.silverProgress <= 0) {
+			c.silverLowering = false;
+		}
+		c.silverAim = c.silverProgress >= 1;
+		speed(player, SILVER_SLOW_ID, c.silverProgress > 0 ? -SILVER_SLOW : 0);
 		if (busy) {
 			return;
 		}
@@ -181,6 +203,10 @@ public final class Cassidy implements HeroKit {
 			startFan(player, s, c);
 			return;
 		}
+		if (silverPerk && s.secondaryHeld && c.silverProgress > 0 && !c.silverAim) {
+			// coming up: no shot until it's fully raised (01D2 #1101)
+			return;
+		}
 		if (s.primaryHeld && now >= c.primaryLockUntil) {
 			boolean silver = c.silverAim;
 			s.primaryAmmo--;
@@ -193,10 +219,10 @@ public final class Cassidy implements HeroKit {
 				c.silverCooldown = Ow.ticks(SILVER_COOLDOWN);
 				c.silverAim = false;
 				shot(player, s, player.getViewVector(1.0f), SILVER_DAMAGE, FALLOFF_START, FALLOFF_END, true, true,
-					Blow.perk("silver_bullet").by(Hero.CASSIDY), RANGE);
+					Blow.perk("silver_bullet").by(Hero.CASSIDY), RANGE, SHOT_SILVER);
 			} else {
 				shot(player, s, player.getViewVector(1.0f), PEACEKEEPER_DAMAGE, FALLOFF_START, FALLOFF_END, true, false,
-					Blow.weapon(false).by(Hero.CASSIDY), RANGE);
+					Blow.weapon(false).by(Hero.CASSIDY), RANGE, SHOT_PEACEKEEPER);
 			}
 		}
 	}
@@ -230,7 +256,9 @@ public final class Cassidy implements HeroKit {
 				Combat.animate(player, "fire");
 			}
 			// no crit (D: override 1, M)
-			shot(player, s, dir, FAN_DAMAGE, FAN_FALLOFF_START, FAN_FALLOFF_END, false, false, FAN_BLOW, FAN_RANGE);
+			// the smoke band every other shot (CassidyFx: six overlapping in 0.6 s read as a wall)
+			shot(player, s, dir, FAN_DAMAGE, FAN_FALLOFF_START, FAN_FALLOFF_END, false, false, FAN_BLOW, FAN_RANGE,
+				SHOT_FAN | (c.fanShot % 2 == 0 ? SHOT_NO_SMOKE : 0));
 		}
 		if (c.fanLeft <= 0 || s.primaryAmmo <= 0) {
 			endFan(c, now);
@@ -254,6 +282,9 @@ public final class Cassidy implements HeroKit {
 		s.primaryReload = 0;
 		Combat.animate(player, "reload");
 		CassidySounds.split(player, "reload", player.getEyePosition(), 45);
+		// the barrel's smoke (revolver clips 0402 / 05C0 at its 0006: CassidyFx), the reload's length in ticks as the variant
+		Effects.play(player.level(), "cassidy_reload", player.getEyePosition(), Vec3.ZERO, player,
+			(int) Math.round(Ow.ticks(RELOAD) / Math.max(0.1, Combat.attackRate(player))), player);
 	}
 
 	/** A falloff share at {@code metres}: full to {@code start}, x0.3 from {@code end}, linear between (D; M the line). */
@@ -282,7 +313,7 @@ public final class Cassidy implements HeroKit {
 	 * before it, Silver Bullet's), its falloff, x2 on the head when {@code crits}.
 	 */
 	private static void shot(ServerPlayer player, HeroState s, Vec3 dir, double damage, double start, double end, boolean crits,
-							 boolean pierce, Blow blow, double range) {
+							 boolean pierce, Blow blow, double range, int look) {
 		ServerLevel level = player.level();
 		Vec3 eye = player.getEyePosition();
 		Vec3 far = eye.add(dir.scale(range));
@@ -318,6 +349,8 @@ public final class Cassidy implements HeroKit {
 			Combat.credit(player, dealt, target);
 			Combat.addFireForDamage(player, dealt, target);
 			CassidySounds.split(player, "peacekeeper.hit_enemy", at, 500);
+			// its hit 05AE, facing back along the shot (CassidyFx)
+			Effects.play(level, "cassidy_hit", at, dir.scale(-1), target, 0, player);
 			if (dealt > 0) {
 				Effects.hitMarker(player, target, crit);
 				if (crit) {
@@ -337,7 +370,14 @@ public final class Cassidy implements HeroKit {
 		if (hits.isEmpty() && blockHit.getType() == HitResult.Type.BLOCK) {
 			CassidySounds.at(level, "peacekeeper.hit_block", block, 32);
 		}
-		trail(level, fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD), pierce ? block : stop);
+		if ((hits.isEmpty() || pierce) && blockHit.getType() == HitResult.Type.BLOCK) {
+			// the same hit 05AE on the world, off the face it hit, with its decal (variant 1: CassidyFx)
+			Vec3 n = new Vec3(blockHit.getDirection().getStepX(), blockHit.getDirection().getStepY(), blockHit.getDirection().getStepZ());
+			Effects.play(level, "cassidy_hit", block, n, null, 1, player);
+		}
+		// the shot's muzzle and line (CassidyFx), from the revolver's muzzle to where it stopped
+		Vec3 from = fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD);
+		Effects.play(level, "cassidy_shot", from, (pierce ? block : stop).subtract(from), player, look, player);
 	}
 
 	/** Sharpshooter (01C7): crit damage dealt takes 0.0075 s a point off Combat Roll's cooldown. */
@@ -349,17 +389,6 @@ public final class Cassidy implements HeroKit {
 		if (s.ability1Cooldown > 0) {
 			s.ability1Cooldown = Math.max(0, s.ability1Cooldown - sharpshooterCut(critDamage));
 		}
-	}
-
-	private static void trail(ServerLevel level, Vec3 from, Vec3 to) {
-		Vec3 d = to.subtract(from);
-		double len = d.length();
-		int n = (int) Math.min(16, Math.max(1, len / 1.5));
-		for (int k = 1; k <= n; k++) {
-			Vec3 p = from.add(d.scale(k / (double) n * Math.min(1, 24 / Math.max(len, 1e-3))));
-			level.sendParticles(ParticleTypes.SMOKE, p.x, p.y, p.z, 1, 0, 0, 0, 0);
-		}
-		level.sendParticles(ParticleTypes.CRIT, to.x, to.y, to.z, 2, 0, 0, 0, 0);
 	}
 
 	/** A point from his eyes in his look's frame (right, up, ahead), or his eyes when a wall is between. */
@@ -381,6 +410,8 @@ public final class Cassidy implements HeroKit {
 	private static void bleed(ServerPlayer owner, LivingEntity target) {
 		int steps = bleedSteps();
 		BLEEDS.put(target.getUUID() + "/" + owner.getUUID(), new Bleed(target, owner.getUUID(), new int[] {steps, Ow.ticks(SILVER_BLEED_STEP)}));
+		// its look 3488 on the target for the bleed's 1.5 s (CassidyFx), the life in ticks
+		Effects.play(owner.level(), "cassidy_bleed", target.position(), Vec3.ZERO, target, Ow.ticks(SILVER_BLEED_TIME), owner);
 	}
 
 	/** The bleed's steps: 1.5 s in steps of 0.2 s, rounded (8). */
@@ -402,7 +433,8 @@ public final class Cassidy implements HeroKit {
 			// 50 in all, shared by its steps (found playing: 8 steps of a 7.5-step rate gave 53)
 			double step = SILVER_BLEED / bleedSteps();
 			if (owner != null) {
-				float dealt = Combat.damage(b.target, Combat.hitscan(owner), step, BLEED_BLOW);
+				// already in them: a barrier they then stand behind doesn't stop it (Barriers.pierce)
+				float dealt = dev.overcraft.hero.Barriers.pierce(() -> Combat.damage(b.target, Combat.hitscan(owner), step, BLEED_BLOW));
 				Combat.credit(owner, dealt, b.target);
 			}
 			return --b.left[0] <= 0;
@@ -447,10 +479,22 @@ public final class Cassidy implements HeroKit {
 		s.interruptReload(0);
 		// Silver Bullet's reset (D 01D2: Combat Roll)
 		c.silverCooldown = 0;
+		// a movement ability lets go of a Jetpack Cat's rope (W; #142)
+		dev.overcraft.jetpackcat.JetpackCat.letGo(player);
 		Combat.animate(player, "roll_s" + Math.clamp(direction, 0, 3));
 		CassidySounds.split(player, "roll", player.position(), 40);
 		Voice.say(player, "roll", 1);
 		player.resetFallDistance();
+		// its dust 05E4 at his feet through the roll (CassidyFx), along the way he rolls (0 forward, 1 right, 2 back, 3 left)
+		Vec3 fwd = Vec3.directionFromRotation(0, player.getYRot());
+		Vec3 right = fwd.cross(new Vec3(0, 1, 0)).normalize();
+		Vec3 way = switch (Math.clamp(direction, 0, 3)) {
+			case 1 -> right;
+			case 2 -> fwd.scale(-1);
+			case 3 -> right.scale(-1);
+			default -> fwd;
+		};
+		Effects.play(player.level(), "cassidy_roll", player.position(), way, player, Ow.ticks(ROLL_TIME), player);
 	}
 
 	private static void roll(ServerPlayer player, HeroState s, CassidyState c) {
@@ -578,13 +622,17 @@ public final class Cassidy implements HeroKit {
 				b.barrierTake(FLASH_DAMAGE * share, near);
 			}
 		}
+		// an enemy Brigitte's too, once (her barrier is her state, not a Barriers.Shape)
+		dev.overcraft.brigitte.Barrier.burst(level, owner, at, FLASH_BLAST, d -> FLASH_DAMAGE * share);
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(FLASH_BLAST + 2))) {
 			if (!e.isAlive() || e == owner || !Allies.areaHits(owner, e)) {
 				continue;
 			}
 			double d = Math.sqrt(e.getBoundingBox().distanceToSqr(at));
 			if (!flashTakes(d, d <= FLASH_BLAST && Combat.inSight(level, at, e, flash),
-				d <= FLASH_BLAST && dev.overcraft.hero.Barriers.between(level, at, e.getBoundingBox().getCenter(), owner) != null)) {
+				// any enemy barrier between, Brigitte's too (Barrier.shields asks Barriers.between first): behind hers they
+				// were hindered, the damage alone stopped (#104's sweep)
+				d <= FLASH_BLAST && dev.overcraft.brigitte.Barrier.shields(e, owner, at))) {
 				continue;
 			}
 			// a hero's explosion (Combat.blast): not scaled by the difficulty, as Minecraft's own explosion was against players
@@ -596,10 +644,12 @@ public final class Cassidy implements HeroKit {
 			}
 			if (e.isAlive()) {
 				Hinder.apply(e);
+				// the hindered look 05D9 (Brigitte's stun's meshes and masks: CassidyFx), for the hinder's 1.2 s
+				Effects.play(level, "cassidy_hinder", e.position(), Vec3.ZERO, e, Ow.ticks(HINDER_TIME), owner);
 			}
 		}
-		level.sendParticles(ParticleTypes.END_ROD, at.x, at.y, at.z, 20, 0.6, 0.6, 0.6, 0.15);
-		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, at.x, at.y, at.z, 30, 1, 1, 1, 0.3);
+		// the bang 5C8C; Bang Bang's second its larger 6541 (variant 1: CassidyFx)
+		Effects.play(level, "cassidy_bang", at, Vec3.ZERO, null, flash instanceof FlashbangEntity f && f.second() ? 1 : 0, owner);
 		CassidySounds.split(owner, "flashbang.explode", at, 60);
 	}
 
@@ -706,8 +756,8 @@ public final class Cassidy implements HeroKit {
 		Vec3 look = player.getViewVector(1.0f);
 		c.inSight = 0;
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(DEADEYE_RANGE))) {
-			// an enemy only, never a bystander (Allies.areaHits: what every lock and area ult takes; a cow or a sheep isn't one)
-			if (!e.isAlive() || !Allies.areaHits(player, e)) {
+			// an enemy, or a calm enderman or piglin (Allies.lockOnAimed); never a bystander like a cow or a sheep (#99)
+			if (!e.isAlive() || !Allies.lockOnAimed(player, e)) {
 				continue;
 			}
 			Vec3 at = aim(e);
@@ -821,7 +871,10 @@ public final class Cassidy implements HeroKit {
 			: Combat.damage(target, Combat.hitscan(player), lock.charge, DEADEYE_BLOW);
 		Combat.credit(player, dealt, target);
 		Combat.addFireForDamage(player, dealt, target);
-		trail(player.level(), fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD), at);
+		// its shot 060D (Peacekeeper's muzzle and line, its own second line and tube) and its hit 010F on the chest (CassidyFx)
+		Vec3 from = fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD);
+		Effects.play(player.level(), "cassidy_shot", from, at.subtract(from), player, SHOT_DEADEYE, player);
+		Effects.play(player.level(), "cassidy_deadeye_hit", at, from.subtract(at), target, 0, player);
 		if (dealt > 0) {
 			Effects.hitMarker(player, target, false);
 			if (!target.isAlive()) {
@@ -966,7 +1019,7 @@ public final class Cassidy implements HeroKit {
 			s.primaryAmmo, s.primaryReload >= 0 ? (float) Math.min(1, s.primaryReload / Ow.ticks(RELOAD)) : -1,
 			0, -1, (float) (s.ability1Cooldown / 20.0), (float) (s.ability2Cooldown / 20.0), s.rushed, s.canChangeHero, s.onFire,
 			dev.overcraft.hero.Perks.level(s), dev.overcraft.hero.Perks.progress(s), dev.overcraft.hero.Perks.ready(s),
-			Perk.index(s.minorPerk), Perk.index(s.majorPerk), (float) (c.silverCooldown / 20.0), mode, left, 0);
+			Perk.index(s.minorPerk), Perk.index(s.majorPerk), (float) (c.silverCooldown / 20.0), mode, left, (float) c.silverProgress);
 	}
 
 	/** Out of play (#100): Deadeye ends (its charge stays spent), the roll, the fan and the throw end, his speeds go. */
@@ -984,8 +1037,12 @@ public final class Cassidy implements HeroKit {
 		c.giddy = -1;
 		c.fanLeft = 0;
 		c.silverAim = false;
+		c.silverProgress = 0;
+		c.silverLowering = false;
+		speed(player, SILVER_SLOW_ID, 0);
 		speed(player, DEADEYE_SPEED, 0);
 		speed(player, GIDDY_SPEED_ID, 0);
+		player.setAttached(HeroManager.CASSIDY_LOOK, 0);
 		if (why.forGood()) {
 			for (ServerLevel level : player.level().getServer().getAllLevels()) {
 				for (FlashbangEntity f : level.getEntities(dev.overcraft.registry.OcEntities.FLASHBANG, f -> f.getOwner() == player)) {

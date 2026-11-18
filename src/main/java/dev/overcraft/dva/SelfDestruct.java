@@ -87,9 +87,9 @@ public final class SelfDestruct {
 		ServerLevel level = (ServerLevel) mech.level();
 		Vec3 c = mech.position().add(0, SELF_DESTRUCT_UP, 0);
 		int fuse = Ow.ticks(SELF_DESTRUCT_FUSE);
-		if (mech.tickCount < fuse) {
-			// stand-in look: a glow growing to the blast
-			level.sendParticles(ParticleTypes.GLOW, c.x, c.y, c.z, 2 + mech.tickCount / 6, 0.6, 0.6, 0.6, 0.02);
+		if (mech.tickCount == 1) {
+			// its warning field 1702 on the mech for the fuse (DvaFx), its length in ticks as the variant
+			dev.overcraft.hero.Effects.play(level, "dva_sd_field", c, Vec3.ZERO, mech, fuse, owner);
 		} else if (mech.tickCount == fuse) {
 			blast(owner, mech, c);
 		}
@@ -140,7 +140,8 @@ public final class SelfDestruct {
 			s.dvaSelfDestructId = null;
 		}
 		// stand-in look and sound
-		level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, c.x, c.y, c.z, 3, 2, 1, 2, 0);
+		// its blast 1703 (DvaFx)
+		dev.overcraft.hero.Effects.play(level, "dva_sd_blast", c, Vec3.ZERO, null, 0, owner);
 		// the blast (#269 effect 1703: 5DC0 + 2DD8, 120 m)
 		DvaSounds.all(level, "self_destruct.blast", c, 120);
 	}

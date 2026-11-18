@@ -1,0 +1,216 @@
+# Widowmaker's voice: <sound id> = <file under E:/Overwatch Archive/extracted/154088/> (build 154088). Same format as widowmaker.txt;
+# build_asset_pack.py sounds copies / mixes them into the local pack. Read 2026-11-17 offline (Overwatch and Battle.net
+# checked closed before every archive read and TankLib run). Scripts: E:/Overwatch Archive/research/widowmaker/ascripts/sounds/
+# (voiceset_widowmaker.py, widowmaker_voice.py, widowmaker_voice_gen.py, which writes this file; Ashe's voice pipeline retargeted);
+# data: research/widowmaker/work_assets/voiceset_0002.05F.json and stim078.json, research/widowmaker/sounds/voice_lines.json.
+# Her sound effects are in widowmaker_sfx.txt.
+
+# ===== Voice (HeroVoice/Widowmaker): the voice set 0002.05F's lines by moment (325 stimuli, 1103 lines; from widowmaker_voice.py:
+# each line's 0B2, stimulus, weight and decoded criteria; files from DataTool's extract-hero-voice --subtitles-with-sounds,
+# in research/widowmaker/extract). w = the line's weight. Lines with criteria are left out, as Ashe's are (hero interactions,
+# skins, maps, Overwatch Classic, scripted moments: counted per moment), except 'NOT ScriptedEvent 191E', treated as
+# always true (kiriko-voice.md).
+# Stimulus numbers (the .078): priority, radius m, volume dB, interrupt, cooldown s (m_A73F2EBE-m_DD27AC95 read as min-max,
+# M); Voice.java's table takes priority, cooldown and interrupt.
+# Ult lines (Infra-Sight): her own copy 1869 is what she says for herself; allies hear 0085, enemies 0492 (0067 #210
+# STU_37D754C8 keys F1AC / F1AB / F1AA, as Ashe's 1536 #310).
+# Not mapped: the shared 545C's 183F / 1840 / 1841 / 1849 / 184A (set into variables by the shared ult-line graph, not hers),
+# 0934 (the shared CC status 224E), the Voicelines (the wheel's sprays of lines), the match / objective / PvE / Junkenstein lines.
+# No Grappling Hook, Venom Mine throw or scope line: her graphs 005A / 0056 / 001B raise no other stimulus (grep '.078').
+# Elimination 0008: 15 files; prio 70, 30 m, +2 dB, interrupt 0, cooldown 15-15 s; left out: 38 a hero interaction, 17 a scripted condition, 10 Overwatch Classic only, 3 a map (OnMap)
+widowmaker.voice.elimination = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Elimination/00000000A273.0B2-(French)_ The widow spins her web.ogg | w=1
+widowmaker.voice.elimination = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Elimination/00000000A270.0B2-Adieu.ogg | w=0.01
+widowmaker.voice.elimination = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Elimination/00000000A2FF.0B2-The widow's kiss.ogg | w=0.01
+widowmaker.voice.elimination = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Elimination/00000000A32B.0B2-Caught in my web.ogg | w=0.02
+widowmaker.voice.elimination = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Elimination/000000021ECB.0B2-Impeccable.ogg | w=0.02
+widowmaker.voice.elimination = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Elimination/000000062A7F.0B2-A fine execution.ogg | w=1
+widowmaker.voice.elimination = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Elimination/000000062A93.0B2-Pitiful.ogg | w=1
+widowmaker.voice.elimination = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Elimination/000000062A9B.0B2-(French)_ Calm down.ogg | w=1
+widowmaker.voice.elimination = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Elimination/000000062A8F.0B2-Woe is you.ogg | w=1
+widowmaker.voice.elimination = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Elimination/000000062A9A.0B2-(French)_ A splendid death.ogg | w=1
+widowmaker.voice.elimination = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Elimination/000000062A92.0B2-How delightful.ogg | w=1
+widowmaker.voice.elimination = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Elimination/000000062A91.0B2-My bite is fatal.ogg | w=1
+widowmaker.voice.elimination = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Elimination/000000065601.0B2-Still untouchable.ogg | w=1
+widowmaker.voice.elimination = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Elimination/000000065613.0B2-(tsk) Hubris.ogg | w=1
+widowmaker.voice.elimination = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Elimination/000000068F08.0B2-(tsk) Exposed.ogg | w=1
+# Multikill 00C9: 5 files; prio 70, 35 m, +2 dB, interrupt 0, cooldown 15-20 s
+widowmaker.voice.multikill = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Multikill/000000062AB8.0B2-One after another.ogg | w=1
+widowmaker.voice.multikill = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Multikill/000000062AB7.0B2-My web grows heavy.ogg | w=1
+widowmaker.voice.multikill = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Multikill/000000062AB5.0B2-Meet your demise.ogg | w=1
+widowmaker.voice.multikill = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Multikill/000000062AB6.0B2-So many funerals.ogg | w=1
+widowmaker.voice.multikill = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Multikill/000000062AB9.0B2-It's a wonderful day to die.ogg | w=1
+# MeleeEnemyKilledRemark 0032 (an enemy killed in melee range): 8 files; prio 65, 30 m, +2 dB, interrupt 0, cooldown 10-14 s; left out: 4 Overwatch Classic only, 1 a scripted condition, 1 a hero interaction
+widowmaker.voice.melee_kill = ../../research/widowmaker/extract/HeroVoice/Widowmaker/MeleeEnemyKilledRemark/00000000A311.0B2-(scoffs) Fool.ogg | w=0.01
+widowmaker.voice.melee_kill = ../../research/widowmaker/extract/HeroVoice/Widowmaker/MeleeEnemyKilledRemark/00000006211F.0B2-It's dangerous to get close to me.ogg | w=1
+widowmaker.voice.melee_kill = ../../research/widowmaker/extract/HeroVoice/Widowmaker/MeleeEnemyKilledRemark/000000062AC5.0B2-One punch, one kill.ogg | w=1
+widowmaker.voice.melee_kill = ../../research/widowmaker/extract/HeroVoice/Widowmaker/MeleeEnemyKilledRemark/000000062AC4.0B2-I bite.ogg | w=1
+widowmaker.voice.melee_kill = ../../research/widowmaker/extract/HeroVoice/Widowmaker/MeleeEnemyKilledRemark/000000062AC3.0B2-(laughs) How foolish of you.ogg | w=1
+widowmaker.voice.melee_kill = ../../research/widowmaker/extract/HeroVoice/Widowmaker/MeleeEnemyKilledRemark/000000062AC1.0B2-(French)_ Kisses.ogg | w=1
+widowmaker.voice.melee_kill = ../../research/widowmaker/extract/HeroVoice/Widowmaker/MeleeEnemyKilledRemark/000000062AC2.0B2-You sullied my hands.ogg | w=1
+widowmaker.voice.melee_kill = ../../research/widowmaker/extract/HeroVoice/Widowmaker/MeleeEnemyKilledRemark/000000062AC6.0B2-(mocking laugh).ogg | w=1
+# On Fire 0583: 3 files; prio 60, 35 m, +2 dB, interrupt 0, cooldown 2-5 s; left out: 3 Overwatch Classic only
+widowmaker.voice.on_fire = ../../research/widowmaker/extract/HeroVoice/Widowmaker/OnFire/000000062BA2.0B2-Now I truly feel alive!.ogg | w=1
+widowmaker.voice.on_fire = ../../research/widowmaker/extract/HeroVoice/Widowmaker/OnFire/000000062BA3.0B2-(Laughs) Do not provoke me.ogg | w=1
+widowmaker.voice.on_fire = ../../research/widowmaker/extract/HeroVoice/Widowmaker/OnFire/000000062BB7.0B2-(French)_ I feel alive!.ogg | w=1
+# Respawn 002C: 10 files; prio 40, 35 m, +0 dB, interrupt 0, cooldown 15-15 s; left out: 7 Overwatch Classic only, 4 a scripted condition, 1 a hero interaction
+widowmaker.voice.respawn = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Respawn/000000043BA7.0B2-(French)_ You have my attention.ogg | w=0.05
+widowmaker.voice.respawn = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Respawn/000000062AF9.0B2-(French)_ What will be, will be.ogg | w=1
+widowmaker.voice.respawn = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Respawn/000000062AFA.0B2-It's getting interesting.ogg | w=1
+widowmaker.voice.respawn = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Respawn/000000062AFC.0B2-I've been waiting for a challenge.ogg | w=1
+widowmaker.voice.respawn = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Respawn/000000062AF8.0B2-(French)_ This time, I'm serious.ogg | w=1
+widowmaker.voice.respawn = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Respawn/000000062AFD.0B2-The plot thickens.ogg | w=1
+widowmaker.voice.respawn = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Respawn/000000062AFE.0B2-Back in action.ogg | w=1
+widowmaker.voice.respawn = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Respawn/000000062AFF.0B2-Time to teach these bugs some manners.ogg | w=1
+widowmaker.voice.respawn = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Respawn/000000062AFB.0B2-How… vexing.ogg | w=1
+widowmaker.voice.respawn = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Respawn/00000006560F.0B2-Fine. A vendetta it is.ogg | w=0.05
+# Melee shout 0023 (the shared melee VoiceStimulus): 9 files; prio 35, 35 m, +0 dB, interrupt 0, cooldown 0.5-0.5 s
+widowmaker.voice.melee = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Melee/00000000A2BA.0B2-(shouts).ogg | w=0.7
+widowmaker.voice.melee = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Melee/00000000A2B9.0B2-(shouts).ogg | w=0.7
+widowmaker.voice.melee = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Melee/00000000A2B8.0B2-(shouts).ogg | w=0.7
+widowmaker.voice.melee = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Melee/00000000A2B7.0B2-(shouts).ogg | w=0.7
+widowmaker.voice.melee = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Melee/00000000A2AE.0B2-(shouts).ogg | w=0.7
+widowmaker.voice.melee = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Melee/00000000A2AD.0B2-(shouts).ogg | w=0.7
+widowmaker.voice.melee = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Melee/0000000642F7.0B2-(shouts).ogg | w=1
+widowmaker.voice.melee = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Melee/0000000642F8.0B2-(shouts).ogg | w=1
+widowmaker.voice.melee = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Melee/0000000642F9.0B2-(shouts).ogg | w=1
+# Hero select 002B: 1 files; prio 100, 35 m, +0 dB, interrupt 0, cooldown 1-1 s; left out: 1 Overwatch Classic only
+widowmaker.voice.select = ../../research/widowmaker/extract/HeroVoice/Widowmaker/HeroSelect/000000062B05.0B2-I aim to devastate.ogg | w=1
+# Death 0001: 6 files; prio 90, 60 m, +2 dB, interrupt 0, cooldown 2-5 s
+widowmaker.voice.death = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Death/00000000A2D3.0B2-(dying sounds).ogg | w=1
+widowmaker.voice.death = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Death/00000000A2D2.0B2-(dying sounds).ogg | w=1
+widowmaker.voice.death = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Death/00000000A2D1.0B2-(dying sounds).ogg | w=1
+widowmaker.voice.death = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Death/00000000A2D0.0B2-(dying sounds).ogg | w=1
+widowmaker.voice.death = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Death/00000000A2CF.0B2-(dying sounds).ogg | w=1
+widowmaker.voice.death = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Death/00000000A2B6.0B2-(dying sounds).ogg | w=1
+# Pain 0003 / 0004: 20 files; prio 40, 35 m, -3 dB, interrupt 0, cooldown 1-2.5 s
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2DD.0B2-(grunts).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2DC.0B2-(grunts).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2DB.0B2-(grunts).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2D4.0B2-(grunts).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2DA.0B2-(grunts).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2B5.0B2-(grunts).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2B4.0B2-(grunts).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2AC.0B2-(grunts).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2CE.0B2-(grunts).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A26F.0B2-(pained gasp).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2D9.0B2-(painful grunt).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2D8.0B2-(painful grunt).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2D7.0B2-(painful grunt).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2D6.0B2-(painful grunt).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2D5.0B2-(painful grunt).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2B3.0B2-(painful grunt).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2B2.0B2-(painful grunt).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2B1.0B2-(painful grunt).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2B0.0B2-(painful grunt).ogg | w=1
+widowmaker.voice.pain = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Pain/00000000A2AF.0B2-(painful grunt).ogg | w=1
+# Resurrected 005A (what she says when a Mercy brings her back): 2 files; prio 75, 35 m, +0 dB, interrupt 0, cooldown 10-10 s
+widowmaker.voice.resurrected = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Resurrected/00000000A31B.0B2-You must really like me.ogg | w=1
+widowmaker.voice.resurrected = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Resurrected/000000043BA9.0B2-(French)_ You must really like me.ogg | w=0.3
+# Ultimate/Ready 02E7 (the wheel line): 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s; left out: 1 a scripted condition
+widowmaker.voice.ult_ready = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Ultimate/Ready/00000000B3D9.0B2-My ultimate is ready.ogg | w=1
+# Ultimate/Charging 0574: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+widowmaker.voice.call_ult_charging = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Ultimate/Charging/000000021EC8.0B2-My ultimate is charging.ogg | w=1
+widowmaker.voice.call_ult_charging = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Ultimate/Charging/000000063FD0.0B2-Infra-sight charging.ogg | w=1
+# Ultimate/AlmostReady 05A7: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+widowmaker.voice.call_ult_almost = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Ultimate/AlmostReady/000000021EC6.0B2-My ultimate is almost ready.ogg | w=1
+# Hello 01CF: 6 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+widowmaker.voice.call_hello = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Hello/00000000B3C7.0B2-Hello there.ogg | w=1
+widowmaker.voice.call_hello = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Hello/00000000B3C8.0B2-Hello.ogg | w=1
+widowmaker.voice.call_hello = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Hello/00000000B3C6.0B2-(French)_ Hello.ogg | w=1
+widowmaker.voice.call_hello = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Hello/00000002A3C2.0B2-(French)_ Hello.ogg | w=1
+widowmaker.voice.call_hello = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Hello/000000063FC8.0B2-(French)_ Hello.ogg | w=1
+widowmaker.voice.call_hello = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Hello/000000063FC9.0B2-Hello.ogg | w=1
+# Thanks 01D0: 5 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+widowmaker.voice.call_thanks = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Thanks/00000000B3D7.0B2-(French)_ Thank you.ogg | w=1
+widowmaker.voice.call_thanks = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Thanks/00000000B3D8.0B2-Thank you.ogg | w=1
+widowmaker.voice.call_thanks = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Thanks/000000021EC5.0B2-Thanks.ogg | w=1
+widowmaker.voice.call_thanks = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Thanks/000000063FCE.0B2-(French)_ Thank you.ogg | w=1
+widowmaker.voice.call_thanks = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Thanks/000000063FCF.0B2-Thank you.ogg | w=1
+# Sorry 05E1: 6 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+widowmaker.voice.call_sorry = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Sorry/00000002A931.0B2-(French)_ I'm sorry.ogg | w=1
+widowmaker.voice.call_sorry = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Sorry/00000002A932.0B2-(French)_ Sorry.ogg | w=1
+widowmaker.voice.call_sorry = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Sorry/00000002A934.0B2-(French)_ Apologies.ogg | w=1
+widowmaker.voice.call_sorry = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Sorry/00000002A92F.0B2-Sorry.ogg | w=1
+widowmaker.voice.call_sorry = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Sorry/00000002A930.0B2-My apologies.ogg | w=1
+widowmaker.voice.call_sorry = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Sorry/00000002A94A.0B2-(French)_ Sorry.ogg | w=1
+# No 01D2: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+widowmaker.voice.call_no = ../../research/widowmaker/extract/HeroVoice/Widowmaker/No/00000000B3C9.0B2-(French)_ No.ogg | w=1
+widowmaker.voice.call_no = ../../research/widowmaker/extract/HeroVoice/Widowmaker/No/00000000B3CA.0B2-No.ogg | w=1
+# GroupUp 02C6: 6 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+widowmaker.voice.call_group_up = ../../research/widowmaker/extract/HeroVoice/Widowmaker/GroupUp/00000000B3C5.0B2-Group up.ogg | w=1
+widowmaker.voice.call_group_up = ../../research/widowmaker/extract/HeroVoice/Widowmaker/GroupUp/000000021EBD.0B2-Join me.ogg | w=1
+widowmaker.voice.call_group_up = ../../research/widowmaker/extract/HeroVoice/Widowmaker/GroupUp/000000021EBE.0B2-Group up here.ogg | w=1
+widowmaker.voice.call_group_up = ../../research/widowmaker/extract/HeroVoice/Widowmaker/GroupUp/000000021EBF.0B2-Group up with me.ogg | w=1
+widowmaker.voice.call_group_up = ../../research/widowmaker/extract/HeroVoice/Widowmaker/GroupUp/000000063FC6.0B2-Group up here.ogg | w=1
+widowmaker.voice.call_group_up = ../../research/widowmaker/extract/HeroVoice/Widowmaker/GroupUp/000000063FC7.0B2-Form up.ogg | w=1
+# AssistanceRequired 0427: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+widowmaker.voice.call_need_help = ../../research/widowmaker/extract/HeroVoice/Widowmaker/AssistanceRequired/000000021EC2.0B2-I need assistance.ogg | w=1
+widowmaker.voice.call_need_help = ../../research/widowmaker/extract/HeroVoice/Widowmaker/AssistanceRequired/000000021EC3.0B2-I need help.ogg | w=1
+# Healing 0045: 2 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+widowmaker.voice.call_need_healing = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Healing/00000000A286.0B2-Heal me.ogg | w=1
+widowmaker.voice.call_need_healing = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Healing/00000000A32A.0B2-I need healing.ogg | w=1
+# ping 11D9: 1 files; prio 70, 35 m, +0 dB, interrupt 1, cooldown 0-0 s
+widowmaker.voice.ping = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Unknown/11D9.078/000000063FBD.0B2-Over there.ogg | w=1
+# ping warning 11DA: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+widowmaker.voice.ping_warning = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Unknown/11DA.078/000000063FBE.0B2-Watch here.ogg | w=1
+widowmaker.voice.ping_warning = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Unknown/11DA.078/000000063FBF.0B2-Pay attention.ogg | w=1
+widowmaker.voice.ping_warning = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Unknown/11DA.078/000000063FC0.0B2-Careful.ogg | w=1
+# ping enemy 1117: 3 files; prio 70, 75 m, +3 dB, interrupt 1, cooldown 3-3 s
+widowmaker.voice.ping_enemy = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Unknown/1117.078/000000061E13.0B2-Suppress this target.ogg | w=1
+widowmaker.voice.ping_enemy = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Unknown/1117.078/000000061E11.0B2-Hostile here.ogg | w=1
+widowmaker.voice.ping_enemy = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Unknown/1117.078/000000061E12.0B2-Engage this enemy.ogg | w=1
+# DamageBoosted 00CC (what she says when a Mercy boosts her): 4 files; prio 60, 35 m, +0 dB, interrupt 0, cooldown 30-30 s
+widowmaker.voice.damage_boosted = ../../research/widowmaker/extract/HeroVoice/Widowmaker/DamageBoosted/00000000A2FA.0B2-You must like me.ogg | w=1
+widowmaker.voice.damage_boosted = ../../research/widowmaker/extract/HeroVoice/Widowmaker/DamageBoosted/00000000A2FB.0B2-Just what I needed.ogg | w=1
+widowmaker.voice.damage_boosted = ../../research/widowmaker/extract/HeroVoice/Widowmaker/DamageBoosted/00000000A2FC.0B2-(French)_ Thank you.ogg | w=1
+widowmaker.voice.damage_boosted = ../../research/widowmaker/extract/HeroVoice/Widowmaker/DamageBoosted/000000043B8D.0B2-(French)_ You favor me.ogg | w=1
+# NanoBoosted 05E2 (what she says when an Ana nanos her): 3 files; prio 95, 80 m, +3 dB, interrupt 1, cooldown 2-2 s; left out: 3 Overwatch Classic only
+widowmaker.voice.nano_boosted = ../../research/widowmaker/extract/HeroVoice/Widowmaker/NanoBoosted/000000062BB8.0B2-(French)_ Try to stop me!.ogg | w=1
+widowmaker.voice.nano_boosted = ../../research/widowmaker/extract/HeroVoice/Widowmaker/NanoBoosted/000000062BA4.0B2-Let the performance begin.ogg | w=1
+widowmaker.voice.nano_boosted = ../../research/widowmaker/extract/HeroVoice/Widowmaker/NanoBoosted/000000062BA5.0B2-(Laughs) What power.ogg | w=1
+# Venom Mine kill 11E3 ('No one survives my poison' / 'You can run, but the venom will catch you'; 0056 #112 game message 278A, M): 3 files; prio 70, 35 m, +0 dB, interrupt 0, cooldown 15-15 s; left out: 3 a scripted condition
+widowmaker.voice.mine_kill = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Unknown/11E3.078/000000062AA7.0B2-No one survives my poison.ogg | w=1
+widowmaker.voice.mine_kill = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Unknown/11E3.078/000000063F97.0B2-How venomous.ogg | w=1
+widowmaker.voice.mine_kill = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Unknown/11E3.078/000000063F98.0B2-Watch where you step, hmm_.ogg | w=1
+# Infra-Sight, her own copy 1869 ('Wallhacks initialized' / 'No one can hide from my sight'; 0067 #210 key F1AC, the own key, H): 1 files; prio 95, 300 m, +7 dB, interrupt 0, cooldown 1-1 s; left out: 2 a skin / celebration
+widowmaker.voice.ultimate = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Ultimate/0000000698A3.0B2-No one can hide from my sight.ogg | w=1
+# Infra-Sight line, allies 0085 ('No one can hide from my sight'; 0067 #210 key F1AB, the friendly key, H): 1 files; prio 95, 60 m, +6 dB, interrupt 0, cooldown 1-1 s; left out: 2 a skin / celebration
+widowmaker.ult.friendly = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Ultimate/00000000A29B.0B2-No one can hide from my sight.ogg | w=1
+# Infra-Sight line, enemies 0492 ('(French) No one can hide from my sight' / 'Hello! I can see you!'; 0067 #210 key F1AA, H): 1 files; prio 95, 300 m, +7 dB, interrupt 0, cooldown 1-1 s; left out: 1 a skin / celebration
+widowmaker.ult.enemy = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Ultimate/00000000B3AA.0B2-(French)_ No one can hide from my sight.ogg | w=1
+# GOOD JOB (the wheel key's tap): as Ashe's, ours are her Teammate/KillSeen 001B lines (a teammate's kill seen) with
+#  no criteria.
+widowmaker.voice.call_good_job = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Teammate/KillSeen/00000000A306.0B2-Nice shot.ogg | w=0.1
+widowmaker.voice.call_good_job = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Teammate/KillSeen/000000062A81.0B2-You have a deadly touch.ogg | w=1
+widowmaker.voice.call_good_job = ../../research/widowmaker/extract/HeroVoice/Widowmaker/Teammate/KillSeen/000000063FAF.0B2-I admire your taste for blood.ogg | w=1
+# Voice subtitles: one per event (its lines vary); ours describe the moment, quoting a line where the pool says one thing.
+$widowmaker.voice.elimination = Widowmaker remarks on a takedown
+$widowmaker.voice.multikill = Widowmaker remarks on a multikill
+$widowmaker.voice.melee_kill = Widowmaker remarks on a melee kill
+$widowmaker.voice.on_fire = Widowmaker is on fire
+$widowmaker.voice.respawn = Widowmaker is back
+$widowmaker.voice.melee = Widowmaker shouts
+$widowmaker.voice.select = Widowmaker: I aim to devastate
+$widowmaker.voice.death = Widowmaker dies
+$widowmaker.voice.pain = Widowmaker grunts
+$widowmaker.voice.resurrected = Widowmaker: You must really like me
+$widowmaker.voice.ult_ready = Widowmaker: My ultimate is ready
+$widowmaker.voice.call_ult_charging = Widowmaker: My ultimate is charging
+$widowmaker.voice.call_ult_almost = Widowmaker: My ultimate is almost ready
+$widowmaker.voice.call_hello = Widowmaker: Hello
+$widowmaker.voice.call_thanks = Widowmaker: Thank you
+$widowmaker.voice.call_sorry = Widowmaker: Sorry
+$widowmaker.voice.call_no = Widowmaker: No
+$widowmaker.voice.call_group_up = Widowmaker: Group up
+$widowmaker.voice.call_need_help = Widowmaker: I need assistance
+$widowmaker.voice.call_need_healing = Widowmaker: I need healing
+$widowmaker.voice.ping = Widowmaker: Over there
+$widowmaker.voice.ping_warning = Widowmaker: Watch here
+$widowmaker.voice.ping_enemy = Widowmaker: Hostile here
+$widowmaker.voice.damage_boosted = Widowmaker is damage boosted
+$widowmaker.voice.nano_boosted = Widowmaker is nano boosted
+$widowmaker.voice.mine_kill = Widowmaker: No one survives my poison
+$widowmaker.voice.ultimate = Widowmaker: No one can hide from my sight
+$widowmaker.voice.call_good_job = Widowmaker compliments a teammate
+$widowmaker.ult.friendly = Widowmaker: No one can hide from my sight
+$widowmaker.ult.enemy = Widowmaker: No one can hide from my sight

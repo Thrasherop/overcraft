@@ -1,0 +1,43 @@
+# T3 Forge Hammer and Overload: swap (key 2), a swing at a husk 1.8 m ahead (70 = 5.6 MC), repairing the turret, Overload's numbers.
+cmd /gamerule spawn_monsters false
+cmd /time set noon
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 -60 0.5 0 0
+MARK T3a key 2: the hammer out (mode bit 4), a swing on a husk 1.8 m ahead (expected 70 OW = 5.6 MC)
+cmd /summon husk 0.5 -60 2.3 {NoAI:1b,Tags:["t3"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 -59.0 2.3 run tp @s ~ ~ ~ ~ ~
+key weapon_2 tap
+sleep 0.8
+state
+hp @e[tag=t3,limit=1]
+key secondary_fire down
+sleep 0.15
+key secondary_fire up
+sleep 0.8
+hp @e[tag=t3,limit=1]
+MARK T3b held 3 s: a swing every 0.6 s (expected ~5 swings = 350 OW = 28 MC)
+cmd /data merge entity @e[tag=t3,limit=1] {Health:100f}
+key secondary_fire down
+sleep 3.0
+key secondary_fire up
+sleep 0.5
+hp @e[tag=t3,limit=1]
+MARK T3c Overload (E): 100 overhealth (absorption 8 MC), +30 % speed, attack +43 % (held 3 s: ~7 swings), cooldown 10 s from its end at 6 s
+cmd /data merge entity @e[tag=t3,limit=1] {Health:100f}
+key ability_2 tap
+sleep 0.9
+state
+hp @s AbsorptionAmount
+key secondary_fire down
+sleep 3.0
+key secondary_fire up
+hp @e[tag=t3,limit=1]
+sleep 2.5
+state
+sleep 1.0
+state
+hp @s AbsorptionAmount
+MARK T3d key 1: the Rivet Gun back
+key weapon_1 tap
+sleep 0.6
+state

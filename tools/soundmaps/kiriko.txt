@@ -7,12 +7,33 @@ kiriko.ult.enemy = HeroVoice/Kiriko/Ultimate/000000062D15.0B2-(Japanese)_ O fox 
 # match-end music's victory sting (graph 0D3B, chain B's fallback: 2B0DE6, 8.76 s). tools/reference/sounds-round8.md
 # has how they were found; both play in the head, so they stay stereo.
 announcer.victory = ExtraSounds/Announcer/00000000A8C8.0B2-Victory..ogg
-music.victory = ExtraSounds/MatchEnd/ChainB/Sounds/000000008B7F.02C/0000002B0DE6.03F.ogg
 # Play of the Game (#44, #45): the announcer's "Play of the game." (voice set 001D, file A8C4, research\announcer\set_001D.json)
 # and cue 5B1F (bank 1E5C8, file 2B0E13, 16.84 s; graph 0D3B's message 19C8 and graph 1B4C play it: music-round9, M-L),
 # both extracted 2026-11-11 offline (round 8's extract_voice.py, kiriko-sounds' extract_banks.py "Potg=5B1F").
 announcer.potg = ExtraSounds/Announcer/00000000A8C4.0B2-Play of the game..ogg
-music.potg = ExtraSounds/MatchEnd/Potg/Potg/Sounds/000000005B1F.02C/0000002B0E13.03F.ogg
+# The match-end music, measured (#155, 2026-11-16): neither the sting above nor 5B1F plays under the owner's real Overwatch
+# ending (Downloads/kiri potg (11).mp4). Spectrogram matching of round 9's 57 non-looping 10-40 s music banks against it:
+# bank 69C1/69C2's stream 2B13E8 (37.3 s, stereo) runs under the whole ending, VICTORY to the POTG's end, at 0.689 over
+# 32.4 s (our own POTG recording's 5B1F, a sure match, scored 0.65; every other cue 0.43-0.57). The clip starts 2.18 s
+# into it: VICTORY's flash at 4.93 s of the track, the POTG intro's first frame at 15.28 s. Our VICTORY and our POTG intro
+# each start it at their own moment (the replay's login stops every sound between them), so it plays on as one piece.
+# Extracted offline 2026-11-16 (kiriko-sounds' extract_banks.py into ExtraSounds\MusicScan).
+music.endtrack = ExtraSounds/MusicScan/Scan/Sounds/0000000069C1.02C/0000002B13E8.03F.ogg
+@music.victory = music.endtrack@-4.93
+@music.potg = music.endtrack@-15.28
+# The end phase (#45, the owner: "when a team is about to win, a song plays to hint at it ... Starting quiet at 1/3 health"):
+# Overwatch's overtime cue, effect 30C9 on message 075E (music-round9, H): STUSound 69B7 (bank 1E6EF), stream 2A7946
+# (83.16 s, 12-channel Opus, folded to stereo by DOWNMIX_12). Its Wwise playlist (wwmusic.py, event 50917017, H): a
+# 15.64 s intro segment whose track plays the source from 0.382 s (its entry cue at 0.214 s = source 0.596 s, its exit cue
+# at 13.929 s = source 14.311 s, the track running on to source 15.963 s), then a 65.08 s segment looped for ever (source
+# from 18.076 s; entry cue 0.107 s = source 18.176 s, exit cue 61.821 s = source 79.890 s, on to the end, 83.143 s). Wwise
+# starts each next pass at the exit cue while the last one's tail (past its exit) rings on. So: the intro from its entry
+# to its end, tail kept (EndMusic starts the loop 13.714 s in, at its exit cue); the loop from its entry to its exit, with
+# its own tail (79.890 s on) laid over its start, so Minecraft's seamless loop of the file rings each pass into the next.
+# Extracted offline 2026-11-17 (kiriko-sounds' extract_banks.py "EndPhase=69B8,69B7,69C3,5220,5B26,5B27").
+music.overtime = ExtraSounds/EndPhase/EndPhase/Sounds/0000000069B7.02C/0000002A7946.03F.ogg
+@music.overtime_intro = music.overtime@-0.596~15.963 | stream
+@music.overtime_loop = music.overtime@-18.176~79.890 + music.overtime@-79.890 | stream
 
 # ===== How each game event is put together (build_asset_pack.py sounds). Minecraft plays one file per sound event, so
 # the layers Overwatch plays together are mixed into one file per variant, at build time:

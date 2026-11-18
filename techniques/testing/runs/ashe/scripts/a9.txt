@@ -1,0 +1,23 @@
+MARK A9a hip-shoot the landed stick at 0.75 150.05 5.46 (fuse 2 s from landing ~0.4 s in; expected at once)
+cmd /execute as @s at @s anchored eyes facing 0.75 150.08 5.46 run tp @s ~ ~ ~ ~ ~
+hp @e[tag=d1,limit=1]
+key secondary_fire down
+sleep 0.05
+key secondary_fire up
+sleep 0.2
+hp @e[type=overcraft:dynamite,limit=1] Pos
+hp @e[tag=d1,limit=1]
+MARK A9b Coach Gun self push repeat (flat aim), x/z every 0.25 s
+cmd /kill @e[type=!player]
+cmd /overcraft reset
+cmd /tp @s 0.5 150 0.5 0 0
+sleep 1
+key ability_1 down
+sleep 0.05
+key ability_1 up
+sleep 0.25
+state
+sleep 0.25
+state
+sleep 0.5
+state

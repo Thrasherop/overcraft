@@ -127,6 +127,18 @@ public final class QuickMelee {
 			// her 3P melee clip 01BE's 1788 @0.133 (30 m): one copy for everyone (tracer_sfx.txt)
 			dev.overcraft.tracer.TracerSounds.all(hero.level(), "melee", hero.position(), 30);
 		}
+		if (s.hero == Hero.ILLARI) {
+			// her melee clip's foley (illari_sfx.txt): her own, and the 3P copy for others
+			dev.overcraft.illari.IllariSounds.split(hero, "melee", hero.position(), 30);
+		}
+		if (s.hero == Hero.ASHE) {
+			// her melee clip's foley (ashe_sfx.txt): her own, and the 3P copy for others
+			dev.overcraft.ashe.AsheSounds.split(hero, "melee", hero.position(), 30);
+		}
+		if (s.hero == Hero.WIDOWMAKER) {
+			// her melee clip's foley (widowmaker_sfx.txt: one copy, no _3p)
+			dev.overcraft.widowmaker.WidowmakerSounds.all(hero.level(), "melee", hero.position(), 30);
+		}
 		if (s.hero == Hero.JUNKRAT) {
 			// his melee clip's foley (junkrat_sfx.txt): his own, and the 3P copy for others
 			dev.overcraft.junkrat.JunkratSounds.split(hero, "melee", hero.position(), 30);

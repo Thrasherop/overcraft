@@ -1,0 +1,93 @@
+MARK A1 ready as Ashe, then HUD
+press key.keyboard.enter
+sleep 3
+state
+screenshot ashe_hud0.png
+cmd /gamerule spawn_monsters false
+cmd /difficulty easy
+cmd /time set noon
+cmd /kill @e[type=!player]
+cmd /fill -10 149 -10 10 149 40 stone
+cmd /tp @s 0.5 150 0.5 0 0
+sleep 1
+MARK A1a hip: husk 100 MC 10 m ahead, chest; one tap (expected 35 OW = 2.8 MC; ammo 12 -> 11)
+cmd /summon husk 0.5 150 10.5 {NoAI:1b,Tags:["h1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 151.0 10.5 run tp @s ~ ~ ~ ~ ~
+sleep 1
+hp @e[tag=h1,limit=1]
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 0.5
+hp @e[tag=h1,limit=1]
+state
+MARK A1b hip held 2 s (expected 8 shots at 0.25 s, ammo 11 -> 3, ~ 280 OW = 22.4 MC some missed with spread)
+key secondary_fire down
+sleep 2
+key secondary_fire up
+sleep 0.3
+hp @e[tag=h1,limit=1]
+state
+MARK A1c scoped: hold right 0.5 s, tap left (expected 75 = 6 MC), then held left 2 s scoped (0.65 s apart: ~3-4 shots)
+cmd /data merge entity @e[tag=h1,limit=1] {Health:100f}
+key primary_fire down
+sleep 0.5
+state
+screenshot ashe_scoped.png
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 0.3
+hp @e[tag=h1,limit=1]
+state
+key secondary_fire down
+sleep 2
+key secondary_fire up
+key primary_fire up
+sleep 0.3
+hp @e[tag=h1,limit=1]
+state
+MARK A1d head scoped (expected 150 = 12 MC)
+cmd /data merge entity @e[tag=h1,limit=1] {Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 151.75 10.5 run tp @s ~ ~ ~ ~ ~
+key primary_fire down
+sleep 0.8
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 0.3
+key primary_fire up
+hp @e[tag=h1,limit=1]
+state
+MARK A1e reload from current: R, sample ammo every 0.25 s for 3.6 s
+key reload down
+sleep 0.05
+key reload up
+state
+sleep 0.5
+state
+sleep 0.25
+state
+sleep 0.25
+state
+sleep 0.5
+state
+sleep 1
+state
+sleep 1
+state
+MARK A1f empty and reload: hold fire to empty, then R; at 1.2 s press left to cut (expected the shells in stay)
+key secondary_fire down
+sleep 3.5
+key secondary_fire up
+state
+key reload down
+sleep 0.05
+key reload up
+sleep 1.2
+state
+key secondary_fire down
+sleep 0.1
+key secondary_fire up
+sleep 0.5
+state

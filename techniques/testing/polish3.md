@@ -87,6 +87,8 @@ Bot attacker, real client victim, standing on flat ground, 2 s `trace`, hero mod
 
 **A wrong turn, kept here so nobody repeats it:** the first carry looked broken (top y -60). It was my test. A bot falls to the floor (`/tp` doesn't move it at all), so the hold point was underground. On a ledge the carry lifts with `syncVelocity` alone, fix off and on the same (`p109_carry.txt`), so I reverted my `Combat.send` there. `p_final_a.txt`'s `## carry_*` are that bad geometry; ignore them. Also: `p109_before_c.txt`'s `MOB Hyper Strike` is void: that husk had AI and just walked (y -60 throughout, no sign it was hit); the row's husk is from `p_final_a.txt`'s end. `p109_before_a.txt`'s quick melee (0.00) is `bot press melee` not reaching `QuickMelee`; `bot input` does (b2). `p109_before_b*.txt`'s Hypersphere 0.00 passed over her head: the `/tp` that was meant to aim did nothing, and `_c` was a direct hit only because Sigma's level shot met her body at that range: I can't say what pitch it had.
 
+**Later (2026-11-13):** the speeds a hero sets on themselves (Lúcio's leap, D.Va's eject and Call Mech, Flux, Catnapper's landing) now go `Combat.send` too: [push_109](runs/push_109/push_109.md).
+
 Not played on a real client: Hyper Strike into water or a wall; Rally's shockwave from a second enemy; Lifeline's rope tow as a force beyond #89's work; pushes on a slope; a victim in Valkyrie or gliding (share read from code only).
 
 ## #85: the rest of the crosshair

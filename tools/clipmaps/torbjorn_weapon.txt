@@ -1,0 +1,26 @@
+# Torbjorn's Rivet Gun (entity 0147, model 00000000DB4F.00C (base 091B, look 0891); set 008D), on his hardpoint 000A, var 1D35.
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archive\research\torbjorn\scripts\clipmaps_torbjorn.py from the
+# compacted blend-tree sets (research\torbjorn\work\clipmap_torbjorn\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+0-32_000000000D26 = jump_takeoff   # 0.3333 s; set 008D alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall (H tree)); sel[4] @86 df18=cat6 @6 sm[0] seq[0]; on 3 paths
+0-32_000000000D27 = jump_fall   # 0.3333 s; set 008D alias 6 (jump: seq[0] take-off, seq[1] sm[0] apex, sm[1] fall (H tree)); sel[4] @86 df18=cat6 @6 sm[0] seq[1]; on 6 paths
+0-60_000000000D11 = idle   # 0.0333 s; set 008D alias 86 ((was base_86_crouch_move: alias 86 df18 default[4]) M); sel[4] @86 df18=cat65; on 9 paths
+0-32_000000000D28 = base_86   # 0.4333 s; set 008D alias 86 (M); sel[4] @86 df18:tr[0>4, 2, 1, 3]; on 2 paths
+4-32_00000000110E = add_overload_fire   # 0.9 s; set 008D alias 92 ((was add_overload_fire_sm0: alias A dfE5 cat8E) 1P primary shot (M)); sel[4] @86 df18:+add() sm[1] @A sm[0] @92 dfE5=cat8E @130 sm[0]; on 25 paths
+4-32_000000000E2E = add_fire   # 0.9 s; set 008D alias 92 ((was add_fire_sm0: alias A dfE5 default) 1P primary shot (M)); sel[4] @86 df18:+add() sm[1] @A sm[0] @92 dfE5=default[1] @12F sm[0]; on 25 paths
+4-32_000000000D10 = add_fire_alt_sm0   # 0.9 s; set 008D alias 93 (1P second shot set, 4 random picks (L: the alt fire)); sel[4] @86 df18:+add() sm[1] @A sm[0] +add() @93 sm[0]; on 20 paths
+4-32_000000001108 = add_overload_fire_sm1_sm0   # 0.9 s; set 008D alias A (Rivet Gun shot (M)); sel[4] @86 df18:+add() sm[1] @A sm[1] @DA dfE5=cat8E @12D sm[0]; on 25 paths
+4-32_000000000FCB = add_fire_sm1_sm0   # 1 s; set 008D alias A (Rivet Gun shot (M)); sel[4] @86 df18:+add() sm[1] @A sm[1] @DA dfE5=default[1] @12E sm[0]; on 25 paths
+4-32_000000000FCC = add_fire_sm1_sm0_2   # 1 s; set 008D alias A (Rivet Gun shot (M)); sel[4] @86 df18:+add() sm[1] @A sm[1] +add() @DB sm[0]; on 20 paths
+4-12_0000000007C6 = add_base_86_sm2_stand   # 2.1 s; set 008D alias 86 (M); sel[4] @86 df18:+add() sm[2] df18=default[4]; on 2 paths
+4-34_000000000D15 = add_a2   # 0.1667 s; set 008D alias A2 (L); +add(df102) @A2; on 2 paths
+4-34_000000000D18 = add_a2_2   # 1.1 s; set 008D alias A2 (L); +add(df102) @A2 +add(); on 2 paths
+0-32_000000000D0B = reload   # 2.2 s; set 008D alias 4 ((was reload: alias 4 (2.2 s)) Rivet Gun reload (H alias)); -
+0-48_000000001006 = turret_throw   # 0.5667 s; set 008D alias F3 (Deploy Turret throw (16C5 #475) (H)); -
+0-32_000000000D70 = melee_sm0   # 0.8 s; set 008D alias D (quick melee (shared 0043, 1D blend by pitch) (H, as Junkrat's)); sm[0] @8023406D
+0-32_000000000F3C = overload_sm0   # 1 s; set 008D alias 100 (Overload cast (1721 #97, 0.7 s) (H)); sm[0] @8023407D
+2-32_000000000FFA = overload_sm1   # 0.7 s; set 008D alias 100 (Overload cast (1721 #97, 0.7 s) (H)); sm[1] @8023407E
+# Extracted under this model but in none of its sets (5, not named): 000D0C 000D71 000D72 000F3D 00395B

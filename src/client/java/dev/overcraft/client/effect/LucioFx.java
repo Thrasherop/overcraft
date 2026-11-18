@@ -18,6 +18,26 @@ import java.util.Map;
  * his model's (the skates' song trails).
  */
 public final class LucioFx {
+	/** Its art, made ahead as the hero is picked (HeroFxArt, #128): what its first uses made (the client log) and what this class names. */
+	public static final java.util.List<EffectArt.Art> ART = java.util.List.of(
+		new EffectArt.Art("lucio_band", Palette.LUCIO_GREEN, false),
+		new EffectArt.Art("lucio_band", Palette.SPEED_GREEN, false),
+		new EffectArt.Art("lucio_glow", Palette.LUCIO_GREEN, false),
+		new EffectArt.Art("lucio_glow", Palette.LUCIO_ROUND, false),
+		new EffectArt.Art("lucio_pulse#9", Palette.LUCIO_GREEN, false),
+		new EffectArt.Art("lucio_soft", Palette.LUCIO_GREEN, false),
+		new EffectArt.Art("lucio_soft", Palette.SPEED_GREEN, false),
+		new EffectArt.Art("lucio_spark", Palette.HEAL_AMBER, false),
+		new EffectArt.Art("lucio_spark", Palette.LUCIO_GREEN, false),
+		new EffectArt.Art("lucio_spark", Palette.SPEED_GREEN, false),
+		new EffectArt.Art("lucio_spark", Palette.WHITE, false),
+		new EffectArt.Art("lucio_sparkle", Palette.NATURAL, false),
+		new EffectArt.Art("lucio_trail", Palette.HEAL_AMBER, false),
+		new EffectArt.Art("lucio_trail", Palette.LUCIO_GREEN, false),
+		new EffectArt.Art("lucio_trail", Palette.SPEED_GREEN, false),
+		new EffectArt.Art("ring_line", Palette.LUCIO_GREEN, false),
+		new EffectArt.Art("ring_line", Palette.SPEED_GREEN, false));
+
 	/** Whether the effect being made is an enemy hero's (drawn in the enemy red). */
 	private static boolean enemy;
 	/** When each Lúcio's song last beat (his skates' pulse, once a second), and the song it was. */

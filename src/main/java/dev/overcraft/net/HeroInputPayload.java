@@ -43,6 +43,8 @@ public record HeroInputPayload(int held, int pressed, int extra, int wall, float
 	public static final int EXTRA_BACK = 32;
 	/** Sojourn's Power Slide ended against a wall (her client moves her: ClientSojourn). */
 	public static final int EXTRA_SLIDE_END = 64;
+	/** The Interact key, for a kit that uses it (Torbjorn: his turret's recall, 16C5 #513, #146). */
+	public static final int EXTRA_INTERACT = 128;
 
 	public HeroInputPayload(int held, int pressed) {
 		this(held, pressed, 0, 0);

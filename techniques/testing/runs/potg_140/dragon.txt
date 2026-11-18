@@ -1,0 +1,17 @@
+=== phase dragon 19:23:40
+in the end {'screen': '', 'x': 30.5, 'y': 60.0, 'z': 0.5, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True} [19:23:57] [Render thread/INFO] (Minecraft) [System] [CHAT] potg disk: root 18188 KB; f189a118[seg null raw 0 KB, 0 zips 0 KB, folder 0 KB, highlights 0] 8e6e2a8c[seg null raw 0 KB, 0 zips 0 KB, folder 0 KB, highlights 0] c6f66a25[seg seg-4 raw 18485 KB, 0 zips 0 KB, folder 18188 KB, highlights 1]
+fight over {'screen': '', 'x': 31.027943373336402, 'y': 60.0, 'z': -7.2882555488055525, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True} dragon died
+real input: held the left button 40 s
+after {'screen': 'Holder', 'x': 31.027943373336402, 'y': 60.0, 'z': -7.2882555488055525, 'health': 20.0, 'hero': 'kiriko', 'heroMode': True}
+  log [19:24:01] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 55 (seg-4.zip)
+  log [19:24:07] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 143 (seg-4.zip)
+  log [19:24:17] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 230 (seg-4.zip)
+  log [19:24:18] [Server thread/INFO] (Overcraft) [POTG] Kiriko: +2500 High Score (kill minecraft:ender_dragon)
+  log [19:24:18] [Server thread/INFO] (Overcraft) [POTG] Kiriko: highlight High Score 2730 (seg-4.zip)
+  log [19:24:18] [Server thread/INFO] (Overcraft) [POTG] the dragon died, killer Kiriko (allows a POTG); scoring closed
+  log [19:24:36] [Server thread/INFO] (Overcraft) [POTG] at the dragon's tick 199: Kiriko High Score 2730; highlights: [Kiriko High Score 2730 as kiriko in minecraft:the_end (seg-4.zip t2813), Kiriko High Score 1000 as kiriko in minecraft:the_end (seg-4.zip t2163)] [] []; scoring ms/tick: mean 0.0084 max 
+  log [19:24:36] [Server thread/INFO] (Overcraft) [POTG] mobs this run: [ { "uuid": "1fca200e-98c3-44a0-bc43-c46e44630ebf", "type": "minecraft:ender_dragon", "playersKilled": 0, "damageToPlayers": 150.0 } ]
+  log [19:24:36] [Server thread/INFO] (Overcraft) [POTG] showing Kiriko High Score 2730 as kiriko in minecraft:the_end (seg-4.zip t2813) to 1 viewer(s), world frozen (was false)
+  log [19:24:36] [Server thread/INFO] (Overcraft) [POTG] the dragon's POTG: Showing Kiriko High Score 2730 as kiriko in minecraft:the_end (seg-4.zip t2813)
+  log [19:24:44] [Server thread/INFO] (Overcraft) [POTG] replay started for 1 viewer(s) 8421 ms after the card began
+  log [19:24:57] [Server thread/INFO] (Overcraft) [POTG] showing ended (replay done) after 21171 ms, world held for the end screen

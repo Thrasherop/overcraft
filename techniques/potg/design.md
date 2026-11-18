@@ -53,6 +53,8 @@ move (Fabric sends round the listener's `send`). Ghosts and the camera haven't.
   alone" are dropped everywhere below.
 - **The rest of the defaults stand:** the replay key stays a dev command (2), Minecraft-mode kills don't count (5), a
   highlight intro picked for the first version (7), it ends on the replay and then the exit portal opens (8).
+- **A Minecraft-mode killing blow doesn't cancel it (owner, 2026-11-17, #161: "No").** Their Minecraft-mode kills still
+  don't score, but the dragon's POTG is chosen from everyone's plays whoever lands the blow.
 - **Clips (6):** the owner will send real POTG clips for the camera, into `local-assets/raw/`. The camera comes last,
   so nothing waits on them.
 
@@ -903,6 +905,14 @@ held; harness-driven except the kill; raw rows in [runs_backend](runs_backend/);
 - The menu, the hero intro, the end screen and the POTG's look from [potg_reference](potg_reference.md): next steps.
 - A mob killing a player for the mob stats (the heroes had resistance): only damage was counted in play.
 - No critique agent has read this step.
+
+**Lesson: a recorder must not outlive its player in the player list (#140, 2026-11-13).** The vendored recorder finds
+its player by UUID each time (`server.playerList.getPlayer`); with nobody there, `level` quietly falls back to the
+overworld but `takeSnapshot` throws, and a snapshot comes every 5 minutes or on a dimension change, so an orphan sits
+silent for up to 5 minutes and then stops the server. Closing it only on `onDisconnect` missed every removal without a
+disconnect (DevBot's `bot remove` is `PlayerList.remove` alone; fake-player mods do the same). So `PotgRecorder.tick`
+first closes any recorder whose player is no longer listed, before the engine ticks. Reproduce such crashes with
+`/tick sprint 6200` instead of waiting 5 minutes. Run: [testing/runs/potg_140](../testing/runs/potg_140/record.md).
 
 ## 5. Risks
 **Performance on the owner's machine** (a hard crash on 2026-11-04 under heavy load):

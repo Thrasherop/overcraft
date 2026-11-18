@@ -1,0 +1,16 @@
+# Juno's Play of the Game highlight intro: the clip only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/juno.glb by bone name (HeroModels, from hero_models/juno_intro_clips.glb), as Sigma's (sigma_intro_clips.txt).
+# From DataTool's extract-unlocks "Juno|highlightintro=*" (build 154088, archived: research\potg_intros\extract\Unlocks\Heroes\Juno\
+# HighlightIntro; headers research\potg_intros\intro_clips_rest.txt). The default Overwatch plays "Heroic" (her other base intros:
+# Martian Greeting, Zero Gravity). Heroic's body clips (262 of their 298 bones her model's, 0159.118): group 16-32 E97D 8.9 s (effect
+# 5DCC); group 32 F3F1 7.733 s (no effect), F3F3 6.467 s (effect 6445), F589 7.733 s (effect 64D4); F505 (group 4-4, 3 s) is an
+# additive layer. Her intro set 42EC's alias B33 is a SEQUENCE (research\juno\work\clipmap_juno\compact_42EC.txt, H tree): seq[0]
+# 9.033 s p16/32 -> seq[1] 7.733 -> seq[2] 4.0 -> seq[3] 2.867 -> seq[4] a 7.733 or a random pick of 7.733 (1A0E6) / 7.733 (1A0E7) /
+# 2.867 / 4.0, with F505 added; the set's own ids are not extracted. So E97D is the opening (M: the only group 16-32 clip, 8.9 s
+# extracted against the set's 9.033). NOT taken: E97D flies her in from 8.8 m away (its root travel in the export), and PotgCard plays
+# the clip on the spot, so she'd start out of the card. Taken instead, by Kiriko's rule (stays in place): F3F1, the 7.733 s step
+# that follows the opening (seq[1]; F3F1 for 1A0E6 and F589 for 1A0E7 by id order: L), root travel 0.00 m. 232 frames at 30 fps.
+# Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <0159.118.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/juno_intro_clips.txt --clips-from=<...>\Heroes\Juno\HighlightIntro\Overwatch\Heroic
+emote_00000000F3F1 = potg_intro

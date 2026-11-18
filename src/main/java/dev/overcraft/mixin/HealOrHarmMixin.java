@@ -17,6 +17,8 @@ public abstract class HealOrHarmMixin {
 	private void overcraft$packNow(net.minecraft.server.level.ServerLevel level, net.minecraft.world.entity.Entity source,
 		net.minecraft.world.entity.Entity owner, LivingEntity mob, int amplification, double scale, CallbackInfo ci) {
 		dev.overcraft.tracer.Tracer.healthPack(mob, source);
+		// a health pack clears Venom Mine's poison (W)
+		dev.overcraft.widowmaker.Widowmaker.healthPack(mob);
 	}
 
 	@Inject(method = "applyEffectTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;heal(F)V"))

@@ -93,28 +93,12 @@ public final class DefenseMatrix {
 			}
 			// Shield System: 25 % of it back as shields (514D #402)
 			DvaPerks.matrixAte(player, s, damage);
-			if (!nearOthersEyes(player, at)) {
-				level.sendParticles(ParticleTypes.POOF, at.x, at.y, at.z, 4, 0.05, 0.05, 0.05, 0.02);
-			}
+			// its look (1506's beam from her arm, alternating, and 1507's flash: DvaFx)
+			s.dvaAbsorbArm++;
+			dev.overcraft.hero.Effects.play(level, "dva_absorb", at, Vec3.ZERO, player, s.dvaAbsorbArm & 1, player);
 			// each eaten projectile (#208 effect 1506: 2AC1 + 2D25 hers, 2AC4 + 2D28 at it for others)
 			DvaSounds.split(player, "matrix.absorb", at, 70);
 		});
-		// stand-in look: a few sparks through the box (past 3 m, out of her face)
-		Vec3 eye = player.getEyePosition();
-		Vec3 f = player.getViewVector(1.0f);
-		Vec3 r = f.cross(new Vec3(0, 1, 0));
-		r = r.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : r.normalize();
-		Vec3 u = r.cross(f).normalize();
-		var random = player.getRandom();
-		for (int i = 0; i < 3; i++) {
-			double z = 3 + (MATRIX_FAR - 3) * random.nextDouble();
-			double x = (random.nextDouble() * 2 - 1) * MATRIX_SIDE;
-			double y = (random.nextDouble() * 2 - 1) * MATRIX_HALF_HEIGHT;
-			Vec3 at = eye.add(f.scale(z)).add(r.scale(x)).add(u.scale(y));
-			if (!nearOthersEyes(player, at)) {
-				level.sendParticles(ParticleTypes.GLOW, at.x, at.y, at.z, 1, 0, 0, 0, 0);
-			}
-		}
 	}
 
 	/**

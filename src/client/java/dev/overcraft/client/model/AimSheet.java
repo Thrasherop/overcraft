@@ -132,6 +132,18 @@ public final class AimSheet {
 	 * frames through a level frame that bends monotonically, else a level frame's column across rows of seven.
 	 */
 	static @Nullable Layout layout(float[] x, float[] y, float[] total) {
+		return layout(x, y, total, false);
+	}
+
+	private static float[] reverse(float[] a) {
+		float[] out = new float[a.length];
+		for (int i = 0; i < a.length; i++) {
+			out[i] = a[a.length - 1 - i];
+		}
+		return out;
+	}
+
+	private static @Nullable Layout layout(float[] x, float[] y, float[] total, boolean reversed) {
 		float min = Float.MAX_VALUE;
 		for (float t : total) {
 			min = Math.min(min, t);
@@ -171,6 +183,19 @@ public final class AimSheet {
 			}
 			return new Layout(line, bestC - bestA);
 		}
+		if (!reversed) {
+			// the same line stored up end first: the newer heroes' 7-frame run, crouch-walk and jump sheets (Tracer's E7, Pharah's 3D2,
+			// Junkrat's 3133: -36 ... [0] ... +66, #95)
+			int n = x.length;
+			Layout back = layout(reverse(x), reverse(y), reverse(total), true);
+			if (back != null && back.line().length > 1 && back.line()[1] == back.line()[0] + 1) {
+				int[] line = new int[back.line().length];
+				for (int i = 0; i < line.length; i++) {
+					line[i] = n - 1 - back.line()[i];
+				}
+				return new Layout(line, back.neutral());
+			}
+		}
 		for (int c : level) {
 			List<Integer> column = new ArrayList<>();
 			for (int f = c % ROW; f < x.length; f += ROW) {
@@ -204,8 +229,8 @@ public final class AimSheet {
 		int b = Math.min(a + 1, layout.line().length - 1);
 		float f = at - a;
 		int fa = layout.line()[a], fb = layout.line()[b];
-		if (fb == fa + 1) {
-			// neighbouring frames: the clip's own interpolation
+		if (Math.abs(fb - fa) == 1) {
+			// neighbouring frames (either way along the clip): the clip's own interpolation
 			Skeleton.addAdditive(clip, times[fa] + (times[fb] - times[fa]) * f, pose, weight, mask);
 		} else {
 			if (a != layout.neutral()) {

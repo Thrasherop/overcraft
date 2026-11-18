@@ -47,7 +47,7 @@ public final class DvaCallView {
 	}
 
 	/** Where the view is and how it's turned while her clip runs: {x, y, z, yaw, pitch}, or null for Minecraft's own. */
-	public static double @Nullable [] camera(LocalPlayer player, float partialTicks) {
+	public static double @Nullable [] camera(net.minecraft.client.player.AbstractClientPlayer player, float partialTicks) {
 		Minecraft mc = Minecraft.getInstance();
 		float now = (player.level().getGameTime() + partialTicks) / 20f;
 		// (a pose from the future is stale too: a rejoin into a world whose clock is behind the last one's)
@@ -64,7 +64,12 @@ public final class DvaCallView {
 				return null;
 			}
 			// the clip's camera is laid out about the mech's spot, facing its way (the call's yaw)
-			Vec3 spot = mech.getPosition(partialTicks);
+			// the clip's origin isn't the mech's spot: its camera starts 2.06 m behind the origin (3134's Camera at frame 0) where
+			// she stands 1.27 m behind the mech (026A #434 / #766's MoveTo), so the origin is 0.79 m past the mech's spot, where
+			// 311F draws the landed mech's body (its pelvis 0.8-1.1 m ahead of its root). Anchored at the spot, her hands closed
+			// 0.8-0.9 m short of the mech's cockpit, on nothing (#134); there they meet it (the built-in pilot's grips at 1.6 s:
+			// hers 1.26 m ahead, 1.18 up; the mech's 1.38 / 1.24)
+			Vec3 spot = mech.getPosition(partialTicks).add(Vec3.directionFromRotation(0, mech.getYRot()).scale(DvaStats.CALL_VIEW_AHEAD));
 			// the clip's camera is laid out on level ground; where the spot is more than a step below or above her (a ledge),
 			// its height stays hers so the view doesn't sink into the block she stands on (the critic of 83b6bfa; ours)
 			feet = Math.abs(spot.y - feet.y) > STEP ? new Vec3(spot.x, feet.y, spot.z) : spot;
@@ -92,7 +97,7 @@ public final class DvaCallView {
 	 * The view pulled in along the ray from her eyes where a block is in the way, as Minecraft's third person is (Camera's
 	 * getMaxZoom: 0.1 m off the face): a wall at her back, a ledge's block (the critic of 83b6bfa, #133).
 	 */
-	private static Vec3 inOpenAir(LocalPlayer player, Vec3 eye, Vec3 want) {
+	private static Vec3 inOpenAir(net.minecraft.client.player.AbstractClientPlayer player, Vec3 eye, Vec3 want) {
 		Vec3 to = want.subtract(eye);
 		double length = to.length();
 		if (length < 1.0E-4) {
@@ -115,7 +120,7 @@ public final class DvaCallView {
 	}
 
 	/** How black the screen is (0-1): in as she reaches the cockpit, held to the link, out as the mech's view comes up. */
-	public static float fade(LocalPlayer player, float partialTicks) {
+	public static float fade(net.minecraft.client.player.AbstractClientPlayer player, float partialTicks) {
 		Minecraft mc = Minecraft.getInstance();
 		if (!firstPerson(mc)) {
 			return 0;
@@ -124,7 +129,7 @@ public final class DvaCallView {
 		float now = (player.level().getGameTime() + partialTicks) / 20f;
 		if (a.dvaForm() == Dva.CALLING) {
 			float t = now - a.dvaFormSince() - (float) DvaStats.CALL_CAST;
-			return Math.clamp((t - (float) DvaStats.CALL_FADE_START) / (float) (DvaStats.CALL_LINK - DvaStats.CALL_FADE_START), 0, 1);
+			return Math.clamp((t - (float) DvaStats.CALL_FADE_START) / (float) (DvaStats.CALL_FADE_BLACK - DvaStats.CALL_FADE_START), 0, 1);
 		}
 		if (a.dvaForm() == Dva.MECH) {
 			float since = now - a.dvaLinkedAt();
@@ -134,7 +139,7 @@ public final class DvaCallView {
 	}
 
 	/** Her called mech, falling in (this client's copy). */
-	private static @Nullable DvaMechEntity mech(LocalPlayer player) {
+	private static @Nullable DvaMechEntity mech(net.minecraft.client.player.AbstractClientPlayer player) {
 		for (DvaMechEntity m : player.level().getEntitiesOfClass(DvaMechEntity.class, new AABB(player.blockPosition()).inflate(8))) {
 			if (m.kind() == DvaMechEntity.CALL && m.ownerId() == player.getId()) {
 				return m;

@@ -172,12 +172,53 @@ public final class OcEntities {
 		EntityType.Builder.<dev.overcraft.entity.RipTireEntity>of(dev.overcraft.entity.RipTireEntity::new, MobCategory.MISC)
 			.noLootTable().noSave().sized((float) dev.overcraft.junkrat.JunkratStats.TIRE_WIDTH, (float) dev.overcraft.junkrat.JunkratStats.TIRE_HEIGHT)
 			.clientTrackingRange(10).updateInterval(1));
+	/** Illari's Healing Pylon (thrown 4B4A, set 4BCA): 0.4 m round, 0.8 m tall (ours, by its model; not saved). */
+	public static final EntityType<dev.overcraft.entity.HealingPylonEntity> HEALING_PYLON = register("healing_pylon",
+		EntityType.Builder.<dev.overcraft.entity.HealingPylonEntity>of(dev.overcraft.entity.HealingPylonEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.4f, 0.8f).clientTrackingRange(8).updateInterval(1));
+	/** Her Captive Sun ball (4AC0): 0.45 m (D 293D; not saved: 10 s). */
+	public static final EntityType<dev.overcraft.entity.CaptiveSunEntity> CAPTIVE_SUN = register("captive_sun",
+		EntityType.Builder.<dev.overcraft.entity.CaptiveSunEntity>of(dev.overcraft.entity.CaptiveSunEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.45f, 0.45f).clientTrackingRange(10).updateInterval(1));
 	/** The pilot's Light Gun rounds (1000): 0.275 m (not saved: 5 s of flight). */
 	public static final EntityType<dev.overcraft.entity.LightGunShotEntity> LIGHT_GUN_SHOT = register("light_gun_shot",
 		EntityType.Builder.<dev.overcraft.entity.LightGunShotEntity>of(dev.overcraft.entity.LightGunShotEntity::new, MobCategory.MISC)
 			.noLootTable().noSave()
 			.sized((float) dev.overcraft.dva.DvaStats.LIGHT_GUN_RADIUS * 2, (float) dev.overcraft.dva.DvaStats.LIGHT_GUN_RADIUS * 2)
 			.clientTrackingRange(8).updateInterval(1));
+	/** Ashe's Dynamite (2533): 0.1 m round (D 28C8), drawn 0.25 m for its model (not saved: 2 s on the ground). */
+	public static final EntityType<dev.overcraft.entity.DynamiteEntity> DYNAMITE = register("dynamite",
+		EntityType.Builder.<dev.overcraft.entity.DynamiteEntity>of(dev.overcraft.entity.DynamiteEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.25f, 0.25f).clientTrackingRange(10).updateInterval(1));
+	/** Her B.O.B. (25C3): 2.3 m tall, 0.7 m round (D mover) as Minecraft's 1.4 x 2.3 box (not saved: 15 s). */
+	public static final EntityType<dev.overcraft.entity.BobEntity> BOB = register("bob",
+		EntityType.Builder.<dev.overcraft.entity.BobEntity>of(dev.overcraft.entity.BobEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized((float) (dev.overcraft.ashe.AsheStats.BOB_RADIUS * 2), (float) dev.overcraft.ashe.AsheStats.BOB_HEIGHT)
+			.clientTrackingRange(10).updateInterval(1));
+	/** Widowmaker's Venom Mine (00AF / 00AE): 0.2 m (D volley #21), drawn 0.3 m for its model; kept with its chunk. */
+	public static final EntityType<dev.overcraft.entity.VenomMineEntity> VENOM_MINE = register("venom_mine",
+		EntityType.Builder.<dev.overcraft.entity.VenomMineEntity>of(dev.overcraft.entity.VenomMineEntity::new, MobCategory.MISC)
+			.noLootTable().sized(0.3f, 0.3f).clientTrackingRange(10).updateInterval(1));
+	/** Her grappling claw (00D3): 0.2 m against blocks (ours; not saved: under 2 s out). */
+	public static final EntityType<dev.overcraft.entity.GrappleHookEntity> GRAPPLE_HOOK = register("grapple_hook",
+		EntityType.Builder.<dev.overcraft.entity.GrappleHookEntity>of(dev.overcraft.entity.GrappleHookEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.2f, 0.2f).clientTrackingRange(10).updateInterval(1));
+	/** Torbjörn's rivets (2A66): 0.175 m (D 290D + the global 0.075); his alt's pellets (13ED): 0.1 m against blocks (not saved). */
+	public static final EntityType<dev.overcraft.entity.RivetEntity> RIVET = register("rivet",
+		EntityType.Builder.<dev.overcraft.entity.RivetEntity>of(dev.overcraft.entity.RivetEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.2f, 0.2f).clientTrackingRange(8).updateInterval(1));
+	public static final EntityType<dev.overcraft.entity.RivetEntity> TORBJORN_PELLET = register("torbjorn_pellet",
+		EntityType.Builder.<dev.overcraft.entity.RivetEntity>of(dev.overcraft.entity.RivetEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.1f, 0.1f).clientTrackingRange(8).updateInterval(1));
+	/** His Molten Core's slag (2902): 0.2 m (D 290E; not saved: 10 s). */
+	public static final EntityType<dev.overcraft.entity.SlagEntity> SLAG = register("slag",
+		EntityType.Builder.<dev.overcraft.entity.SlagEntity>of(dev.overcraft.entity.SlagEntity::new, MobCategory.MISC)
+			.noLootTable().noSave().sized(0.3f, 0.3f).clientTrackingRange(8).updateInterval(1));
+	/** His turret (28B7): 1 m across and tall (its mover), a creature; saved with its chunk (TurretEntity). */
+	public static final EntityType<dev.overcraft.entity.TurretEntity> TURRET = register("turret",
+		EntityType.Builder.<dev.overcraft.entity.TurretEntity>of(dev.overcraft.entity.TurretEntity::new, MobCategory.MISC)
+			.noLootTable().sized(dev.overcraft.torbjorn.TorbjornStats.TURRET_WIDTH, dev.overcraft.torbjorn.TorbjornStats.TURRET_HEIGHT)
+			.clientTrackingRange(10).updateInterval(1));
 	public static final EntityType<KitsuneEntity> KITSUNE = register("kitsune", EntityType.Builder.<KitsuneEntity>of(KitsuneEntity::new, MobCategory.MISC)
 		.noLootTable().noSave().sized(0.8f, 0.8f).clientTrackingRange(8).updateInterval(1));
 
@@ -190,5 +231,8 @@ public final class OcEntities {
 	}
 
 	public static void init() {
+		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(BOB, dev.overcraft.entity.BobEntity.attributes());
+		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(TURRET,
+			dev.overcraft.entity.TurretEntity.attributes());
 	}
 }

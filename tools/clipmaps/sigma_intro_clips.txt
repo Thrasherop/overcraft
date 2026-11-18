@@ -1,0 +1,15 @@
+# Sigma's Play of the Game highlight intro: the clip only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/sigma.glb by bone name (HeroModels, from hero_models/sigma_intro_clips.glb), as Junkrat's (junkrat_intro_clips.txt).
+# From DataTool's extract-unlocks "Sigma|highlightintro=*" (build 154088, archived: research\potg_intros\extract\Unlocks\Heroes\
+# Sigma\HighlightIntro; headers research\potg_intros\intro_clips_sigma_lucio.txt). The default Overwatch plays "Heroic" (his other
+# base intros: What comes up, Accretion, Kinetic Grasp). Heroic's body clips (most of their bones his model's, 256 of 263): group 32
+# BAC9 6.333 s (animation effect 45F0), BE99 6.667 s, BF4F 8.0 s; group 36 BE25 6.667 s; group 16-32 BF2C 9.333 s. BACD / BE3D / BE9A
+# / BF2D / BF52 (48 bones, 2 his) are the intro's prop, not kept. His intro set 430C's alias B33 is a SEQUENCE (research\sigma\work\
+# clipmap_sigma\compact_430C.txt, H tree): seq[0] 5.9 s p0/32 -> seq[1] 7.667 -> seq[2] 7.667 -> seq[3] 6.667 p0/36 -> seq[4] ...; the
+# set's own ids (19EFE-19F07) are not extracted, and no extracted clip is 5.9 s (nor 7.667). So BAC9 is the opening (M: the nearest
+# length in group 32, and its lowest id, as the opening is for most heroes whose set matched by length; Sojourn's isn't). He floats in
+# place (root travel 0.00 m in the export), no prop missing. Only potg_intro is played (PotgCard). 190 frames at 30 fps.
+# Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <106F7.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/sigma_intro_clips.txt --clips-from=<...>\Heroes\Sigma\HighlightIntro\Overwatch\Heroic
+emote_00000000BAC9 = potg_intro

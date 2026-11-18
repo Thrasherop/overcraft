@@ -1,0 +1,13 @@
+# Brigitte's Play of the Game highlight intro: the clip only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/brigitte.glb by bone name (HeroModels, from hero_models/brigitte_intro_clips.glb), as Sigma's (sigma_intro_clips.txt).
+# From DataTool's extract-unlocks "Brigitte|highlightintro=*" (build 154088, archived: research\potg_intros\extract\Unlocks\Heroes\
+# Brigitte\HighlightIntro; headers research\potg_intros\intro_clips_rest.txt). The default Overwatch plays "Heroic" (her other base
+# intros: Defender, Rally, Flail). Heroic's body clips (250 of their 265 bones her model's, 10C10): group 32 C06C 2.6 s (effect 4815);
+# group 36 C07D / C0B8 5.667 s. C06D / C07F (groups 48 / 60, 21 bones, 2 hers) are props, C0B9 (group 4-12, 0.8 s) an additive layer:
+# not kept. Her intro set 4303's alias B33 is a SEQUENCE (research\brigitte\work\clipmap_brigitte\compact_4303.txt, H tree): seq[0]
+# 2.6 s p0/32 -> seq[1] 5.667 p0/36 -> seq[2] 5.667 -> ...; the set's own ids (19F63-19F65) are not extracted. So C06C is the opening
+# (H by length and group). Root travel 0.12 m in the export; her flail and shield are pieces of her model (HeroWeapon.extras draws
+# them apart in play). 78 frames at 30 fps: a short opening, held on its last frame by PotgCard. Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <10C10.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/brigitte_intro_clips.txt --clips-from=<...>\Heroes\Brigitte\HighlightIntro\Overwatch\Heroic
+emote_00000000C06C = potg_intro

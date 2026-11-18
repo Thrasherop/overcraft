@@ -1,0 +1,8 @@
+sleep 20
+state
+window 1920 1080
+sleep 2
+newworld ashe1
+sleep 30
+state
+screenshot ashe_select.png

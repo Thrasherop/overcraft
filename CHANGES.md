@@ -4,7 +4,478 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-13: 0.3.42 on next (not on main yet)
+## 2026-11-17: 0.3.81 on next (not on main yet)
+
+- **Tracer fires on a quick click (found in the general play):** a fast tap of the left button sometimes fired nothing,
+  because her pistols only looked at whether the button was held. A tap now fires a shot.
+- **General play of the whole build** before main: every hero picked and fired, a heal, deaths and respawns, a rejoin, and
+  plain Minecraft (mining, crafting, building, a chest, swimming). Record: techniques/testing/runs/genplay_0381/run.md.
+
+## 2026-11-17: 0.3.80
+
+- **D.Va's Boosters no longer cut out when Shift is held (#148):** a key held down repeats about 30 times a second after half a
+  second, and each repeat counted as a new press, which ends Boosters. Held, it now flies its full 2 s; a second tap still ends
+  it early, as in Overwatch. Every hero key works this way now: holding one is one press.
+
+## 2026-11-17: 0.3.79
+
+- **The last Minecraft particles are gone (#150):** Illari's Outburst, Sunburn, Solar Flare, and her pylon's heals, hits and
+  breaking now draw her own effects; Torbjörn's turret breaking, D.Va's Light Gun hits and the Captive Sun in flight no longer
+  use Minecraft's particles either.
+
+## 2026-11-17: 0.3.78
+
+- **Jetpack Cat, Catnapper (#142):** a carried mob now hangs on her rope and swings as she flies and turns, like a Lifeline
+  tow, instead of being pinned to a point under her. A carried enemy player is held as before.
+
+## 2026-11-17: 0.3.77
+
+- **Sombra's Hotfix band (#85):** while Hotfix heals an ally, the heal still to come shows as a gold band on their health pips
+  over their head, shrinking as it lands (from her data's Hotfix graph). It was the last missing piece of #85.
+
+## 2026-11-17: 0.3.76
+
+- **Torbjörn, Anchor Bolts (#146):** a turret thrown at a wall or a ceiling now sits on it as in Overwatch (sideways on a
+  wall, upside down under a ceiling), turning to aim along it; if the block it's bolted to is mined or blown up it falls and
+  lands. Before, it stood upright against the wall and stayed floating when its block went. It keeps its place through a
+  chunk unloading. Hammer Time played too: +20 % with the hammer out, adding with Overload's +30 %.
+- **Widowmaker's other two perks played (#138):** Widow's Bite pierces enemies at 150 when charged past 100 %; Sniper's
+  Instinct doubles the charge for 2 s after a Grappling Hook pull. No change needed.
+
+## 2026-11-17: 0.3.75 on next (not on main yet)
+
+- **Widowmaker (#138):** pick her from the select screen. Widow's Kiss from the hip (14, 10 a second) and scoped on the right
+  button (charges to 120 in 0.9 s, 5 rounds a shot, a slower walk); Grappling Hook (Shift) pulls her up and over ledges;
+  Venom Mine (E) sticks, arms and poisons enemies for 125 over 5 s; Infra-Sight (Q) shows every enemy through walls to her
+  and her side for 15 s; Sharpshooter, quick melee, four perks. Her model, gun, sounds and effects come from your install.
+  Played with the real mouse and keys against husks, zombies and skeletons, by day and at night, in water and in a boat;
+  picked on join, on rejoin, after a death and from H. Fixed from a critic's read and replayed: G during the mine's throw
+  gave a free mine; holding the scoped shot fired once; the hook pulled her on into the air when its block was mined; the
+  hook's cooldown stood still for half a second; E and Q worked in a boat; a mine whose block was mined hung in the air,
+  then vanished; the jump out of a pull threw her about 13 m up.
+  Perks played: Scoped Efficiency and Seeker Mine. Not tried yet: a second player, the Nether, her other two perks.
+
+## 2026-11-17: 0.3.74 on next (not on main yet)
+
+- **Ashe (#137):** pick her from the select screen. The Viper from the hip (35, spread building over sustained fire) and
+  aimed down its sights on the right button (75, zoomed, slower walk); shell-by-shell reload; Coach Gun (Shift) blasts
+  enemies back and launches her; Dynamite (E) lands, burns and goes off 2 s later or when shot; B.O.B. (Q) charges in,
+  knocks enemies up and fires for 10 s, and mobs go after him; quick melee. Her perks: Remote Detonator, Double-Barreled,
+  Viper's Sting, Airburst. Her model, Viper and Coach Gun, her sounds and voice, and her effects come from your install.
+  Played: picked from the select screen, after a death and on rejoin; H to switch away and back; G out and back; every
+  button against husks, zombies, skeletons and a drowned, in the day, at night and underwater; damage read against her
+  numbers; two perks each tier. Fixed while playing: the held scope dropped the Viper to the hip; her sounds weren't in
+  the pack. Fixed from a critic's read: hip spread never built up, the scoped shot cut other animations, G twice reset
+  Double-Barreled's cooldown, and five smaller ones.
+  Not tried yet: a second player seeing her, the Nether, boats, Airburst.
+
+## 2026-11-17: 0.3.73 on next (not on main yet)
+
+- **Junkrat's mine goes off when you click detonate mid-throw (#153):** a right click while the mine was still leaving his
+  hand, or in its first 0.1 s, was lost. It's now held and sets the mine off the moment it can, cutting the throw's
+  animation. Played: presses 0, 0.05, 0.12 and 0.2 s after the throw key all detonate (the old build missed the first two).
+- **Torbjorn's turret looks like its level (#146):** at level 2 it showed the whole level-3 turret (missile pod, third
+  barrel, shoulder plates). Now level 2 has two barrels and no pod; Overload with Overloaded Turret grows the level-3 parts
+  and they go again when it ends. Played both.
+- **A Minecraft-mode killing blow doesn't cancel the dragon's POTG (#161):** as you answered. Minecraft-mode kills still
+  don't score, but the POTG is picked from everyone's plays whoever lands the blow. Played: G to Minecraft mode, final
+  blow on the dragon, the POTG and its end screen showed.
+- **End-phase music for the dragon (#45):** below a third of the dragon's health everyone hears Overwatch's overtime cue,
+  its intro then its loop, quiet and rising as the dragon's health falls; the killing blow's VICTORY fades it out.
+  Minecraft's own music holds while it plays. Played: starts on time, intro hands over to the loop, stops at VICTORY,
+  POTG on the music's cue. Fixed while playing: a dragon removed without dying blocked the music for the next one.
+- **Junkrat's frag hit size (#163):** its direct hit is 0.32 m around the frag. Played against a husk at 10 m at offsets
+  on both sides: hits and misses match that radius.
+- **The perk menu takes quick clicks:** a short click with Left Alt held picked nothing.
+- **A movement ability lets go of Jetpack Cat's rope (#142):** Blink, Jump Jet, Combat Roll, Swift Step, Boosters and the
+  other movement abilities end the tow. Played on two clients: towed as Tracer, Blink broke the rope and she dropped
+  while the cat flew on.
+
+## 2026-11-17: 0.3.72 on next (not on main yet)
+
+- **Cassidy's, Pharah's and Junkrat's effects from their data (#150):** with these every hero's abilities draw their
+  Overwatch effects instead of Minecraft's particles. Cassidy: his shot lines and muzzle, hits, Fan the Hammer's smoke,
+  Silver Bullet's glow and bleed, Flashbang's flash and the hindered look, Combat Roll's dust, Deadeye's glint. Pharah: her
+  rockets' trails and blasts, Concussive Blast (blue for her side, red for enemies), her hover jets, Jump Jet and Jet Dash,
+  Barrage and Rocket Salvo. Junkrat: the frag's flight and burst, Concussion Mine, Steel Trap's snap and chain, RIP-Tire
+  and its blast, Total Mayhem, Nitro. Played lightly (Cassidy's shots, hits and Flashbang; Pharah's rocket trail);
+  the rest built and checked in code.
+
+## 2026-11-17: 0.3.71 on next (not on main yet)
+
+- **Torbjorn recalls his turret with Interact (F) (#146):** from his data; its cooldown 6 s, or 12 s if it was in combat.
+- **Torbjorn's turret health on his HUD (#146).**
+- **Illari's reticle widget (#144):** her beam's energy and her rifle's charge around the crosshair.
+
+## 2026-11-17: 0.3.70 on next (not on main yet)
+
+- **Illari's Captive Sun and reload sun from her data (#150):** the sun forming in her hand, held at her rifle once armed,
+  the throw, the ball's glow in flight, its burst, Sunstruck's sun on the marked and its detonation; the small sun in her
+  hand as she reloads; her rifle's gold shot line, muzzle star and hit. No more Minecraft flames and explosions.
+- **Torbjorn's effects from his data (#150):** Overload's flames and smoke at his back vents; Molten Core's forge glow, the
+  slag in flight and its lava floor (glowing lava blobs, embers, sparks) and burning enemies; his rivets' muzzle flashes,
+  shots and hits; the turret's shots.
+- **D.Va's sparks** (Self-Destruct, missiles) were never drawn: fixed.
+
+## 2026-11-17: 0.3.69 on next (not on main yet)
+
+- **Cassidy's Silver Bullet aims down sights (#164):** hold the right button: the view zooms to 40 degrees over 0.2 s, the
+  mouse slows to 60%, he moves 20% slower, and the left button fires the Silver Bullet once fully raised. From his data
+  (it binds no gun-raise pose, so the view is what changes).
+- **Projectile sizes (#163):** Sigma's Hyperspheres and Illari's Captive Sun hit at their real radius (they hit at half);
+  Pharah's Rocket Salvo mini-rockets are small (they had the full rocket's size). Checked every weapon against the wiki.
+- **Illari's gold hair (#144):** drawn pale gold from her data, not white (rebuild the asset pack's colours).
+- **Tracer's muzzle flash (#150):** small cyan flashes at her pistols each shot, from her data.
+
+## 2026-11-17: 0.3.68 on next (not on main yet)
+
+- **D.Va's Fusion Cannons hit endermen (#162):** her shots were an arrow's damage type, which an enderman dodges as a
+  projectile. Now hitscan, as every other hitscan weapon already was.
+- **Deadeye locks onto calm endermen (#162):** and calm piglins; a cow still doesn't take a lock, nor does Torbjorn's turret
+  pick calm mobs.
+- **/changehero alone opens the hero select (#165):** an operator's free pick from anywhere; /changehero <hero> [players]
+  is unchanged.
+
+## 2026-11-16: 0.3.67 on next (not on main yet)
+
+- **Play of the Game follows the music (#161):** the owner: the intro, lineup and POTG waited for the dragon to fly back to
+  the fountain and finish dying, while the music started at the killing blow, so they drifted apart. The POTG now starts
+  on the music's own cue, 7.22 s after the blow, and VICTORY's track runs on into it as one track. Everyone online gets
+  VICTORY and its music, wherever they are.
+- **POTG music no longer cut by a change of dimension (#161):** Minecraft stops every sound when the level changes, which
+  silenced the music when the POTG took a player elsewhere (the Nether). The music is kept through it; it stops with the
+  end screen, on leaving the world, or ~12 s after VICTORY when no POTG follows.
+- **No disconnect after a POTG:** a player near the dying dragon was dropped with "Network Protocol Error" when the world
+  thawed (the client had lost the dragon's health bar during the replay). Found while testing; fixed.
+- **POTG after an earlier POTG (#161):** each player keeps their top 5 highlights and their best since the last POTG, so a
+  second dragon fight still has a play to show.
+- **Every hero has a POTG intro (#161):** Sojourn, Sigma, D.Va, Lucio, Jetpack Cat, Mercy, Lifeweaver, Ana, Sombra,
+  Brigitte and Juno got their highlight intro from the game data (rebuild the asset pack for them).
+- **D.Va's Boosters past trees and corners (#148):** a trunk, a branch or a ledge her mech catches turns the flight aside
+  (she slips up to her width round it) instead of stopping it dead; on a dedicated server the slip had been rejected
+  ("moved wrongly") and she shook in place: now one move the server accepts. Played on a local dedicated server.
+- **D.Va's Fusion Cannons and Boosters effects from her data (#150):** muzzle flashes and tracers; thruster flames and trails.
+- Tested on a local dedicated server for the first time: Boosters, a whole POTG.
+
+## 2026-11-16: 0.3.66 on next (not on main yet)
+
+- **Tracer's Pulse Bomb, Blink and Recall from her data (#150):** they drew Minecraft's sparks, portal particles and
+  explosion. From tools/reference/tracer-effects.md: the bomb's ribbon trail (0171) and glow pulses through its fuse, its
+  blast 0153 (the 8-frame flipbook, the flare, 100 sparks at 9-10 m/s, a 2.5 m scorch); Blink's streak flash, flash and
+  sparks (018F / 0190); Recall's flashes and in-drawn sparks where she leaves (00BA) and the glow and three rising rings
+  where she lands (00BB). Played: Recall's landing on screen; the bomb's blast checked live (all its parts spawned at the
+  fuse's end) but not caught clearly on a screenshot; Blink's 0.2 s flash not caught.
+
+## 2026-11-16: 0.3.65
+
+- **D.Va's Micro Missiles from her data (#150):** the owner: "dva rockets" were Minecraft's explosion and flame. Each missile
+  now trails its own exhaust flame and grey smoke (1FA4, cyan for her side, orange for enemies), and bursts in her hit
+  1FA5 (a 2 m ball, the fire flipbook, sparks). The trail starts 3 m from the camera: at her shoulders its glows hung as
+  big pale squares over her own view (found playing). Played: a volley at a wall, from her view.
+
+## 2026-11-16: 0.3.64
+
+- **D.Va's mech first-person melee (#150):** the owner: "Dva does have a first person melee mech animation in game ... Its
+  somewhere in the data." It is: her mech's 1P set 019B holds the melee alias D (tree 56B, a random pick of two clips,
+  34E4 and 34E5, 0.8 s each, H), which our clip map had named "a13" and "aim" (read as aim pitch). Renamed melee /
+  melee_2 in tools/clipmaps/dva_1p.txt (the pack's dva_1p.glb renamed with rename_glb_clips.py). Played: V twice, the right
+  cannon swinging in, then the left across.
+- **D.Va's Self-Destruct from her data (#150):** the owner: "explosive field around dva bomb" was Minecraft's. The
+  warning field 1702 on the flying mech for its fuse (the flare growing 4 -> 10 m, sparks drawn in faster and faster, the
+  1.8 m core pulsing, burst flares) and the blast 1703 (a 3 m flash sphere, the 7.9 m shock ring, 40 sparks, three smoke
+  puffs, a 2 m scorch). Played: the field's teal glow and sparks, the blast's sphere on screen; the rest listed live.
+
+## 2026-11-16: 0.3.63
+
+- **D.Va's Defense Matrix is her own (#150):** the owner: "dva matrix" was Minecraft's. From her effects' data
+  (tools/reference/dva-effects.md): while it's up, her field 2D61 along her aim, its seven hexagonal ring frames at
+  0.35-9.5 m (0.75-2 m, fading with distance) and two pulse rings a second flying out at 9 m/s, teal for her side,
+  orange-red for her enemies; each eaten projectile sends her absorb beam and flash (1506 / 1507). Played: the rings in
+  first person, at night, around a skeleton. Not caught on screen: the absorb flash (0.3 s; the eat itself checked by its
+  sound, three arrows, three absorbs).
+- **D.Va's pilot's quick melee plays for others (#150):** her pilot names it by stance (melee_stand / melee_move*), so the
+  action found no clip. Her mech's third-person swing and the pilot's first-person Light Gun swing already played.
+  Her mech's first-person melee: the owner has seen it in Overwatch; not found yet in the five sets her clip maps read.
+- **/changehero refuses a dead player:** a pick fills health, and on a dead player it brought them back on the server
+  while their screen still said they'd died, so Respawn was refused (found testing). Played: "Kiriko is dead: change
+  their hero once they respawn".
+
+## 2026-11-16: 0.3.62
+
+- **Tracer's bullets are her own (#150):** the owner: "tracer bullets are just minecraft particles". From her effects'
+  data (tools/reference/tracer-effects.md, read offline 2026-11-16): each bullet draws her line 002C (Sombra's tracer
+  masks, her blue LUT 0967 / enemy red CDAD), 0.03 m wide for 0.1 s, then the world hit's flash and a small mark, or the
+  flash alone on a creature (her data's creature hit is empty). Played: firing at a wall and a zombie.
+- Research notes for the rest of #150: tools/reference/tracer-effects.md (Pulse Bomb, Blink, Recall still to build) and
+  tools/reference/dva-effects.md (Defense Matrix, Self-Destruct, Micro Missiles; her melee has no effect in the data, only
+  animations).
+
+## 2026-11-16: 0.3.61
+
+- **The POTG intro no longer cuts the hero away (#155):** the owner: "the allowed field of rendering is WAY too shallow
+  ... Kiriko is missing an arm, hair". Their recording: in the intro's first frames, Kiriko side-on, an arm and half
+  her face missing. The intro hero is drawn as Minecraft draws a menu's entity: an orthographic picture with a depth of
+  +-1000 px, about 1.6 m either side of her at the intro's size. Her depth is now halved there (invisible in an
+  orthographic picture), doubling the room. Played: the intro's side-on opening caught on screen, whole.
+
+## 2026-11-16: 0.3.60
+
+- **The Play of the Game is the scorer's own first person (#155):** the owner: "No UI of the player. like, no hands, no
+  animations, no cooldowns shown". As in Overwatch (the owner's clip): the scorer's hero arms with their actions, and
+  their HUD (health, abilities, ult meter, ammo, crosshair, hit markers) under the banner and the card. The viewer is a
+  spectator following the scorer, for whom Minecraft draws no first-person hands and no hotbar-slot HUD; both now draw
+  from the scorer (their entity, their recorded hero sync). Played: three real dragon-kill POTGs as Kiriko, her arms,
+  throws and HUD in every frame captured.
+- The owner confirmed the three match-end sounds (the music, Athena's "Victory" and "Play of the game").
+
+## 2026-11-16: 0.3.59
+
+- **The real match-end music (#155):** the owner: "wrong music", "No Play of the game music". Neither our victory sting
+  nor cue 5B1F plays under the owner's real Overwatch ending. Matching 57 extracted music banks against their clip
+  found bank 69C1's track under the whole ending (VICTORY through the POTG). VICTORY and the POTG intro now each start it
+  where that moment falls in it, so it plays on as one piece. Needs the asset pack rebuilt (the music's two files).
+- **VICTORY's entrance (#155):** the owner: "there is like a blue flash and animation as it comes on the screen". From
+  their clip, frame by frame: the white-blue flash, the white and gold rings opening out, the streak, the word pale then
+  gold, the glint along it, about 0.6 s. Played slowed and on a real dragon kill.
+- Not done yet (#155): the POTG replay without the scorer's hands and HUD.
+
+## 2026-11-16: 0.3.58
+
+- **Kiriko's climb goes straight up (#159):** the owner: "there should be no sideways movement. Once you attach to a
+  wall, it is straight up." Reproduced: holding W+D+Space she slid 5 m along the wall while climbing (x -1.15 -> -6.06).
+  On a wall her only level motion is now a hold against it. Played: x stayed -1.15 while she rose 8 m.
+- **Deployables lie on their surface (#154):** Junkrat's trap and mine were drawn along the way they flew (the trap
+  on its side, the mine tilted) and Illari's pylon stood straight up on a wall. Each now syncs the face it's on and is
+  drawn with its own up along that face's normal, its base on the face. Played: the trap flat on grass, the mine flat
+  on a wall, the pylon straight out of a wall.
+
+## 2026-11-16: 0.3.57
+
+- **D.Va's Boosters over real terrain (#148, again):** the owner on 0.3.55: "Dva is still having boosters cancelled".
+  Reproduced in a generated desert: the first one-block rise stopped her 10 m in for the rest of the flight (the
+  0.3.54 fix only stepped what she could walk up). Boosters now lift her over a rise of up to a block
+  (`DvaStats.BOOSTERS_CURB` 1.05, ours). Played the same spot: up two rises and on to a tall cliff (a real wall); the
+  other way, the full 23.8 m over the dunes, three blocks up.
+
+## 2026-11-16: 0.3.56
+
+From the owner's 0.3.55 playtest (issues #151-#160 filed from their notes).
+- **Tracer's Blink over a bump (#152):** a Blink whose path went up over something and down again (a one-block bump)
+  put her back where she started: her client moved her along the path, Minecraft's server replayed the move as one
+  straight sweep, hit the bump and logged "moved wrongly". A move that can be a Blink now gets Minecraft's own impulse
+  grace (a wind charge's). Played: over a bump she lands 7.5 m on (z 1.5 -> 9.0); before, she stayed at 1.5. A Blink
+  straight at a wall stops at it (z 3.7) and a diagonal one slides along it, as before.
+- **Juno hits endermen (#158):** her Mediblaster used the arrow damage type, which an enderman dodges; it now uses the
+  hitscan type (as Ana's and Sombra's). Played: an enderman 8 m off went 40 -> 25.6 health and stayed put.
+- **No camera tilt on a hit in hero mode (#160).** Played: a hit in hero mode, the horizon stays level. Minecraft mode
+  keeps it (not caught on a screenshot: it peaks 0.08 s in).
+- **Your own projectile isn't drawn at your eye (#151):** the server launches the kunai (and every hero projectile) from
+  the eye, so its first frame was the model inside the camera; now it isn't drawn in first person until it's 3.5 m out
+  or two ticks old (Minecraft's old thrown-item rule). Not reproduced on the old build: one frame is too short for
+  screenshots; two throws on the new build showed no oversized kunai.
+- **/changehero <hero> [players] (#156):** an operator's hero change, anywhere. **/perks [players] [level]** and
+  **/perks reset [players] (#157):** the perk level (3 by default; reset: 1, nothing picked). Played: both typed in
+  chat, /changehero 22 m from spawn.
+- Not reproduced: Junkrat's second mine (#153; both mines detonated each time, the detonate pressed right after the
+  throw). Asked the owner: Kiriko's climb (#159).
+
+## 2026-11-15: 0.3.55
+
+- **A mob's hit no longer throws a hero 3 m (#143):** a husk hit Kiriko in hero mode 3.3 m back a hit (19 m in six hits);
+  the same husk hit a plain Minecraft player 1.0 m a hit (7.3 m in seven). Minecraft's push lifts 0.4 blocks a tick, sized
+  for its own gravity; under Overwatch's lighter gravity the hero stayed up about twice as long at full sideways speed.
+  Minecraft's own pushes (mobs, arrows) now reach a hero in hero play at 0.55 (`Combat.MINECRAFT_PUSH_ON_HERO`, ours), which
+  gives back Minecraft's hop and distance. A hero's own pushes (quick melee, abilities) are unchanged.
+
+## 2026-11-15: 0.3.54
+
+- **D.Va's Boosters stopped by any rise (#148):** the owner: "Dva's boosters keep getting cancelled after just like a second or
+  two". The flight always ran its 2 s (a tap, Shift held, firing, Defense Matrix, Micro Missiles: all 2 s, about 24 m); what cut
+  it short was the ground: Minecraft steps an entity up only when it's on the ground or moving down into it, and a level flight
+  is neither, so even a half slab held her still for the rest of the flight (z 134.30 from 1.3 s on). Along the ground she now
+  steps up what she'd walk up (0.6 m): over a slab row she went from y -60 to -59.5 and on at full speed. A full block stays a
+  wall (dva.md step 6): she stopped at it (z 29.30) for the rest of her 2 s.
+- **Junkrat's mine detonation cuts a reload (#147):** the owner: "detonating junkrat mines should cancel everything like soj
+  railgun". Before: a detonation 0.25 s into a reload let it run on to full (ammo 1 -> 5). Now it's cut as Sojourn's Charged
+  Shot cuts hers: the magazine keeps what it has (3 stayed 3), and his reload's look and sound stop. A reload with no detonation
+  still runs to full.
+- Played with real keys (dev client, flat world): D.Va picked from the select screen, Shift tapped and held, into a wall, a
+  slab row and a stone row; Junkrat's frags, R, Shift's mine and the right button. Not tried: slopes in a survival world, water,
+  a second player watching Junkrat's cut reload (their client gets no cut yet: the message goes to him alone).
+- **#145 (select screen on Kiriko after a rejoin) not reproduced:** two Save and Leave rejoins as Junkrat, one with the hero
+  sync held back 500 ms, both came back on Junkrat, chosen. What was tried is on the issue.
+
+## 2026-11-15: 0.3.53
+
+- **The 0.3.32 playtest's side-by-side work, merged at last (#149):** `fix/side-by-side` (24 commits, 2026-11-05) went into the
+  0.3.32 playtest build but never into `next`, so every build since lacked it. The owner noticed Ana's scope: "0.3.32 used that
+  right asset". Back now: Ana's scope art (the blue wash and the frame's line art, `AnaScopeArt`), Sombra's stealth (the
+  screen's tint, the INVISIBLE timer bar, her stealthed arms and pistol), Juno's lock HUD (marks, chevrons, arc timer, prompts)
+  and her pods' glass, a blocked ability box as a general state, and Sombra's beacon and Ana's darts and grenade as their own
+  models. One doc conflict (techniques/hud/reticle.md), both sides kept.
+- Seen with real keys on a fresh world: Ana scoped (`ana_scope_sbs2.png`), Sombra's stealth after Translocator, Juno's
+  torpedo lock on a husk (`juno_lock_sbs.png`). Not replayed: the rest of the 24 commits one by one.
+- **The asset zip refuses a pack with missing sounds:** 0.3.50's zip had only Ana's and Brigitte's sounds (680 of 9421), so
+  no other hero had voice lines; the zip step now stops when sounds.json names a file the pack lacks.
+
+## 2026-11-14: 0.3.52
+
+- **Torbjörn (#136), his whole kit:** Rivet Gun (rivets and the close-range alt fire), Forge Hammer (weapon 2: 70 a
+  swing, repairs his turret, reloads the gun after 2 s out), Deploy Turret (Shift; level 2, enemies only, never
+  villagers, cows or golems), Overload (E), Molten Core (Q), the Specialist sub-role and his four perks. Numbers from
+  the patch notes, the wiki and his game data; each says where it came from in `TorbjornStats`.
+- A critic's round fixed: Molten Core's damage charging his ult, the hammer not reloading the gun, swapping back to the
+  gun while holding a hammer swing, redeploying the turret mid-fight, the Overloaded Turret perk staying on through
+  his death, the turret ring on the HUD, the hammer's hit timing, and his size on the select screen.
+- Played with real keys on the merged branch (fresh flat world): picked from the select screen with the arrow keys; a
+  rivet to a husk's head took it 20 → 9.0 (about 138); Shift's turret killed a husk and left a villager (20) and a cow
+  (10) alone; 13 rivets, 2.4 s with the hammer out, back to 18; holding a hammer swing and pressing 1 brought the gun
+  out; Molten Core (Q, held fire) killed two husks and the ult charge only grew by its slow trickle (57 → 81 in 4 s);
+  Overload showed 400 health, and G cleared the extra (absorption 0); back on G, 300.
+- Still open: no turret recall on Interact, no turret health widget, rivets and slag drawn as Minecraft items, the
+  turret's level-3 pods showing at level 2. Not played by hand: Hammer Time, Anchor Bolts, water, slopes, night, a
+  second player.
+
+## 2026-11-14: 0.3.51
+
+- **Illari (#135), the whole current kit:** Solar Rifle (charged shots 25-75, 14 rounds), the healing beam on the right
+  button, Outburst, Healing Pylon, Captive Sun and Sunstruck, and Survivor (Outburst starts her regeneration; the
+  Support role passive was removed on 2026-02-10). Numbers from Blizzard's 2026-11-03 patch, then the wiki and her data;
+  each cites its source in `IllariStats`. Her right button is the beam of the live game, not the pre-release healing shot.
+- A critic's round fixed: her own pylon stopping her shots, the ball's damage counting toward Sunstruck, the ball bursting
+  on the first enemy (it passes through), the pylon's cooldown frozen while it stands, Outburst's launch speed and push,
+  the pylon hum outliving the pylon, a second Captive Sun cancelling a mark, the HUD's pylon cooldown, her select pose.
+- Played with real keys: picked from the select screen (arrow keys and Enter); a full-charge headshot 20 -> 11.1 on a husk
+  (about 111 of 112.5); a shot through her own pylon landed (20 -> 14.1); the beam took a villager 8 -> 19.5 in about a
+  second (held through the harness: the desktop tool can't hold the right button); E's pylon healed it to full in 3 s
+  with its cooldown running; Shift launched her and hit a husk for 24; Q, a click for the ball (both husks 20 -> 16),
+  then two shots: both husks died to Sunstruck. Not played: water, the Nether, perks, a second player.
+- Still open: her hair lock renders white (its material has no colour image); her effects are vanilla particles; no
+  reticle widget.
+
+## 2026-11-14: 0.3.50
+
+- **Neutral mobs take abilities (#99, the owner's call):** cows, sheep, calm piglins, calm endermen, armor stands and
+  the like now take area abilities too (blasts, waves, fields), not only aimed shots: "A cow is nuetral but you should
+  still be able to kill it". Lock-ons (Deadeye, Juno's torpedoes) still pick only enemies (`Allies.lockOn`), and
+  neutral mobs still give no ult charge, energy or On Fire. Iron and snow golems stay allies (one that turns on the
+  hero is an enemy while it fights them).
+- **Respawn (#111, the owner's call):** full health and no spawn protection, which is what the game already did.
+- Played with real keys (Junkrat's Shift and right-click, Cassidy's Q): a Concussion Mine 1.5 m from a cow, a calm
+  piglin and a husk took them from 10 to 0.5, 16 to 9.3 and 20 to 13.3; one at an iron golem's feet left it at 74 of
+  74, unmoved. Deadeye with all four in view locked only the husk (`run/screenshots/r99_deadeye3.png`). Not played: the
+  other heroes' area abilities on neutral mobs, a calm enderman, an armor stand, the old build side by side.
+
+## 2026-11-14: 0.3.49
+
+- **Jetpack Cat's Lifeline icon for allies (#85):** while she seeks someone to tow, her allies see the Lifeline icon
+  over her (from the data's 0BA3 widget, the look ours); not shown to her, to enemies, or while she tows. Seen with two
+  clients (the harness's second client as the ally); not played by hand with a second real player.
+- **Two-client checks (#115, #89):** Lúcio's wall ride and Lifeline's rope, seen by a second player, were right; no code
+  change. The rope's leftovers are #142. Run record: `techniques/testing/runs/two_client_2026-11-14/run.md`.
+- **#141 (Jetpack Cat's portrait "doesn't select her") is the clicks, not her card:** with real-cursor clicks and a
+  temporary log in `HeroSelectScreen.mouseClicked`, every click that reached the screen picked the portrait under it,
+  her lower-right corner included (GUI 233,199 → JETPACK_CAT). The clicks that did nothing never reached the screen at
+  all, on Mercy's portrait as much as hers, at a steady 90-119 fps: the desktop-control tool's clicks get lost in this
+  game (as with #131). A click on her portrait from Kiriko's, and from Lúcio's on her left half, picked her each time.
+
+## 2026-11-14: 0.3.48
+
+- **World widgets at the crosshair's level (#85):** Brigitte sees her Repair Pack's icon over each ally it heals, with a
+  ring that empties as the heal runs out (up to two); Sombra sees her Hotfix icon over each ally it heals; Mercy sees
+  the dead one's portrait over the soul her Resurrect would take, with the key under it. Which and when from the data,
+  the look ours. Everything else in #85's list was already drawn. Still missing: Jetpack Cat's icon over her for
+  allies (needs a second player), Hotfix's band on an ally's health bar (we draw no ally health bars).
+- **Tracer's body glow (#91):** her chronal accelerator and boot lines glow; her body's glow mask sits on the
+  model's second UV set, which the glow tool now reads for her (opt-in per material: the other heroes' glows were
+  already right). Her goggle lens glows faintly too. Needs the asset pack's glows rebuilt.
+- Played with real mouse and keys: Tracer picked on the select screen at midnight, front view: the accelerator lit,
+  the rest of her dark; Brigitte's real E on a hurt villager: the icon with a part-full ring over it, gone 2.3 s later
+  with the heal done. Not played by hand: Sombra's and Mercy's widgets (the builder's harness play only), a second
+  player, other skins.
+
+## 2026-11-14: 0.3.47
+
+- **Life Grip pulls allies out of tethers and gravity (#124):** a gripped ally leaves Catnapper's carry, Gravitic Flux's
+  lift (no slam), Junkrat's Steel Trap (the trap is removed), and Hyper Strike's float; knock-downs stay. Sources: the
+  owner, and the wiki's status-effect and hero pages.
+- **Rally's armor on Brigitte (#125):** she already had Rally's 100 armor; when Rally ended, the leftover was taken
+  off her own armor too. Now only the bonus goes.
+- **Third-person aim for the newer heroes (#95):** each hero's own aim sheet is used, re-picked on a hero switch, and
+  the MEKA's cannons follow the aim.
+- **Weapon parts (#91):** D.Va's magazine in her reloads; Junkrat's Concussion Mine in his left hand, not while one
+  of his is out. Glow tables for Pharah, Cassidy, Junkrat and Tracer's weapon.
+- **No hitch on an effect's first use (#128):** each hero's effect art is made ahead, a few textures a frame, after the
+  pick (or under the select screen for art drawn the moment a hero is picked). The longest first-use frames dropped
+  from 70–543 ms to 35–127 ms across the eleven heroes with effect art. A few first uses are still slow for other
+  reasons (Mercy's beam, Ana's scope, Brigitte's flail, Jetpack Cat's Lifeline, Sombra's Translocator).
+- Played with real mouse and keys in a fresh flat world: Junkrat picked on the select screen, Shift threw a mine (his
+  hand empty while it was out; count 1), right-click set it off (the mine back in his left hand), F5 views; looking up
+  and down in third person (his body follows the aim); Kiriko from the H menu, her first Ofuda, Kunai and Suzu
+  made no effect art on first use (no first-use log line); Lifeweaver's real E on a blue bot in a red bot's Steel
+  Trap: trap gone, root off, healed 12 -> 20. Not seen: the pull itself (a dev bot has no client to move it; the
+  builder played the pull with the real client as the ally), Rally with real keys, 60+ fps, a second player.
+
+## 2026-11-13: 0.3.46
+
+- **Jetpack Cat's Catnapper from the ground (#139):** it ended at once, because the server's onGround was already
+  true. She now dives along the ground to the spot, as her data has it (real keys: 9.2 m to the spot). The path is
+  laid out at the dive's start, she's placed on the spot on arrival, and a wall in the way ends it (ours). A spot
+  picked on a tall wall's face no longer has her climb it.
+- **One sleeper waking no longer stops every bed sound nearby (#123):** the stop goes only to listeners no other
+  sleeper's bed reaches.
+- **Crosshair widgets for the newer heroes (#85):** D.Va's Defense Matrix meter, Boosters' timer and cancel prompt,
+  and her Self-Destruct warning; Tracer's Blink pips; Cassidy's Deadeye timer and prompt; Junkrat's RIP-Tire timer
+  and detonate prompt, and his mine's and trap's icons. Which widget and when come from the data; the look and
+  place are ours. Pharah's fuel arc is ours: her data has nothing at the crosshair.
+- Filed: #141. Clicks from my input tool didn't select Jetpack Cat on the select screen; needs a real-mouse check.
+
+## 2026-11-13: 0.3.45
+
+- **Fixed a server crash (#140):** a player removed without a disconnect, such as a dev bot, left their Play of the Game
+  recorder running with nobody behind it, and it crashed the server at its next save (up to 5 minutes later). The
+  recorder now closes for anyone no longer in the game.
+- **Kiriko's Protection Suzu clears Cassidy's Flashbang hinder** (#119, #117 and #121 were otherwise done in polish 4).
+  Junkrat's Steel Trap root stays, as in the data and the wiki.
+- Triaged every open issue against next: 20 closed with their evidence (13 fixed bugs, 7 hero issues for heroes in
+  the game). #110 (Sojourn's headshots on pierced targets) played again and closed: the rules work fixed it.
+- Played with the harness's keys. The real-key check of Suzu against a Flashbang was inconclusive: the Flashbang never
+  landed.
+
+## 2026-11-13: 0.3.44
+
+- **A hero's own pushes reach their own screen (#109).** Pushes on other players already did. These used the server's
+  speed or `needsSync`, which a player's own client never hears:
+  - Lúcio's Sound Barrier leap, which dropped him from 5.5 to 0.64 m/s as he left the ground; he now keeps his speed
+    (real keys: 5.3 m/s in the air, rising 1 m);
+  - D.Va's eject, Call Mech's stop and the mech's arrival;
+  - Sigma's Gravitic Flux;
+  - Jetpack Cat's Catnapper landing.
+- **Rally's shockwave (#120, #122):** checked and closed. It skips the target the bash hit (70, not 140), and walls and
+  barriers stop it. The fix came with polish 4; this round gave it one centre for both tests.
+- **Mercy's Guardian Angel from water, lava, ladders, vines, scaffolding and bubble columns (#127):** checked and
+  closed. Polish 4 fixed it.
+- Filed while testing: #139 (Catnapper from the ground doesn't dive) and #140 (a Play of the Game recorder crash after
+  bots join and leave).
+
+## 2026-11-13: 0.3.43
+
+- **D.Va's Call Mech (#134):** her hands now close on the landed mech's cockpit rim. The climb was placed 0.79 m short
+  (the data puts her 1.27 m behind the mech; the clip's camera starts 2.06 m behind its own origin). The fade is
+  fully black at 1.35 s, before the camera reaches the mech's shell (measured from the clips; the timing is ours).
+- **Pain lines (#129)** follow the data's rule: a hero's grunt is a voice line with its 1-2.5 s cooldown and one line at
+  a time, not Minecraft's hurt sound on every hit. D.Va's Micro Missiles went from 36 grunts in a second to 1.
+- **Barriers (#104, #83 already held; seven more fixed):**
+  - Pharah's Concussive Blast and Cassidy's Flashbang no longer reach through Brigitte's barrier.
+  - D.Va's Boosters pass as melee, as in Overwatch.
+  - Sojourn's Disruptor field pierces barriers, as in Overwatch.
+  - Local Anesthetic's and Silver Bullet's damage over time keeps ticking behind a barrier.
+  - Total Mayhem bombs fly through barriers, and their blasts are still blocked.
+  - Junkrat's mine and trap stop at a barrier once, then pass.
+- **Respawn health (#111) investigated:** every respawn is at full health. The low readings were mobs on the
+  spawnpoint (Minecraft has no spawn protection). Left open for one decision.
+
+## 2026-11-13: 0.3.42
 
 - **D.Va's Self-Destruct (#132)** plays her own animation from the game data: the mech crouches, opens and curls up
   before the blast. Her eject animation now plays at the cast too.

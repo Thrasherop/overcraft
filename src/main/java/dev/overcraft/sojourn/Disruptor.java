@@ -120,11 +120,24 @@ public final class Disruptor {
 				continue;
 			}
 			DamageSource source = fieldSource(f.owner);
+			if (step) {
+				// "the AoE pierces barriers" and damages them (the Sojourn page rev 409400; the Barrier page rev 406358: "Disruptor
+				// Shot AOE effect will pierces, and damages barriers"): each enemy barrier it reaches takes a step as a creature
+				// would (ours, M: no source gives the barrier's number). Until #104's sweep a barrier between hid them from it.
+				double hit = FIELD_DPS * FIELD_STEP;
+				for (dev.overcraft.hero.Barriers.Shape b : dev.overcraft.hero.Barriers.enemyBarriers(f.level, f.owner)) {
+					Vec3 near = dev.overcraft.hero.Barriers.nearest(b, f.centre);
+					if (near.distanceTo(f.centre) <= FIELD_RADIUS) {
+						b.barrierTake(hit, near);
+					}
+				}
+				dev.overcraft.brigitte.Barrier.burst(f.level, f.owner, f.centre, FIELD_RADIUS, d -> hit);
+			}
 			for (LivingEntity e : f.level.getEntitiesOfClass(LivingEntity.class, new AABB(f.centre, f.centre).inflate(FIELD_RADIUS),
-				e -> e.isAlive() && e != f.owner && Allies.areaHits(f.owner, e) && inside(e, f.centre)
-					&& !dev.overcraft.brigitte.Barrier.shields(e, f.owner, f.centre))) {
+				e -> e.isAlive() && e != f.owner && Allies.areaHits(f.owner, e) && inside(e, f.centre))) {
 				if (step) {
-					float dealt = Combat.damage(e, source, FIELD_DPS * FIELD_STEP, dev.overcraft.hero.Blow.ability("disruptor_shot").by(dev.overcraft.hero.Hero.SOJOURN));
+					float dealt = dev.overcraft.hero.Barriers.pierce(() -> Combat.damage(e, source, FIELD_DPS * FIELD_STEP,
+						dev.overcraft.hero.Blow.ability("disruptor_shot").by(dev.overcraft.hero.Hero.SOJOURN)));
 					Combat.credit(f.owner, dealt, e);
 					Combat.addFireForDamage(f.owner, dealt, e);
 				}

@@ -125,6 +125,10 @@ Played (step 5, dev client, survival, flat world `shield1`, every mob killed fir
 - **A stun is Sleep's lock without the sleep:** `Sleep.stun` holds a mob still (NoAI) and locks a player's hero keys for
   0.75 s, damage doesn't end it, and none of the sleep's Zs or sounds play.
 - **Overhealth pieces outlive Rally:** each 15 lasts 30 s (ours: one pool held 30 s from the last piece).
+- **Her bonus is the 100 armor, not the overhealth (#125, settled 2026-11-13):** the owner "Armor iirc"; BZ 2023-04-11 "100
+  restorable armor health pool", "no longer gradually builds temporary health"; no change in BZ since; W rev 381389 "armor =
+  100 (self)". Rally's end took the clamp off her own armor too (250/250 with armor 43 after a 75 hit); now what's left of
+  the bonus goes off the top, past Shields' split (armor 75). [grip_124](../testing/runs/grip_124/record.md).
 
 Played (step 6, dev client, survival, flat world `shield1`, every mob killed first): Q at 100%: ult 2700 -> 0; 1.5 s in her
 health 28 / 28 (350: 100 armor on top), the barrier 750; her overhealth 30 and the villager's 3 m away 45 at 1.5 s, both 100
@@ -132,8 +136,12 @@ at 4 s, a villager 12 m away none; her speed 6.33 m/s (5.5 x 1.15); a bash on a 
 0.75 s, then free); the shockwave: 70 to the nearest of three husks behind it; after the 10 s: max health 20, the barrier
 300, the villager's overhealth kept.
 
-- **Its stun is 224E's default type, 4EB6; the shockwave goes through walls and barriers still (#122).**
+- **Its stun is 224E's default type, 4EB6.**
 - **The bashed target isn't in the shockwave** (#120, 0EE3 #890): 70, one push, 7.9 m on a hero, was 140, 19.7 m; step 6's play above read a husk behind it, not the bashed one. [polish4](../testing/polish4.md).
+- **The shockwave stops at walls and barriers** (#122, 0EE3 #877's LOS filter 002C; #88's rule): `Combat.inSight` and
+  `Barrier.shields(e, player, centre)` from her eyes; damage, push and stun alike, and the barrier takes nothing (ours). Both re-played
+  on 0.3.43 against their switches (`bot fix rally`, `bot fix wave`): [run_2026-11-13](../testing/runs/rally/run_2026-11-13.md).
+  Open: the wave's shape (`op89(2.25, 8)`, perhaps a narrower cone than our half-plane: L).
 
 ## Step 7 (perks)
 Each perk against its control, picked through the perk menu (Alt held, a click), dev client, flat world `perksb`:

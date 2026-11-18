@@ -1,0 +1,30 @@
+MARK V1 fix build: B.O.B.'s line through her allies. A villager and her tamed wolf (NoAI) 2 m in front of a NoAI husk, all on his line, 14 m off to the side of his charge
+press key.keyboard.enter
+sleep 3
+cmd /gamerule spawn_monsters false
+cmd /kill @e[type=!player]
+cmd /time set noon
+cmd /tp @s 0.5 150 0.5 0 0
+cmd /summon husk 10.5 150 12.5 {NoAI:1b,Tags:["vh"],attributes:[{id:"minecraft:max_health",base:200}],Health:200f}
+cmd /summon villager 8.5 150 9.5 {NoAI:1b,Tags:["vv"]}
+cmd /summon wolf 7.5 150 8.0 {NoAI:1b,Tags:["vw"]}
+cmd /execute as @e[tag=vw] run data merge entity @s {Owner:[I; -956929499, 1598895909, -1851285478, -1767186058]}
+ult 100
+sleep 0.5
+key ultimate down
+sleep 0.05
+key ultimate up
+sleep 8
+hp @e[tag=vh,limit=1]
+hp @e[tag=vv,limit=1]
+hp @e[tag=vw,limit=1]
+hp @e[type=overcraft:bob,limit=1] Pos
+screenshot ashe_bob_allies.png
+MARK V2 death: /kill, then respawn (expected the select screen with Ashe chosen, or straight back as Ashe)
+cmd /kill @s
+sleep 2
+state
+respawn
+sleep 3
+state
+screenshot ashe_after_death.png

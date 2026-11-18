@@ -29,9 +29,12 @@ import net.minecraft.world.phys.Vec3;
  * sets it off (the right button, {@link Junkrat}) or throws another (one at a time); then it goes off 0.1 s later
  * ({@link Junkrat#mineBlast}). 25 health: an enemy can break it, and then it doesn't go off (D 19A8; W).
  */
-public class ConcussionMineEntity extends OwProjectile {
+public class ConcussionMineEntity extends OwProjectile implements SurfaceStuck {
 	private static final EntityDataAccessor<Boolean> STUCK = SynchedEntityData.defineId(ConcussionMineEntity.class,
 		EntityDataSerializers.BOOLEAN);
+	/** The face it's stuck to, for its clients' look (SurfaceStuck: -1 flying). */
+	private static final EntityDataAccessor<Integer> FACE = SynchedEntityData.defineId(ConcussionMineEntity.class,
+		EntityDataSerializers.INT);
 	/** Ticks to its blast once set off (-1 waiting). */
 	private int fuse = -1;
 	private double health = JunkratStats.MINE_HEALTH;
@@ -50,6 +53,12 @@ public class ConcussionMineEntity extends OwProjectile {
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 		super.defineSynchedData(builder);
 		builder.define(STUCK, false);
+		builder.define(FACE, -1);
+	}
+
+	@Override
+	public @org.jspecify.annotations.Nullable Direction stuckFace() {
+		return stuck() ? SurfaceStuck.decode(entityData.get(FACE)) : null;
 	}
 
 	public boolean stuck() {
@@ -153,6 +162,7 @@ public class ConcussionMineEntity extends OwProjectile {
 		Vec3 at = hit.getLocation().add(face.getStepX() * 0.1, face.getStepY() * 0.1 - (face == Direction.UP ? 0 : getBbHeight() / 2),
 			face.getStepZ() * 0.1);
 		entityData.set(STUCK, true);
+		entityData.set(FACE, SurfaceStuck.encode(face));
 		setNoGravity(true);
 		setDeltaMovement(Vec3.ZERO);
 		setPos(at);
@@ -161,10 +171,24 @@ public class ConcussionMineEntity extends OwProjectile {
 		}
 	}
 
+	/** It met an enemy barrier once already: from then on it passes them. */
+	private boolean bounced;
+
 	@Override
 	public void hitBarrier(Vec3 at) {
-		// an enemy barrier: it drops there (ours: W says it bounces off once)
+		// an enemy barrier: it drops off it there, its speed gone as off a creature (the data's 0.05), and then falls through
+		// it: "The mine bounces once upon hitting a barrier for the first time, but can then pass through it" (the Junkrat
+		// page rev 410907); the barrier pages: it "will not stick to barriers". Until #104's sweep each tick's crossing stopped
+		// it again, so it could hang in a barrier's plane
+		bounced = true;
+		setPos(at);
 		setDeltaMovement(Vec3.ZERO);
+		needsSync = true;
+	}
+
+	@Override
+	public boolean passesBarriers() {
+		return bounced;
 	}
 
 	/** Stuck, its face and health kept with its chunk. */
@@ -184,6 +208,7 @@ public class ConcussionMineEntity extends OwProjectile {
 		entityData.set(STUCK, input.getBooleanOr("Stuck", false));
 		health = input.getDoubleOr("Health", JunkratStats.MINE_HEALTH);
 		normal = new Vec3(input.getDoubleOr("NX", 0), input.getDoubleOr("NY", 1), input.getDoubleOr("NZ", 0));
+		entityData.set(FACE, SurfaceStuck.encode(Direction.getApproximateNearest(normal)));
 	}
 
 	@Override

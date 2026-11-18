@@ -455,6 +455,9 @@ Up: [Techniques](../README.md). One rule for all ten checks now: `dev.overcraft.
 - **The waist from 77 degrees still crits** (the line really goes through the head): for the owner to say. **No level-case false crit has shown up.**
 - **What a critic should check:** a moving target; a muzzle offset (a thrown kunai's way isn't the eye's); a ghast's face from the side is a crit near its front edge; a hit from behind a front-headed mob with its head turned (`getYHeadRot`).
 
+### #110 on pierced targets (2026-11-13)
+Record: [runs/sojourn_110](../testing/runs/sojourn_110/run_2026-11-13.md). Played on next 009950b: the Charged Shot through two and three NoAI husks, level and from a 3 m ledge. Each one it goes through is judged by its own head along the shot's line (`Railgun` asks `Headshot.crossed` per hit, with the line's direction): every result matched the line's height at that husk, the issue's chest-on-to-legs line is 120 / 120, and no pierced husk got a false crit. No code change. The wiki (Sojourn, Railgun) gives the Charged Shot as piercing hitscan with headshot x1.5 and says nothing of a pierced target's crit, so each target's own hit decides (ours, as Overwatch's hitscan is judged per hitbox). A line 0.09 m under the head band is a crit: the shot's 0.11 m thickness reaches it.
+
 ## The Charged Shot on the press (#126, 2026-11-06)
 Up: [Techniques](../README.md) · the harness: [harness](../testing/harness.md) · raw files and scripts: [runs/railgun](../testing/runs/railgun/). The owner: "firing railgun is the highest priority. it cancels reloading, primary fire, all sorts of stuff, with 0 (or at least basically 0) cast time. There is a recovery time, but it fires immediately despite what is currently happening." "Railgun" here is her right button.
 

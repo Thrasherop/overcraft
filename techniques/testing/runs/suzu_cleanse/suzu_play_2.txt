@@ -1,0 +1,39 @@
+=== suzu_play2 19:32:05 tree fix/suzu-cleanse uncommitted on 009950b, same session
+--- hinder on me, fix on, run 0
+    hindered: hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=14.0
+    voices after the flash: ['kiriko.voice.pain -> kiriko/voice/pain/0']
+    after: hindered=False rooted=False asleep=False antiHeal=False phased=True speed=0.1 health=20.0
+    voices after Suzu: []
+--- hinder on me, fix on, run 1
+    hindered: hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=14.0
+    voices after the flash: ['kiriko.voice.pain -> kiriko/voice/pain/1']
+    after: hindered=False rooted=False asleep=False antiHeal=False phased=True speed=0.1 health=20.0
+    voices after Suzu: []
+--- hinder on me (dev "cut hinder", no damage), fix on
+     {'ok': True}
+    hindered: hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=20.0
+    after: hindered=False rooted=False asleep=False antiHeal=False phased=True speed=0.1 health=20.0
+    voices after Suzu: ['kiriko.voice.suzu -> kiriko/voice/suzu/5']
+--- flash, then Suzu 0.05 s later, ally read each loop
+    phased ticks [5484] [5490] ; hindered ticks [] [] ; health 18.0 -> 18.0
+    rows [(5484, True, False, 18.0), (5486, True, False, 18.0), (5488, True, False, 18.0), (5490, True, False, 18.0), (5492, False, False, 18.0), (5494, False, False, 18.0), (5496, False, False, 18.0), (5498, False, False, 18.0), (5500, False, False, 18.0), (5502, False, False, 18.0), (5504, False, False, 18.0), (5506, False, False, 18.0)]
+--- flash, then Suzu 0.15 s later, ally read each loop
+    phased ticks [5795] [5801] ; hindered ticks [] [] ; health 18.0 -> 18.0
+    rows [(5795, True, False, 18.0), (5797, True, False, 18.0), (5799, True, False, 18.0), (5801, True, False, 18.0), (5803, False, False, 18.0), (5805, False, False, 18.0), (5807, False, False, 18.0), (5809, False, False, 18.0), (5811, False, False, 18.0), (5813, False, False, 18.0), (5815, False, False, 18.0), (5817, False, False, 18.0)]
+--- Steel Trap: ally 5 m aside until phased, then moved onto it
+    before: hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    phased at +0.07, moved onto the trap
+    +0.10 hindered=False rooted=False asleep=False antiHeal=False phased=True speed=0.1 health=18.0
+    +0.23 hindered=False rooted=False asleep=False antiHeal=False phased=True speed=0.1 health=18.0
+    +0.33 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.46 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.60 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.73 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.87 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    phase over, still on it:
+    +0.10 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.23 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.37 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.50 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.64 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+=== done 19:33:30

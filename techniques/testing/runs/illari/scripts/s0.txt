@@ -1,0 +1,9 @@
+sleep 15
+state
+window 1920 1080
+sleep 2
+newworld il1
+sleep 30
+state
+screenshot illari_select.png
+sleep 2

@@ -16,6 +16,10 @@ public abstract class PingOutlineColourMixin {
 	@Inject(method = "getTeamColor", at = @At("HEAD"), cancellable = true)
 	private void overcraft$pingColour(CallbackInfoReturnable<Integer> cir) {
 		int colour = Pings.outlineColour((Entity) (Object) this);
+		if (colour < 0) {
+			// Widowmaker's reveals (Venom Mine, Infra-Sight): red (WidowReveal)
+			colour = dev.overcraft.client.effect.WidowReveal.outlineColour((Entity) (Object) this);
+		}
 		if (colour >= 0) {
 			cir.setReturnValue(colour);
 		}

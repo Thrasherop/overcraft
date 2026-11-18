@@ -1,0 +1,6 @@
+# Widowmaker, her third-person extra clips (owm_survey.py --clips-only), merged into hero_models/widowmaker.glb by bone name (HeroModels).
+# Her emotes come with --emotes (emote_<name>_<n>, in path order: techniques/emotes/emote_reproduction.md), on her skin's model
+# F0DF.00C (research\widowmaker\extract\Heroes\Widowmaker\Skin\Overwatch\Overwatch\Models\00000000F0DF.00C). The comms wheel's Hello
+# (alias 1EE) is already in widowmaker.txt (2F2C). Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <F0DF.owmdl> <out> --glb --clips-only --only=none
+#     --keep=tools/clipmaps/widowmaker_clips.txt --emotes=<research\widowmaker\extract\Unlocks\Heroes\Widowmaker\Emote>

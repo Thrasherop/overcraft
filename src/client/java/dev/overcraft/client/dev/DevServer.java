@@ -157,6 +157,7 @@ public final class DevServer {
 					out.addProperty("mode", s.mode());
 					net.minecraft.world.phys.Vec3 aim = dev.overcraft.client.effect.JetpackCatFx.aimSeen;
 					out.addProperty("aimSeen", aim == null ? "" : aim.toString());
+					out.addProperty("potgMusic", dev.overcraft.client.PotgMusic.playing());
 					out.addProperty("perkLevel", s.perkLevel());
 					out.addProperty("perkProgress", s.perkProgress());
 					out.addProperty("primaryAmmo", s.primaryAmmo());
@@ -174,6 +175,7 @@ public final class DevServer {
 					out.addProperty("emoteClip", HeroAnimator.of(player).emoteClip());
 					out.addProperty("emoteClipAt", HeroAnimator.of(player).emoteAt());
 					out.addProperty("emoteCamera", dev.overcraft.client.comms.EmoteCamera.active());
+					out.addProperty("worldWidgets", dev.overcraft.client.hud.ReticleHud.devWorld);
 					out.addProperty("emoteFirstPersonFrames", dev.overcraft.client.comms.EmoteCamera.firstPersonFrames);
 					out.addProperty("food", player.getFoodData().getFoodLevel());
 					out.addProperty("saturation", player.getFoodData().getSaturationLevel());
@@ -243,6 +245,12 @@ public final class DevServer {
 					o.addProperty("yBodyRot", other.yBodyRot);
 					o.addProperty("x", other.getX());
 					o.addProperty("z", other.getZ());
+					o.addProperty("y", other.getY());
+					// what this client draws of their Lúcio wall ride (#115): side, ride yaw, and the animator's clip
+					o.addProperty("wallSide", dev.overcraft.hero.OwMovement.wallRiding(other));
+					o.addProperty("wallYaw", dev.overcraft.hero.OwMovement.wallRideYaw(other));
+					var seen = dev.overcraft.client.model.HeroAnimator.existing(other.getId());
+					o.addProperty("playing", seen == null ? "" : String.valueOf(seen.playing()));
 					list.add(o);
 				}
 				out.add("players", list);
@@ -277,6 +285,12 @@ public final class DevServer {
 				net.minecraft.client.gui.screens.ConnectScreen.startConnecting(new net.minecraft.client.gui.screens.TitleScreen(), mc,
 					net.minecraft.client.multiplayer.resolver.ServerAddress.parseString(arg),
 					new net.minecraft.client.multiplayer.ServerData("Dev", arg, net.minecraft.client.multiplayer.ServerData.Type.LAN), false, null);
+				out.addProperty("ok", true);
+			}
+			case "victory" -> {
+				// dev only: "victory [slow]": the VICTORY banner and its sounds now, its clock slowed to look at the entrance
+				dev.overcraft.client.hud.VictoryHud.devSlow = arg.isBlank() ? 1 : Float.parseFloat(arg.trim());
+				dev.overcraft.client.hud.VictoryHud.show();
 				out.addProperty("ok", true);
 			}
 			case "openworld" -> {
@@ -662,7 +676,7 @@ public final class DevServer {
 			case "aimcheck" -> {
 				// dev only: the gun as posed now: the barrel's pitch (+ down) from its origin to its muzzle (hp 0006), and how far the origin is from the hand, in her model's space
 				dev.overcraft.hero.Hero hero = dev.overcraft.client.ClientHero.hero();
-				var loaded = hero == null ? null : dev.overcraft.client.model.HeroModels.get(hero);
+				var loaded = hero == null ? null : dev.overcraft.client.model.HeroModels.of(hero, player);
 				dev.overcraft.client.model.HeroAnimator animator = dev.overcraft.client.model.HeroAnimator.of(player);
 				float now = player.level().getGameTime() / 20f;
 				var placed = loaded == null ? null : dev.overcraft.client.model.HeroWeapon.place(hero, animator, loaded.model(), false, now);
@@ -680,7 +694,9 @@ public final class DevServer {
 			case "aimsheets" -> {
 				// dev only: "aimsheets [hero]": the additive clips of a hero's model that measure as aim sheets, and their pitch lines
 				dev.overcraft.hero.Hero hero = arg.isBlank() ? dev.overcraft.client.ClientHero.hero() : dev.overcraft.hero.Hero.byId(arg.trim());
-				var loaded = hero == null ? null : dev.overcraft.client.model.HeroModels.get(hero);
+				// no hero named: the body the player is in now (D.Va's pilot out of her MEKA)
+				var loaded = hero == null ? null : arg.isBlank() ? dev.overcraft.client.model.HeroModels.of(hero, player)
+					: dev.overcraft.client.model.HeroModels.get(hero);
 				com.google.gson.JsonObject list = new com.google.gson.JsonObject();
 				if (loaded != null) {
 					loaded.model().clips.keySet().stream().sorted().filter(n -> n.startsWith("add_")).forEach(n -> {

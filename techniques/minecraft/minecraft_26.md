@@ -60,6 +60,7 @@ Read Minecraft's decompiled 26.3 sources for every API (`gradlew genSources`; th
   to the player at once, clear `syncVelocity`, and keep a lifted player's speed in your own record. Since #93 every hero's
   push goes that way; played on a real client, per blow, in [polish3](../testing/polish3.md). (`LifeGrip` has its own route, `GripPayload`.
   A steady hold each tick is another case: Catnapper's carry lifts a real client on `syncVelocity` alone.)
+- **A hero's own leap is a push too (#109, 2026-11-13):** build it from `Combat.motion` (their client's reported speed) and send it with `Combat.send`, never from `getDeltaMovement` with `syncVelocity`. Lúcio's Sound Barrier leap kept the server's stale x/z: a 5.5 m/s run dropped to 0.64 m/s the tick he left the ground and took 6 ticks to come back; through `Combat.send` 5.50 all the way. `needsSync` alone (D.Va's Call Mech stop) never reaches the player at all. Record: [push_109](../testing/runs/push_109/push_109.md).
 - **NoAI mobs don't move at all** (no `travel` without effective AI): velocity, pulls and knockback do nothing to them.
   Test anything that carries, pulls or pushes on a mob with AI.
 - **Hunger and saturation regeneration** run in hero mode unless turned off (#43); `natural_health_regeneration` is
@@ -253,3 +254,33 @@ A player far off gets no packet: `Effects.play` reaches 96 m and `Combat.animate
 
 ## A float or a lift a player must feel (polish3, 2026-11-05)
 A stun's gravity scale reached mobs only (`Sleep.slide`). What changes how a player falls belongs on their client: Minecraft's `Attributes.GRAVITY` as a transient modifier syncs to it, and hero mode's `OvercraftClient.gravityScale` reads it against the default 0.08. Hyper Strike: top y -59.52 to -56.19. Mind what it does to the landing: a longer float is a longer fall (`Sleep.FLOATED`).
+
+## Steering a player from the server (#139, 2026-11-13)
+Up: [Techniques](../README.md) · from: [catnap_139](../testing/runs/catnap_139/catnap_139.md)
+- A ServerPlayer's position, `onGround` and `horizontalCollision` are what her client last sent: a tick or more behind.
+  Steering a fast move by `player.position()` each tick overshot by up to 3 ticks (Catnapper: 13.5 m for a 9.2 m spot).
+- Speeds sent each tick (`syncVelocity`) don't land one per client tick: summed, they came up 1-1.7 m short.
+- What worked: lay the path out while she's held still (server and client agree), send it step by step, and end it with a
+  `connection.teleport` to the end point (rotation relative) if the box there is free.
+
+## Dedicated servers, death, sounds and boss bars (2026-11-17)
+
+Found testing on a local dedicated server for the first time (`gradlew runServer` with RCON: see
+[harness](../testing/harness.md#a-local-dedicated-server)); single player hides all of the first:
+
+- **A dedicated server checks each tick's movement as one move from where the player was** (`handleMovePlayer`: it
+  re-runs `move` on the packet's delta and puts the player back past 0.0625, "moved wrongly"). A client that moves twice in a
+  tick (a slip, then the flight) can end where the server's single move doesn't, and is put back every tick: D.Va's Boosters
+  shook against a trunk. Move once per tick (the sum), so both resolve the same collision. The integrated server's host skips
+  this check, so single player never shows it.
+- **The dragon's `die()` runs at the killing blow**, not when it dies at the fountain: `handleKillingBlow` sets it to 1 health
+  and the DYING phase, it flies back, and its 200-tick `tickDeath` starts only once its health hits 0 there. AFTER_DEATH (and
+  so VICTORY) fires at the blow; anything timed off tick 199 drifts by the flight (#161).
+- **Every level change stops every sound** (`Minecraft.updateLevelInEngines(level, true)` -> `SoundManager.stop()`), the
+  replay's dimension too. To keep music through it, flip that boolean while it plays (MinecraftSoundKeepMixin), but only for
+  a new level: a disconnect passes null.
+- **A boss bar update for an id the client doesn't have crashes the packet handler** (`BossHealthOverlay` NPE ->
+  "Network Protocol Error", disconnected). Level changes clear the client's bars while the server still has the player on
+  one (the dying dragon after a POTG): drop updates for unknown ids (PotgBossBarMixin).
+- **Fields that aren't synced data don't reach clients**: a TurretEntity's owner UUID was server-only, so a client-side
+  "is this his turret?" never matched. Sync what the client needs (an owner entity id refreshed each tick: it changes on rejoin).

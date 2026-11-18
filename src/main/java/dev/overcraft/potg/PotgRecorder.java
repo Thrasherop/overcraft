@@ -96,8 +96,21 @@ public final class PotgRecorder {
 		}
 	}
 
+	/** Dev only ("bot fix 140 off"): the gone-player sweep off, to show the old crash (#140). */
+	public static boolean devSweepOff;
+
 	/** END_SERVER_TICK: start, roll and stop each player's recorder; then the engine's own tick. */
 	public static void tick(MinecraftServer server) {
+		// #140: a recorder whose player has left the list without a disconnect (PlayerList.remove alone: DevBot's "bot
+		// remove", a fake-player mod) must close before the engine ticks it: with no player its snapshot (each 5 minutes,
+		// or the level falling back to the overworld) throws "Tried to get player before player joined" and stops the server.
+		if (!devSweepOff) {
+			for (Rec r : RECS.values()) {
+				if (r.recorder != null && server.getPlayerList().getPlayer(r.id) == null) {
+					finish(server, r);
+				}
+			}
+		}
 		if (!held) {
 			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 				Rec r = RECS.computeIfAbsent(player.getUUID(), Rec::new);

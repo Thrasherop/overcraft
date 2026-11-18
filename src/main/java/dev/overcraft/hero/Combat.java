@@ -246,11 +246,35 @@ public final class Combat {
 				state = dev.overcraft.juno.JunoStats.GLIDE_KNOCKBACK;
 			} else if (s.hero == Hero.JETPACK_CAT) {
 				state = dev.overcraft.jetpackcat.JetpackCatStats.KNOCKBACK_TAKEN;
+			} else if (s.hero == Hero.ILLARI) {
+				// half in Captive Sun's flight (D 1DF9)
+				state = dev.overcraft.illari.Illari.knockbackTaken(s);
 			}
 		}
 		// D.Va in her Boosters: a tenth (047E #243)
 		double boosters = target instanceof LivingEntity living ? dev.overcraft.dva.Boosters.knockbackFactor(living) : 1;
 		return state * boosters * Tank.knockbackFactor(target) * dev.overcraft.sigma.GraviticFlux.knockbackFactor(target);
+	}
+
+	/**
+	 * Minecraft's own push (a zombie's or husk's hit, an arrow) on a hero in hero play: Minecraft sizes it for its own
+	 * gravity, 0.4 blocks a tick up and out, which a plain player lands from in about 0.5 s, about 1 m back. Under Overwatch's
+	 * gravity (17.5 m/s², OwMovement) the same lift kept a hero up about 0.9 s at full sideways speed: 3.3 m a hit, a husk
+	 * juggling her 19 m in six (#143, measured 2026-11-15: hero mode 3.3 m a hit, plain Minecraft 1.0 m). The distance goes
+	 * with the push squared (speed times time aloft), so 0.55 gives Minecraft's hop and distance back. Ours: Overwatch has
+	 * no mob hits to copy. A hero's own pushes (their quick melee, abilities) stay as they are.
+	 */
+	public static final double MINECRAFT_PUSH_ON_HERO = 0.55;
+
+	public static double minecraftPushOnHero(LivingEntity target, @org.jspecify.annotations.Nullable DamageSource source) {
+		if (!(target instanceof Player player) || !HeroManager.inHeroPlay(player)) {
+			return 1;
+		}
+		Entity attacker = source == null ? null : source.getEntity();
+		if (attacker instanceof Player a && HeroManager.inHeroPlay(a)) {
+			return 1;
+		}
+		return MINECRAFT_PUSH_ON_HERO;
 	}
 
 	/** The share of a hero's push that reaches it: its state's, and its knockback resistance (a warden, a ravager: none). */
@@ -289,7 +313,8 @@ public final class Combat {
 	 * Sends a speed just set on {@code target}: to the others watching (needsSync), and at once to its own client when it is a
 	 * player, who moves on it. The tracker's syncVelocity isn't enough: played with two clients, it goes a tick later, after
 	 * their next movement packet has reset the server's copy (Accretion's first version: the rock's knockback reached a player as
-	 * nothing; minecraft_26.md). So the packet goes now, and syncVelocity is cleared for it not to undo this.
+	 * nothing; minecraft_26.md). So the packet goes now, and syncVelocity is cleared for it not to undo this. The one route for
+	 * any speed the server sets on a player, a push on another or a hero's own leap (#109); build it from {@link #motion}.
 	 */
 	public static void send(LivingEntity target) {
 		target.needsSync = true;
@@ -389,6 +414,10 @@ public final class Combat {
 	 * full amount (W Global Passive Abilities; ours: the owner's open question, ana-plan.md).
 	 */
 	public static float heal(LivingEntity target, double owHeal) {
+		if (target instanceof dev.overcraft.entity.TurretEntity) {
+			// nobody heals Torbjörn's turret but his hammer (W: repaired by the Forge Hammer; ours that heals pass it by)
+			return 0;
+		}
 		double scale = healScale(antiHealed(target), healBoosted(target), healCut(target), healCutTank(target));
 		if (scale <= 0) {
 			return 0;
@@ -517,14 +546,17 @@ public final class Combat {
 	 * Soundwave's push, lockout yes (Lucio: not hit)                   the lockout goes (Minecraft's Slowness)  W prevented, not removed; the lockout itself is ours (LucioStats)
 	 * Gravitic Flux: the lift   no: its filter, mask 16, has no bit 4  NOT removed                              1E41 #1292's filter, M; W "completely unaffected"; no flag read in his graphs: M
 	 * Gravitic Flux: its slow   no                                     NOT removed: it ends with the slam       part of the Flux W calls unaffected (HEAVY_SLOW, GraviticFlux); W's "slows" not applied: ours
+	 * Flashbang's hinder        yes: the blast's areaHits              at once: no roll, the slow               D 0228 #129 v8440, #153 mask 20; #155 1BC5 -> #154 1C7D -> #125; W "Can be cleansed"
+	 * Steel Trap's root         yes: the trap's areaHits               NOT removed                              D 01F5's graph 09BC reads neither v8440 nor 1BC5; 09BB's tracker mask 20; W Junkrat rev 380944 "will not free a player that is already trapped"
 	 * Minecraft's effects, fire no                                     removed                                  ours
 	 * </pre>
-	 * The mod has no Discord, Hinder or Groggy. A knock-back is kept off by Combat.push's and launch's own phase test. 224E #575 lets type 6BBE through when v530 and v8440 are set:
+	 * The mod has no Discord or Groggy. A knock-back is kept off by Combat.push's and launch's own phase test. 224E #575 lets type 6BBE through when v530 and v8440 are set:
 	 * what stops a knock-down on the phased is the hit's filter (1EB9 #338, 5B7B; mask 20, M). Every hit passes through the phased, whatever it is: Allies.canHurt and areaHits say no, OwProjectile.canHitEntity for what flies. Flux's lift alone doesn't ask (areaTouches). Sleep, Hack, antiHeal keep their own door for what isn't a hit.
-	 * Not done: W Status effect says Life Grip also removes tether and gravity (#124).
+	 * Life Grip also frees its ally from what no cleanse ends (#124, LifeGrip.free; W Status effect rev 380062 "Removes knockback, tether, hinder and gravity effects"):
+	 * Catnapper's carry and any Lifeline tow, Gravitic Flux's lift (no slam), Steel Trap's root, Hyper Strike's float. A knock-down stays.
 	 * <p>
 	 * Returns whether a status that says so was cleansed: the one thing Kiriko's Suzu line answers (#121, SuzuEntity.burst). The data's senders of
-	 * 1C7D, each gated on v8440: Sleep Dart 224E #418, Rally's stun 224E #416, Hack 0B1F #611, Biotic Grenade 0C72 #275, Claws Out 5BAF #91: H nodes.
+	 * 1C7D, each gated on v8440: Sleep Dart 224E #418, Rally's stun 224E #416, Hack 0B1F #611, Biotic Grenade 0C72 #275, Claws Out 5BAF #91, Flashbang's hinder 0228 #154: H nodes.
 	 * Removed and silent: the healing reduction (01C7 #1186 ends without it), Local Anesthetic (6123 has neither v8440 nor 1C7D), the zones' slows
 	 * (1443, 6102 trackers). Minecraft's effects and fire: no graph, so nothing says so (ours, following the data; the owner's to change).
 	 */
@@ -535,6 +567,7 @@ public final class Combat {
 			told |= dev.overcraft.sombra.Hack.cleanse(target);
 			dev.overcraft.ana.Anesthetic.cleanse(target);
 			told |= dev.overcraft.jetpackcat.JetpackCat.cleanse(target);
+			told |= dev.overcraft.cassidy.Hinder.cleanse(target);
 			dev.overcraft.sojourn.Disruptor.cleanse(target);
 		}
 		List<Holder<net.minecraft.world.effect.MobEffect>> harmful = new ArrayList<>();
@@ -783,6 +816,10 @@ public final class Combat {
 			case TRACER -> (int) dev.overcraft.tracer.TracerStats.ULT_COST;
 			case CASSIDY -> (int) dev.overcraft.cassidy.CassidyStats.ULT_COST;
 			case JUNKRAT -> (int) dev.overcraft.junkrat.JunkratStats.ULT_COST;
+			case TORBJORN -> (int) dev.overcraft.torbjorn.TorbjornStats.ULT_COST;
+			case ILLARI -> (int) dev.overcraft.illari.IllariStats.ULT_COST;
+			case ASHE -> (int) dev.overcraft.ashe.AsheStats.ULT_COST;
+			case WIDOWMAKER -> (int) dev.overcraft.widowmaker.WidowmakerStats.ULT_COST;
 			case DVA -> (int) dev.overcraft.dva.DvaStats.MECH_ULT_COST;
 			default -> 1;
 		};
@@ -836,6 +873,11 @@ public final class Combat {
 		double perTick = Ow.hp(decay) / 20;
 		overhealth.put(entity.getUUID(), new Overhealth(entity, perTick, holdUntil + (long) Math.ceil(amount / perTick) + 1, holdUntil));
 		overhealthLeft.put(entity.getUUID(), amount);
+	}
+
+	/** What's left of an entity's overhealth, gone now (Torbjörn's Overload's at its end or his leaving play). */
+	public static void endOverhealth(LivingEntity entity) {
+		clearOverhealth(entity);
 	}
 
 	private static void clearOverhealth(LivingEntity entity) {

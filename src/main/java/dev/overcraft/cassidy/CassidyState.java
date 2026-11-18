@@ -33,6 +33,9 @@ public final class CassidyState {
 	/** Silver Bullet: its cooldown (ticks), aimed now (the right button held with it ready). */
 	public double silverCooldown;
 	public boolean silverAim;
+	/** Silver Bullet's aim (01D2 v169): 0 down, 1 fully raised; lowering blocks a new raise until it's down (#164). */
+	public double silverProgress;
+	public boolean silverLowering;
 	/** Hacked now (no abilities), hindered now (no roll: Flashbang's status). */
 	public boolean silenced, hindered;
 	/** When "It's high noon" is said (game time, -1 none). */
@@ -68,6 +71,8 @@ public final class CassidyState {
 		locks.clear();
 		silverCooldown = 0;
 		silverAim = false;
+		silverProgress = 0;
+		silverLowering = false;
 		silenced = hindered = false;
 		lineAt = -1;
 		inSight = 0;

@@ -52,6 +52,7 @@ public final class Boosters {
 			return;
 		}
 		s.dvaBoost = 0;
+		dev.overcraft.jetpackcat.JetpackCat.letGo(player);
 		s.dvaBoostExtra = 0;
 		s.dvaBoostHit.clear();
 		s.softLanding = true;
@@ -87,9 +88,7 @@ public final class Boosters {
 		}
 		hits(player, s);
 		ServerLevel level = player.level();
-		// stand-in thrusters: small flames low on her back (big ones filled the third-person camera: found playing)
-		Vec3 back = player.position().add(0, 0.9, 0).subtract(Vec3.directionFromRotation(0, player.getYRot()).scale(0.6));
-		level.sendParticles(ParticleTypes.SMALL_FLAME, back.x, back.y, back.z, 2, 0.15, 0.1, 0.15, 0.005);
+		// her thrusters' flames and trails (1492) are her clients' (DvaFx, from her synced boosting state)
 		if (DvaPerks.boostersLeft(s) <= 0) {
 			end(player, s);
 		}
@@ -124,7 +123,15 @@ public final class Boosters {
 			s.dvaBoostHit.add(e.getId());
 			Vec3 before = Combat.motion(e);
 			// 25, Extended Boosters' 35, and its +0.5 s (514D #310, 047E #458)
-			float dealt = Combat.damage(e, level.damageSources().playerAttack(player), DvaPerks.boostersDamage(s), BLOW);
+			// through barriers, as a melee blow: "Boosters will ignore barriers, as if it was a melee attack. It cannot damage
+			// barriers however" (the wiki's Barrier page, rev 406358); judged from her eyes, an enemy Brigitte's took it (#104's sweep)
+			dev.overcraft.brigitte.Barrier.meleeDepth++;
+			float dealt;
+			try {
+				dealt = Combat.damage(e, level.damageSources().playerAttack(player), DvaPerks.boostersDamage(s), BLOW);
+			} finally {
+				dev.overcraft.brigitte.Barrier.meleeDepth--;
+			}
 			DvaPerks.boostersHit(s);
 			Combat.credit(player, dealt, e);
 			if (dealt > 0) {

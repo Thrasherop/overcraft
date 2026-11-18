@@ -1,0 +1,44 @@
+# T6 perks, picked in the LAlt menu by its clicks. Round A: Pre-Heated (minor, the second) + Overloaded Turret (major, the first).
+cmd /kill @e[type=!player]
+cmd /difficulty easy
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /overcraft perks @s 3
+sleep 0.5
+key perk_menu down
+sleep 0.2
+key primary_fire down
+sleep 0.15
+key primary_fire up
+sleep 0.3
+key secondary_fire down
+sleep 0.15
+key secondary_fire up
+sleep 0.2
+key perk_menu up
+sleep 0.5
+state
+MARK T6a Overloaded Turret: a built turret, then E: it upgrades (1.7 s), 30 MC health (375), missiles of 30 among its 12s
+cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 4.5 run tp @s ~ ~ ~ ~ ~
+sleep 13
+key ability_1 tap
+sleep 3.2
+cmd /summon husk 0.5 -60 14.5 {NoAI:1b,Tags:["t6"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:400}],Health:400f}
+key ability_2 tap
+sleep 1.0
+hp @e[type=overcraft:turret,limit=1]
+hp @e[tag=t6,limit=1]
+sleep 3.0
+hp @e[tag=t6,limit=1]
+hp @e[type=overcraft:turret,limit=1] Attributes
+sleep 3.0
+hp @e[type=overcraft:turret,limit=1]
+hp @e[tag=t6,limit=1]
+MARK T6b Pre-Heated: Q starts Overload (mode bit 2), no Overload cooldown after it
+cmd /kill @e[tag=t6]
+sleep 11
+cmd /overcraft ult @s
+key ultimate tap
+sleep 1.0
+state
+sleep 6.5
+state

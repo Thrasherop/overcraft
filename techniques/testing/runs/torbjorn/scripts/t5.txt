@@ -1,0 +1,38 @@
+# T5 the turret against Minecraft's mobs (AI on), its break and cooldown, and leaving play: G, death, a switch.
+cmd /kill @e[type=!player]
+cmd /difficulty normal
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /execute as @s at @s anchored eyes facing 0.5 -60.0 4.5 run tp @s ~ ~ ~ ~ ~
+sleep 3
+MARK T5a a turret, then a zombie 14 m off (AI): shot, it should come for the turret (ours); I step back 10 m
+key ability_1 tap
+sleep 3.0
+cmd /tp @s 0.5 -60 -9.5 0 0
+cmd /summon zombie 0.5 -60 18.5 {Tags:["t5z"],attributes:[{id:"minecraft:max_health",base:60}],Health:60f}
+sleep 2.0
+cmd /data get entity @e[tag=t5z,limit=1] Pos
+sleep 3.0
+cmd /data get entity @e[tag=t5z,limit=1] Pos
+hp @e[tag=t5z,limit=1]
+hp @e[type=overcraft:turret,limit=1]
+MARK T5b a skeleton 12 m off: its arrows at the turret? turret health over 5 s
+cmd /kill @e[tag=t5z]
+cmd /summon skeleton 8.5 -60 14.5 {Tags:["t5s"],attributes:[{id:"minecraft:max_health",base:200}],Health:200f}
+sleep 5.0
+hp @e[type=overcraft:turret,limit=1]
+hp @e[tag=t5s,limit=1]
+MARK T5c the turret broken by /damage as the skeleton (in combat): cooldown 12 s
+cmd /kill @e[tag=t5s]
+key ability_1 tap
+sleep 0.5
+state
+cmd /damage @e[type=overcraft:turret,limit=1] 100 minecraft:mob_attack by @e[type=minecraft:villager,limit=1]
+sleep 0.5
+state
+cmd /summon zombie 0.5 -60 8.5 {NoAI:1b,Tags:["t5k"]}
+sleep 3.5
+state
+cmd /damage @e[type=overcraft:turret,limit=1] 100 minecraft:mob_attack by @e[tag=t5k,limit=1]
+sleep 0.3
+state
+cmd /kill @e[tag=t5k]

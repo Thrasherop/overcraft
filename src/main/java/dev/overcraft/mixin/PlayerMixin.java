@@ -51,12 +51,25 @@ public abstract class PlayerMixin {
 		}
 	}
 
+	/**
+	 * A hero's pain grunt is their voice's pain stimulus (0003), not a sound on every hit: the server says it by Voice's rules
+	 * (its 1-2.5 s cooldown, one line at a time), and Minecraft's own hurt sound (the server's playHurtSound, every client's
+	 * handleDamageEvent) is silenced for it. It played on every hit: 36 grunts in about 1 s from D.Va's Micro Missiles (#129).
+	 */
 	@Inject(method = "getHurtSound", at = @At("RETURN"), cancellable = true)
 	private void overcraft$heroPain(DamageSource source, CallbackInfoReturnable<SoundEvent> cir) {
 		if (cir.getReturnValue() == SoundEvents.PLAYER_HURT) {
 			SoundEvent pain = heroLine("pain");
 			if (pain != null) {
-				cir.setReturnValue(pain);
+				if (dev.overcraft.hero.Voice.devPainEveryHit) {
+					cir.setReturnValue(pain);
+					return;
+				}
+				// the server's call is playHurtSound's, once per hit that hurts (LivingEntity.hurtServer)
+				if ((Object) this instanceof net.minecraft.server.level.ServerPlayer server) {
+					dev.overcraft.hero.Voice.say(server, "pain", 1);
+				}
+				cir.setReturnValue(null);
 			}
 		}
 	}

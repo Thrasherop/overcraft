@@ -248,6 +248,8 @@ public final class Kiriko implements HeroKit {
 		}
 		s.castTicks = Ow.ticks(SWIFT_STEP_CAST);
 		s.castTarget = target.getUUID();
+		// a movement ability lets go of a Jetpack Cat's rope (W; #142)
+		dev.overcraft.jetpackcat.JetpackCat.letGo(player);
 		Combat.animate(player, "swift_step");
 		s.interruptReload(SWIFT_STEP_ANIMATION);
 		// her player hears the hand sign, everyone else her departure (the sound research: audiences 1 and 2)

@@ -29,6 +29,13 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
   - "Ult ready" is a wheel line (02E7, category 31), not an announcement when the ult fills.
   - Test it with the same script before and after (`heard` polled with timestamps). Run tests at night: zombies
     burning in the sun die before the kunai land, and the kills aren't the hero's.
+- **Effort sounds are voice lines too (#129):** pain is stimulus 0003 (light, 1-2.5 s) / 0004 (heavy, 0.5-1 s), priority
+  40, no interrupt, no chance field; which one a hit raises is an engine-set scripted event (0608 / 0609) with no
+  damage threshold in the data. Minecraft's hurt sound plays on every hit that lands (`getHurtSound` from the server's
+  `playHurtSound` and every client's `handleDamageEvent`), and Overwatch weapons hit many times a second: so a hero's
+  grunt must not be the hurt sound. `PlayerMixin` silences it and says "pain" through `Voice.say` from the server's
+  call. Any sound wired to a Minecraft per-hit or per-tick hook needs its stimulus' cooldown the same way.
+  Run: [pain_129](../testing/runs/pain_129/pain_129.md).
 - **A callout isn't chatter:** a plain ping's line is limited to one a second (ours: its stimulus has no cooldown, and
   a press each tick would talk over itself).
 - <a id="emote-sounds"></a>**Emote sounds (#48):** each emote clip's animation effect lists Sound components (a 02C,
@@ -78,6 +85,14 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
 - **Music:** the match-end music was traced through the music-director graphs (0D3B, 1B47):
   [sounds-round8](../../tools/reference/sounds-round8.md), [music-round9](../../tools/reference/music-round9.md). Its
   streams are 12-channel Opus and need a stereo downmix.
+  - **A music cue's sections come from its Wwise playlist** (the dragon's end phase, #45): `wwmusic.py <musicbanks.json>
+    event <id>` prints each segment's duration, entry/exit markers and its track's play-at and trims. Source time =
+    segment time - play-at; a section runs from its entry cue to where its track ends, and the next one starts at its
+    exit cue while its tail rings on. The soundmap cuts them with `@-<start>~<end>` and folds the 12 channels
+    (`DOWNMIX_12`); a looping section gets its own tail laid over its start so Minecraft's file loop rings through, and
+    the client (`EndMusic`) starts the loop at the intro's exit cue by the clock. `sounds --only <prefix>` adds such
+    events to the pack without rebuilding the rest. A long music event is `| stream` (it starts at once, unlike a
+    static buffer decoded whole). The worked cut: [kiriko.txt](../../tools/soundmaps/kiriko.txt)'s end-phase lines.
 - **Ranges come through the volume** (Lifeweaver, 2026-10-29): `sounds.json` sets none, and a volume over 1 only
   widens Minecraft's 16 blocks without making it louder. `HeroSounds.split(..., metres)` and `HeroSounds.at(...)` pass
   the game copy's range as metres / 16; client loops do the same (`LifeweaverSounds.on`).
@@ -304,6 +319,13 @@ Playing Overwatch's sounds the way Overwatch does, and checking what actually pl
   - **Ult picks** 002B #367 (STU_37D754C8, the shared 545C): F1AA 008B enemies, F1AB 048F friends, F1AC 1857 her own (the enemy line's
     text again, as Sojourn's and Sigma's). **Jet Dash has no voice stimulus** (4B92 names none): `pharah.voice.jet_dash` stays empty.
   - Not mapped (direct-hit streak lines 11D4-11D6 on 0023's counter v42868; emote sounds): in the maps' headers.
+- <a id="stops-by-name"></a>**A stop packet stops by name, every copy (#123):** `ClientboundStopSoundPacket` names a sound, so
+  stopping one target's sound for a listener cuts every target's copy that listener hears. When the same event plays on several
+  targets at once (Sleep Dart's bed, Local Anesthetic's dot), send the target's own copy's stop to that target only. Send the others'
+  copy's stop only to listeners that no other live copy reaches, using the range it was sent to (`HeroSounds.at`: its range + 8 m).
+  The cost is that a listener with two copies near hears the ended one out to its file's end. Rules: `Sleep.stopsBed`,
+  `Anesthetic.stops3p`; played: [runs/sleep_sound_123](../testing/runs/sleep_sound_123/record.md). Check with `bot playing` and a
+  `bot fix <n> off` switch, two targets, one ended.
 - **What is still sounding:** the dev `playing` lists the overcraft sounds the engine still plays; a stopped channel stays in
   its map until 1 s after its start, so it asks each channel whether it stopped. Poll it with `heard` to time each loop's end.
 - **Testing sounds finds other bugs:** reading health around his dash's heal showed shields that never took healing

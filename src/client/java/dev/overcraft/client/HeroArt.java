@@ -52,7 +52,7 @@ public final class HeroArt {
 	/** An ability's icon, by its in-game name's slug ("kunai", "swift_step", ...). */
 	public static @Nullable Identifier ability(Hero hero, String ability) {
 		// Mercy's staff has one icon for both its beams (her data's loadouts)
-		Identifier icon = art(hero, "abilities/" + (ability.equals("damage_boost") ? "caduceus_staff" : ability));
+		Identifier icon = art(hero, "abilities/" + (ability.equals("damage_boost") ? "caduceus_staff" : ability.equals("healing_beam") ? "secondary_fire" : ability));
 		// a perk that is an ability (D.Va's Precision Fusion) has only its perk icon
 		return icon != null ? icon : perk(hero, ability);
 	}
@@ -76,7 +76,10 @@ public final class HeroArt {
 			case TRACER -> "pulse_bomb";
 			case CASSIDY -> "deadeye";
 			case JUNKRAT -> "rip_tire";
+			case TORBJORN -> "molten_core";
 			case ILLARI -> "captive_sun";
+			case ASHE -> "b_o_b";
+			case WIDOWMAKER -> "infra_sight";
 		});
 	}
 
@@ -87,7 +90,14 @@ public final class HeroArt {
 
 	/** A perk's icon (a white glyph on clear), by its id ("urgent_care"). */
 	public static @Nullable Identifier perk(Hero hero, String perk) {
-		return art(hero, "perks/" + perk);
+		// Ashe's Viper's Sting: the pack names it from its display name (viper_s_sting)
+		// Widowmaker's Sniper's Instinct and Widow's Bite the same (sniper_s_instinct, widow_s_bite)
+		return art(hero, "perks/" + switch (perk) {
+			case "vipers_sting" -> "viper_s_sting";
+			case "snipers_instinct" -> "sniper_s_instinct";
+			case "widows_bite" -> "widow_s_bite";
+			default -> perk;
+		});
 	}
 
 	/** One of the kill feed's own icons ("melee": Overwatch's Quick Melee fist), when the local pack has it. */

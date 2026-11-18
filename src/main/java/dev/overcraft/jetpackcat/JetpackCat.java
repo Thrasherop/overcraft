@@ -455,7 +455,7 @@ public final class JetpackCat implements HeroKit {
 			release(player, s);
 			return;
 		}
-		tow(player, ally);
+		tow(player, ally, LIFELINE_ROPE);
 		if (player.tickCount % 4 == 0) {
 			Combat.heal(ally, LIFELINE_HEAL / 5);
 		}
@@ -512,7 +512,8 @@ public final class JetpackCat implements HeroKit {
 	 * (ClientTow), keys and all, and here they're only kept from falls and from the floating kick. A mob moves here, by the
 	 * same math with no keys, so a villager on the rope behaves as a player who lets go of the keys.
 	 */
-	private static void tow(ServerPlayer player, LivingEntity ally) {
+	/** Her rope on {@code ally}, {@code length} long from her feet to theirs: Lifeline's tow, and Catnapper's carry of a mob. */
+	private static void tow(ServerPlayer player, LivingEntity ally, double length) {
 		ally.resetFallDistance();
 		if (ally instanceof ServerPlayer towed) {
 			((dev.overcraft.mixin.ServerGamePacketListenerAccessor) towed.connection).overcraft$setAboveGroundTickCount(0);
@@ -524,7 +525,7 @@ public final class JetpackCat implements HeroKit {
 		Vec3 now = ally.getDeltaMovement();
 		t.last = pos;
 		Vec3 toHer = player.position().subtract(pos);
-		boolean taut = LifelineRope.taut(toHer, LIFELINE_ROPE);
+		boolean taut = LifelineRope.taut(toHer, length);
 		Vec3 her = player.getKnownMovement().scale(20);
 		double dt = 0.05 / OwMovement.SUBSTEPS;
 		if (ally.isInLiquid()) {
@@ -533,7 +534,7 @@ public final class JetpackCat implements HeroKit {
 			if (taut) {
 				Vec3 v = now.scale(20);
 				for (int i = 0; i < OwMovement.SUBSTEPS; i++) {
-					v = LifelineRope.pull(toHer.subtract(v.subtract(her).scale(i * dt)), her, v, LIFELINE_ROPE, dt);
+					v = LifelineRope.pull(toHer.subtract(v.subtract(her).scale(i * dt)), her, v, length, dt);
 				}
 				ally.setDeltaMovement(v.scale(0.05));
 				ally.needsSync = true;
@@ -563,7 +564,7 @@ public final class JetpackCat implements HeroKit {
 		}
 		for (int i = 0; i < OwMovement.SUBSTEPS; i++) {
 			v = LifelineRope.free(v, dt);
-			v = LifelineRope.pull(toHer.subtract(v.subtract(her).scale(i * dt)), her, v, LIFELINE_ROPE, dt);
+			v = LifelineRope.pull(toHer.subtract(v.subtract(her).scale(i * dt)), her, v, length, dt);
 		}
 		if (ally.onGround() && v.y <= 0) {
 			// the rope isn't lifting them: on the ground, pressed to it as Minecraft keeps a walker (with no gravity here the pull's little
@@ -586,6 +587,21 @@ public final class JetpackCat implements HeroKit {
 	}
 
 	/** The towed ally let go (Lifeline stays as it was): they land unhurt and can't be caught again for 2 s. */
+	/**
+	 * A player on a Jetpack Cat's rope used a movement ability: the rope lets go of them (W, Lifeline: "a movement ability ends
+	 * the tow"; #142), as when she switches it off, but her Lifeline stays on. Called from each hero's movement ability as it
+	 * starts (Blink, Jump Jet, Jet Dash, Combat Roll, Glide Boost, Power Slide, Swift Step, Rejuvenating Dash, Guardian Angel,
+	 * Translocator, Boosters).
+	 */
+	public static void letGo(ServerPlayer towed) {
+		for (ServerPlayer cat : towed.level().getServer().getPlayerList().getPlayers()) {
+			HeroState s = dev.overcraft.hero.HeroManager.state(cat);
+			if (s != null && s.hero == dev.overcraft.hero.Hero.JETPACK_CAT && s.lifelineTarget != null && s.lifelineTarget == towed.getId()) {
+				release(cat, s);
+			}
+		}
+	}
+
 	private static void release(ServerPlayer player, HeroState s) {
 		if (s.lifelineTarget == null) {
 			return;
@@ -698,7 +714,12 @@ public final class JetpackCat implements HeroKit {
 		Vec3 eye = player.getEyePosition();
 		Vec3 end = eye.add(player.getViewVector(1.0f).scale(ULT_RANGE));
 		HitResult hit = player.level().clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
-		Vec3 at = hit.getType() == HitResult.Type.MISS ? end : hit.getLocation();
+		// a wall's hit point lies on its face, inside the block for the ray down, which then stopped at once: the dive went to a
+		// spot on the wall 1.6 m up (#139, played). Stepped back off the face by her half width, the floor in front of it.
+		boolean wall = hit instanceof net.minecraft.world.phys.BlockHitResult block && hit.getType() != HitResult.Type.MISS
+			&& block.getDirection().getAxis() != net.minecraft.core.Direction.Axis.Y;
+		Vec3 at = hit.getType() == HitResult.Type.MISS ? end
+			: wall ? hit.getLocation().subtract(player.getViewVector(1.0f).multiply(1, 0, 1).normalize().scale(0.35)) : hit.getLocation();
 		// down to the ground below it
 		HitResult ground = player.level().clip(new ClipContext(at.add(0, 0.5, 0), at.add(0, -ULT_RANGE, 0), ClipContext.Block.COLLIDER,
 			ClipContext.Fluid.NONE, player));
@@ -736,15 +757,34 @@ public final class JetpackCat implements HeroKit {
 				if (--s.ultTimer <= 0) {
 					s.ultPhase = ULT_DIVE;
 					s.ultTimer = Ow.ticks(DIVE_LIMIT);
+					// her data's move (5B7B #95, StateMoveTo): to the target point + 0.25 m up, ending there or at the 1.5 s wait.
+					// Nothing in it reads the ground, so cast from the ground she skims along it to the spot (#139: our onGround
+					// check ended a ground cast the tick it began). Laid out here, where she's held still: her client moves her and
+					// the server's copy of her position lags it, so steering by it each tick overshot the spot by up to 3 ticks
+					// (played)
+					Vec3 to = s.ultTarget.add(0, 0.25, 0).subtract(player.position());
+					s.ultDir = to.lengthSqr() > 1.0E-6 ? to.normalize() : Vec3.ZERO;
+					s.ultLeft = to.length();
 				}
 			}
 			case ULT_DIVE -> {
-				Vec3 to = s.ultTarget.subtract(player.position());
-				double step = Ow.speed(ULT_DIVE_SPEED);
-				if (to.length() <= step || player.onGround() || --s.ultTimer <= 0) {
+				// ours: a wall in the way ends it (her client's horizontalCollision, from the dive's second tick on, so one she cast
+				// beside doesn't)
+				boolean blocked = player.horizontalCollision && s.ultTimer < Ow.ticks(DIVE_LIMIT);
+				if (s.ultLeft <= 1.0E-3 || blocked || --s.ultTimer <= 0) {
+					Vec3 spot = s.ultTarget.add(0, 0.25, 0);
+					if (s.ultLeft <= 1.0E-3 && player.level().noCollision(player, player.getBoundingBox().move(spot.subtract(player.position())))) {
+						// arrived: onto the spot itself, the move's own end (#95). The steps alone came up 1-1.7 m short (played: her
+						// client doesn't take exactly one speed packet a tick)
+						player.connection.teleport(new net.minecraft.world.entity.PositionMoveRotation(spot, Vec3.ZERO, 0, 0),
+							java.util.Set.of(net.minecraft.world.entity.Relative.X_ROT, net.minecraft.world.entity.Relative.Y_ROT));
+					}
 					land(player, s);
 				} else {
-					player.setDeltaMovement(to.normalize().scale(step));
+					// 30 m/s, the last part-step onto the spot, landing the tick after
+					double d = Math.min(Ow.speed(ULT_DIVE_SPEED), s.ultLeft);
+					s.ultLeft -= d;
+					player.setDeltaMovement(s.ultDir.scale(d));
 					player.syncVelocity = true;
 					player.resetFallDistance();
 				}
@@ -758,10 +798,17 @@ public final class JetpackCat implements HeroKit {
 				// carried below her on the tether, its top 1 m under her feet. Ours: her data reels the rope in to 0.5 m from
 				// a point 1 m behind her hips (graph 5B7B #209, hardpoint 0283: M), but held that close (at her feet) a
 				// zombie hit her the whole carry and killed her (found playing)
-				Vec3 hold = player.position().add(0, -enemy.getBbHeight() - 1.0, 0);
-				enemy.setDeltaMovement(hold.subtract(enemy.position()).scale(0.5).add(player.getKnownMovement()));
-				// (played on a real client, #109: this alone holds a player up there, y -58.9 under a bot on a ledge, both modes; the 4 s in runs/polish3/p109_carry.txt)
-				enemy.syncVelocity = true;
+				if (enemy instanceof Player) {
+					// a player held at the point (played on a real client, #109: this alone holds a player up there, y -58.9 under a bot
+					// on a ledge, both modes; the 4 s in runs/polish3/p109_carry.txt): their client runs the rope only for Lifeline
+					Vec3 hold = player.position().add(0, -enemy.getBbHeight() - 1.0, 0);
+					enemy.setDeltaMovement(hold.subtract(enemy.position()).scale(0.5).add(player.getKnownMovement()));
+					enemy.syncVelocity = true;
+				} else {
+					// a mob on her rope, as Lifeline tows (#142: it was held at a point under her, with no swing): the rope as long as
+					// keeps its top 1 m under her feet hanging straight, so it swings and trails as she turns and flies
+					tow(player, enemy, enemy.getBbHeight() + 1.0);
+				}
 				if (player.tickCount % 4 == 0) {
 					Combat.heal(player, ULT_SELF_HEAL / 5);
 				}
@@ -775,7 +822,8 @@ public final class JetpackCat implements HeroKit {
 	private static void land(ServerPlayer player, HeroState s) {
 		ServerLevel level = player.level();
 		player.setDeltaMovement(Vec3.ZERO);
-		player.syncVelocity = true;
+		// to her client at once (Combat.send, #109): on syncVelocity she slid on 2 ticks at 24.6 m/s after landing, now 1 (played)
+		Combat.send(player);
 		Effects.play(level, "catnapper_land", player.position(), Vec3.ZERO, player, player.getId(), player);
 		Combat.animate(player, "ult_land");
 		HeroSounds.toOwner(player, OcSounds.JC_ULT_IMPACT);
@@ -824,12 +872,40 @@ public final class JetpackCat implements HeroKit {
 		}
 	}
 
+	/**
+	 * Life Grip on {@code ally} (#124): every tether on them breaks, an enemy's Catnapper carry (her ult ends, as her own press
+	 * ends it) and a Lifeline tow, and a gripped cat's own, Lifeline or carry (W Lifeweaver rev 380626: "whether they are
+	 * carrying an ally or an enemy"). The knock-down stays (LifeGrip.free).
+	 */
+	public static void untether(LivingEntity ally) {
+		if (!(ally.level() instanceof ServerLevel level)) {
+			return;
+		}
+		for (ServerPlayer cat : level.players()) {
+			HeroState s = HeroManager.state(cat);
+			if (s == null || s.hero != Hero.JETPACK_CAT) {
+				continue;
+			}
+			boolean self = cat == ally;
+			if (s.lifelineTarget != null && (self || s.lifelineTarget == ally.getId())) {
+				release(cat, s);
+			}
+			if (s.ultPhase == ULT_CARRY && s.carried != null && (self || s.carried == ally.getId())) {
+				endUlt(cat, s);
+			}
+		}
+	}
+
 	private static void endUlt(ServerPlayer player, HeroState s) {
 		if (s.carried != null) {
 			Effects.play(player.level(), "tether_end", player.position(), Vec3.ZERO, null, player.getId(), player);
 			HeroSounds.toOwner(player, OcSounds.JC_ULT_TETHER_END);
 			// 19B6, "Unlatch tether"
 			Voice.say(player, "tether_end", 1);
+		}
+		if (s.carried != null) {
+			int carried = s.carried;
+			TOWING.keySet().removeIf(a -> a.getId() == carried);
 		}
 		s.ultPhase = ULT_NONE;
 		s.carried = null;

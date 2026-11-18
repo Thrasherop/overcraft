@@ -1,0 +1,14 @@
+# Lifeweaver's Play of the Game highlight intro: the clip only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/lifeweaver.glb by bone name (HeroModels, from hero_models/lifeweaver_intro_clips.glb), as Sigma's (sigma_intro_clips.txt).
+# From DataTool's extract-unlocks "Lifeweaver|highlightintro=*" (build 154088, archived: research\potg_intros\extract\Unlocks\Heroes\
+# Lifeweaver\HighlightIntro; headers research\potg_intros\intro_clips_rest.txt). The default Overwatch plays "Heroic" (his other base
+# intros: Leap, Lotus). Heroic's body clips (336 of their 338 bones his model's, 00BB.118), group 16-32: CAC8 8.767 s (effect 5038),
+# D341 / D343 9.567 s at 60 fps (effect 51C5), D3A1 9.567 s (effect 525B); D345 (group 32, 27 bones, 7 his) is a prop, not kept; D804
+# (group 20-12, 16 s, 4 bones) is an additive layer (below). His intro set 430E's alias B33 is a SEQUENCE (research\potg_intros\work\
+# compact_430E_lifeweaver.txt, compacted from research\lifeweaver\resolved\00000000430E.021.flat.json by research\ana\scripts\
+# clipmap_ana.py, H tree): seq[0] 8.767 s p16/32 -> seq[1..4] 9.567 s steps, with D804 added over them (+add); the set's own ids
+# (19F40-19F42) are not extracted. So CAC8 is the opening (H by length and group). D804's additive layer is not kept (L: 4 bones; an
+# additive clip isn't merged as one). Root travel 0.24 m in the export. 263 frames at 30 fps. Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <00BB.118.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/lifeweaver_intro_clips.txt --clips-from=<...>\Heroes\Lifeweaver\HighlightIntro\Overwatch\Heroic
+emote_00000000CAC8 = potg_intro

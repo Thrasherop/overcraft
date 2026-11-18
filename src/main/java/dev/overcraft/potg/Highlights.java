@@ -147,17 +147,13 @@ public final class Highlights {
 				break;
 			}
 		}
-		Highlight lowest = list.isEmpty() ? null : list.getLast();
 		if (overlap != null) {
 			if (score <= overlap.score) {
 				return null;
 			}
 			list.remove(overlap);
-		} else if (list.size() >= KEPT) {
-			if (lowest == null || score <= lowest.score) {
-				return null;
-			}
-			list.remove(lowest);
+		} else if (!makesTheCut(server, list, score)) {
+			return null;
 		}
 		Highlight h = new Highlight();
 		h.player = player.getName().getString();
@@ -170,7 +166,7 @@ public final class Highlights {
 		h.endTick = clip.tick();
 		h.entityId = clip.entityId();
 		list.add(h);
-		list.sort(Comparator.comparingDouble((Highlight x) -> x.score).reversed());
+		trim(server, list);
 		save(server, player.getUUID());
 		tidy(server, player.getUUID());
 		return h;
@@ -230,6 +226,43 @@ public final class Highlights {
 			}
 		} catch (IOException e) {
 			Overcraft.LOG.warn("[POTG] couldn't tidy {}: {}", dir, e.toString());
+		}
+	}
+
+	/**
+	 * Whether a new window of this score is kept: in the player's top KEPT, or their best since the last POTG. The owner on
+	 * 0.3.66 (#161, the critique's 2): with only the top KEPT ever, a first dragon fight's big windows filled every list, and a
+	 * later fight's never got in, so its dragon found "no play since the last POTG" and showed nothing.
+	 */
+	private static boolean makesTheCut(MinecraftServer server, List<Highlight> list, double score) {
+		List<Highlight> sorted = new ArrayList<>(list);
+		sorted.sort(Comparator.comparingDouble((Highlight x) -> x.score).reversed());
+		if (sorted.size() < KEPT || score > sorted.get(KEPT - 1).score) {
+			return true;
+		}
+		Highlight run = runBest(sorted, PotgState.lastPotg(server));
+		return run == null || score > run.score;
+	}
+
+	/** The highest-scoring of these made after {@code sinceMs}, or null. */
+	private static @Nullable Highlight runBest(List<Highlight> list, long sinceMs) {
+		Highlight best = null;
+		for (Highlight h : list) {
+			if (h.epochMs > sinceMs && (best == null || h.score > best.score)) {
+				best = h;
+			}
+		}
+		return best;
+	}
+
+	/** Keeps the top KEPT and the best since the last POTG (if not among them), best first; the rest go. */
+	private static void trim(MinecraftServer server, List<Highlight> list) {
+		list.sort(Comparator.comparingDouble((Highlight x) -> x.score).reversed());
+		Highlight run = runBest(list, PotgState.lastPotg(server));
+		for (int i = list.size() - 1; i >= KEPT; i--) {
+			if (list.get(i) != run) {
+				list.remove(i);
+			}
 		}
 	}
 

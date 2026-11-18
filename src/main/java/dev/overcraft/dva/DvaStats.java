@@ -64,10 +64,21 @@ public final class DvaStats {
 	 * Her first-person climb in (pilot 1P clip 3134, alias 0xE5, set 0476; played 2 s from the spawn: D 026A #405), whose
 	 * Camera bone is laid out about the mech's spot (it starts 2.06 m behind it and ends inside it): the view follows it (#133).
 	 * The fade to black and back is ours (no fade node in 026A or 0276; 0276 #175 STU_A90C5991 before the mech's 1P spawn is
-	 * unread, L): black from 1.4 s into the climb (the camera reaching the cockpit) to the link at 1.75 s, held until she's
+	 * unread, L): black from 1.2 s into the climb to 1.35 s (CALL_FADE_BLACK), held through the link at 1.75 s until she's
 	 * the mech, then out over 0.35 s as the mech's own view comes up. Ours, measured from the clip's Camera track.
 	 */
-	public static final double CALL_FADE_START = 1.4, CALL_FADE_OUT = 0.35;
+	public static final double CALL_FADE_START = 1.2, CALL_FADE_OUT = 0.35;
+	/**
+	 * Fully black from here (#134): the climb's camera, laid out CALL_VIEW_AHEAD past the spot, comes within 0.08 m of the landed
+	 * mech's shell (311F, her body's pieces left out) at 1.35 s and passes its front at 1.45 s (measured offline by skinning both
+	 * clips, scratchpad shell.py). The fade runs from 1.2 s, once her hands have closed on the rim; ours.
+	 */
+	public static final double CALL_FADE_BLACK = 1.35;
+	/**
+	 * Where her first-person climb (3134) is laid out: 0.79 m past the mech's spot along its facing = the clip camera's start
+	 * 2.06 m (measured from the clip) less the 1.27 m she stands behind the mech (D 026A #434 / #766) (#134) H / M.
+	 */
+	public static final double CALL_VIEW_AHEAD = 2.06 - 1.27;
 	/** The mech's first-person spawn (1P clip 3329, alias 0x435, set 019B): its 1 s clip over 1.2 s (D 0276 #176) H. */
 	public static final double MECH_SPAWN_VIEW = 1.2;
 	/** The landing: 250 to enemies within 3 m (D 348C 03BE 250 / 03BF 3, 026A #242; W 250 / 3 m) H. */
@@ -114,6 +125,14 @@ public final class DvaStats {
 	// ---- Boosters (dva.md "Boosters", 047E) ----
 	/** Her flight's speed along her aim: 5.5 x (1 + 1.18) = 12 m/s (D 047E #158 flight mover, 1285 1.18; W 12) M. */
 	public static final double BOOSTERS_SPEED = 5.5 * (1 + 1.18);
+	/** Ours (#148, the owner on 0.3.55): Boosters lift her over a rise this high (a block and a little), as a curb; Overwatch's maps have no blocks. */
+	public static final double BOOSTERS_CURB = 1.05;
+	/**
+	 * Ours (the owner on 0.3.66, "dva's boosters ... still are broken"): the most she slips sideways past an edge her box catches
+	 * (her 1.4 m width: a lone trunk dead centre took 0.95 m, reproduced 2026-11-16), so a tree, a post or a ledge's corner turns
+	 * her flight aside the way Overwatch's rounded geometry would, instead of stopping it; a wall still stops her, as in Overwatch.
+	 */
+	public static final double BOOSTERS_SLIP = 1.4;
 	/** Its length: 2 s at most, ended by a second press from 0.4 s on (D 03AF 2 at #166, #179 0.4 s; W) M. */
 	public static final double BOOSTERS_TIME = 2, BOOSTERS_MIN = 0.4;
 	/** Its cooldown starts 0.3 s after the flight ends (D 047E #168 -> #171) M. */

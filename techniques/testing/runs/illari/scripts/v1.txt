@@ -1,0 +1,45 @@
+MARK V1 fresh world il2 (peaceful start), pick Illari on the select screen (two clicks), Captive Sun again: ball press must not also fire the rifle (ammo stays 14); fly with W held 1 s: ~8 m/s (0.4 b/t)
+window 1920 1080
+sleep 3
+newworld il2
+sleep 45
+state
+cmd /difficulty peaceful
+cmd /gamerule spawn_monsters false
+cmd /time set noon
+cmd /weather clear
+screenclick 390 216 1
+sleep 1.5
+screenclick 390 216 1
+sleep 3
+state
+cmd /difficulty easy
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /summon husk 0.5 -60 15.5 {NoAI:1b,Tags:["u1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+ult 100
+sleep 1
+key ultimate down
+sleep 0.15
+key ultimate up
+sleep 1.3
+cmd /execute as @s at @s anchored eyes facing 0.5 -59 15.5 run tp @s ~ ~ ~ ~ ~
+sleep 0.2
+key secondary_fire down
+sleep 0.12
+key secondary_fire up
+sleep 0.6
+state
+hp @e[tag=u1,limit=1]
+cmd /execute as @s at @s rotated 0 0 run tp @s ~ ~ ~ ~ ~
+key forward down
+sleep 0.6
+state
+sleep 0.4
+state
+perspective back
+sleep 0.3
+screenshot illari_flight.png
+key forward up
+perspective first
+sleep 3
+state

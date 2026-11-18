@@ -1,0 +1,4 @@
+sleep 40
+state
+screenshot illari_select.png
+sleep 2

@@ -24,7 +24,7 @@ public final class HeroWeapon {
 	 * Hardpoint 000A from the models' own hardpoint tables (research/lucio/models.json): on Weapon_R in both, turned 180
 	 * degrees about X in the third-person model DB3F (rotation x -1) and not at all in the first-person DB40.
 	 */
-	private static final Map<Hero, Spec> SPECS = with(with(Map.of(Hero.LUCIO,
+	private static final Map<Hero, Spec> SPECS = with(with(with(with(with(Map.of(Hero.LUCIO,
 		new Spec(new Mount("Weapon_R", new Quaternionf(-1, 0, 0, 0)), new Mount("Weapon_R", new Quaternionf())),
 		// Mercy's staff and blaster, entities on 000A = Weapon_R with no offset or turn in both her models' tables
 		// (research/mercy/models.json)
@@ -58,7 +58,16 @@ public final class HeroWeapon {
 		Hero.CASSIDY, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf()))),
 		// Junkrat's Frag Launcher, entity 0452 (model 1022D) on his hardpoint 000A (var 193F), as Cassidy's: Weapon_R, no offset (M: his
 		// models' hardpoint tables not yet read for the turn); hero_models/junkrat_weapon.glb
-		Hero.JUNKRAT, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
+		Hero.JUNKRAT, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf()))),
+		// Ashe's Viper, entity 2523 (model 1079F) on her hardpoint 00C9 (var 4082) = bone_0606, as Ana's and Sojourn's (M: her models'
+		// hardpoint tables not read for an offset); hero_models/ashe_viper.glb
+		Hero.ASHE, new Spec(new Mount("bone_0606", new Quaternionf()), new Mount("bone_0606", new Quaternionf()))),
+		// Torbjörn's Rivet Gun (entity 0147, model DB4F) and Forge Hammer (entity 01BC, model EED9), both on hp 000A = Weapon_R, no
+		// offset (M: as Cassidy's; his models' hardpoint tables not read for the turn); hero_models/torbjorn_weapon.glb / torbjorn_hammer.glb
+		Hero.TORBJORN, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf()))),
+		// Widowmaker's Kiss, entity 002A (model E003) on her hardpoint 000A (var 12BB) = Weapon_R in both views, no offset (M: as
+		// Cassidy's; her models' hardpoint tables not read for the turn); hero_models/widowmaker_kiss.glb
+		Hero.WIDOWMAKER, new Spec(new Mount("Weapon_R", new Quaternionf()), new Mount("Weapon_R", new Quaternionf())));
 
 	private static Map<Hero, Spec> with(Map<Hero, Spec> first, Hero hero, Spec spec) {
 		Map<Hero, Spec> all = new java.util.EnumMap<>(first);
@@ -85,7 +94,7 @@ public final class HeroWeapon {
 		}
 		// Mercy holds one of two (hero_models/mercy_staff.glb, mercy_blaster.glb): the one her state has out
 		HeroModels.Loaded weapon = hero == Hero.MERCY ? HeroModels.get(animator.blaster() ? "mercy_blaster" : "mercy_staff")
-			: HeroModels.weapon(hero);
+			: hero == Hero.TORBJORN && animator.torbjornHammer() ? HeroModels.get("torbjorn_hammer") : HeroModels.weapon(hero);
 		// in an emote his hand is where the emote's pose has it (the props hang on the same pose: EmoteProps)
 		Skeleton.Pose heroPose = firstPerson ? animator.lastViewPose()
 			: animator.emoting() && animator.emotePose() != null ? animator.emotePose() : animator.lastPose();
@@ -165,6 +174,33 @@ public final class HeroWeapon {
 	}
 
 	/**
+	 * Ashe's Coach Gun (entity 2560, model 107A0, set 09AC) in her left hand while it's cast: on her hardpoint 000B (var 40C1:
+	 * ashe-map.md "Models"), read as Weapon_L with no offset, Tracer's left pistol's (M: her models' hardpoint tables not read), from the
+	 * cast for as long as its own clip runs: coach_gun 6179 in third person (0.93 s), the additive add_coach_gun_1p 5AAA over its rest in
+	 * first (0.57 s) (ashe_coach_gun.txt; M: the entity's spawn window not read). Null otherwise.
+	 */
+	private static EmoteProps.@Nullable Placed coachGun(HeroAnimator animator, SkinnedModel heroModel, boolean firstPerson, float now) {
+		HeroModels.Loaded gun = HeroModels.get("ashe_coach_gun");
+		if (gun == null || animator.emoting()) {
+			return null;
+		}
+		SkinnedModel.Clip clip = gun.model().clips.get(firstPerson ? "add_coach_gun_1p" : "coach_gun");
+		float t = animator.since("coach_gun", now);
+		Skeleton.Pose heroPose = firstPerson ? animator.lastViewPose() : animator.lastPose();
+		int bone = heroModel.node("Weapon_L");
+		if (clip == null || t >= clip.duration() || heroPose == null || bone < 0 || heroPose.t.length != heroModel.nodeNames.length) {
+			return null;
+		}
+		Skeleton.Pose own = rest(gun.model());
+		if (firstPerson) {
+			Skeleton.addAdditive(clip, t, own, 1);
+		} else {
+			Skeleton.sample(clip, t, own);
+		}
+		return new EmoteProps.Placed(gun, Skeleton.world(heroModel, heroPose, bone), Skeleton.skin(gun.model(), own, -1, null));
+	}
+
+	/**
 	 * Every model the hero carries besides the weapon in hand: Ana's Sleep Dart pistol for a moment (sidearm); Brigitte's
 	 * flail head seated on the handle's socket (hardpoint 0254 = bone_0FCD, entity 2378 on it: brigitte_flail.txt) and, in
 	 * third person, her shield folded on her back (entity 1B25 on her hardpoint 01D8 = bone_0F74, no offset: assets.md).
@@ -177,6 +213,12 @@ public final class HeroWeapon {
 			out.add(pistol);
 		}
 		parts(hero, animator, heroModel, firstPerson, now, out);
+		if (hero == Hero.ASHE) {
+			EmoteProps.Placed coach = coachGun(animator, heroModel, firstPerson, now);
+			if (coach != null) {
+				out.add(coach);
+			}
+		}
 		if (hero == Hero.TRACER) {
 			EmoteProps.Placed left = leftPistol(animator, heroModel, firstPerson, now);
 			if (left != null) {

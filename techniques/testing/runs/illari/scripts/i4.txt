@@ -1,0 +1,54 @@
+MARK I4a Outburst standing tap: husks (NoAI, 100 MC) at 3 m and 7 m and 10 m; expected 25 OW (2 MC) to the two within 8 m, pushed (18/5 x1 at 3 m, ~x0.48 at 7 m), the 10 m one untouched; her vy ~0.3 b/t (6 m/s); no fall damage
+cmd /kill @e[type=!player]
+cmd /effect clear @s
+cmd /tp @s 0.5 -60 0.5 0 0
+cmd /summon husk 0.5 -60 3.5 {NoAI:1b,Tags:["o1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /summon husk 7.5 -60 0.5 {NoAI:1b,Tags:["o2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /summon husk -9.5 -60 0.5 {NoAI:1b,Tags:["o3"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+sleep 1
+trace start
+key ability_1 down
+sleep 0.15
+key ability_1 up
+sleep 0.35
+state
+sleep 0.3
+state
+screenshot illari_outburst.png
+sleep 1.5
+state
+hp @e[tag=o1,limit=1]
+hp @e[tag=o1,limit=1] Pos
+hp @e[tag=o2,limit=1]
+hp @e[tag=o2,limit=1] Pos
+hp @e[tag=o3,limit=1]
+MARK I4b Outburst moving: hold W, Shift after the 8 s cooldown; expected 13.5 m/s along (x, 0.6, z): vy ~ 0.35 b/t, forward ~0.58 b/t
+sleep 6
+key forward down
+sleep 0.5
+key ability_1 down
+sleep 0.15
+key ability_1 up
+sleep 0.2
+state
+sleep 0.3
+state
+key forward up
+sleep 2
+state
+MARK I4c Outburst held (Jump held at the burst), moving: expected (x, 2, z) at 13.5: vy ~ 0.6 b/t
+sleep 8
+key forward down
+key jump down
+sleep 0.3
+key ability_1 down
+sleep 0.15
+key ability_1 up
+sleep 0.2
+state
+sleep 0.2
+state
+key jump up
+key forward up
+sleep 3
+state

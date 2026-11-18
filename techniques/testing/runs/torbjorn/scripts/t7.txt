@@ -1,0 +1,24 @@
+# T7 leaving play: G (the turret stays, Overload ends), death (the turret stays; Specialist? respawn as Torbjörn), a switch (the turret goes)
+cmd /kill @e[type=!player,type=!overcraft:turret]
+cmd /time set noon
+cmd /tp @s 0.5 -60 0.5 0 0
+MARK T7a Overload on, then G: Minecraft mode, absorption gone, the turret still there
+key ability_2 tap
+sleep 1.0
+hp @s AbsorptionAmount
+key minecraft_mode tap
+sleep 1.0
+state
+hp @s AbsorptionAmount
+hp @e[type=overcraft:turret,limit=1]
+key minecraft_mode tap
+sleep 1.0
+state
+MARK T7b death (/kill): respawn as Torbjörn (select screen?), the turret still there
+cmd /kill @s
+sleep 2.0
+respawn
+sleep 3.0
+screen
+state
+hp @e[type=overcraft:turret,limit=1]

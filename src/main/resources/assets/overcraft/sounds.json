@@ -453,6 +453,14 @@
 		"subtitle": "subtitles.overcraft.music.potg",
 		"sounds": []
 	},
+	"music.overtime_intro": {
+		"subtitle": "subtitles.overcraft.music.overtime_intro",
+		"sounds": []
+	},
+	"music.overtime_loop": {
+		"subtitle": "subtitles.overcraft.music.overtime_loop",
+		"sounds": []
+	},
 	"kiriko.voice.swift_step.wrecking_ball": {
 		"subtitle": "subtitles.overcraft.kiriko.voice.swift_step.wrecking_ball",
 		"sounds": []

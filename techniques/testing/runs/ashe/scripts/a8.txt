@@ -1,0 +1,53 @@
+MARK A8 after the fix build (rejoined world ashe1): ready
+press key.keyboard.enter
+sleep 2
+cmd /time set noon
+cmd /difficulty easy
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 150 0.5 0 0
+cmd /overcraft reset
+sleep 1
+MARK A8a Coach Gun at a NoAI husk 4 m (expected most of 90 = up to 7.2 MC)
+cmd /summon husk 0.5 150 4.5 {NoAI:1b,Tags:["h2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 151.0 4.5 run tp @s ~ ~ ~ ~ ~
+sleep 0.5
+key ability_1 down
+sleep 0.05
+key ability_1 up
+sleep 0.6
+hp @e[tag=h2,limit=1]
+state
+MARK A8b uppercut on a walking zombie 12 m ahead (AI): its height sampled each 0.15 s
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 150 0.5 0 0
+cmd /summon zombie 0.5 150 12.5 {Tags:["zu"],attributes:[{id:"minecraft:max_health",base:100}],Health:100f}
+ult 100
+sleep 0.3
+key ultimate down
+sleep 0.05
+key ultimate up
+sleep 0.8
+hp @e[tag=zu,limit=1] Pos
+sleep 0.05
+hp @e[tag=zu,limit=1] Pos
+sleep 0.05
+hp @e[tag=zu,limit=1] Pos
+sleep 0.05
+hp @e[tag=zu,limit=1] Pos
+screenshot ashe_knockup2.png
+hp @e[tag=zu,limit=1] Pos
+hp @e[tag=zu,limit=1]
+sleep 2
+hp @e[tag=zu,limit=1]
+hp @e[type=overcraft:bob,limit=1] Pos
+MARK A8c shoot her own dynamite in flight/landed: throw ahead, 0.6 s later hip-shot at it (expected it goes off at once)
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 150 0.5 0 0
+cmd /summon husk 0.5 150 8.5 {NoAI:1b,Tags:["d1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 150.0 6.5 run tp @s ~ ~ ~ ~ ~
+sleep 0.3
+key ability_2 down
+sleep 0.05
+key ability_2 up
+sleep 0.8
+hp @e[type=overcraft:dynamite,limit=1] Pos

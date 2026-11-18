@@ -1,0 +1,137 @@
+=== suzu_play 19:28:44 tree fix/suzu-cleanse uncommitted on 009950b
+--- Flashbang hinder on ally, fix 119 off {'119': False}
+    hindered at +0.36: hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=12.0
+    Suzu thrown (real key ability_2)
+    +0.10 hindered=True rooted=False asleep=False antiHeal=False phased=True speed=0.05 health=18.0
+    +0.21 hindered=True rooted=False asleep=False antiHeal=False phased=True speed=0.05 health=18.0
+    +0.36 hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=18.0
+    +0.49 hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=18.0
+    +0.62 hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=18.0
+    +0.75 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.89 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.02 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.15 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.29 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.39 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    Kiriko Suzu line heard: ['kiriko.suzu.throw -> kiriko/suzu/throw/2 (SimpleSoundInstance, in the head)', 'kiriko.suzu.burst -> kiriko/suzu/burst/1 (SimpleSoundInstance, at 50.5 -60.0 1.3)']
+--- Flashbang hinder on ally, fix 119 on {'119': True}
+    hindered at +0.30: hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=12.0
+    Suzu thrown (real key ability_2)
+    +0.10 hindered=False rooted=False asleep=False antiHeal=False phased=True speed=0.1 health=18.0
+    +0.23 hindered=False rooted=False asleep=False antiHeal=False phased=True speed=0.1 health=18.0
+    +0.37 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.47 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.60 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.74 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.87 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.00 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.14 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.27 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    Kiriko Suzu line heard: ['kiriko.suzu.throw -> kiriko/suzu/throw/1 (SimpleSoundInstance, in the head)', 'kiriko.suzu.burst -> kiriko/suzu/burst/0 (SimpleSoundInstance, at 100.5 -60.0 1.3)', 'kiriko.voice.suzu -> kiriko/voice/suzu/11 (SimpleSoundInstance, in the head)']
+--- Flashbang hinder on me, fix 119 off {'119': False}
+    hindered at +0.27: hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=14.0
+    Suzu thrown (real key ability_2)
+    +0.10 hindered=True rooted=False asleep=False antiHeal=False phased=True speed=0.05 health=20.0
+    +0.23 hindered=True rooted=False asleep=False antiHeal=False phased=True speed=0.05 health=20.0
+    +0.38 hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=20.0
+    +0.50 hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=20.0
+    +0.64 hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=20.0
+    +0.77 hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=20.0
+    +0.90 hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=20.0
+    +1.04 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=20.0
+    +1.17 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=20.0
+    +1.27 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=20.0
+    Kiriko Suzu line heard: ['kiriko.suzu.throw -> kiriko/suzu/throw/2 (SimpleSoundInstance, in the head)', 'kiriko.suzu.burst -> kiriko/suzu/burst/0 (SimpleSoundInstance, at 150.5 -60.0 0.5)']
+--- Flashbang hinder on me, fix 119 on {'119': True}
+    hindered at +0.27: hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=14.0
+    Suzu thrown (real key ability_2)
+    +0.10 hindered=False rooted=False asleep=False antiHeal=False phased=True speed=0.1 health=20.0
+    +0.23 hindered=False rooted=False asleep=False antiHeal=False phased=True speed=0.1 health=20.0
+    +0.37 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=20.0
+    +0.50 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=20.0
+    +0.64 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=20.0
+    +0.77 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=20.0
+    +0.90 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=20.0
+    +1.04 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=20.0
+    +1.17 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=20.0
+    +1.30 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=20.0
+    Kiriko Suzu line heard: ['kiriko.suzu.throw -> kiriko/suzu/throw/0 (SimpleSoundInstance, in the head)', 'kiriko.suzu.burst -> kiriko/suzu/burst/4 (SimpleSoundInstance, at 200.5 -60.0 0.5)']
+--- Steel Trap root on ally, fix 119 off {'119': False}
+    rooted at +0.03: hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    Suzu thrown (real key ability_2)
+    +0.10 hindered=False rooted=True asleep=False antiHeal=False phased=True speed=0.0 health=18.0
+    +0.24 hindered=False rooted=True asleep=False antiHeal=False phased=True speed=0.0 health=18.0
+    +0.34 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +0.47 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +0.60 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +0.74 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +0.87 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +1.00 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +1.14 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +1.27 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    Kiriko Suzu line heard: ['kiriko.suzu.throw -> kiriko/suzu/throw/0 (SimpleSoundInstance, in the head)', 'kiriko.suzu.burst -> kiriko/suzu/burst/1 (SimpleSoundInstance, at 250.5 -60.0 1.3)']
+--- Steel Trap root on ally, fix 119 on {'119': True}
+    rooted at +0.03: hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=11.0
+    Suzu thrown (real key ability_2)
+    +0.10 hindered=False rooted=True asleep=False antiHeal=False phased=True speed=0.0 health=18.0
+    +0.23 hindered=False rooted=True asleep=False antiHeal=False phased=True speed=0.0 health=18.0
+    +0.37 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +0.50 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +0.64 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +0.77 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +0.90 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +1.04 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +1.17 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +1.30 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    Kiriko Suzu line heard: ['kiriko.suzu.throw -> kiriko/suzu/throw/1 (SimpleSoundInstance, in the head)', 'kiriko.suzu.burst -> kiriko/suzu/burst/0 (SimpleSoundInstance, at 300.5 -60.0 1.3)']
+--- Flashbang into the phase (Suzu first)
+    phased at +0.03
+    +0.10 hindered=False rooted=False asleep=False antiHeal=False phased=True speed=0.1 health=18.0
+    +0.20 hindered=False rooted=False asleep=False antiHeal=False phased=True speed=0.1 health=18.0
+    +0.34 hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=12.0
+    +0.44 hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=12.0
+    +0.57 hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=12.0
+    +0.70 hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=13.0
+    +0.84 hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=13.0
+    +0.97 hindered=True rooted=False asleep=False antiHeal=False phased=False speed=0.05 health=13.0
+--- Steel Trap stepped on while phased
+    phased at +0.03
+    +0.10 hindered=False rooted=True asleep=False antiHeal=False phased=True speed=0.0 health=18.0
+    +0.20 hindered=False rooted=True asleep=False antiHeal=False phased=True speed=0.0 health=18.0
+    +0.34 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +0.47 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +0.60 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +0.74 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +0.87 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +1.00 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    phase over, still on the trap:
+    +0.10 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +0.23 hindered=False rooted=True asleep=False antiHeal=False phased=False speed=0.0 health=18.0
+    +0.37 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.50 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.64 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+--- Sleep Dart on ally, then Suzu (regression)
+     hindered=False rooted=False asleep=True antiHeal=False phased=False speed=0.1 health=18.0
+    +0.10 hindered=False rooted=False asleep=True antiHeal=False phased=True speed=0.1 health=18.0
+    +0.24 hindered=False rooted=False asleep=True antiHeal=False phased=True speed=0.1 health=18.0
+    +0.37 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.47 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.60 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.74 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +0.87 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.00 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.14 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    +1.27 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=18.0
+    line: ['kiriko.suzu.throw -> kiriko/suzu/throw/2 (SimpleSoundInstance, in the head)', 'kiriko.suzu.burst -> kiriko/suzu/burst/0 (SimpleSoundInstance, at 450.5 -60.0 1.3)', 'kiriko.voice.suzu -> kiriko/voice/suzu/4 (SimpleSoundInstance, in the head)']
+--- Biotic Grenade anti-heal on ally, then Suzu (regression, #117)
+     hindered=False rooted=False asleep=False antiHeal=True phased=False speed=0.1 health=6.2
+    +0.10 hindered=False rooted=False asleep=False antiHeal=False phased=True speed=0.1 health=12.6
+    +0.23 hindered=False rooted=False asleep=False antiHeal=False phased=True speed=0.1 health=12.6
+    +0.37 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=13.6
+    +0.50 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=13.6
+    +0.64 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=13.6
+    +0.77 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=13.6
+    +0.90 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=13.6
+    +1.04 hindered=False rooted=False asleep=False antiHeal=False phased=False speed=0.1 health=13.6
+    line: ['kiriko.suzu.throw -> kiriko/suzu/throw/0 (SimpleSoundInstance, in the head)', 'kiriko.suzu.burst -> kiriko/suzu/burst/0 (SimpleSoundInstance, at 500.5 -60.0 1.3)', 'kiriko.voice.suzu -> kiriko/voice/suzu/11 (SimpleSoundInstance, in the head)']
+=== done 19:31:06

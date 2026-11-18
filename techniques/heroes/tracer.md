@@ -18,6 +18,9 @@ hero after [Sojourn](sojourn.md) and [Pharah](pharah.md), and the first checked 
 - **Code:** `dev.overcraft.tracer` (`Tracer` the kit, `TracerStats` every number with its source, `Blink` the destination rule,
   `TracerSounds`), `entity.PulseBombEntity`, `client.ClientTracer` (Blink moved on her own client; Recall's hold),
   `OwMovement.heroRun` (6.0 m/s) / `OwMovement.held`, `mixin.HealOrHarmMixin` (her health-pack stand-in), `HeroWeapon.leftPistol`.
+- **Glows (#91):** pistols 7FEA/7FEB; body 7E12's mask is on UV layer 2 (the accelerator), moved onto UV0 by `glow_maps.py`
+  `MOVED_UV`; goggles 7E16 (shader 0x26, 0.25). How and why: [rendering](../rendering/rendering.md#glows-emission-from-the-data-2026-11-04-91),
+  played in [glow_2026-11-14](../testing/runs/tracer/glow_2026-11-14.md).
 
 ## What her data and the recording taught (2026-11-11)
 - **One Workshop session settles what neither source does.** Blink's recharge order (data #54 / #143: one at a time, not reset by

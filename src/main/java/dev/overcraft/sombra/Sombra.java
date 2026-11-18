@@ -343,6 +343,8 @@ public final class Sombra implements HeroKit {
 		SombraSounds.own(player, "translocator.depart");
 		dev.overcraft.hero.HeroSounds.at(level, SombraSounds.of("translocator.depart_3p"), player.position(), 45, player);
 		dev.overcraft.hero.HeroSounds.at(level, SombraSounds.of("translocator.dest_3p"), to, 45, player);
+		// a movement ability lets go of a Jetpack Cat's rope (W; #142)
+		dev.overcraft.jetpackcat.JetpackCat.letGo(player);
 		player.teleportTo(level, to.x, to.y, to.z, java.util.Set.of(), player.getYRot(), player.getXRot(), true);
 		Effects.play(level, "sombra_teleport", to, Vec3.ZERO, player, 0, player);
 		SombraSounds.at(level, "translocator.arrive", to, 45);
@@ -633,8 +635,10 @@ public final class Sombra implements HeroKit {
 			}
 		}
 		LivingEntity preview = s.hotfixCharges > 0 && s.hotfixChannel < 0 ? dev.overcraft.hero.Targeting.allyInView(player, HOTFIX_RANGE, HOTFIX_CONE, true) : null;
-		return new HeroSyncPayload.Widgets(slots.isEmpty() ? -1 : slots.get(0), slots.size() < 2 ? -1 : slots.get(1), preview == null ? -1 : preview.getId(),
-			false, 0, stealth, s.stealthTotal / 20f, lockout, "", "");
+		int first = slots.isEmpty() ? -1 : slots.get(0), second = slots.size() < 2 ? -1 : slots.get(1);
+		// share / share2: the heal still to come on each (60FB #329 -> #385, Hotfix's band on their health bar 0D86)
+		return new HeroSyncPayload.Widgets(first, second, preview == null ? -1 : preview.getId(), false, 0, stealth, s.stealthTotal / 20f,
+			lockout, "", "", first < 0 ? 0 : HotfixHeal.left(player, first), second < 0 ? 0 : HotfixHeal.left(player, second), null);
 	}
 
 	/** Out of play (#100: HeroKit.leavePlay): her stealth ends (invisible and 60% faster in Minecraft mode after G: found playing), Hotfix's channel; for good, her beacon. */

@@ -8,7 +8,6 @@ import dev.overcraft.hero.HeroState;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
 import net.minecraft.world.level.ClipContext;
@@ -142,9 +141,11 @@ final class Mediblaster {
 	}
 
 
-	/** Damage from her with no projectile of its own (hitscan), so a kill isn't a melee kill. */
+	/**
+	 * Damage from her with no projectile of its own (hitscan), so a kill isn't a melee kill: overcraft:hitscan, as Ana's and
+	 * Sombra's, so an enderman takes it (#158: as an arrow's type it teleported away untouched).
+	 */
 	private static DamageSource source(ServerPlayer owner) {
-		return new DamageSource(owner.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
-			.getOrThrow(DamageTypes.ARROW), null, owner);
+		return Combat.hitscan(owner);
 	}
 }

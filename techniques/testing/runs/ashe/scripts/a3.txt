@@ -1,0 +1,41 @@
+MARK A3a Coach Gun at a walking zombie 3 m ahead after the cooldown (expected pushed away ~+z, damage; Ashe back)
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 150 0.5 0 0
+sleep 8
+cmd /summon zombie 0.5 150 3.5 {Tags:["z2"],attributes:[{id:"minecraft:armor",base:0}]}
+cmd /execute as @s at @s anchored eyes facing 0.5 151.0 3.5 run tp @s ~ ~ ~ ~ ~
+sleep 0.3
+state
+key ability_1 down
+sleep 0.05
+key ability_1 up
+sleep 0.15
+hp @e[tag=z2,limit=1] Pos
+sleep 0.5
+hp @e[tag=z2,limit=1] Pos
+hp @e[tag=z2,limit=1]
+state
+MARK A3b Dynamite: NoAI husks at 6 m and at 9 m (2 m apart), throw at the ground near the first; expected land, 2 s fuse, 50 to the near one, falloff on the other, burn 100 over 5 s
+cmd /kill @e[type=!player]
+cmd /tp @s 0.5 150 0.5 0 0
+cmd /summon husk 0.5 150 6.5 {NoAI:1b,Tags:["d1"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /summon husk 3.5 150 6.5 {NoAI:1b,Tags:["d2"],attributes:[{id:"minecraft:armor",base:0},{id:"minecraft:max_health",base:100}],Health:100f}
+cmd /execute as @s at @s anchored eyes facing 0.5 150.0 5.5 run tp @s ~ ~ ~ ~ ~
+sleep 0.5
+key ability_2 down
+sleep 0.05
+key ability_2 up
+sleep 0.6
+ents
+state
+screenshot ashe_dynamite.png
+sleep 2
+hp @e[tag=d1,limit=1]
+hp @e[tag=d2,limit=1]
+sleep 2.5
+hp @e[tag=d1,limit=1]
+hp @e[tag=d2,limit=1]
+sleep 3
+hp @e[tag=d1,limit=1]
+hp @e[tag=d2,limit=1]
+state

@@ -1,0 +1,14 @@
+# Ashe's Play of the Game highlight intro: the clips only (owm_survey.py --clips-only --clips-from), merged into
+# hero_models/ashe.glb by bone name (HeroModels, from hero_models/ashe_intro_clips.glb), as Illari's (illari_intro_clips.txt).
+# From DataTool's extract-unlocks "Ashe|highlightintro=*" (build 154088, archived: research\ashe\extract\Unlocks\Heroes\Ashe\
+# HighlightIntro). The default Overwatch plays "Heroic" (her other base intros: Ashe and Bob, Bullet Walk, Standoff). Heroic holds
+# (research\ashe\work\intro_clips_out.txt) B0BA 7.133 s (group 0-32, animation effect 44E2), C1B5 7.133 s (group 0-36: L the Viper's
+# twin of B0BA, not a body clip), BC6A 5.667 s (0-37, effect 4680) and BC6B 5.667 s (0-37, effect 467E). The showcase set 0C88's alias 2
+# plays them as a SEQUENCE (work\clipmap_ashe\compact_0C88.txt, H tree): sm[1] sm[1] seq[0] B0BA -> seq[1] BC6A -> seq[2] BC6B; the
+# intro set 4307's own ids (19EBC-19EBE, 1A186) are not extracted under 105D5. So B0BA opens, BC6A / BC6B follow (H order).
+# Exported with:
+#   blender --background --factory-startup --python tools/owm_survey.py -- <105D5.owmdl> <out> --glb --clips-only
+#     --only=none --keep=tools/clipmaps/ashe_intro_clips.txt --clips-from=<...>\Heroes\Ashe\HighlightIntro\Overwatch\Heroic
+emote_00000000B0BA = potg_intro
+emote_00000000BC6A = potg_intro_2
+emote_00000000BC6B = potg_intro_3

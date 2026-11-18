@@ -24,6 +24,41 @@ import java.util.Map;
  * blaster's hits).
  */
 public final class MercyFx {
+	/** Its art, made ahead as the hero is picked (HeroFxArt, #128): what its first uses made (the client log) and what this class names. */
+	public static final java.util.List<EffectArt.Art> ART = java.util.List.of(
+		new EffectArt.Art("cat_glow_dot", Palette.MERCY_BOOSTED, false),
+		new EffectArt.Art("cat_glow_dot", Palette.MERCY_RES_HALO, false),
+		new EffectArt.Art("cat_glow_dot", Palette.MERCY_STAFF_BLUE_N, false),
+		new EffectArt.Art("cat_heal_dot", Palette.MERCY_WING_GLOW, true),
+		new EffectArt.Art("cat_heal_dot", Palette.NATURAL, false),
+		new EffectArt.Art("cat_heal_swirl", Palette.NATURAL, false),
+		new EffectArt.Art("cat_soft", Palette.MERCY_BOOSTED, false),
+		new EffectArt.Art("cat_soft", Palette.MERCY_STAFF_BLUE_N, false),
+		new EffectArt.Art("cat_soft", Palette.MERCY_WING_GLOW, false),
+		new EffectArt.Art("cat_soft_ball", Palette.MERCY_WING_GOLD_N, true),
+		new EffectArt.Art("cat_speed_line#3", Palette.MERCY_WING_GLOW, false),
+		new EffectArt.Art("cat_streak", Palette.MERCY_BOOSTED, false),
+		new EffectArt.Art("cat_streak", Palette.MERCY_FLASH_N, false),
+		new EffectArt.Art("lucio_soft", Palette.MERCY_WING_GOLD_N, false),
+		new EffectArt.Art("mercy_band", Palette.MERCY_BOOST_BEAM_N, false),
+		new EffectArt.Art("mercy_beam_core", Palette.MERCY_HEAL_BEAM_SOFT_N, false),
+		new EffectArt.Art("mercy_beam_noise", Palette.MERCY_BOOST_BEAM_N, false),
+		new EffectArt.Art("mercy_beam_streak", Palette.MERCY_BOOST_BEAM_GLOW_N, false),
+		new EffectArt.Art("mercy_beam_wave", Palette.MERCY_HEAL_BEAM_N, false),
+		new EffectArt.Art("mercy_glow", Palette.MERCY_RES_SPARK, false),
+		new EffectArt.Art("mercy_halo", Palette.NATURAL, false),
+		new EffectArt.Art("mercy_impact", Palette.NATURAL, false),
+		new EffectArt.Art("mercy_plus", Palette.MERCY_PLUS, false),
+		new EffectArt.Art("mercy_soft", Palette.MERCY_SHOT, false),
+		new EffectArt.Art("mercy_soft", Palette.MERCY_WING_GLOW, false),
+		new EffectArt.Art("mercy_soft", Palette.MERCY_WING_GLOW, true),
+		new EffectArt.Art("mercy_wing_glow", Palette.MERCY_WING_GLOW, true),
+		new EffectArt.Art("spark#4", Palette.MERCY_VALK_SPARK, false));
+	/** And as an enemy sees it, for a client seeing another player play the hero. */
+	public static final java.util.List<EffectArt.Art> ART_ENEMY = java.util.List.of(
+		new EffectArt.Art("cat_glow_dot", Palette.MERCY_RES_HALO_ENEMY, false),
+		new EffectArt.Art("spark#4", Palette.MERCY_VALK_SPARK_ENEMY, false));
+
 	/** Her points as last drawn (world): the staff head, chest 0001, hand 0002, wing tips 002C / 002E, Valkyrie's 10 feathers. */
 	public static final class Posed {
 		public @Nullable Vec3 staff;

@@ -125,6 +125,8 @@ public final class HeroAnimator {
 	private boolean juno, junoGliding;
 	/** Pharah's look (HeroManager.PHARAH_STATE: dev.overcraft.pharah.Pharah.LOOK_*), 0 not her. */
 	private int pharahLook;
+	/** Illari in Captive Sun's flight (HeroManager.ILLARI_FLIGHT). */
+	private boolean illariFlying;
 	/** Sojourn: sliding (the synced flag), when the slide began and when a slide jump left the ground (seconds). */
 	private boolean sojourn, sojournSliding;
 	/** Cassidy (his Deadeye's first-person clips are left out: below). */
@@ -138,6 +140,13 @@ public final class HeroAnimator {
 	/** D.Va in her mech's body (or its wreck): no Light Gun in her hand, the pilot seated inside (HeroWeapon). */
 	public boolean dvaMech() {
 		return dvaForm == dev.overcraft.dva.Dva.MECH || dvaForm == dev.overcraft.dva.Dva.WRECK;
+	}
+
+	/** Junkrat with a Concussion Mine of his out in the world (seen on this client): his hand's mine is away (096A #213: !v983). */
+	private boolean mineOut;
+
+	public boolean mineOut() {
+		return mineOut;
 	}
 	/** Sojourn in Overclock (the synced HeroManager.SOJOURN_GUN): her stance additive add_overclock. */
 	private boolean sojournOverclock;
@@ -168,6 +177,15 @@ public final class HeroAnimator {
 	/** Sombra stealthed (her invisibility): her stand, runs and crouches have their own "_stealth" clips (sombra.txt). */
 	private boolean stealthed;
 	private boolean scoped;
+	/**
+	 * Ashe (ashe.txt, ashe_1p.txt) and Take Aim's scope (HeroManager.ASHE_LOOK, 0-1), the way it moved last (+1 in, -1 out): her "_ads"
+	 * clips (df 0xE5 cat 0x81 on her blend trees, as Ana's "_scoped") from half up, her view's ads_in / ads_hold / ads_out.
+	 */
+	private boolean ashe;
+	/** Widowmaker: her Take Aim plays Ashe's scoped path (her "_ads" set, her view's ads_in), from HeroManager.WIDOWMAKER_LOOK. */
+	private boolean widowmaker;
+	private float asheScope;
+	private int asheScopeWay;
 	/** How far her scope is up (0-1): the 1P raise's time (df 0x6D). */
 	private float scopeIn;
 	private boolean bloomCharging;
@@ -285,12 +303,17 @@ public final class HeroAnimator {
 			dev.overcraft.hero.PressTrace.seen("clip");
 		}
 		boolean own = net.minecraft.client.Minecraft.getInstance().player != null && net.minecraft.client.Minecraft.getInstance().player.getId() == entityId;
-		if ((action.equals("charged_shot") || action.equals("reload_cut")) && a.since("reload", now) < dev.overcraft.sojourn.SojournStats.RELOAD) {
-			// her Charged Shot ends a reload (Railgun.chargedShot), on every client: its clips and layers, its sound
+		if ((action.equals("charged_shot") && a.since("reload", now) < dev.overcraft.sojourn.SojournStats.RELOAD) || action.equals("reload_cut")) {
+			// her Charged Shot ends a reload (Railgun.chargedShot), on every client: its clips and layers, its sound; and Junkrat's
+			// mine detonation (Junkrat.detonateMine, #147), whose reload outlasts hers: reload_cut alone is a cut, whatever the time
 			a.actionAt.remove("reload");
 			a.actions.cancel("reload", now);
 			a.actionsFirstPerson.cancel("reload", now);
-			dev.overcraft.client.ClientSojourn.reloadCut(entityId, own);
+			if (own && dev.overcraft.client.ClientHero.hero() == dev.overcraft.hero.Hero.JUNKRAT) {
+				net.minecraft.client.Minecraft.getInstance().getSoundManager().stop(dev.overcraft.Overcraft.id("junkrat.reload"), null);
+			} else {
+				dev.overcraft.client.ClientSojourn.reloadCut(entityId, own);
+			}
 		}
 		if (action.equals("charged_ack")) {
 			dev.overcraft.client.ClientSojourn.acked();
@@ -339,6 +362,16 @@ public final class HeroAnimator {
 			}
 		}
 		String viewClip = a.mercy ? clip : action;
+		if (a.widowmaker && (action.equals("mine_throw") || action.equals("grapple_end"))) {
+			// her third person's are additive layers over her pose (widowmaker.txt add_mine_throw, add_grapple_end: below), her view's
+			// clips of their own (widowmaker_1p.txt mine_throw; the end's add_grapple_end a layer there too)
+			clip = "";
+			viewClip = action.equals("mine_throw") ? "mine_throw" : "";
+		}
+		if (a.widowmaker && action.equals("reload_ads")) {
+			// (scoped, her reload's own 3P clip 0004 under the scoped tree: widowmaker.txt reload_ads; her view's is the one reload)
+			viewClip = "reload";
+		}
 		if (a.lifeweaver) {
 			clip = a.lifeweaverAction(action);
 			viewClip = a.lifeweaverViewAction(action);
@@ -434,7 +467,7 @@ public final class HeroAnimator {
 			// the fade back never cuts what ended her stealth: EMP's or Cyberspace's cast plays on (0487's priority 0xDD: M)
 			return;
 		}
-		boolean layerOnly = action.equals("fire") || action.equals("charged_shot") || action.equals("soundwave") || action.equals("fire_blaster")
+		boolean layerOnly = action.equals("fire") || action.equals("ads_fire") || action.equals("charged_shot") || action.equals("soundwave") || action.equals("fire_blaster")
 			|| action.startsWith("flash_heal") || action.equals("ga_start") || action.equals("fire_thorn") || action.equals("charge");
 		if (!layerOnly) {
 			// (those are additive layers or base states only: they don't cut a reload's clip)
@@ -1076,6 +1109,7 @@ public final class HeroAnimator {
 	public static final float[] SWING = {-0.4f, 1, 0, 30, 0};
 
 	public Matrix4f[] poseFirstPerson(SkinnedModel model, LivingEntity entity, float now, Matrix4f view) {
+		torbjornLook(entity);
 		lastSeen = now;
 		long tick = entity.level().getGameTime();
 		if (tick != lastTick) {
@@ -1109,6 +1143,10 @@ public final class HeroAnimator {
 				t = 0;
 			} else if (viewBase.equals("scope_in")) {
 				t = scopeIn * baseClip.duration();
+			} else if (ashe && viewBase.equals("ads_in")) {
+				t = asheScope * baseClip.duration();
+			} else if (ashe && viewBase.equals("ads_out")) {
+				t = (1 - asheScope) * baseClip.duration();
 			} else if (viewBase.equals("stealth_move_start")) {
 				// her stealthed run's way in and out (3E91 / 3E92, the 4-slot's transitions 0 > 1 and 1 > 0: L), once
 				t = Math.min(now - movingSince, baseClip.duration());
@@ -1288,6 +1326,29 @@ public final class HeroAnimator {
 			}
 			return model.clips.containsKey(want) ? want : thorns && model.clips.containsKey("idle_thorn") ? "idle_thorn" : "idle";
 		}
+		if (ashe) {
+			// her view model (ashe_1p.txt): idle, run, the jump's and the fall; Take Aim: the raise (ads_in) and the lowering (ads_out) at
+			// the scope's own place, fully up the held aim (ads_hold) or its run / jump / fall (run_ads, jump_ads, fall_ads)
+			if (base.startsWith("jump")) {
+				want = "jump";
+			} else if (base.startsWith("fall")) {
+				want = "fall";
+			} else if (base.startsWith("run") || base.startsWith("strafe") || base.startsWith("crouch_walk")) {
+				want = "run";
+			}
+			if (asheScope >= 1 && base.startsWith("crouch") && model.clips.containsKey("a86_crouch_move")) {
+				// scoped and crouched, still or moving: 5FE2 (df18 cat65 / cat66, compact_08E1 lines 11-12, H)
+				want = "a86_crouch_move";
+			} else if (asheScope >= 1) {
+				// scoped and standing is 5F47, the scoped move's clip: the set's 1P tree plays it for df18's default (stand) as for
+				// cat5 (move) (compact_08E1 lines 13-14, H). 60FF ("ads_hold", the scope machine's sm[1]) is a transition, not
+				// the held aim: played held, it lowered the Viper to the hip (found playing 2026-11-17)
+				want = want.equals("idle") ? "run_ads" : model.clips.containsKey(want + "_ads") ? want + "_ads" : "run_ads";
+			} else if (asheScope > 0) {
+				want = asheScopeWay < 0 && model.clips.containsKey("ads_out") ? "ads_out" : "ads_in";
+			}
+			return model.clips.containsKey(want) ? want : "idle";
+		}
 		if (ana || sombra || brigitte) {
 			// her view model (ana_1p.txt; Sombra's sombra_1p.txt the same): idle, one walk for every direction, the jump's rise and fall; scoped, the held
 			// scope pose (3B92: its arms out of view)
@@ -1364,8 +1425,13 @@ public final class HeroAnimator {
 	 * pose (HeroWeapon.placeShowcase).
 	 */
 	public static Skeleton.@Nullable Pose showcasePose(SkinnedModel model, float sinceOpened) {
-		SkinnedModel.Clip intro = model.clips.get("select_intro");
-		SkinnedModel.Clip hold = model.clips.get("select_hold");
+		return showcasePose(model, sinceOpened, "select_intro", "select_hold");
+	}
+
+	/** The same with the intro and hold clips named (Illari's map names them "select" / "select_2"). */
+	public static Skeleton.@Nullable Pose showcasePose(SkinnedModel model, float sinceOpened, String introName, String holdName) {
+		SkinnedModel.Clip intro = model.clips.get(introName);
+		SkinnedModel.Clip hold = model.clips.get(holdName);
 		if (hold == null || hold.duration() <= 0) {
 			return null;
 		}
@@ -1374,7 +1440,7 @@ public final class HeroAnimator {
 			showcaseRun(model, sinceOpened, pose);
 			return pose;
 		}
-		if (showcaseIntro(model, sinceOpened)) {
+		if (intro != null && sinceOpened < intro.duration()) {
 			Skeleton.sample(intro, sinceOpened, pose);
 		} else {
 			float t = sinceOpened - (intro == null ? 0 : intro.duration());
@@ -1428,6 +1494,7 @@ public final class HeroAnimator {
 
 	/** Skin matrices for the entity this frame. {@code now} in seconds (game time + partial tick). */
 	public Matrix4f[] pose(SkinnedModel model, LivingEntity entity, float now, float netHeadYaw, float headPitch) {
+		torbjornLook(entity);
 		lastSeen = now;
 		long tick = entity.level().getGameTime();
 		if (tick != lastTick) {
@@ -1529,6 +1596,14 @@ public final class HeroAnimator {
 			additive(model, pose, flier && fireSide ? "add_fire_2" : "add_fire", "fire", now);
 		}
 		additive(model, pose, "add_charged_shot", "charged_shot", now);
+		// Ashe's scoped shot's recoil (ashe.txt 5F77, dfE5 cat81)
+		additive(model, pose, "add_ads_fire", "ads_fire", now);
+		if (widowmaker) {
+			// Widowmaker's mine throw and the hook's end over her pose (widowmaker.txt: 0056 #38 alias 001E, 005A #122 alias 009C)
+			additive(model, pose, model.clips.containsKey("add_mine_throw_ads") && asheScope >= 0.5f ? "add_mine_throw_ads" : "add_mine_throw",
+				"mine_throw", now);
+			additive(model, pose, "add_grapple_end", "grapple_end", now);
+		}
 		if (flier) {
 			flierLayers(model, entity, pose, now);
 		}
@@ -1750,12 +1825,53 @@ public final class HeroAnimator {
 		names.addAll(List.of("add_aim" + v, "add_aim", blaster ? "add_idle_blaster" : thorns ? "add_idle_thorn" : "add_idle", "add_stand",
 			"add_layer_663"));
 		for (String name : names) {
-			AimSheet sheet = AimSheet.of(model, clip(model, name));
+			AimSheet sheet = AimSheet.of(model, clip(model, sheetName(name)));
 			if (sheet != null) {
 				return sheet;
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * The newer heroes' sheets under the names their clip maps gave them. A clip map names a clip from the first alias that holds it,
+	 * so a sheet the stand shares with the jump came out "add_jump_takeoff". Each is the clip bound to the aim's pose sheet node
+	 * (STU_B391A063 / AnimationPose2d, X mode 6, Y mode 5) under the alias that plays the state, read from research\<hero>\resolved
+	 * (2026-11-13, #95; techniques/animation/aim_sheets.md). A key ending in "_" renames the directions (add_aim_run_left).
+	 */
+	private static final Map<String, Map<String, String>> SHEET_NAMES = Map.of(
+		// set 0002: the stand (alias 1) AB, the crouch (56) 5F; her run (alias 5) shares the crouch-walk tree's sheets E7 ...
+		"tracer", Map.of("add_aim", "add_stand_se0", "add_aim_crouch", "add_crouch_tree_sm0", "add_aim_run", "add_crouch_walk",
+			"add_aim_run_", "add_crouch_walk_"),
+		// set 001B: the stand 44B, the run (5) 3D2 ...
+		"pharah", Map.of("add_aim", "add_stand_se0", "add_aim_run", "add_move", "add_aim_run_", "add_move_"),
+		// set 00FB: his stand (1 > 803EC0B3, the idle's) 12F3; the run (803EC161, the run's) 1425 forward, 1424 ... the others; the
+		// jump (803EC15D, the jump's) 622B forward
+		"cassidy", Map.of("add_aim", "add_jump_still_takeoff", "add_aim_run", "add_move_3", "add_aim_run_", "add_move_",
+			"add_aim_jump", "add_jump_takeoff_2"),
+		// set 0372: the stand, the crouch and the jump all 2C5B; the run (5) 3133 ...
+		"junkrat", Map.of("add_aim", "add_jump_still_takeoff", "add_aim_run", "add_move", "add_aim_run_", "add_move_"),
+		// set 0282, the MEKA: the stand (1 > 80A08045, the idle's) 2375; the run (80A08053, the run's) 3171 on all eight
+		"dva", Map.of("add_aim", "add_jump_takeoff", "add_aim_run", "add_move_2"),
+		// set 048A, the pilot: the stand 322E, the run (96) 321F ..., the jump 3218
+		"dva_pilot", Map.of("add_aim", "add_stand_se0", "add_aim_run", "add_move", "add_aim_run_", "add_move_", "add_aim_jump",
+			"add_jump_takeoff"));
+	private @Nullable Map<String, String> sheetNames;
+
+	private String sheetName(String name) {
+		if (sheetNames == null) {
+			return name;
+		}
+		String exact = sheetNames.get(name);
+		if (exact != null) {
+			return exact;
+		}
+		for (Map.Entry<String, String> e : sheetNames.entrySet()) {
+			if (e.getKey().endsWith("_") && name.startsWith(e.getKey())) {
+				return e.getValue() + name.substring(e.getKey().length());
+			}
+		}
+		return name;
 	}
 
 	/** Dev only ("aimsheets"): the sheet in use now. */
@@ -1823,10 +1939,31 @@ public final class HeroAnimator {
 		Integer pharahNow = "pharah".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO))
 			? entity.getAttached(dev.overcraft.hero.HeroManager.PHARAH_STATE) : null;
 		pharahLook = pharahNow == null ? 0 : pharahNow;
+		illariFlying = "illari".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO))
+			&& Boolean.TRUE.equals(entity.getAttached(dev.overcraft.hero.HeroManager.ILLARI_FLIGHT));
 		boolean sojourn = "sojourn".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		this.sojourn = sojourn;
 		this.cassidy = "cassidy".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		this.sigma = "sigma".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
+		String heroId = entity.getAttached(dev.overcraft.hero.HeroManager.HERO);
+		Map<String, String> names = heroId == null ? null : SHEET_NAMES.get("dva".equals(heroId)
+			&& entity instanceof net.minecraft.world.entity.player.Player p && dev.overcraft.dva.Dva.pilotBody(p) ? "dva_pilot" : heroId);
+		if (names != sheetNames) {
+			// another hero (or D.Va's other body): the picks made under the last one's names may have found nothing (Cassidy after Pharah)
+			sheetNames = names;
+			aimSheetPicks.clear();
+		}
+		boolean out = false;
+		if ("junkrat".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO))
+			&& entity.level() instanceof net.minecraft.client.multiplayer.ClientLevel level) {
+			for (net.minecraft.world.entity.Entity e : level.entitiesForRendering()) {
+				if (e instanceof dev.overcraft.entity.ConcussionMineEntity mine && mine.isAlive() && mine.getOwner() == entity) {
+					out = true;
+					break;
+				}
+			}
+		}
+		mineOut = out;
 		int form = entity instanceof net.minecraft.world.entity.player.Player p && dev.overcraft.hero.HeroManager.heroMode(p)
 			? dev.overcraft.dva.Dva.form(p) : -1;
 		if (form != dvaForm) {
@@ -1870,6 +2007,14 @@ public final class HeroAnimator {
 		dev.overcraft.client.ClientAna.State anaState = dev.overcraft.client.ClientAna.state(entity);
 		scoped = ana && anaState != null && anaState.scope() >= 0.5f;
 		scopeIn = ana && anaState != null ? anaState.scope() : 0;
+		widowmaker = "widowmaker".equals(heroId);
+		ashe = "ashe".equals(heroId) || widowmaker;
+		Integer asheLook = widowmaker ? entity.getAttached(dev.overcraft.hero.HeroManager.WIDOWMAKER_LOOK)
+			: ashe ? entity.getAttached(dev.overcraft.hero.HeroManager.ASHE_LOOK) : null;
+		// (hers carries the pull's state above 1000: Widowmaker.tick)
+		float asheNow = asheLook == null ? 0 : Math.clamp((asheLook % 1000) / 100f, 0, 1);
+		asheScopeWay = asheNow > asheScope ? 1 : asheNow < asheScope ? -1 : asheNow >= 1 ? 0 : asheScopeWay;
+		asheScope = asheNow;
 		dev.overcraft.client.ClientLifeweaver.State lw = dev.overcraft.client.ClientLifeweaver.state(entity);
 		lifeweaver = lw != null;
 		thorns = lifeweaver && lw.has(dev.overcraft.lifeweaver.Lifeweaver.FLAG_THORNS);
@@ -2076,7 +2221,10 @@ public final class HeroAnimator {
 				case "_back_right" -> "hover_rb";
 				case "_right" -> "hover_r";
 				default -> "hover_rf";
-			};		} else if (!onGround && entity.isInWater()) {
+			};		} else if (illariFlying && model.clips.containsKey("flight")) {
+			// Captive Sun's flight (illari.txt: flight D482, its 2D blend's centre; the directions not driven: ours)
+			next = "flight";
+		} else if (!onGround && entity.isInWater()) {
 			// treading water: Overwatch has no swimming (and hero mode no sprint-swim), so the air pose
 			next = "fall";
 		} else if (!onGround && skates) {
@@ -2125,6 +2273,14 @@ public final class HeroAnimator {
 			String want = next.equals("jump") ? "jump_2" : next;
 			if (model.clips.containsKey(want + "_scoped")) {
 				next = want + "_scoped";
+			}
+		}
+		if (ashe && asheScope >= 0.5f) {
+			// Take Aim: her scoped set (ashe.txt: idle_ads, run_ads_*, strafe_ads_*, crouch_ads, crouch_walk_ads_*, jump_ads, fall_ads),
+			// from half up as Ana's (the in / out themselves are actions: ads_in, ads_out)
+			String ads = asheAds(next.equals("crouch_idle") ? "crouch" : resolve(model, next));
+			if (model.clips.containsKey(ads)) {
+				next = ads;
 			}
 		}
 		next = resolve(model, next);
@@ -2254,10 +2410,60 @@ public final class HeroAnimator {
 	}
 
 	private static SkinnedModel.@Nullable Clip clip(SkinnedModel model, String name) {
+		if (clipPrefix != null) {
+			SkinnedModel.Clip own = model.clips.get(prefixed(clipPrefix, name));
+			if (own != null) {
+				return own;
+			}
+		}
 		return model.clips.get(name);
 	}
 
+	/**
+	 * Torbjörn's weapon branch while he's posed ("hammer_" with the Forge Hammer out, "molten_" in Molten Core: his clip maps' names for
+	 * the data's weapon branches, tools/clipmaps/torbjorn.txt), or null: a clip of that branch plays where the model has one.
+	 */
+	private static @Nullable String clipPrefix;
+	private boolean torbjornHammer;
+
+	/** The Forge Hammer is in his hand (HeroWeapon draws it in the Rivet Gun's place). */
+	public boolean torbjornHammer() {
+		return torbjornHammer;
+	}
+
+	/** {@code name} in the branch {@code prefix}: its additive form keeps "add_" first; the hammer's moves are "move_<way>". */
+	static String prefixed(String prefix, String name) {
+		if (name.startsWith("add_")) {
+			return "add_" + prefix + name.substring(4);
+		}
+		if (prefix.equals("hammer_") && name.startsWith("run_")) {
+			return prefix + "move_" + name.substring(4);
+		}
+		if (prefix.equals("hammer_") && name.startsWith("strafe_")) {
+			return prefix + "move_" + name.substring(7);
+		}
+		return prefix + name;
+	}
+
+	private void torbjornLook(LivingEntity entity) {
+		Integer look = "torbjorn".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO))
+			? entity.getAttached(dev.overcraft.hero.HeroManager.TORBJORN_LOOK) : null;
+		int bits = look == null ? 0 : look;
+		torbjornHammer = (bits & dev.overcraft.torbjorn.Torbjorn.LOOK_HAMMER) != 0;
+		clipPrefix = (bits & dev.overcraft.torbjorn.Torbjorn.LOOK_MOLTEN) != 0 ? "molten_" : torbjornHammer ? "hammer_" : null;
+	}
+
 	/** The clip to play for a state the model may not have. */
+	/** Ashe's scoped clip for a state: "_ads" after the state's stem (run_ads_back_left, strafe_ads_left, crouch_walk_ads_right). */
+	static String asheAds(String state) {
+		for (String stem : new String[] {"crouch_walk", "strafe", "run", "idle", "jump", "fall", "crouch"}) {
+			if (state.startsWith(stem)) {
+				return stem + "_ads" + state.substring(stem.length());
+			}
+		}
+		return state + "_ads";
+	}
+
 	private static String resolve(SkinnedModel model, String want) {
 		String name = want;
 		while (!model.clips.containsKey(name)) {
@@ -2330,11 +2536,20 @@ public final class HeroAnimator {
 				boolean[] aim = new boolean[upper.length];
 				for (int i = 0; i < aim.length; i++) {
 					String name = m.nodeNames[i];
-					aim[i] = upper[i] && (!name.startsWith("bone_") || name.equals("bone_0605") || name.equals("bone_0606"));
+					aim[i] = upper[i] && (!name.startsWith("bone_") || name.equals("bone_0605") || name.equals("bone_0606")
+						|| MEKA_PIVOTS.contains(name) && m.parent[i] >= 0 && MEKA_PIVOT_PARENTS.contains(m.nodeNames[m.parent[i]]));
 				}
 				return aim;
 			});
 		}
+
+		/**
+		 * D.Va's MEKA aims its Fusion Cannons on these: bone_0099 / bone_009A under her wrists, bone_08FD under Spine_1. Her stand's
+		 * sheet (2375) turns them 110-121 degrees end to end; without them the cannons stayed level (#95). Only under those parents:
+		 * Sojourn's and Jetpack Cat's bones of the same names are other things.
+		 */
+		private static final java.util.Set<String> MEKA_PIVOTS = java.util.Set.of("bone_0099", "bone_009A", "bone_08FD");
+		private static final java.util.Set<String> MEKA_PIVOT_PARENTS = java.util.Set.of("Wrist_L", "Wrist_R", "Spine_1");
 
 		/**
 		 * Bones off the pelvis that her actions still move: Brigitte's flail-head chain (bone_0605 < Pelvis, bone_0606 = her

@@ -303,7 +303,9 @@ public final class Brigitte implements HeroKit {
 		}
 		if ((Ow.ticks(RALLY_TIME) - s.rallyTicks) % Ow.ticks(RALLY_PULSE) == 0) {
 			for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(RALLY_RADIUS),
-				// not herself (#125): BZ 2023-04-11 "Brigitte no longer gradually builds temporary health like her nearby allies", W "(allies)". The data leans the other way (12BE #158's filter 6, M; 12C1 #178 skips looks on the sender, no gate on the pool): not firm enough against that
+				// not herself (#125): her bonus is the 100 armor above, not this. BZ 2023-04-11 "Brigitte now gains 100 restorable armor health pool for the duration of Rally" and
+				// "no longer gradually builds temporary health like her nearby allies", no Rally change in BZ since (read to 2026-11); W Brigitte rev 381389 "armor = 100 (self)",
+				// "Brigitte herself does not gain overhealth over time"; the owner, 2026-11-13: "yes she gets more health. Armor iirc." The data leans to the pool on her too (12BE #158's filter 6, M): not firm enough against all that
 				e -> e.isAlive() && Allies.isAlly(player, e) && e != player && e.distanceTo(player) <= RALLY_RADIUS
 					&& Combat.inSight(player.level(), player.getEyePosition(), e, player))) {
 				// each 15 lasts 30 s (ours: one pool, held 30 s from the last, then gone)
@@ -331,7 +333,15 @@ public final class Brigitte implements HeroKit {
 		}
 		s.rallyTicks = 0;
 		s.rallyCast = -1;
-		if (s.extraArmor > 0) {
+		if (s.extraArmor > 0 && !dev.overcraft.hero.Combat.devFixOff) {
+			// what's left of the 100 goes, off her health's top with it (it sits on top: hits took it first). Set past Shields' split:
+			// clamped through it, the loss came off her own armor too, 75 -> 43, her health past its 175 (#125, played)
+			double bonusLeft = Math.max(0, s.shield - (s.hero == null ? 0 : s.hero.layer()));
+			s.extraArmor = 0;
+			s.shield -= bonusLeft;
+			dev.overcraft.hero.Shields.setRaw(player, (float) Math.max(Ow.hp(1), player.getHealth() - Ow.hp(bonusLeft)));
+		} else if (s.extraArmor > 0) {
+			// (dev "bot fixoff": as before)
 			s.extraArmor = 0;
 			s.shield = Math.min(s.shield, s.hero == null ? 0 : s.hero.layer());
 		}
@@ -351,6 +361,8 @@ public final class Brigitte implements HeroKit {
 
 	/** Dev only (DevBot's "fix rally"): the bashed target hit again, as it was. */
 	public static boolean devRallyTwice;
+	/** Dev only (DevBot's "fix wave"): the shockwave through walls and barriers, as it was (#122). */
+	public static boolean devWaveThrough;
 
 	/**
 	 * Her bash's shockwave in Rally, 0.15 s after its hit: up to 10 enemies within 8 m ahead, 70, a push and the stun; not the one the bash hit, which takes one of each:
@@ -362,10 +374,13 @@ public final class Brigitte implements HeroKit {
 			return;
 		}
 		Vec3 ahead = flat(player);
+		// the wave starts at her (#957 v1188 = STU_21A13145(self); her eyes: ours, as the bash's own sight test #501 is from her + up)
+		Vec3 centre = player.getEyePosition();
 		java.util.List<LivingEntity> tracked = new java.util.ArrayList<>();
 		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(RALLY_SHOCKWAVE_RADIUS),
-			// #877's filter: enemies in sight (002C, D), and a barrier in the way takes it whole (#88's rule, any barrier; 002C's "128-type ignore" read as barriers: M; none of the wave's damage goes to the barrier: ours)
-			e -> e.isAlive() && Allies.areaHits(player, e) && e.distanceTo(player) <= RALLY_SHOCKWAVE_RADIUS && Combat.inSight(player.level(), player.getEyePosition(), e, player) && !Barrier.shields(e, player))) {
+			// #877's filter: enemies in sight (002C, D), and a barrier in the way takes it whole (#88's rule, any barrier; 002C's "128-type ignore" read as barriers: M; none of the wave's damage goes to the barrier: ours, no source found)
+			e -> e.isAlive() && Allies.areaHits(player, e) && e.distanceTo(player) <= RALLY_SHOCKWAVE_RADIUS
+				&& (devWaveThrough || Combat.inSight(player.level(), centre, e, player) && !Barrier.shields(e, player, centre)))) {
 			Vec3 to = new Vec3(e.getX() - player.getX(), 0, e.getZ() - player.getZ());
 			if (to.lengthSqr() <= 0.25 || to.normalize().dot(ahead) >= 0) {
 				tracked.add(e);
@@ -748,14 +763,19 @@ public final class Brigitte implements HeroKit {
 	/**
 	 * Her widgets (#85): preview, who Repair Pack would go to (as repairPack picks: 013C, 0EDD #469); flag, Inspire on her (7CCD, its state
 	 * stack v31949); count, the allies it's healing, herself not counted (0C7A, 12D8 #479: 067C = v702, the count its message 2AD8 brings); left and total, Rally's time (0237, 12BE #188); left2, the seconds her broken barrier stays down (0240,
-	 * 0EE3 #558). Her sync's meter is Repair Pack's recharge, in seconds.
+	 * 0EE3 #558). Her sync's meter is Repair Pack's recharge, in seconds. target and target2, with share and
+	 * share2: the two allies her packs heal now, newest first, and the share of each heal to come (011F over each, 0EE1 #611).
 	 */
 	@Override
 	public HeroSyncPayload.Widgets widgets(ServerPlayer player, HeroState s) {
 		float broken = Math.max(0, s.barrierBrokenUntil - player.level().getGameTime()) / 20f;
 		LivingEntity repair = s.secondaryAmmo > 0 && s.bashTicks < 0 ? dev.overcraft.hero.Targeting.allyInView(player, REPAIR_RANGE, REPAIR_CONE, true) : null;
-		return new HeroSyncPayload.Widgets(-1, -1, repair == null ? -1 : repair.getId(), Inspire.active(player), Inspire.healing(player),
-			s.rallyTicks / 20f, (float) RALLY_TIME, broken, "", "");
+		var healing = RepairPack.healing(player);
+		var a = healing.isEmpty() ? null : healing.get(0);
+		var b = healing.size() < 2 ? null : healing.get(1);
+		return new HeroSyncPayload.Widgets(a == null ? -1 : a.getKey().getId(), b == null ? -1 : b.getKey().getId(),
+			repair == null ? -1 : repair.getId(), Inspire.active(player), Inspire.healing(player), s.rallyTicks / 20f, (float) RALLY_TIME,
+			broken, "", "", a == null ? 0 : a.getValue(), b == null ? 0 : b.getValue(), null);
 	}
 
 	/**

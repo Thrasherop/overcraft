@@ -247,7 +247,7 @@ The owner: "cat's tether physics are not really simulated lol". They weren't: `l
 
 **A real client on a bot cat's rope (`k3_*`, `k4_*`).** The bot is a real `ServerPlayer` moved by /tp; it has no client and doesn't fly. F on the prompt catches. Lifted, swings, W pulls against the rope. G to Minecraft mode on the rope: still towed, trails at 7 m/s, drops to Minecraft's physics and back (`k3_G`). Water: floats, rope slack as she comes down, lifted out. Dying: the rope ends, respawned with no pull. Switching hero on the rope (Kiriko to Juno near the respawn point): **stays on it**: nothing lets go, not decided if it should. Juno's `state` anim on it is `pulled`. Detach, first pass: vy 10.50, 1.91 to 9.91 m/s across.
 
-**NOT verified, and it blocks `main`: nobody has seen a player towed by a cat that truly flies.** The one-client rule stands until the owner says otherwise. The two-client pass must check: the towed view with a flying cat (no jolt, no rubber band: ClientTow runs on where it *sees* her, about 100 ms old); her view of them; a dedicated server (the float kick reset, "moved too quickly" at 23 m/s, falls); an enemy's red rope; abilities on the rope (W says a movement ability leaves it, **not done**).
+**Verified with two real clients (2026-11-14, [run](../testing/runs/two_client_2026-11-14/run.md)):** a player on a cat that truly flies trails 1.3-1.8 m behind and 4.2-4.6 m below her at 7.1 m/s, swings and settles, no jolt or rubber band; a 6 m `/tp` of her swings them 2 m past, never above her; Space launches 10.5 up and 8 forward. Her allies (not she, not enemies) see Lifeline's icon over her while she seeks (#85, `ReticleHud.seekingCats`). Still open (own issue): a dedicated server (the float kick reset, "moved too quickly" at 23 m/s), an enemy's red rope, a movement ability leaving the rope (W, **not done**), Catnapper's carry on the rope.
 
 ### The critique's answers (2026-11-05)
 1. "Frenetic Flight, before": had no data (that trace has nobody on the rope). Row now says not measured.
@@ -301,3 +301,24 @@ Keys through `KeyMapping.set`, not a real keyboard. **Without Resistance V:**
 
 ## The Nov 3 patch (#116)
 Health 200, fuel back at 20% a second, boost acceleration 25 -> 28. The boost's rates are the 2026-11-01 recording's +3 (23, 13.4), the alternative x 28/25; top speed kept at 17.8 though W now says 17.43: both inferred, **need a new recording** ([polish3](../testing/polish3.md)).
+
+## Catnapper from the ground (#139, 2026-11-13)
+Up: [Techniques](../README.md) · record: [catnap_139](../testing/runs/catnap_139/catnap_139.md) · lesson: [minecraft_26](../minecraft/minecraft_26.md#steering-a-player-from-the-server-139-2026-11-13)
+- **Was:** confirmed standing, the dive ended on its first tick: the server's `onGround` (her client's) was true. Her data's move
+  (5B7B #95, `StateMoveTo` to the spot + 0.25 m at 30 m/s, under the 1.5 s wait) reads no ground, so she now skims along it.
+- **Now:** the dive is laid out when the windup ends (direction, metres left, a last part-step) and she's put on the spot on
+  arrival; a wall ends it (ours, `horizontalCollision`). Aimed at a wall, the spot steps 0.35 m off its face (it lay on the
+  wall, 1.6 m up). Ground 9.19 m and 25.0 m exact, air unchanged in speed, carry, cancel and hits as before.
+- **Open:** she lands 0.25 m up and hovers there; a snap back of up to ~1.3 m on arrival; slopes, water, a second client untried.
+
+## Catnapper's carry on the rope (2026-11-17, #142)
+The carry held a mob at a point 1 m under her feet (a spring to that point each tick), so it never swung. A carried mob now goes
+through Lifeline's own rope (`tow`, now with a length: the mob's height + 1 m, its top 1 m under her feet hanging straight). An
+enemy *player* keeps the point hold, since their client runs the rope only for Lifeline (ClientTow). Measured with the harness's
+`ents` (cat and husk every 0.08 s) on the same climb (Space + W, a 90-degree turn at 1.6 s), the husk weakened so it couldn't hit:
+- **Old build** (`carry_old_fly.txt`): the husk 3.1-3.3 m under her, never more than 0.44 m off to a side, through the turn.
+- **New build** (`carry_new.txt`): picked up 2.9 m behind, swinging through to 1.3 m ahead and 1.3 m out at the turn, back to 0.9 m
+  behind; 3.3-3.9 m under her. Screenshots `run/screenshots/carry_rope_1/_2.png` looking down: the tether slants as it swings.
+**Lessons:** her flight in the harness is `key jump` (the `secondary_fire` action is bound to her left mouse); a husk carried with
+its AI killed her twice during setup (give it Weakness 255); leftover water from another test drowned her between runs.
+Not tried: a player carried (unchanged code path), the rope through terrain during a carry.

@@ -588,6 +588,57 @@ public final class OcSounds {
 	public static final java.util.List<String> JUNKRAT_VOICE = java.util.List.of(
 		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
 		"ping_warning", "ping_enemy", "mine_throw", "mine_jump", "mine_kill", "trap", "tire_kill", "ultimate");
+	/**
+	 * Torbjörn's sounds by name ("torbjorn." + name, through dev.overcraft.torbjorn.TorbjornSounds; tools/soundmaps/torbjorn_sfx.txt) and his
+	 * voice moments ("torbjorn.voice.<moment>", tools/soundmaps/torbjorn.txt; not the wheel's call_* lines, every hero's: OcSounds.init
+	 * registers those and "resurrected", "damage_boosted", "nano_boosted": registering them twice crashed the start, Illari's and his).
+	 */
+	public static final java.util.List<String> TORBJORN_SOUNDS = java.util.List.of("ult.friendly", "ult.enemy", "draw_hammer",
+		"draw_hammer_3p", "draw_rivet", "draw_rivet_3p", "hammer.hit", "hammer.hit_3p", "hammer.hit_world", "hammer.repair",
+		"hammer.repair_3p", "hammer.repair_full", "hammer.swing", "hammer.swing_3p", "molten.burn", "molten.burn_3p", "molten.burn_hit",
+		"molten.fire", "molten.fire_3p", "molten.flight", "molten.hit", "molten.impact", "molten.loop", "molten.loop_3p", "molten.pool",
+		"molten.pool_loop", "overload", "overload.end", "overload.loop", "overload.loop_3p", "overload_3p", "reload", "reload_3p",
+		"rivet.alt_fire", "rivet.alt_fire_3p", "rivet.alt_hit_enemy", "rivet.alt_hit_enemy_3p", "rivet.alt_hit_world", "rivet.fire",
+		"rivet.fire_3p", "rivet.hit_enemy", "rivet.hit_enemy_3p", "rivet.hit_world", "turret.build", "turret.build_step", "turret.damaged",
+		"turret.deploy", "turret.destroyed", "turret.destroyed_3p", "turret.downgrade", "turret.fire", "turret.flight", "turret.hit",
+		"turret.land", "turret.overloaded", "turret.recall", "turret.throw", "turret.throw_3p", "turret.upgrade", "ult.cast", "ult.cast_3p");
+	public static final java.util.List<String> TORBJORN_VOICE = java.util.List.of(
+		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
+		"ping_warning", "ping_enemy", "enemy_turret_destroyed", "hammer_kill", "overload",
+		"turret_attacked", "turret_build", "turret_destroyed", "turret_kill", "turret_repair", "turret_upgrade", "ultimate");
+	/**
+	 * Illari's sounds by name ("illari." + name, played through dev.overcraft.illari.IllariSounds; tools/soundmaps/illari_sfx.txt says
+	 * which data event each is) and her voice moments (Voice.say: "illari.voice.<moment>", tools/soundmaps/illari.txt). The ult line is
+	 * ult.friendly / ult.enemy, her own "ultimate".
+	 */
+	public static final java.util.List<String> ILLARI_SOUNDS = java.util.List.of("ult.friendly", "ult.enemy",
+		"beam.full", "beam.heal", "beam.heal_3p", "beam.healing", "beam.hit", "beam.hit_3p", "beam.hit_world", "beam.loop",
+		"beam.loop_3p", "beam.refill", "beam.start", "beam.start_3p", "beam.stop", "beam.stop_3p", "flare", "flare.hit", "flare_3p",
+		"melee", "melee_3p", "outburst", "outburst.burn", "outburst.burn_3p", "outburst.hit_enemy", "outburst.hit_enemy_3p",
+		"outburst.sunburn", "outburst_3p", "pylon.build", "pylon.build_fast", "pylon.destroyed", "pylon.destroyed_3p", "pylon.flight",
+		"pylon.heal", "pylon.heal_hit", "pylon.land", "pylon.loop", "pylon.removed", "pylon.removed_3p", "pylon.targeted",
+		"pylon.throw", "pylon.throw_3p", "reload", "reload_3p", "rifle.charge", "rifle.charged", "rifle.fire", "rifle.fire_3p",
+		"rifle.fire_uncharged", "rifle.fire_uncharged_3p", "rifle.hit_enemy", "rifle.hit_enemy_3p", "rifle.hit_world", "rifle.whiz",
+		"sun.armed", "sun.armed_3p", "sun.ball", "sun.cast", "sun.cast_3p", "sun.explode", "sun.explode_3p", "sun.fire", "sun.fire_3p",
+		"sun.flight", "sun.flight_3p", "sun.impact", "sun.mark", "sun.mark_3p", "sun.marked", "sun.marked_own", "sun.trigger",
+		"sun.trigger_3p", "sun.trigger_owner");
+	public static final java.util.List<String> ILLARI_VOICE = java.util.List.of(
+		"beam_empty", "beam_hurt_ally", "death", "elimination", "melee", "melee_kill", "multikill", "on_fire", "outburst", "outburst_hit", "pain", "ping", "ping_enemy", "ping_pylon", "ping_warning", "pylon", "pylon_destroyed", "pylon_moved", "respawn", "select", "ult_ready", "ultimate");
+	/**
+	 * Ashe's sounds by name ("ashe." + name, played through dev.overcraft.ashe.AsheSounds; tools/soundmaps/ashe_sfx.txt says which data
+	 * event each is; B.O.B.'s too) and her voice moments (Voice.say: "ashe.voice.<moment>", tools/soundmaps/ashe.txt; her wheel lines
+	 * call_* are every hero's, registered below). The ult line is ult.friendly / ult.enemy, her own "ultimate".
+	 */
+	public static final java.util.List<String> ASHE_SOUNDS = java.util.List.of("ads.in", "ads.in_3p", "ads.out", "ads.out_3p", "bob.cast", "bob.cast_3p", "bob.charge", "bob.charge_stop", "bob.death", "bob.fire", "bob.fire_stop", "bob.hit_enemy", "bob.hit_enemy_3p", "bob.hit_world", "bob.immobilize", "bob.immobilize_3p", "bob.land", "bob.step", "bob.uppercut", "bob.uppercut_3p", "coach_gun.fire", "coach_gun.fire_3p", "coach_gun.hit", "coach_gun.hit_3p", "coach_gun.hit_world", "dynamite.burn", "dynamite.burn_3p", "dynamite.burn_stop", "dynamite.burn_stop_3p", "dynamite.explode", "dynamite.explode_3p", "dynamite.fuse", "dynamite.ignite", "dynamite.ignite_3p", "dynamite.land", "dynamite.remote", "dynamite.throw", "dynamite.throw_3p", "melee", "melee_3p", "reload.end", "reload.end_3p", "reload.shell", "reload.shell_3p", "reload.start", "reload.start_3p", "viper.fire", "viper.fire_3p", "viper.fire_ads", "viper.fire_ads_3p", "viper.hit_enemy", "viper.hit_enemy_3p", "viper.hit_enemy_ads", "viper.hit_enemy_ads_3p", "viper.hit_world", "viper.hit_world_ads", "viper.whiz", "viper.whiz_ads", "ult.friendly", "ult.enemy");
+	public static final java.util.List<String> ASHE_VOICE = java.util.List.of("bob_destroyed", "bob_end_kills", "bob_end_no_kills", "coach_gun", "coach_gun_kill", "death", "dynamite", "dynamite_kill", "dynamite_shot", "elimination", "melee", "melee_kill", "multikill", "on_fire", "pain", "ping", "ping_enemy", "ping_warning", "respawn", "select", "ult_ready", "ultimate");
+	/**
+	 * Widowmaker's sounds by name ("widowmaker." + name, played through dev.overcraft.widowmaker.WidowmakerSounds;
+	 * tools/soundmaps/widowmaker_sfx.txt says which data event each is) and her voice moments (Voice.say: "widowmaker.voice.<moment>",
+	 * tools/soundmaps/widowmaker.txt; the wheel lines call_* and resurrected / damage_boosted / nano_boosted are every hero's,
+	 * registered below). The ult line is ult.friendly / ult.enemy, her own "ultimate".
+	 */
+	public static final java.util.List<String> WIDOWMAKER_SOUNDS = java.util.List.of("ads.charge", "ads.charged", "ads.in", "ads.in_3p", "ads.out", "ads.out_3p", "grapple.attach", "grapple.attach_3p", "grapple.end", "grapple.end_3p", "grapple.fire", "grapple.fire_3p", "grapple.pull", "grapple.pull_3p", "grapple.rope", "kiss.fire", "kiss.fire_3p", "kiss.fire_ads", "kiss.fire_ads_3p", "kiss.fire_ads_low", "kiss.fire_ads_low_3p", "kiss.fire_ads_mid", "kiss.fire_ads_mid_3p", "kiss.hit_crit_ads", "kiss.hit_crit_ads_3p", "kiss.hit_enemy", "kiss.hit_enemy_3p", "kiss.hit_enemy_ads", "kiss.hit_enemy_ads_3p", "kiss.hit_world", "kiss.whiz", "kiss.whiz_ads", "melee", "mine.armed", "mine.beep", "mine.poison", "mine.poison_3p", "mine.stick", "mine.throw", "mine.throw_3p", "mine.trigger", "reload", "reload_3p", "ult.cast", "ult.enemy", "ult.friendly", "ult.loop", "ult.reveal");
+	public static final java.util.List<String> WIDOWMAKER_VOICE = java.util.List.of("death", "elimination", "melee", "melee_kill", "mine_kill", "multikill", "on_fire", "pain", "ping", "ping_enemy", "ping_warning", "respawn", "select", "ult_ready", "ultimate");
 	public static final java.util.List<String> DVA_VOICE = java.util.List.of(
 		"elimination", "multikill", "melee_kill", "on_fire", "respawn", "melee", "select", "death", "pain", "ult_ready", "ping",
 		"ping_warning", "ping_enemy", "boosters", "matrix", "matrix_absorb", "call_mech", "call_mech_kill", "eject", "mech_back",
@@ -639,6 +690,14 @@ public final class OcSounds {
 		CASSIDY_VOICE.forEach(moment -> register("cassidy.voice." + moment));
 		JUNKRAT_SOUNDS.forEach(name -> register("junkrat." + name));
 		JUNKRAT_VOICE.forEach(moment -> register("junkrat.voice." + moment));
+		TORBJORN_SOUNDS.forEach(name -> register("torbjorn." + name));
+		TORBJORN_VOICE.forEach(moment -> register("torbjorn.voice." + moment));
+		ILLARI_SOUNDS.forEach(name -> register("illari." + name));
+		ILLARI_VOICE.forEach(moment -> register("illari.voice." + moment));
+		ASHE_SOUNDS.forEach(name -> register("ashe." + name));
+		ASHE_VOICE.forEach(moment -> register("ashe.voice." + moment));
+		WIDOWMAKER_SOUNDS.forEach(name -> register("widowmaker." + name));
+		WIDOWMAKER_VOICE.forEach(moment -> register("widowmaker.voice." + moment));
 	}
 
 	private OcSounds() {
@@ -650,6 +709,12 @@ public final class OcSounds {
 	/** Play of the Game: the announcer's "Play of the game." (voice set 001D, file A8C4) and its music, cue 5B1F (D: music-round9). */
 	public static final SoundEvent ANNOUNCER_POTG = register("announcer.potg");
 	public static final SoundEvent MUSIC_POTG = register("music.potg");
+	/**
+	 * The dragon fight's end phase (#45): Overwatch's overtime cue (STUSound 69B7, stream 2A7946: music-round9, H), its intro
+	 * and its loop (tools/soundmaps/kiriko.txt has the cut). From the local pack only.
+	 */
+	public static final SoundEvent MUSIC_OVERTIME_INTRO = register("music.overtime_intro");
+	public static final SoundEvent MUSIC_OVERTIME_LOOP = register("music.overtime_loop");
 
 	private static SoundEvent register(String name) {
 		return Registry.register(BuiltInRegistries.SOUND_EVENT, Overcraft.id(name), SoundEvent.createVariableRangeEvent(Overcraft.id(name)));

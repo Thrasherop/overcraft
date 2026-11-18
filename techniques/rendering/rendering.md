@@ -173,6 +173,15 @@ shader has no colour image weren't drawn. A re-export of every hero costs hours;
 
   Sorted against unsorted showed no change in emit (the sort runs at upload, outside this timer). The hero's own emit is 1.9-2.8 ms in 3P for comparison.
 - **Played, then cut back:** shader 0x26's glow layer is often its colour image again; added at its strength over the lit colour, Lúcio's amp visor went flat white where the plain piece had detail (`z1_lucio_1p`): 0.25 now (ours). Juno's gun's glass FBC0 is a flat shell over the screen FB30: drawn solid it hid her face and read white, so it's only a faint added light (`GLASS`).
+- **A mask can sit on another UV layer (Tracer's body, 2026-11-14, #91).** Her 7E12's 0xBCBE747D (20473, 512 px: two bands, two
+  discs, two thin lines) read through TEXCOORD_0 lit her face, arms and chest, so 0.3.47 left her body out. The material's static
+  0xC7526E90 (io_scene_owm `StaticInputs` 3344068240, "UVLayer Emission", 1-based UVMap<n>) says 2: drawing TEXCOORD_1 over the mask
+  puts the accelerator's two discs on the circles and its ring on the bands; the rest of the body sits in a black corner.
+  `glow_maps.transfer` fills each triangle in TEXCOORD_0 and reads the mask through the other layer, so the bake stays on the piece's
+  own UVs (no renderer change): only the accelerator's blue dots, its blue bar and the blue lines on her legs light. **The static
+  alone isn't enough:** the same move darkened D.Va's 98C0/A5D8, Lúcio's 801D, Mercy's staff 7FDB and Pharah's gun A0AA (their UV0
+  bakes were played right), so it's opt-in by material (`MOVED_UV`), after drawing the other layer over the mask. Look before adding
+  one. Run record: [tracer_glow](../testing/runs/tracer/glow_2026-11-14.md).
 - **The light cards were shown as data:** Ana's sight screen, Juno's gun's face, the amp's and pistol's cards. Their flipbooks and scrolling layers (Sombra's bars A5B6, letters 9F80) are one still image.
 - **Played:** next's client against this branch (`z0_*` in the next checkout's run/screenshots, `z1_*` in this one's): seven heroes first person at night and third person looking up; Improved Transparency toggled on with F3+X in play (no crash; `z1_it_juno*`).
 - **A critic should check:** third person at night, front and back, each hero: the parts lit in the shots stay lit; no piece glows that doesn't in Overwatch (the body's strips on Lifeweaver's flower are bright); Improved Transparency on. Not done: X13, a glow *effect* on a first-person gun (Sojourn's hp 007C particle) still hides behind it; the piece glows in the hand pass do show.
@@ -248,11 +257,55 @@ fitting each by its own outline (width, top of the hair) moved heroes whose outl
   `simulate` ages it by the frame's time; at 10 fps a short life (the barrier's 0.2 s) ran out between feeds and the
   field showed in half the frames. A particle fed in the last 0.1 s now stays lit (`Particle.fedAt`).
 
-## Things in the hand pass (2026-11-05, #113, #114, #105)
+## Things in the hand pass (2026-11-05, #113, #114, #105, #86)
+- **Juno's pods** are done this way too (`JunoFx.viewPods`): a world particle was painted over by the pod it sat on. Quads placed by screen share (the pass's fixed vertical field of view, 70), along the camera's axes, mapped back through the pose's inverse: the pass's pose ends in the world's axes, not the view's. Looked at.
+- **Held pieces aren't props:** a small model on its own origin passes `isProp`, and `emit` drops triangles near the origin as parked. `EmoteProps.submit` says `props` false; `submitStealth` didn't, and Sombra's pistol vanished in both views (`cull` param, [side_by_side](../testing/side_by_side_2026-11-05.md#the-verification-run-2026-11-05-later)). Any new path that draws a held model must say so too. Looked at.
 - **What must meet the first-person model goes in the hand pass, not the world:** a world particle fed from `submitArms` is a frame late, drawn under the other pass's projection and behind the depth that pass clears. `BrigitteFx.viewChain` submits a ribbon with `collector.submitCustomGeometry(poseStack, FxRender.additive(tex), ...)`: the same pose as the model, facing the eye (the pose's inverse at the origin). Sojourn's open case above can go the same way.
 - **Read a mask's falloff before calling it soft** (`lucio_soft`, 4F3: 255 to a third of its radius, then an edge; `mercy_soft` falls smoothly, but at 1.5 m added over the sky it's a sun). Sample a row across the middle.
 - **A black colour image with a shader that colours it:** `HeroModels.colourHair` takes `hero_models/colour/<material>.png` (`tools/glow_maps.py --colours`). glTF can't carry it, and a re-export isn't needed.
 - **A camera roll** is `rotation.rotateZ` and the three axes after `alignWithEntity`: `setRotation` has none (`CameraMixin.overcraft$wallRoll`). The arms stay square to the screen: their pass undoes the view.
 
 ## First use of an effect (2026-11-06, [sojourn](../heroes/sojourn.md#round-two-a-code-critic-and-the-coordinators-real-keys-2026-11-06))
-`EffectArt.get` reads and colours a mask on the thread that first asks, in the frame of the shot: 930 ms on Sojourn's first Charged Shot. `EffectArt.prepare(list)` makes a hero's art ahead, on a worker, then a few textures a frame; only Sojourn has a list so far. Find it with `presstrace sample`; check with `art_miss` in a trace.
+`EffectArt.get` reads and colours a mask on the thread that first asks, in the frame of the shot: 930 ms on Sojourn's first Charged Shot. `EffectArt.prepare(list)` makes a hero's art ahead, on a worker, then a few textures a frame. Find it with `presstrace sample`; check with `art_miss` in a trace.
+- **Every hero now (#128, [the run](../testing/runs/fx_prewarm_128/README.md)):** `HeroFxArt` makes the picked hero's `XFx.ART` a second after the pick, another player's hero (and its `ART_ENEMY`) when they're seen, and what a pick draws at once (`ON_PICK`: a jetpack flame, an aura) as the world loads. Kiriko's first Ofuda went from 543 ms to 47; no hero's buttons made art on first use after.
+- **The client says when it pays:** each frame that made art on first use logs `Effect art made on first use, hero X: n in a ms, frame b ms: mask,PALETTE[,soft] ...`. That line is the list: play every button with `OC_FX_AHEAD=0` (dev switch, nothing made ahead), and the log holds what to add. A new effect's art missing from its hero's list shows up there too.
+- **Recorded plus read:** the play only reaches what the harness reached (no Valkyrie, no ally hits), so each list is the log's keys plus the pairs the Fx class names literally (`fx128_scan.py`, `fx128_gen.py` in the run folder). A palette chosen through a variable is only in the list if play reached it.
+- **Watch what draws at the pick, not after it:** a model's glow or a jetpack flame asks for its art in the pick's own frame, before any wait; those go in `ON_PICK`. And a hero can draw `Palette.ENEMY` in its own view (Juno's rings on the enemies she hits): the generator filed those as enemy-only, the log caught it.
+- Some first uses are still over 100 ms with no art made (Mercy's beam, Ana's scope): another first-use cost, not looked into.
+
+## Effects: what bit (2026-11-17)
+
+From the effects of #150 (Tracer, D.Va, Illari, Torbjorn, Cassidy, Pharah, Junkrat):
+
+- **EffectArt.Palette sits at Java's 64 KB method limit.** Inline stop lists in the enum make its static initializer too
+  large ("code too large"). The lists live in `PaletteStops0/1/2` (generated, 150 each) and new palettes as arrays in
+  `HeroPalettes` (or a hero's own class, `JunkratPalettes`); the enum constants only reference them.
+- **Solid masks take a palette's top stop**: end a palette on its colour, not white, or every solid piece draws white.
+- **`dva_solid` is a plain square** unless a mesh is set on the particle (D.Va's ball): use a round mask (`sojourn_dot`) for orbs.
+- **First-person hands and weapon draw over the world**: an effect placed at the hand in the shooter's own view is hidden
+  behind the gun. Place it beside the gun's silhouette, or take the hand point from the first-person renderer (Sojourn's).
+- **Muzzle flashes in the shooter's own first person**: a sixth the size and no glow (a third still whited out the pistols).
+- **Testing effects**: `fxnear r` lists live particles (attached ones aren't counted); the dev `fx` command plays 3 m ahead,
+  inside the near-fade of effects that fade within 3 m of the camera, so it can show nothing for them.
+
+## The last vanilla stand-ins gone (2026-11-17, #150)
+No server code sends a vanilla particle now (`grep sendParticles(.*ParticleTypes` is empty). The last ten, each replaced from its
+hero's effects reference and played:
+- **Illari** (`IllariFx`, tools/reference/illari-effects.md): Solar Flare's heal 6CF2 (`illari_flare_heal`: 13 particles on the
+  flare, the reference's 13-19 streaks), the pylon's heal arriving 4E01 (`illari_pylon_heal`: 20-34 per heal), the pylon hit (51E9's
+  small sphere, ours: 5), destroyed 51E9 / 51EB (`illari_pylon_gone`: a star flash in its place), Outburst 479A (`illari_outburst`:
+  89 particles, the ground rings seen in third person), Sunburn's burn 254F (`illari_sunburn`: a flame on the husk's chest).
+- **Torbjörn's turret destroyed** (`torb_turret_gone`): the data has no look (sounds only), so his slag's and rivet's hit bursts
+  (ours): 18 particles, a spark burst where it stood.
+- **D.Va's Light Gun hit** (`dva_light_hit`): its contact spark isn't extracted, so a small pink glow and flash (ours): 2 per hit.
+- **Captive Sun:** a vanilla FLAME was still sent each tick on top of the client's model and `ballFlight`; removed.
+**How they were checked:** the harness's `state` field `fx` (the live particle count) sampled every 0.05-0.1 s around each moment,
+plus full-resolution `screenshot`s (`run/screenshots/il_*.png`, `tb_turret_gone.png`). **Lesson:** an effect at her feet or a 0.3 s
+burst is easy to miss in first person; the `fx` count says whether it drew at all, then F5 (third person) shows it.
+Then the effects #150 listed as never seen in play, all seen 2026-11-17 on 0.3.79 (live `fx` counts):
+- **Pharah:** Jump Jet (Shift: up 8 m, 14-17 jet particles); Barrage (Q: 70-103, rocket bursts, a husk eliminated:
+  `ph_barrage.png`).
+- **Junkrat:** Nitro Boost (Shift 2 s into RIP-Tire: mode 21 -> 37, 8-13 particles, `jr_nitro.png`); Total Mayhem (his death:
+  11-22 for under a second).
+- **Cassidy:** Silver Bullet (right button held 1.2 s, left click): a husk 20 -> 10.77 = 70 + 50 bleed through 2 armor (the small
+  bleed ticks lose more to armor: 5.51 + 3.7); the bleed's look 5-6 particles for about a second.

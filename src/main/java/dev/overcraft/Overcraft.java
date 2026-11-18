@@ -124,6 +124,8 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.ConspiratorPayload.TYPE, dev.overcraft.net.ConspiratorPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.DeadeyePayload.TYPE, dev.overcraft.net.DeadeyePayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(VictoryPayload.TYPE, VictoryPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.EndPhasePayload.TYPE, dev.overcraft.net.EndPhasePayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.OpenSelectPayload.TYPE, dev.overcraft.net.OpenSelectPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.ResurrectPayload.TYPE, dev.overcraft.net.ResurrectPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.GripPayload.TYPE, dev.overcraft.net.GripPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(OwnSoundPayload.TYPE, OwnSoundPayload.CODEC);
@@ -184,6 +186,12 @@ public class Overcraft implements ModInitializer {
 			}
 			KitsuneRush.tickAll(server);
 			Combat.tick(server);
+			// Illari's Sunburns and Sunstruck marks
+			dev.overcraft.illari.Illari.tickAll(server);
+			// Ashe's Dynamite burns and Viper's Stings
+			dev.overcraft.ashe.Ashe.tickAll(server);
+			// Widowmaker's poisons and Seeker Mine darts
+			dev.overcraft.widowmaker.Widowmaker.tickAll(server);
 			// Silver Bullet's bleeds
 			dev.overcraft.cassidy.Cassidy.tickBleeds(server);
 			dev.overcraft.hero.Effects.tick(server);
@@ -207,8 +215,13 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.potg.PlayScore.tick(server);
 			dev.overcraft.potg.PotgRecorder.tick(server);
 			dev.overcraft.potg.PlayerStats.tick(server);
+			// the dragon fight's end-phase music, from a third of its health (#45)
+			dev.overcraft.potg.EndPhase.tick(server);
 		});
-		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> HeroManager.onJoin(listener.player));
+		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> {
+			HeroManager.onJoin(listener.player);
+			dev.overcraft.potg.EndPhase.joined(listener.player);
+		});
 		// a player who starts seeing someone hears of the states others heard begin (#96)
 		net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents.START_TRACKING.register(HeroManager::showState);
 		ServerPlayConnectionEvents.DISCONNECT.register((listener, server) -> {
@@ -249,13 +262,16 @@ public class Overcraft implements ModInitializer {
 				dev.overcraft.potg.MobStats.killed(player, source);
 			}
 		});
-		// killing the Ender Dragon wins the match: everyone in the End sees Overwatch's VICTORY as it starts to die (#18)
+		// killing the Ender Dragon wins the match: everyone sees Overwatch's VICTORY and hears its music at the killing blow (#18),
+		// wherever they are (the owner on 0.3.66, #161: a player in the Nether had no music); the music runs on into the POTG
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			if (entity instanceof EnderDragon && entity.level() instanceof ServerLevel level) {
-				for (ServerPlayer player : level.players()) {
+				for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
 					ServerPlayNetworking.send(player, new VictoryPayload());
 				}
-				// its Play of the Game waits for the death's tick 199 (PotgReplay.dragonAt199)
+				// its end-phase music ends here, faded out by VICTORY on each client (#45)
+				dev.overcraft.potg.EndPhase.dragonDied((EnderDragon) entity);
+				// its Play of the Game starts on the music's cue (PotgReplay.CARD_AFTER_KILL_MS)
 				dev.overcraft.potg.PotgReplay.dragonDied((EnderDragon) entity, source);
 			}
 		});
@@ -270,6 +286,8 @@ public class Overcraft implements ModInitializer {
 			}
 			if (damage > 0) {
 				Combat.onHurt(entity, source);
+				// Captive Sun's mark counts it toward Sunstruck
+				dev.overcraft.illari.Illari.onDamaged(entity, damage);
 				// a sleeper wakes from any damage once it has slept 0.5 s (224E #202 / #205 -> #332)
 				dev.overcraft.hero.Sleep.onDamaged(entity);
 			}
@@ -296,7 +314,9 @@ public class Overcraft implements ModInitializer {
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			HeroManager.clear();
+			dev.overcraft.potg.EndPhase.clear();
 			Combat.clear();
+			dev.overcraft.torbjorn.Torbjorn.clear();
 			dev.overcraft.hero.Effects.clear();
 			Comms.clearEmotes();
 			dev.overcraft.sigma.GraviticFlux.clearAll();

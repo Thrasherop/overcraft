@@ -1,0 +1,35 @@
+# Ashe's The Viper (entity 2523, model 00000001079F.00C, base 7B28; set 0979), on her hardpoint 00C9, var 4082.
+# <prio>-<group>_<clip id> = our name. Written by E:\Overwatch Archiveesearchshe\scripts\clipmaps_ashe.py from the
+# compacted blend-tree sets (researchshe\work\clipmap_ashe\compact_<set>.txt, build 154088); names from the alias that holds
+# each clip (the graph node that plays it, H, or its place in the tree, M / L as noted) and its path: _down / _up = the 1D
+# points -1 / +1 (sign L), 8-way slots by the slot fields (H field, not measured on her body),
+# _smN / _seN / _raN = state-machine child / sequence step / random pick. 4-* folders and add_ names are additive.
+# A set can name another model's clips (the mech's set holds pilot clips and the reverse): listed as 'on another model'.
+0-60_000000005A79 = idle_1p   # 0.2667 s; set 0979 alias 2 ((was base_sm0_sm5_sm0: sm[0] sm[5] sm[0] (L)) the base tree (locomotion + layers)); sel[1] @825E4031 sm[0] @2 sm[0] sm[5] @825E401B sm[0]; on 2 paths
+4-0_000000008432 = add_base_sm0_sm5_sm0   # 0.3333 s; set 0979 alias 2 (the base tree (locomotion + layers)); sel[1] @825E4031 sm[0] @2 sm[0] sm[5] @825E401B sm[0] +add(); on 2 paths
+0-32_000000006100 = base_sm0_sm5_sm1   # 0.2 s; set 0979 alias 2 (the base tree (locomotion + layers)); sel[1] @825E4031 sm[0] @2 sm[0] sm[5] @825E401B sm[1]; on 2 paths
+0-32_000000005A7A = base_sm0_sm5_sm2   # 0.2 s; set 0979 alias 2 (the base tree (locomotion + layers)); sel[1] @825E4031 sm[0] @2 sm[0] sm[5] @825E401B sm[2]; on 2 paths
+0-60_000000005E93 = base_sm0_sm5_sm3   # 0.1667 s; set 0979 alias 2 (the base tree (locomotion + layers)); sel[1] @825E4031 sm[0] @2 sm[0] sm[5] @825E401B sm[3]; on 2 paths
+0-36_0000000060FC = base_sm0_sm5_tr13   # 0.3333 s; set 0979 alias 2 (the base tree (locomotion + layers)); sel[1] @825E4031 sm[0] @2 sm[0] sm[5] @825E401B tr[1>3]; on 4 paths
+4-0_000000005E8E = add_ads_fire_1p   # 0.4667 s; set 0979 alias 2 ((was add_base_sm0_ads_sm0: sm[0] +add dfE5 cat81 (L)) the base tree (locomotion + layers)); sel[1] @825E4031 sm[0] @2 sm[0] +add() @825E4028 dfE5=cat81 @825E4029 sm[0]; on 20 paths
+0-60_000000005FB3 = idle   # 0.0333 s; set 0979 alias 2 ((was base_sm1_se5_sm0: sm[1] (L)) the base tree (locomotion + layers)); sel[1] @825E4031 sm[0] @2 sm[1] sel[5] @825E4019 sm[0]; on 2 paths
+0-60_000000005EDC = base_sm1_se5_sm1   # 0.0333 s; set 0979 alias 2 (the base tree (locomotion + layers)); sel[1] @825E4031 sm[0] @2 sm[1] sel[5] @825E4019 sm[1]; on 2 paths
+4-4_000000005F78 = add_ads_fire   # 0.5667 s; set 0979 alias 2 ((was add_base_sm1_ads_sm0: sm[1] +add dfE5 cat81 (the lever, scoped) (M)) the base tree (locomotion + layers)); sel[1] @825E4031 sm[0] @2 sm[1] +add() @825E4026 dfE5=cat81 @825E4025 sm[0]; on 10 paths
+4-0_000000005F57 = add_fire   # 0.2333 s; set 0979 alias 2 ((was add_base_sm1_sm0: sm[1] +add dfE5 default (the lever, hip) (M)) the base tree (locomotion + layers)); sel[1] @825E4031 sm[0] @2 sm[1] +add() @825E4026 dfE5=default[1] @825E4027 sm[0]; on 10 paths
+0-36_000000005A4D = reload_start   # 0.5667 s; set 0979 alias 84 ((was reload_sm0: 1P side sm[0] df19F cat235) The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); sm[0] @825E4032 df19F=cat235 @825E4033
+0-36_0000000060D9 = reload_start_again   # 0.7667 s; set 0979 alias 84 ((was reload_sm0: df19F cat6E) The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); sm[0] @825E4032 df19F=cat6E @825E4034
+0-32_000000005A4F = reload_end   # 0.3333 s; set 0979 alias 84 ((was reload_sm0: df19F cat82) The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); sm[0] @825E4032 df19F=cat82 @825E401F
+0-36_000000006051 = reload_loop   # 0.3333 s; set 0979 alias 84 ((was reload_sm0: df19F cat119) The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); sm[0] @825E4032 df19F=default[3] @825E402F df19F=cat119
+0-36_000000006050 = reload_loop_2   # 0.3333 s; set 0979 alias 84 ((was reload_sm0: df19F cat11A) The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); sm[0] @825E4032 df19F=default[3] @825E402F df19F=cat11A
+0-36_000000005A4E = reload_loop_default   # 0.3333 s; set 0979 alias 84 ((was reload_sm0: df19F default) The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); sm[0] @825E4032 df19F=default[3] @825E402F df19F=default[2]
+0-36_000000005F81 = reload_start_3p   # 0.5 s; set 0979 alias 84 ((was reload_sm1_start: 3P side sm[1] dfC6 cat6E) The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); sm[1] @825E4035 dfC6=cat6E @825E4017
+0-36_000000005F83 = reload_end_3p   # 0.1667 s; set 0979 alias 84 ((was reload_sm1_end: dfC6 cat82) The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); sm[1] @825E4035 dfC6=cat82 @825E401E
+0-36_000000005F82 = reload_loop_3p   # 0.3333 s; set 0979 alias 84 ((was reload_sm1_loop: dfC6 default) The Viper reload (14FC #682 startup 0.5 s cat 0235 / 006E, #684 each shell 0.25 s cat 0119 / 011A, #694 end cat 0082) (H)); sm[1] @825E4035 dfC6=default[2] @825E4014
+# Extracted under this model but in none of its sets (1, not named): 0060F4
+# emote clips the data plays on The Viper (slot 4082, EntityControls with action 4: tools/emote_data.py WEAPON_SLOTS), from
+# the emote folders (--clips-from): research/ashe/extract/Unlocks/Heroes/Ashe/Emote
+emote_000000006278 = emote_dynamite   # Dynamite: 0.0034-7.1667 s
+emote_0000000062B6 = emote_flourish   # Flourish: 0-4.667 s
+emote_0000000084CC = emote_take_a_knee   # Take a Knee: 0-3.0 s
+emote_0000000084CE = emote_take_a_knee_2   # Take a Knee: 0-0.5 s
+emote_0000000084CD = emote_take_a_knee_3   # Take a Knee: 0-12.0 s

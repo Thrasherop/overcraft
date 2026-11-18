@@ -39,6 +39,45 @@ Sigma's `add_layer_663` (set 0A7E alias 663, data mode 6), `add_jump_takeoff`, `
 map: 3B7D on BR, B, BL). Sheets cross-fade over 0.15 s (ours). New exports: Mercy's 09EF (`add_aim`) and 0AC3 (`add_aim_blaster`) in `mercy_clips`, Jetpack
 Cat's 1899F (`add_aim`) in `jetpack_cat_clips`.
 
+## The newer heroes (#95, 2026-11-13): their sheets hide under other names
+D.Va (MEKA and pilot), Pharah, Tracer, Cassidy and Junkrat came after the sheets and had none in use: their clip maps name a clip from
+the first alias that holds it, so the stand's sheet is called `add_stand_se0`, or `add_jump_takeoff` when the jump holds it too.
+**Find a hero's sheets from the data, not the names:** in `research\<hero>\resolved\<set>.021.json`, each item (alias) whose tree has a
+`STU_B391A063` (the Pose2d subclass: the old scan looked for `AnimationPose2d` only and missed the stands) or `AnimationPose2d` with X
+mode 6 / Y mode 5; its `m_animation.bound` is the clip. Follow the state's alias down its category switches to the sub-alias the clip we
+play sits in (Cassidy's stand: alias 1 > dfE5 default > 803EC0B3, his `idle` 12F4's; the sheet beside it is 12F3).
+`HeroAnimator.SHEET_NAMES` maps the generic names to them:
+
+| Hero (set) | Stand | Run | Air / crouch |
+|---|---|---|---|
+| Tracer (0002) | AB `add_stand_se0` 0 1 [2] 3 4, +31 to -53 | E7 ... `add_crouch_walk*` (alias 5 shares the crouch-walk tree's) | crouch 5F `add_crouch_tree_sm0`; jump 166 `add_jump_takeoff` |
+| Pharah (001B) | 44B `add_stand_se0`, rows of 7: 3 [10] 17, +18 to -46 | 3D2 ... `add_move*` | 3F8 `add_jump_takeoff` (hover 02F: the same and `add_hover_*`) |
+| Cassidy (00FB) | 12F3 `add_jump_still_takeoff`, rows of 7: 10 [3] 17, +57 to -69 | 1425 `add_move_3`, 1424 ... `add_move_<dir>` (803EC161) | jump 622B `add_jump_takeoff_2` (803EC15D) |
+| Junkrat (0372) | 2C5B `add_jump_still_takeoff`, rows of 7: 17 [3] 10, +62 to -48 (also his crouch's and jump's) | 3133 ... `add_move*` | 2C5B |
+| D.Va MEKA (0282) | 2375 `add_jump_takeoff`, 53 ... [56] ... 59 (Lúcio's layout), +37 to -65 | 3171 `add_move_2` on all eight (80A08053, the run 30F8's) | 2375 |
+| D.Va pilot (048A) | 322E `add_stand_se0`, 28 ... [31] ... 34, +22 to -70 | 321F ... `add_move*` | 3218 `add_jump_takeoff` |
+
+- **Lines stored up end first** (`AimSheet.layout`, 2026-11-13): most of their 7-frame run, crouch-walk and jump sheets run -36 ... 0 ... +66, the
+  reverse of every older sheet, and failed the walk. The layout now also reads the clip backwards. It also picks up Ana's
+  `add_aim_crouch_walk` (+_scoped) and Brigitte's `add_aim_run_back_left`, which had fallen back to the crouch's and the run's.
+- **Cassidy's model was baked at 24 fps** (pack `cassidy.glb` of 2026-11-12 03:22, keys every 1.25 frames, a Blender round trip at its
+  default rate). A pose table resampled is garbage: his 21-frame sheets came out as 17 keys between the rows. The pack now holds the
+  30 fps export (`research\cassidy\export\3p\00000000EFA3.glb`, same meshes, clips and channels; the 24 fps file is in
+  `local-assets\backup_glb\aim95\`). Check a model's key spacing before reading its sheets.
+- **The MEKA's cannons hang on bone_0099 / bone_009A** (under her wrists) and bone_08FD (under Spine_1): 2375 turns them 110-121 degrees
+  end to end, and the mask's no-`bone_*` rule left the cannons level. `UpperBody.aimMask` takes those three names under those parents
+  only (Sojourn's and Jetpack Cat's bones of the same names hang elsewhere).
+- **A hero switch clears the picks** (`HeroAnimator.sheetNames`): the first frame of a new model posed under the last hero's names, and
+  Cassidy after Pharah cached "no sheet" (found playing).
+- **Measured in game** (`aimcheck` barrel pitch at aim -70 / 0 / +70, standing; run record
+  [aim_95](../testing/runs/aim_95/run_2026-11-13.md)): Tracer -70 / -13 / +40, Pharah -79 / -9 / +61, Cassidy -81 / -14 / +59, Junkrat
+  -71 / -1 / +68, pilot -83 / -27 / +43; the MEKA has no barrel to read: its cannons by eye. The down ends short of +70 are the sheets'
+  own (Pharah's stand bends 18 down, the pilot's 22). **Cassidy's run holds his gun down** (barrel +85 at any aim): his run sheet
+  1425 turns Arm_R 13 and Weapon_R 24 degrees, mostly his head; that's the data's for that run set.
+- **Not done:** D.Va's MEKA while firing (dfE5 cat1A5: 32D7 `add_move` on the stand and run) has no client state; the pilot's crouch
+  sheet (`add_base_se1_se1_se1_crouch_move`, 6 x 7, no level frame within 25 degrees) falls back to her stand's; Cassidy's dfE5 catB6
+  stand (130E, +26 to -55) is unused, as is the catB6 state.
+
 ## What it moves
 `UpperBody.aimMask`: the named upper-body bones, and **bone_0605 / bone_0606**, because Ana's rifle and Sojourn's Railgun hang on hp 00C9 = bone_0606 under the
 pelvis, not in the arm chain. Without them the arms lift and the gun stays level. The head's own look turns the rest: `headPitch - AimSheet.pitchAt`, the chain's
@@ -62,7 +101,8 @@ So the +-90 mapping lands the guns on the aim to a few degrees (Ana, Sojourn, L�
   ends, its grip in the hand, on every hero, standing, moving, crouched, in the air, and Ana scoped, Sombra stealthed, Brigitte with her shield up.
 - A sheet's change of state doesn't pop at a steep pitch.
 - **Not done:** the aim's yaw columns (the body always faces the aim, so never needed); Sombra's `add_aim_hack*` (no client state says she's hacking);
-  Sojourn's `add_slide_dir_*` and Juno's `add_double_jump*` (their sheets exist, the stand's or air's plays); D.Va's (not on `next`).
+  Sojourn's `add_slide_dir_*` and Juno's `add_double_jump*` (their sheets exist, the stand's or air's plays); the newer heroes' gaps
+  (above).
 - **Ours:** the driver's range. Pitch +-90 to the line's ends, the old code's choice, which lands the guns along the aim in the shots; df 0xB6's own scale isn't read.
 
 ## Lúcio's wall-ride lean (#105, 2026-11-05)

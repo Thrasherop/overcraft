@@ -45,8 +45,8 @@
 0-36_00000000352D = fusion_se0   # 0.3333 s; set 019B alias A5 (Fusion Cannons fire / end (050A #349 / #352) (H)); seq[0]
 0-36_00000000334B = fusion_se1   # 2 s; set 019B alias A5 (Fusion Cannons fire / end (050A #349 / #352) (H)); seq[1] df1F9=cat82
 0-36_000000003329 = mech_spawn_sm0   # 1 s; set 019B alias 435 (the mech's spawn (0276 #176) (H)); ik ik sm[0]; on 2 paths
-0-36_0000000034E4 = a13   # 0.8 s; set 019B alias 13 (1P (L)); rand[0] @13; on 2 paths
-0-36_0000000034E5 = aim   # 0.8 s; set 019B alias 9D (1D blend -1 / 0 / +1 (L: aim pitch)); rand[1] @9D; on 2 paths
+0-36_0000000034E4 = melee   # (was a13: quick melee variant A, alias D tree 56B random child 0, H; found 2026-11-16) 0.8 s; set 019B alias 13 (1P (L)); rand[0] @13; on 2 paths
+0-36_0000000034E5 = melee_2   # (was aim, read as aim pitch: quick melee variant B, alias D tree 56B random child 1, H) 0.8 s; set 019B alias 9D (1D blend -1 / 0 / +1 (L: aim pitch)); rand[1] @9D; on 2 paths
 0-36_0000000034E8 = knockdown_start   # 1.1667 s; set 019B alias 64 (shared CC (224E)); -
 0-36_0000000034EA = knockdown_end   # 1 s; set 019B alias 66 (shared CC); -
 0-36_0000000034E9 = knockdown   # 1 s; set 019B alias 65 (shared CC); -
