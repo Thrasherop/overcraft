@@ -66,9 +66,7 @@ public class CaptiveSunEntity extends OwProjectile {
 	@Override
 	public void tick() {
 		super.tick();
-		if (level() instanceof ServerLevel level && isAlive()) {
-			level.sendParticles(net.minecraft.core.particles.ParticleTypes.FLAME, getX(), getY(), getZ(), 3, 0.15, 0.15, 0.15, 0.01);
-		}
+		// (its look in flight is the client's: its model and IllariFx.ballFlight, 4983; #150: a vanilla FLAME was left on top)
 	}
 
 	/** It passes through enemies (W: "passes through enemies"), each taking its 5 once; it flies on. */

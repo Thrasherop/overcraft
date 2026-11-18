@@ -4,7 +4,13 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-17: 0.3.78 on next (not on main yet)
+## 2026-11-17: 0.3.79 on next (not on main yet)
+
+- **The last Minecraft particles are gone (#150):** Illari's Outburst, Sunburn, Solar Flare, and her pylon's heals, hits and
+  breaking now draw her own effects; Torbjörn's turret breaking, D.Va's Light Gun hits and the Captive Sun in flight no longer
+  use Minecraft's particles either.
+
+## 2026-11-17: 0.3.78
 
 - **Jetpack Cat, Catnapper (#142):** a carried mob now hangs on her rope and swings as she flies and turns, like a Lifeline
   tow, instead of being pinned to a point under her. A carried enemy player is held as before.

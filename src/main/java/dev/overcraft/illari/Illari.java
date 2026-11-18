@@ -408,7 +408,8 @@ public final class Illari implements HeroKit {
 				Combat.addFireForHealing(player, healed);
 			}
 			IllariSounds.at(player.level(), "flare.hit", e.getBoundingBox().getCenter(), 30);
-			player.level().sendParticles(ParticleTypes.END_ROD, e.getX(), e.getY() + e.getBbHeight() / 2, e.getZ(), 8, 0.3, 0.4, 0.3, 0.03);
+			// Solar Flare's heal on them, 6CF2 (#150: END_ROD stood in)
+			Effects.play(player.level(), "illari_flare_heal", e.getBoundingBox().getCenter(), Vec3.ZERO, null, 0, player);
 		}
 	}
 
@@ -537,13 +538,14 @@ public final class Illari implements HeroKit {
 			Combat.addFireForHealing(owner, healed);
 		}
 		ServerLevel level = (ServerLevel) pylon.level();
-		level.sendParticles(ParticleTypes.HAPPY_VILLAGER, target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ(), 4, 0.3, 0.4, 0.3, 0);
+		// its heal arriving, 4E01 (#150: HAPPY_VILLAGER stood in)
+		Effects.play(level, "illari_pylon_heal", target.getBoundingBox().getCenter(), Vec3.ZERO, null, 0, owner);
 		IllariSounds.all(level, "pylon.heal_hit", target.getBoundingBox().getCenter(), 20);
 	}
 
 	public static void pylonHit(ServerPlayer owner, HealingPylonEntity pylon, @Nullable Entity by) {
 		ServerLevel level = (ServerLevel) pylon.level();
-		level.sendParticles(ParticleTypes.CRIT, pylon.getX(), pylon.getY() + 0.4, pylon.getZ(), 4, 0.2, 0.2, 0.2, 0.1);
+		Effects.play(level, "illari_pylon_hit", pylon.position().add(0, 0.4, 0), Vec3.ZERO, null, 0, owner);
 	}
 
 	/** Broken by her enemies: her 14 s cooldown (it was hit), her line (D 3DF5 #428 -> 13E1). */
@@ -551,7 +553,7 @@ public final class Illari implements HeroKit {
 		HeroState s = HeroManager.state(owner);
 		ServerLevel level = (ServerLevel) pylon.level();
 		IllariSounds.split(owner, "pylon.destroyed", pylon.position(), 40);
-		level.sendParticles(ParticleTypes.EXPLOSION, pylon.getX(), pylon.getY() + 0.4, pylon.getZ(), 1, 0, 0, 0, 0);
+		Effects.play(level, "illari_pylon_gone", pylon.position().add(0, 0.4, 0), Vec3.ZERO, null, 0, owner);
 		if (s != null && s.hero == Hero.ILLARI && pylon.getUUID().equals(s.illari.pylon)) {
 			s.illari.pylon = null;
 			s.ability2Cooldown = Ow.ticks(pylonCooldown(s, true));
@@ -636,8 +638,8 @@ public final class Illari implements HeroKit {
 			hit = true;
 			IllariSounds.split(player, "outburst.hit_enemy", e.getBoundingBox().getCenter(), 30);
 		}
-		level.sendParticles(ParticleTypes.FLAME, at.x, player.getY() + 0.2, at.z, 30, 1.2, 0.2, 1.2, 0.05);
-		level.sendParticles(BEAM_DUST, at.x, player.getY() + 0.2, at.z, 30, 1.5, 0.2, 1.5, 0);
+		// Outburst, 479A at her +1 m (#150: FLAME and BEAM_DUST stood in)
+		Effects.play(level, "illari_outburst", new Vec3(at.x, player.getY(), at.z), Vec3.ZERO, null, 0, player);
 		Voice.say(player, hit ? "outburst_hit" : "outburst", 1);
 	}
 
@@ -699,7 +701,7 @@ public final class Illari implements HeroKit {
 				float dealt = Combat.damage(e, Combat.blast(e.level(), null, owner), SUNBURN_DAMAGE / 6, SUNBURN_BLOW);
 				dealt(owner, dealt, e, false);
 				if (e.level() instanceof ServerLevel level) {
-					level.sendParticles(ParticleTypes.SMALL_FLAME, e.getX(), e.getY() + e.getBbHeight() / 2, e.getZ(), 3, 0.2, 0.3, 0.2, 0.01);
+					Effects.play(level, "illari_sunburn", e.getBoundingBox().getCenter(), Vec3.ZERO, null, 0, owner);
 				}
 				if (b.next() + 10 > b.until()) {
 					it.remove();

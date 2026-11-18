@@ -287,3 +287,18 @@ From the effects of #150 (Tracer, D.Va, Illari, Torbjorn, Cassidy, Pharah, Junkr
 - **Muzzle flashes in the shooter's own first person**: a sixth the size and no glow (a third still whited out the pistols).
 - **Testing effects**: `fxnear r` lists live particles (attached ones aren't counted); the dev `fx` command plays 3 m ahead,
   inside the near-fade of effects that fade within 3 m of the camera, so it can show nothing for them.
+
+## The last vanilla stand-ins gone (2026-11-17, #150)
+No server code sends a vanilla particle now (`grep sendParticles(.*ParticleTypes` is empty). The last ten, each replaced from its
+hero's effects reference and played:
+- **Illari** (`IllariFx`, tools/reference/illari-effects.md): Solar Flare's heal 6CF2 (`illari_flare_heal`: 13 particles on the
+  flare, the reference's 13-19 streaks), the pylon's heal arriving 4E01 (`illari_pylon_heal`: 20-34 per heal), the pylon hit (51E9's
+  small sphere, ours: 5), destroyed 51E9 / 51EB (`illari_pylon_gone`: a star flash in its place), Outburst 479A (`illari_outburst`:
+  89 particles, the ground rings seen in third person), Sunburn's burn 254F (`illari_sunburn`: a flame on the husk's chest).
+- **Torbjörn's turret destroyed** (`torb_turret_gone`): the data has no look (sounds only), so his slag's and rivet's hit bursts
+  (ours): 18 particles, a spark burst where it stood.
+- **D.Va's Light Gun hit** (`dva_light_hit`): its contact spark isn't extracted, so a small pink glow and flash (ours): 2 per hit.
+- **Captive Sun:** a vanilla FLAME was still sent each tick on top of the client's model and `ballFlight`; removed.
+**How they were checked:** the harness's `state` field `fx` (the live particle count) sampled every 0.05-0.1 s around each moment,
+plus full-resolution `screenshot`s (`run/screenshots/il_*.png`, `tb_turret_gone.png`). **Lesson:** an effect at her feet or a 0.3 s
+burst is easy to miss in first person; the `fx` count says whether it drew at all, then F5 (third person) shows it.

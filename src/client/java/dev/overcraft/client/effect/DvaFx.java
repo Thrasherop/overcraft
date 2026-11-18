@@ -418,6 +418,20 @@ public final class DvaFx {
 				enemy);
 			return true;
 		}
+		if (e.effect().equals("dva_light_hit")) {
+			// the Light Gun's hit (#150: END_ROD stood in): its contact set's spark (pilot 05EA) isn't extracted, so ours, a small
+			// pink glow and a flash the size of a pistol round's
+			Vec3 at = new Vec3(e.x(), e.y(), e.z());
+			Particle g = Fx.soft("glow", enemy ? Palette.ENEMY : Palette.DVA_ABSORB);
+			if (g != null) {
+				Fx.add(g.at(at).life(0.2f).size(0.3f, 0.15f).alpha(0.9f).fade(0.02f, 0.6f).nearFade(0.2f));
+			}
+			Particle f = Fx.particle("dva_absorb_flash#8", enemy ? Palette.ENEMY : Palette.DVA_ABSORB);
+			if (f != null) {
+				Fx.add(f.at(at).life(0.15f).size(0.25f, 0.4f).fade(0.01f, 0.6f).nearFade(0.2f));
+			}
+			return true;
+		}
 		if (e.effect().equals("dva_missile_hit")) {
 			missileHit(new Vec3(e.x(), e.y(), e.z()), enemy);
 			return true;

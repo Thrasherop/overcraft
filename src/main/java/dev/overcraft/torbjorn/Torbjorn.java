@@ -465,7 +465,7 @@ public final class Torbjorn implements HeroKit {
 	 */
 	public static void turretGone(TurretEntity turret, @Nullable ServerPlayer owner, boolean broken) {
 		if (turret.level() instanceof ServerLevel level) {
-			level.sendParticles(ParticleTypes.EXPLOSION, turret.getX(), turret.getY() + 0.5, turret.getZ(), 1, 0, 0, 0, 0);
+			dev.overcraft.hero.Effects.play(level, "torb_turret_gone", turret.getBoundingBox().getCenter(), Vec3.ZERO, null, 0, owner);
 			TorbjornSounds.all(level, "turret.destroyed", turret.position(), 60);
 		}
 		if (owner == null) {

@@ -955,6 +955,12 @@ public final class TorbjornFx {
 			case "torb_muzzle" -> muzzleFlash(entity, at, dir, false, enemy);
 			case "torb_alt_muzzle" -> muzzleFlash(entity, at, dir, true, enemy);
 			case "torb_rivet_hit" -> rivetHit(at, dir);
+			// his turret broken or gone (#150: EXPLOSION stood in). The data has no look for it (0228 / 0229 / 0230 sounds only, 0519 a
+			// material: torbjorn-effects.md), so ours: his slag's and his rivet's hit bursts together
+			case "torb_turret_gone" -> {
+				slagHit(at);
+				rivetHit(at, UP);
+			}
 			case "torb_pellet_hit" -> pelletHit(at, dir, true);
 			case "torb_pellet_world" -> pelletHit(at, dir, false);
 			case "torb_slag_launch" -> slagLaunch(entity, at, dir, enemy);

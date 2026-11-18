@@ -56,6 +56,12 @@ public final class IllariFx {
 			case "illari_burst" -> burst(at);
 			case "illari_mark" -> mark(at, e.variant() / 100f);
 			case "illari_sunstruck" -> sunstruck(at);
+			case "illari_flare_heal" -> flareHeal(at);
+			case "illari_pylon_heal" -> pylonHeal(at);
+			case "illari_pylon_hit" -> pylonHit(at);
+			case "illari_pylon_gone" -> pylonGone(at);
+			case "illari_outburst" -> outburst(at);
+			case "illari_sunburn" -> sunburn(at);
 			default -> {
 				return false;
 			}
@@ -411,6 +417,96 @@ public final class IllariFx {
 			Fx.add(g.at(at).life(0.35f).size(0.45f, 0.3f).alpha(0.7f).fade(0.02f, 0.6f).nearFade(0.3f));
 		}
 		sparks(at, 15, 0.75f, 1f, 0.03f, 0.3f);
+	}
+
+	// ---- the moments that had vanilla stand-ins (#150; tools/reference/illari-effects.md) ----
+
+	private static final Vec3 UP = new Vec3(0, 1, 0);
+
+	/** A soft glow from {@code from} to {@code to} metres over {@code life} s. */
+	private static void glow(Vec3 at, Palette palette, float from, float to, float life, float alpha) {
+		Particle g = Fx.soft("glow", palette);
+		if (g != null) {
+			Fx.add(g.at(at).life(life).size(from, to).alpha(alpha).fade(0.02f, 0.6f).nearFade(Math.max(0.3f, to / 4)));
+		}
+	}
+
+	/** A flat ring on the ground under {@code at} ({@code drop} m down), {@code from} to {@code to} m across. */
+	private static void groundRing(Vec3 at, double drop, Palette palette, float from, float to, float life) {
+		Particle r = Fx.particle("cat_ring", palette);
+		if (r != null) {
+			Fx.add(r.at(at.subtract(0, drop, 0)).normal(UP).lift(UP).life(life).size(from, to).easeOut().alpha(0.85f).fade(0.02f, 0.6f));
+		}
+	}
+
+	/** Solar Flare's heal on an ally, 6CF2 (#481, hp 0012): 18982 cones 0.35-0.6 m, 210FD streaks 13-19 at 15-50 m/s, 8C0 3 m flashes. */
+	private static void flareHeal(Vec3 at) {
+		glow(at, SUN, 0.6f, 3f, 0.35f, 0.7f);
+		glow(at, Palette.IL_SHOT, 0.35f, 0.6f, 0.5f, 0.9f);
+		sparks(at, 13 + Fx.RANDOM.nextInt(7), 15, 50, 0.05f, 0.25f);
+	}
+
+	/** The pylon's heal arriving, 4E01 (3D81 #406, hp 0001): rings 0.35-0.5 m, EC38 2.25-3.25 m, sparks 15-35 at 2-6.5 m/s. */
+	private static void pylonHeal(Vec3 at) {
+		glow(at, Palette.IL_SHOT, 0.35f, 0.5f, 0.3f, 0.9f);
+		glow(at, SUN, 2.25f, 3.25f, 0.4f, 0.35f);
+		sparks(at, 15 + Fx.RANDOM.nextInt(21), 2, 6.5f, 0.03f, 0.35f);
+	}
+
+	/** The pylon hit: 51E9's sphere at its small end, 0.3 m (ours: the data has no hit look of its own). */
+	private static void pylonHit(Vec3 at) {
+		glow(at, SUN, 0.3f, 0.45f, 0.2f, 0.8f);
+		sparks(at, 4, 2, 4, 0.03f, 0.2f);
+	}
+
+	/**
+	 * The pylon destroyed or removed, 51E9 (#860): sphere 1385 0.3-1.5 m, streaks 1CAFA x5, A7B6 4 m 0.38 s; 51EB (#859): 2006C lens
+	 * 0.1-1 m, 2007A 4 m, 1CAFA x3.
+	 */
+	private static void pylonGone(Vec3 at) {
+		glow(at, SUN, 0.3f, 1.5f, 0.4f, 0.9f);
+		glow(at, Palette.IL_SHOT, 1f, 4f, 0.38f, 0.45f);
+		Particle star = Fx.particle("illari_star", SUN);
+		if (star != null) {
+			Fx.add(star.at(at).life(0.35f).size(0.1f, 1f).spin(Fx.RANDOM.nextFloat() * 6.28f, 0).fade(0.02f, 0.6f).nearFade(0.5f));
+		}
+		sparks(at, 8, 6, 14, 0.06f, 0.3f);
+	}
+
+	/**
+	 * Outburst, 479A (3B38 #712, at her +1 m, 0.3 s): rings EBEF 2.5 m and A216 1.35 m at -1 m, EBEF 1.5 m at -1.25 m; sphere 1385 8 m
+	 * 0.75 s and 7 m 0.35 s; sparks 1F35 35-75 at 16-30 m/s and 8F2 100-175 at 20-50 m/s. Drawn: the rings, an 8 m shell at 0.25
+	 * alpha (ours, as the reference says), the sparks (a share of the counts: ours).
+	 */
+	private static void outburst(Vec3 at) {
+		Vec3 core = at.add(0, 1, 0);
+		groundRing(core, 1, FIRE, 0.5f, 2.5f, 0.3f);
+		groundRing(core, 1, SUN, 0.4f, 1.35f, 0.3f);
+		groundRing(core, 1.25, FIRE, 0.3f, 1.5f, 0.3f);
+		float[] sphere = Fx.mesh("cat_sphere");
+		Particle shell = sphere == null ? null : Fx.particle("dva_solid", SUN);
+		if (shell != null) {
+			Fx.add(shell.mesh(sphere, new Vec3(1, 0, 0), UP).at(core.subtract(0, 4, 0)).life(0.75f).size(2f, 8f).easeOut().alpha(0.25f)
+				.fade(0.02f, 0.6f).nearFade(2));
+		}
+		glow(core, SUN, 2f, 7f, 0.35f, 0.5f);
+		sparks(core, 35 + Fx.RANDOM.nextInt(41), 16, 30, 0.05f, 0.3f);
+		sparks(core, 50, 20, 50, 0.03f, 0.25f);
+	}
+
+	/** Sunburn's burn on the target, 254F (10 s, hp 0001): sparks 1F35 4 at a time, 0.025-0.05 m; flames 0.5-0.75 m 7-10 a second. */
+	private static void sunburn(Vec3 at) {
+		for (int i = 0; i < 4; i++) {
+			Particle flame = Fx.particle("illari_flame", FIRE);
+			if (flame == null) {
+				break;
+			}
+			Vec3 off = randomDir().multiply(0.3, 0.4, 0.3);
+			float size = 0.5f + 0.25f * Fx.RANDOM.nextFloat();
+			Fx.add(flame.at(at.add(off)).velocity(new Vec3(0, 1, 0)).life(0.3f + 0.15f * Fx.RANDOM.nextFloat()).size(size, size * 0.6f)
+				.fade(0.05f, 0.5f).nearFade(0.3f));
+		}
+		sparks(at, 4, 1, 3, 0.04f, 0.3f);
 	}
 
 	// ---- shared ----

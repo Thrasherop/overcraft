@@ -98,7 +98,7 @@ public class LightGunShotEntity extends OwProjectile {
 			// not a creature (an end crystal, a boat): hit as an arrow does
 			hit.getEntity().hurtServer(level, damageSources().thrown(this, owner), Ow.hp(DvaStats.LIGHT_GUN_DAMAGE));
 		}
-		level.sendParticles(ParticleTypes.END_ROD, at.x, at.y, at.z, 3, 0.05, 0.05, 0.05, 0.02);
+		dev.overcraft.hero.Effects.play(level, "dva_light_hit", at, Vec3.ZERO, null, 0, getOwner());
 		discard();
 	}
 
@@ -107,7 +107,7 @@ public class LightGunShotEntity extends OwProjectile {
 		super.onHitBlock(hit);
 		if (level() instanceof ServerLevel level) {
 			Vec3 at = hit.getLocation();
-			level.sendParticles(ParticleTypes.END_ROD, at.x, at.y, at.z, 2, 0.03, 0.03, 0.03, 0.01);
+			dev.overcraft.hero.Effects.play(level, "dva_light_hit", at, Vec3.ZERO, null, 0, getOwner());
 			// contact set 49D type 2 (899F + 89A1)
 			dev.overcraft.dva.DvaSounds.all(level, "gun.hit_block", at, 90);
 			discard();
