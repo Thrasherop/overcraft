@@ -4,6 +4,13 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.95
+
+- **Reloads at 2 GB, the rest of it (#166):** a third reload in a row at the launcher's default 2 GB still ran out of memory
+  while reading a hero's model file: each hero's file describes ~77,000 animation buffers in 35-52 MB of text, and it was
+  read whole into memory first. Those two lists are now read as plain numbers as they stream in. Played at 2 GB: three
+  reloads in a row passed (133 models, heap 1.35-1.48 GB), and heroes, enemy heroes, a turret and Purr's effects drew after.
+
 ## 2026-11-18: 0.3.94
 
 - **A resource reload no longer runs out of memory (#166, found testing):** with the local pack and the Minecraft launcher's
