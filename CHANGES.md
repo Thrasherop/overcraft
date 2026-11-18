@@ -4,7 +4,7 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-18: 0.3.95
+## 2026-11-18: 0.3.95 (on main; general play at 2 GB: techniques/testing/runs/genplay_0395/run.md)
 
 - **Reloads at 2 GB, the rest of it (#166):** a third reload in a row at the launcher's default 2 GB still ran out of memory
   while reading a hero's model file: each hero's file describes ~77,000 animation buffers in 35-52 MB of text, and it was
