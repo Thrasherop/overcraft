@@ -319,13 +319,18 @@ public final class Cassidy implements HeroKit {
 		Vec3 far = eye.add(dir.scale(range));
 		BlockHitResult blockHit = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 block = blockHit.getLocation();
+		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		List<Object[]> hits = new ArrayList<>();
 		for (Entity e : level.getEntities(player, new AABB(eye, block).inflate(1))) {
+			// the dragon's own box is 16 m wide: only its parts take a shot (it took every shot through the air beside it, quartered: a critique, reproduced)
+			if (e instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon) {
+				continue;
+			}
 			LivingEntity target = e instanceof EnderDragonPart part ? part.parentMob : e instanceof LivingEntity living ? living : null;
 			if (target == null || !target.isAlive() || !Allies.canHurt(player, target)) {
 				continue;
 			}
-			java.util.Optional<Vec3> hit = e.getBoundingBox().inflate(RADIUS).clip(eye, block);
+			java.util.Optional<Vec3> hit = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(RADIUS), eye, block);
 			if (hit.isPresent()) {
 				// the part it crossed, when it's one of the dragon's (its head takes the whole hit: Combat.damagePart)
 				hits.add(new Object[] {target, hit.get(), hit.get().distanceTo(eye), e instanceof EnderDragonPart part ? part : null});

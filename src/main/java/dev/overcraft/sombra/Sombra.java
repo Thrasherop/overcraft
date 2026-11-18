@@ -513,15 +513,20 @@ public final class Sombra implements HeroKit {
 		Vec3 end = eye.add(dir.scale(PISTOL_RANGE));
 		net.minecraft.world.phys.BlockHitResult blockHit = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 block = blockHit.getLocation();
+		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		LivingEntity best = null;
 		Vec3 bestAt = null;
 		double bestDist = eye.distanceToSqr(block);
 		for (net.minecraft.world.entity.Entity e : level.getEntities(player, new AABB(eye, block).inflate(1))) {
+			// the dragon's own box is 16 m wide: only its parts take a shot (it took every shot through the air beside it, quartered: a critique, reproduced)
+			if (e instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon) {
+				continue;
+			}
 			LivingEntity target = e instanceof EnderDragonPart part ? part.parentMob : e instanceof LivingEntity living ? living : null;
 			if (target == null || !target.isAlive() || !Allies.canHurt(player, target)) {
 				continue;
 			}
-			java.util.Optional<Vec3> hit = e.getBoundingBox().inflate(PISTOL_RADIUS).clip(eye, block);
+			java.util.Optional<Vec3> hit = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(PISTOL_RADIUS), eye, block);
 			if (hit.isPresent() && hit.get().distanceToSqr(eye) < bestDist) {
 				best = target;
 				bestAt = hit.get();

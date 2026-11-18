@@ -459,7 +459,7 @@ public final class Brigitte implements HeroKit {
 			double best = Double.MAX_VALUE;
 			for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, new AABB(a, end).inflate(WHIP_RADIUS + 1),
 				e -> e.isAlive() && Allies.canHurt(player, e))) {
-				java.util.Optional<Vec3> at = e.getBoundingBox().inflate(WHIP_RADIUS).clip(a, end);
+				java.util.Optional<Vec3> at = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(WHIP_RADIUS), a, end);
 				if (at.isPresent() && at.get().distanceToSqr(a) < best) {
 					hit = e;
 					best = at.get().distanceToSqr(a);
@@ -699,6 +699,10 @@ public final class Brigitte implements HeroKit {
 		float aimYaw = player.getYRot();
 		float aimPitch = player.getXRot();
 		for (net.minecraft.world.entity.Entity e : level.getEntities(player, player.getBoundingBox().inflate(FLAIL_RANGE + 1))) {
+			// the dragon's own box is 16 m wide: only its parts take a shot (it took every shot through the air beside it, quartered: a critique, reproduced)
+			if (e instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon) {
+				continue;
+			}
 			LivingEntity target = e instanceof EnderDragonPart part ? part.parentMob : e instanceof LivingEntity living ? living : null;
 			if (target == null || !target.isAlive() || !Allies.areaHits(player, target) || s.flailHit.contains(target.getId())) {
 				continue;

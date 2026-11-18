@@ -227,10 +227,15 @@ public final class Illari implements HeroKit {
 		Vec3 far = eye.add(dir.scale(SHOT_RANGE));
 		BlockHitResult blockHit = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 block = blockHit.getLocation();
+		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		Entity best = null;
 		Vec3 bestAt = null;
 		double bestD = Double.MAX_VALUE;
 		for (Entity e : level.getEntities(player, new AABB(eye, block).inflate(1))) {
+			// the dragon's own box is 16 m wide: only its parts take a shot (it took every shot through the air beside it, quartered: a critique, reproduced)
+			if (e instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon) {
+				continue;
+			}
 			LivingEntity target = e instanceof EnderDragonPart part ? part.parentMob : e instanceof LivingEntity living ? living : null;
 			// a pylon stops her shot only when it's an enemy's: her own and her side's let it through (the critic, 2026-11-14: her own
 			// pylon ate her shots)
@@ -241,7 +246,7 @@ public final class Illari implements HeroKit {
 			if (!pylon && (target == null || !target.isAlive() || !Allies.canHurt(player, target))) {
 				continue;
 			}
-			var hit = e.getBoundingBox().inflate(SHOT_RADIUS).clip(eye, block);
+			var hit = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(SHOT_RADIUS), eye, block);
 			if (hit.isPresent() && hit.get().distanceTo(eye) < bestD) {
 				best = e;
 				bestAt = hit.get();
@@ -354,13 +359,14 @@ public final class Illari implements HeroKit {
 		Vec3 eye = player.getEyePosition();
 		Vec3 far = eye.add(player.getViewVector(1.0f).scale(BEAM_RANGE));
 		Vec3 block = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
+		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		LivingEntity best = null;
 		double bestD = Double.MAX_VALUE;
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(eye, block).inflate(1))) {
 			if (!Allies.isAlly(player, e)) {
 				continue;
 			}
-			var hit = e.getBoundingBox().inflate(BEAM_RADIUS).clip(eye, block);
+			var hit = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(BEAM_RADIUS), eye, block);
 			if (hit.isPresent() && hit.get().distanceTo(eye) < bestD) {
 				best = e;
 				bestD = hit.get().distanceTo(eye);

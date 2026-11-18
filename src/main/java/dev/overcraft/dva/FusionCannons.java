@@ -152,12 +152,15 @@ public final class FusionCannons {
 		// the creatures any pellet could reach: one search a volley, not one a pellet
 		double widen = Math.tan(Math.toRadians(FUSION_SPREAD)) * FUSION_RANGE + 2;
 		AABB area = new AABB(eye, eye.add(look.scale(FUSION_RANGE))).inflate(widen);
-		List<Entity> near = level.getEntities(player, area, e -> e instanceof LivingEntity || e instanceof EnderDragonPart);
+		// (not the dragon's own 16 m box: only its parts take a shot, a critique)
+		List<Entity> near = level.getEntities(player, area, e -> e instanceof LivingEntity && !(e instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon)
+			|| e instanceof EnderDragonPart);
 		Map<LivingEntity, Hit> hits = new LinkedHashMap<>();
 		Vec3 wall = null;
 		for (Vec3 dir : dirs) {
 			Vec3 end = eye.add(dir.scale(FUSION_RANGE));
 			Vec3 block = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
+			block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 			LivingEntity best = null;
 			Vec3 bestAt = null;
 			double bestDist = eye.distanceToSqr(block);
@@ -167,7 +170,7 @@ public final class FusionCannons {
 					// allies are passed through (it doesn't heal)
 					continue;
 				}
-				java.util.Optional<Vec3> hit = e.getBoundingBox().inflate(FUSION_RADIUS).clip(eye, block);
+				java.util.Optional<Vec3> hit = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(FUSION_RADIUS), eye, block);
 				if (hit.isPresent() && hit.get().distanceToSqr(eye) < bestDist) {
 					best = target;
 					bestAt = hit.get();

@@ -320,10 +320,11 @@ public final class Ashe implements HeroKit {
 		Vec3 far = eye.add(dir.scale(RANGE));
 		BlockHitResult blockHit = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 block = blockHit.getLocation();
+		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		Hit hit = firstHit(level, player, eye, block, RADIUS);
 		DynamiteEntity stick = s.ashe.dynamite == null ? null : dynamite(player, s.ashe);
 		if (stick != null) {
-			java.util.Optional<Vec3> on = stick.getBoundingBox().inflate(DYNAMITE_SHOOT_BOX / 2).clip(eye, block);
+			java.util.Optional<Vec3> on = dev.overcraft.hero.Combat.clipFrom(stick.getBoundingBox().inflate(DYNAMITE_SHOOT_BOX / 2), eye, block);
 			if (on.isPresent() && (hit == null || on.get().distanceTo(eye) < hit.metres)) {
 				// shot: it goes off at once (D 1502: the Viper hits it like a target)
 				shotFx(level, player, player, fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD), on.get(), scoped ? SHOT_SCOPED : SHOT_HIP, null, false);
@@ -386,11 +387,15 @@ public final class Ashe implements HeroKit {
 	static @Nullable Hit firstHit(ServerLevel level, Entity source, LivingEntity side, Vec3 from, Vec3 to, double radius) {
 		Hit best = null;
 		for (Entity e : level.getEntities(source, new AABB(from, to).inflate(1))) {
+			// the dragon's own box is 16 m wide: only its parts take a shot (it took every shot through the air beside it, quartered: a critique, reproduced)
+			if (e instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon) {
+				continue;
+			}
 			LivingEntity target = e instanceof EnderDragonPart part ? part.parentMob : e instanceof LivingEntity living ? living : null;
 			if (target == null || !target.isAlive() || target == source || target instanceof BobEntity || !Allies.canHurt(side, target)) {
 				continue;
 			}
-			java.util.Optional<Vec3> on = e.getBoundingBox().inflate(radius).clip(from, to);
+			java.util.Optional<Vec3> on = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(radius), from, to);
 			if (on.isPresent()) {
 				double d = on.get().distanceTo(from);
 				if (best == null || d < best.metres) {
@@ -543,7 +548,7 @@ public final class Ashe implements HeroKit {
 		for (Vec3 dir : pellets(look, COACH_SPREAD / 2)) {
 			Vec3 far = eye.add(dir.scale(COACH_RANGE));
 			BlockHitResult blockHit = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
-			Hit hit = firstHit(level, player, eye, blockHit.getLocation(), COACH_PELLET_RADIUS);
+			Hit hit = firstHit(level, player, eye, dev.overcraft.hero.Combat.crystalStop(player, eye, blockHit.getLocation()), COACH_PELLET_RADIUS);
 			if (hit == null) {
 				// a pellet's stop on the world: the hit 25CF, small (2B61 m_BF7914D4; ours half size: AsheFx)
 				if (blockHit.getType() == HitResult.Type.BLOCK && level.getRandom().nextInt(3) == 0) {

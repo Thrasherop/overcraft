@@ -4,6 +4,51 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.107
+
+- **End crystals (#169):** a hitscan shot passed through an end crystal, so only projectiles could pop one. Now the first
+  crystal on a shot's line pops and the shot ends there, as an arrow does in Minecraft. If something the shooter can hurt is
+  nearer, that takes the shot and the crystal is left alone. Reproduced: two Cassidy shots went through a crystal. With the
+  fix, one Cassidy shot popped it, and Widowmaker's shot and Ashe's Coach Gun each popped one. A husk standing in front of a
+  crystal took the shot (20 → 14.5) and the crystal stayed.
+- **Healing Blossom (#169), checked:** no change needed. It goes through terrain when locked on, as the wiki says. An enemy
+  Sigma barrier already stops it (`Barriers.intercept`), and a friendly barrier lets it through. Tested in the game.
+
+## 2026-11-18: 0.3.106
+
+- **Point-blank shots (#169):** a hitscan shot fired from inside a big mob's box (a large slime or magma cube, or a mob pressed
+  into you) went straight through it. It now hits. Reproduced: three Cassidy shots from inside a big slime left it at 100;
+  on the fix each took 11.2.
+
+## 2026-11-18: 0.3.105
+
+- **Hitscan against the Ender Dragon, from an independent critique:** every hitscan weapon (Cassidy, Tracer, Widowmaker,
+  Sombra, Ashe, Illari, Sojourn, Juno, Brigitte's flail, D.Va) hit the dragon's whole 16 m wide box, so a shot through empty
+  air beside it still hurt it, always at a quarter. Now only its parts take a shot (its head the whole hit, its body a quarter,
+  as in Minecraft). Reproduced (three shots 7 m beside it: 2.4 each), replayed on a frozen dragon: beside it nothing, at its
+  body 2.4 a shot. Three smaller findings are in #169.
+
+## 2026-11-18: 0.3.104
+
+- **Hero mode and plain Minecraft, after an independent critique** (checked on the fix in the game; not first reproduced on
+  the old build):
+  - Interact (F) in hero mode used the hidden held item: it could place the block, pour a lava bucket or throw an ender
+    pearl. It now only opens doors, chests and the like, as an empty hand would (dirt in hand: nothing placed, the door opened).
+  - The hero's own regeneration kept healing in Minecraft mode, even starving. Minecraft mode now heals as Minecraft does
+    (food 8: health held at 12 for 10 s).
+  - A safe landing (Juno always, others after a movement ability) also cancelled ender pearl and dripstone damage. Only real
+    falls are excused now (Juno took the pearl's 5).
+
+## 2026-11-18: 0.3.103
+
+- **Perks, after an independent critique:**
+  - After picking a perk in one world, picks in a newer world (or a server whose clock was behind) did nothing for hours: the
+    menu opened but no click picked. Reproduced (a world at 97,221 ticks, then a new one at 284); fixed and replayed.
+  - Tracer's Pulse Bomb gave perk progress for blowing up cows and villagers. It now counts only enemies (a cow: +0.002, the
+    passive drift; a husk: +0.22).
+  - Not reproduced in the game, fixed from the code: no level-up chime when switching to a hero who had a higher saved level,
+    and coming back alive from the End no longer refills the hero as a respawn does.
+
 ## 2026-11-18: 0.3.102 (on main; general play at 2 GB: techniques/testing/runs/genplay_0102/run.md)
 
 - **No ult charge for hurting your own side (#168):** with the friendly-fire hero option on, damage to allies (players on

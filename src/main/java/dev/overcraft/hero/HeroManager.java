@@ -874,7 +874,9 @@ public final class HeroManager {
 			: state.hero == Hero.TRACER && state.has(Perk.TRACER_TEMPORAL_REGEN) ? Ow.ticks(dev.overcraft.tracer.TracerStats.TEMPORAL_REGEN_DELAY)
 			: Combat.REGEN_DELAY;
 		boolean always = state.hero == Hero.MERCY && dev.overcraft.mercy.Mercy.valkyrie(state);
-		if ((always || Combat.now(player) - state.lastDamagedTick >= regenDelay) && player.getHealth() < player.getMaxHealth()) {
+		// in hero mode only: in Minecraft mode the food bar heals as Minecraft's does, and this on top healed a starving player (a
+		// critique)
+		if (heroMode(player) && (always || Combat.now(player) - state.lastDamagedTick >= regenDelay) && player.getHealth() < player.getMaxHealth()) {
 			double maxOw = Ow.toOw(player.getMaxHealth());
 			Combat.heal(player, (Combat.REGEN_FLAT + Combat.REGEN_PERCENT * maxOw) / 20.0);
 		}

@@ -331,6 +331,7 @@ public final class Widowmaker implements HeroKit {
 		Vec3 far = eye.add(dir.scale(RANGE));
 		BlockHitResult blockHit = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 block = blockHit.getLocation();
+		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		List<Hit> hits = hits(level, player, eye, block, radius);
 		Vec3 muzzle = fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD);
 		Vec3 stop = block;
@@ -381,11 +382,15 @@ public final class Widowmaker implements HeroKit {
 		List<Hit> found = new ArrayList<>();
 		Set<LivingEntity> seen = new HashSet<>();
 		for (Entity e : level.getEntities(shooter, new AABB(from, to).inflate(1))) {
+			// the dragon's own box is 16 m wide: only its parts take a shot (it took every shot through the air beside it, quartered: a critique, reproduced)
+			if (e instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon) {
+				continue;
+			}
 			LivingEntity target = e instanceof EnderDragonPart part ? part.parentMob : e instanceof LivingEntity living ? living : null;
 			if (target == null || !target.isAlive() || target == shooter || !Allies.canHurt(shooter, target)) {
 				continue;
 			}
-			java.util.Optional<Vec3> on = e.getBoundingBox().inflate(radius).clip(from, to);
+			java.util.Optional<Vec3> on = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(radius), from, to);
 			if (on.isPresent()) {
 				double d = on.get().distanceTo(from);
 				found.add(new Hit(target, on.get(), d, e instanceof EnderDragonPart part ? part : null));

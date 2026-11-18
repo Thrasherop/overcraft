@@ -435,6 +435,7 @@ public final class Ana implements HeroKit {
 		Vec3 end = eye.add(player.getViewVector(1.0f).scale(SCOPED_RANGE));
 		var blockHit = player.level().clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 block = blockHit.getLocation();
+		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		LivingEntity best = null;
 		boolean heal = false;
 		double bestDist = eye.distanceToSqr(block);
@@ -447,7 +448,7 @@ public final class Ana implements HeroKit {
 				continue;
 			}
 			double margin = ally ? SCOPED_RADIUS_ALLY : SCOPED_RADIUS_ENEMY;
-			java.util.Optional<Vec3> hit = e.getBoundingBox().inflate(margin).clip(eye, block);
+			java.util.Optional<Vec3> hit = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(margin), eye, block);
 			if (hit.isPresent() && hit.get().distanceToSqr(eye) < bestDist) {
 				best = e;
 				heal = ally;
@@ -455,7 +456,7 @@ public final class Ana implements HeroKit {
 			}
 		}
 		if (best != null) {
-			Vec3 at = best.getBoundingBox().inflate(heal ? SCOPED_RADIUS_ALLY : SCOPED_RADIUS_ENEMY).clip(eye, block).orElse(best.getEyePosition());
+			Vec3 at = dev.overcraft.hero.Combat.clipFrom(best.getBoundingBox().inflate(heal ? SCOPED_RADIUS_ALLY : SCOPED_RADIUS_ENEMY), eye, block).orElse(best.getEyePosition());
 			dose(player, best, heal, null, at);
 			tracer(player, at);
 		} else if (blockHit.getType() == HitResult.Type.BLOCK) {
