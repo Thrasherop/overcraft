@@ -257,6 +257,13 @@ public class Overcraft implements ModInitializer {
 			if (Combat.refusesDamage(entity, source)) {
 				return false;
 			}
+			// a player watching (a highlight's intro, the POTG's card) can't move or act, so nothing hurts them (POTG critique #3,
+			// reproduced: a husk took a highlight's watcher from 20 to 8 behind the intro's Holder; the world runs on for a solo
+			// watch). /kill and the void still reach them (bypasses invulnerability)
+			if (entity instanceof net.minecraft.server.level.ServerPlayer viewer && dev.overcraft.potg.PotgReplay.viewing(viewer)
+				&& !source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+				return false;
+			}
 			// a fall in hero mode hurts from the hero's own safe height (LivingEntityMixin), unless an ability lands it (#35)
 			// a real fall only: IS_FALL also holds an ender pearl's and a stalagmite's, which a safe landing doesn't excuse (a critique)
 			return !(source.is(net.minecraft.world.damagesource.DamageTypes.FALL) && entity instanceof Player player && HeroManager.inHeroPlay(player)

@@ -429,7 +429,8 @@ public final class PotgReplay {
 			showData(server, show, List.of(player), false).toString()));
 		var zipped = PotgRecorder.holdOne(server, owner).thenCompose(v -> PotgRecorder.holdOne(server, player.getUUID()));
 		later(server, lead, () -> zipped.whenComplete((v, err) -> server.execute(() -> {
-			if (active) {
+			// still alive and here (the void, /kill or a quit during the intro: no replay for a dead or gone viewer, the critique's 3)
+			if (active && player.isAlive() && !player.hasDisconnected()) {
 				replay(server, show, List.of(player));
 			}
 		})));

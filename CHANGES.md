@@ -4,6 +4,17 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.109
+
+- **Watching a highlight (POTG critique):** during a highlight's 5 s intro the watcher can't move, but the world runs on, and
+  nothing protected them. Reproduced: a husk took the watcher from 20 to 8 health behind the intro screen. Now a player can't
+  be hurt while watching (only /kill and the void still reach them), and the replay doesn't start for a watcher who died or
+  left. Replayed: 20 health through the whole intro with a husk beside them; once the showing ended, the husk hit normally.
+- **Changing hero with a full ult (POTG critique):** the drop in ult charge from a hero change counted as using the ult, worth
+  150 Play of the Game points. Reproduced: a full-ult Kiriko changed to Cassidy and logged "+150 High Score (ult)" without
+  using it. Now a hero change scores nothing, and a real Deadeye still logs its 150. Ult starts are now logged like the
+  other scoring events.
+
 ## 2026-11-18: 0.3.108
 
 - **D.Va's armor under Shield System (#168):** with the perk's 100 shields over her armor, a hit that broke the last shields and
