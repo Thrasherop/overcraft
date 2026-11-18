@@ -331,6 +331,7 @@ public final class Widowmaker implements HeroKit {
 		Vec3 far = eye.add(dir.scale(RANGE));
 		BlockHitResult blockHit = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 block = blockHit.getLocation();
+		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		List<Hit> hits = hits(level, player, eye, block, radius);
 		Vec3 muzzle = fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD);
 		Vec3 stop = block;

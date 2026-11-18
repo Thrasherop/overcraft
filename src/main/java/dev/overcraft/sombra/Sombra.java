@@ -513,6 +513,7 @@ public final class Sombra implements HeroKit {
 		Vec3 end = eye.add(dir.scale(PISTOL_RANGE));
 		net.minecraft.world.phys.BlockHitResult blockHit = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 block = blockHit.getLocation();
+		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		LivingEntity best = null;
 		Vec3 bestAt = null;
 		double bestDist = eye.distanceToSqr(block);

@@ -160,6 +160,7 @@ public final class FusionCannons {
 		for (Vec3 dir : dirs) {
 			Vec3 end = eye.add(dir.scale(FUSION_RANGE));
 			Vec3 block = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
+			block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 			LivingEntity best = null;
 			Vec3 bestAt = null;
 			double bestDist = eye.distanceToSqr(block);

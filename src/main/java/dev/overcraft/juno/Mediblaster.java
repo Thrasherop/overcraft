@@ -80,6 +80,7 @@ final class Mediblaster {
 		net.minecraft.world.phys.BlockHitResult blockHit = level.clip(new ClipContext(eye, eye.add(dir.scale(RANGE)), ClipContext.Block.COLLIDER,
 			ClipContext.Fluid.NONE, player));
 		Vec3 block = blockHit.getLocation();
+		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		LivingEntity best = null;
 		Vec3 bestAt = null;
 		boolean bestAlly = false;

@@ -4,6 +4,16 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.107
+
+- **End crystals (#169):** a hitscan shot passed through an end crystal, so only projectiles could pop one. Now the first
+  crystal on a shot's line pops and the shot ends there, as an arrow does in Minecraft. If something the shooter can hurt is
+  nearer, that takes the shot and the crystal is left alone. Reproduced: two Cassidy shots went through a crystal. With the
+  fix, one Cassidy shot popped it, and Widowmaker's shot and Ashe's Coach Gun each popped one. A husk standing in front of a
+  crystal took the shot (20 → 14.5) and the crystal stayed.
+- **Healing Blossom (#169), checked:** no change needed. It goes through terrain when locked on, as the wiki says. An enemy
+  Sigma barrier already stops it (`Barriers.intercept`), and a friendly barrier lets it through. Tested in the game.
+
 ## 2026-11-18: 0.3.106
 
 - **Point-blank shots (#169):** a hitscan shot fired from inside a big mob's box (a large slime or magma cube, or a mob pressed

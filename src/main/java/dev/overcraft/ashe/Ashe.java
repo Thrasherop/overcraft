@@ -320,6 +320,7 @@ public final class Ashe implements HeroKit {
 		Vec3 far = eye.add(dir.scale(RANGE));
 		BlockHitResult blockHit = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 block = blockHit.getLocation();
+		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		Hit hit = firstHit(level, player, eye, block, RADIUS);
 		DynamiteEntity stick = s.ashe.dynamite == null ? null : dynamite(player, s.ashe);
 		if (stick != null) {
@@ -547,7 +548,7 @@ public final class Ashe implements HeroKit {
 		for (Vec3 dir : pellets(look, COACH_SPREAD / 2)) {
 			Vec3 far = eye.add(dir.scale(COACH_RANGE));
 			BlockHitResult blockHit = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
-			Hit hit = firstHit(level, player, eye, blockHit.getLocation(), COACH_PELLET_RADIUS);
+			Hit hit = firstHit(level, player, eye, dev.overcraft.hero.Combat.crystalStop(player, eye, blockHit.getLocation()), COACH_PELLET_RADIUS);
 			if (hit == null) {
 				// a pellet's stop on the world: the hit 25CF, small (2B61 m_BF7914D4; ours half size: AsheFx)
 				if (blockHit.getType() == HitResult.Type.BLOCK && level.getRandom().nextInt(3) == 0) {

@@ -435,6 +435,7 @@ public final class Ana implements HeroKit {
 		Vec3 end = eye.add(player.getViewVector(1.0f).scale(SCOPED_RANGE));
 		var blockHit = player.level().clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 block = blockHit.getLocation();
+		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		LivingEntity best = null;
 		boolean heal = false;
 		double bestDist = eye.distanceToSqr(block);

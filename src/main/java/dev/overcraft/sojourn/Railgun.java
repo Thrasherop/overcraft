@@ -415,6 +415,7 @@ public final class Railgun {
 		Vec3 end = eye.add((aim != null ? Vec3.directionFromRotation(aim.pitch(), aim.yaw()) : player.getViewVector(1.0f)).scale(CHARGED_RANGE));
 		var blockHit = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 stop = blockHit.getType() == HitResult.Type.MISS ? end : blockHit.getLocation();
+		stop = dev.overcraft.hero.Combat.crystalStop(player, eye, stop);
 		record Hit(Entity entity, Vec3 at, double dist) {
 		}
 		List<Hit> hits = new ArrayList<>();

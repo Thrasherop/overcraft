@@ -227,6 +227,7 @@ public final class Illari implements HeroKit {
 		Vec3 far = eye.add(dir.scale(SHOT_RANGE));
 		BlockHitResult blockHit = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 block = blockHit.getLocation();
+		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		Entity best = null;
 		Vec3 bestAt = null;
 		double bestD = Double.MAX_VALUE;
@@ -358,6 +359,7 @@ public final class Illari implements HeroKit {
 		Vec3 eye = player.getEyePosition();
 		Vec3 far = eye.add(player.getViewVector(1.0f).scale(BEAM_RANGE));
 		Vec3 block = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
+		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		LivingEntity best = null;
 		double bestD = Double.MAX_VALUE;
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(eye, block).inflate(1))) {

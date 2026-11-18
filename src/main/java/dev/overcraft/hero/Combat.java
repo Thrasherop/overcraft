@@ -130,6 +130,39 @@ public final class Combat {
 		return box.contains(from) ? java.util.Optional.of(from) : box.clip(from, to);
 	}
 
+	/**
+	 * A hitscan shot's way from {@code from} to {@code to} (its block clip) ends at the first end crystal on it, popping it, as
+	 * Minecraft's arrows pop one (EndCrystal.hurtServer: any hit but the dragon's). Overwatch has no crystals; without this a
+	 * shot passed through one and only projectiles could pop them (#169, reproduced: two Cassidy shots through one). Unless
+	 * something the shooter can hurt is nearer on the way: that one takes the shot (a piercing shot then leaves the crystal be).
+	 */
+	public static net.minecraft.world.phys.Vec3 crystalStop(net.minecraft.server.level.ServerPlayer shooter, net.minecraft.world.phys.Vec3 from,
+															  net.minecraft.world.phys.Vec3 to) {
+		ServerLevel level = shooter.level();
+		net.minecraft.world.entity.boss.enderdragon.EndCrystal crystal = null;
+		net.minecraft.world.phys.Vec3 at = null;
+		for (var c : level.getEntitiesOfClass(net.minecraft.world.entity.boss.enderdragon.EndCrystal.class,
+				new net.minecraft.world.phys.AABB(from, to).inflate(1), net.minecraft.world.entity.Entity::isAlive)) {
+			var on = clipFrom(c.getBoundingBox(), from, to);
+			if (on.isPresent() && (at == null || on.get().distanceToSqr(from) < at.distanceToSqr(from))) {
+				crystal = c;
+				at = on.get();
+			}
+		}
+		if (crystal == null) {
+			return to;
+		}
+		for (var e : level.getEntities(shooter, new net.minecraft.world.phys.AABB(from, at).inflate(1))) {
+			LivingEntity target = e instanceof EnderDragonPart part ? part.parentMob
+				: e instanceof LivingEntity living && !(e instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon) ? living : null;
+			if (target != null && target.isAlive() && Allies.canHurt(shooter, target) && clipFrom(e.getBoundingBox(), from, at).isPresent()) {
+				return to;
+			}
+		}
+		crystal.hurtServer(level, hitscan(shooter), 1);
+		return at;
+	}
+
 	public static float damagePart(ServerLevel level, EnderDragonPart part, DamageSource source, double owDamage, Blow blow) {
 		return deal(part.parentMob, part, source, blow, () -> part.hurtServer(level, source, Ow.hp(owDamage)));
 	}

@@ -590,6 +590,7 @@ public final class Tracer implements HeroKit {
 			Vec3 end = eye.add(dir.scale(RANGE));
 			BlockHitResult blockHit = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 			Vec3 block = blockHit.getLocation();
+			block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 			LivingEntity best = null;
 			Vec3 bestAt = null;
 			double bestDist = eye.distanceToSqr(block);
