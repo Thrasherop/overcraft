@@ -151,6 +151,8 @@ public final class Glb {
 			case "VEC2" -> 2;
 			case "VEC3" -> 3;
 			case "VEC4" -> 4;
+			case "MAT2" -> 4;
+			case "MAT3" -> 9;
 			case "MAT4" -> 16;
 			default -> throw new IllegalArgumentException("accessor type " + type);
 		};

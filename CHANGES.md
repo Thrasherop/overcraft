@@ -4,6 +4,20 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.97 (on main; general play at 2 GB: techniques/testing/runs/genplay_0397/run.md)
+
+- **The last of the reload leaks (#166, from an independent critique):** caches of mesh flags and projectile and prop meshes
+  kept the old models' meshes alive after every reload (pieces 448 -> 615 -> 629 over two reloads, reproduced); they're now
+  cleared with the models, and the count holds (427 -> 422 -> 422). During a reload nothing loads on demand from the old,
+  closing resources any more (it could reopen and lock a zip pack). A prop whose file fails to load no longer puts the
+  weapons away for nothing. Played: Fox Cuddles' fox and Kiriko's kunai drawn after two reloads.
+
+## 2026-11-18: 0.3.96
+
+- **Animations' turns take half the memory (#166):** bone rotations, over half the animation data, are kept as 16-bit
+  numbers (at most 0.004 degrees off). Live heap data with the full pack: 1.31 -> 1.20 GB, more room at the launcher's
+  default 2 GB. Played: the aim sheet reads the same (21 frames, 35 to -44 degrees), Kiriko's run and Fox Cuddles look right.
+
 ## 2026-11-18: 0.3.95 (on main; general play at 2 GB: techniques/testing/runs/genplay_0395/run.md)
 
 - **Reloads at 2 GB, the rest of it (#166):** a third reload in a row at the launcher's default 2 GB still ran out of memory

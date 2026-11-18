@@ -57,6 +57,7 @@ with [CLAUDE.md](../CLAUDE.md) (the rules) and [HANDOFF.md](../HANDOFF.md) (the 
   - [polish4](testing/polish4.md): Protection Suzu's whole list off and on, Rally's double hit, Kiriko's Suzu line from the graph (#121), Whip Shot's 8 m, what removing each fix does to the tests (fix/polish-4).
 - **HUD**: [reticle](hud/reticle.md): every hero's widgets at the crosshair, what the data binds and what's ours (#85). [kill_feed](hud/kill_feed.md). The kill feed's icons from the wiki's rule, what dealt each hero's
   damage (`Blow`), the kill marker from the death itself, the flashes and markers around a kill.
+- **Memory**: [memory](rendering/memory.md): what the local pack costs, how to measure it without fooling yourself, what #166 changed.
 - **Rendering**: [rendering](rendering/rendering.md). Minecraft 26.3's renderer, effects, glows, shadows, held items,
   fonts.
 - **Sound**: [sounds](sound/sounds.md). Bound and in-the-head sounds, checking what played, voice and music from the

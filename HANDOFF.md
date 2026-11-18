@@ -1,25 +1,24 @@
-# Overcraft: handoff (2026-11-01; older sections below from 2026-10-28)
+# Overcraft: handoff (2026-11-18; older sections below are history, from 2026-11-01 and before)
 
 Read this with CLAUDE.md (the rules), CHANGES.md (the log, newest first) and techniques/README.md (how the work gets
 done: a linked graph of notes). This file is the state of play and the path forward.
 
-## Now (2026-11-01)
-- **Build 0.3.26 on `main`** (5b25c97, test build), asset pack 0.3.26: Sombra (#64, closed), the seventh hero, as the
-  Support from Blizzard's 2026-10-06 rework, with her kit, perks, Conspirator, sounds, effects and 20 emotes; hero
-  changes anywhere in the spawn area when there's no bed; emote props' own sounds; the older heroes' emote data
-  regenerated (Listen Up / Salty put-aways, gallery-preview clips). General play done before main (techniques/heroes/
-  sombra.md, "The 0.3.26 general play").
-- The built pack is in `E:\claude\mods\overcraft_ana\local-assets\` (pack/); every worktree's dev client uses it with
-  `OC_ASSET_PACK=E:/claude/mods/overcraft_ana/local-assets/pack`, and `build_asset_pack.py` now takes the same variable.
-- **Brigitte (#65) started** on `feature/brigitte` (worktree `overcraft_brigitte`): `tools/reference/brigitte.md` (the
-  public numbers, through BZ 2026-10-20: no change since 2026-09-08, so build 154088 holds her live values); her data
-  map from the game data is being read (`brigitte-map.md`, researchrigitte\).
-- Then, in the owner's order: Juno (#1), Sojourn (#2), Sigma (#68), D.Va (#69), Pharah (#70), Tracer (#71), Cassidy (#72),
-  Junkrat (#73).
-- Open: Amp It Up's amped ground stop to measure; a Workshop recording of Sombra (beacon arc, stealth speed:
-  tools/workshop/movement_recorder.txt has her section) would firm up two M numbers.
-- Git here: `git -c safe.directory=*` (the checkout's ownership confuses git). `main` is checked out in
-  `overcraft_emotesnd`.
+## Now (2026-11-18)
+- **Build 0.3.95 on `main`** (fea561d, test build passed). The roster is finished at **20 heroes** (the owner, 2026-11-13:
+  "enough for my group"); no new heroes unless the owner asks.
+- **Lately:** enemy heroes at night (#46: 8 heroes take turns replacing night spawns), sprays (#41, closed: Y and a SPRAYS
+  loadout tab), the second-player checks (#138, #146 closed; two clients run without the pack), and memory (#166): first-person
+  models and emote props load on first use, clip arrays shared, old models freed before a reload, model files streamed.
+  A resource reload now survives the launcher's default 2 GB heap (it crashed before 0.3.94/0.3.95).
+- **Waiting on the owner** (asked on each issue): #166 step 3 (load hero bodies on first appearance: ~1.5 GB, a second of
+  pop-in), #46 (enemy Torbjorn's strength), #142 (a Workshop recording of an ally on Jetpack Cat's rope for the force law),
+  #57 / #59 (their playtest), #6 (DataTool support for the installed build).
+- **Testing:** general plays before main are in `techniques/testing/runs/genplay_*/run.md` (latest genplay_0395, at a 2 GB
+  heap); two clients: `runs/two_client_2026-11-18/run.md`; harness lessons: `techniques/testing/harness.md`.
+  `OC_XMX=2G` launches client 1 at a player's heap; `OC_ASSET_PACK` at an empty folder runs a client without the pack.
+- Branches: work happens on short branches merged fast-forward into `next`; `main` gets `next` by a merge after a general
+  play; `production` is the owner's alone. The main checkout is on `feature/sprays` (same commit as `next`).
+- Git here: `git -c safe.directory=<path>` for a new worktree on E: (the drive doesn't record ownership).
 
 ## Where things are
 - Repo: https://github.com/Thrasherop/overcraft. Kiriko's work is on `feature/kiriko`, merged into `next`, then

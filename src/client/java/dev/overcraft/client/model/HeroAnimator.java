@@ -572,13 +572,12 @@ public final class HeroAnimator {
 		if (rest == null) {
 			return false;
 		}
-		float[] v = ch.values();
-		for (int i = 0; i + rest.length <= v.length; i += rest.length) {
+		for (int i = 0; i + rest.length <= ch.length(); i += rest.length) {
 			boolean same = true;
 			boolean flipped = ch.path() == 'R';
 			for (int j = 0; j < rest.length; j++) {
-				same &= Math.abs(v[i + j] - rest[j]) <= 1.0E-4f;
-				flipped &= Math.abs(v[i + j] + rest[j]) <= 1.0E-4f;
+				same &= Math.abs(ch.value(i + j) - rest[j]) <= 1.0E-4f;
+				flipped &= Math.abs(ch.value(i + j) + rest[j]) <= 1.0E-4f;
 			}
 			if (!same && !flipped) {
 				return false;
