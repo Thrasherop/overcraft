@@ -270,6 +270,8 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.SLAG, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"torbjorn_slag", 0.4f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.TURRET, dev.overcraft.client.model.LifeweaverPropRenderer::turret);
+		// a spray on a wall (#41)
+		EntityRendererRegistry.register(OcEntities.SPRAY, dev.overcraft.client.model.SprayRenderer::new);
 		// Illari's Healing Pylon (134D8) and Captive Sun's ball (10BAE)
 		EntityRendererRegistry.register(OcEntities.HEALING_PYLON, dev.overcraft.client.model.LifeweaverPropRenderer::pylon);
 		EntityRendererRegistry.register(OcEntities.CAPTIVE_SUN, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,

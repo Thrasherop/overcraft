@@ -391,6 +391,9 @@ public final class ClientHero {
 			| (OwMovement.isClimbing(player) ? HeroInputPayload.HELD_WALL_CLIMB : 0) | ClientPharah.held(player);
 
 		int pressed = 0;
+		if (drain(HeroControls.get(Action.SPRAY))) {
+			spray();
+		}
 		pressed |= drain(HeroControls.get(Action.ABILITY_1)) ? HeroInputPayload.PRESS_ABILITY_1 : 0;
 		pressed |= drain(HeroControls.get(Action.ABILITY_2)) ? HeroInputPayload.PRESS_ABILITY_2 : 0;
 		pressed |= drain(HeroControls.get(Action.ULTIMATE)) ? HeroInputPayload.PRESS_ULTIMATE : 0;
@@ -592,6 +595,22 @@ public final class ClientHero {
 		if (ClientPlayNetworking.canSend(HeroModePayload.TYPE)) {
 			ClientPlayNetworking.send(new HeroModePayload(on));
 		}
+	}
+
+	/**
+	 * Y: the current hero's first spray in the local pack (textures/sprays/<hero>/, from the player's own install), else the
+	 * portrait stand-in ("portrait"), sent to the server to put down (#41). The wheel to pick one comes with the reference.
+	 */
+	private static void spray() {
+		Hero hero = hero();
+		if (hero == null || !ClientPlayNetworking.canSend(dev.overcraft.net.SprayPayload.TYPE)) {
+			return;
+		}
+		String name = net.minecraft.client.Minecraft.getInstance().getResourceManager()
+			.listResources("textures/sprays/" + hero.id, id -> id.getPath().endsWith(".png")).keySet().stream()
+			.map(id -> id.getPath().substring(id.getPath().lastIndexOf('/') + 1, id.getPath().length() - 4))
+			.filter(n -> n.matches("[a-z0-9_]{1,48}")).sorted().findFirst().orElse("portrait");
+		ClientPlayNetworking.send(new dev.overcraft.net.SprayPayload(name));
 	}
 
 	/** The hero keys that were down at the last tick (drain's edge). */
