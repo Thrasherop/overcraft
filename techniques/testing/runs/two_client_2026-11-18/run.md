@@ -43,3 +43,11 @@ flew up (jump held) towing her, then she grappled a stone wall 12 m ahead (Shift
 - **Old build (0.3.88):** mode stayed 24 through the pull; she reached x 7.9, held back by the rope.
 - **Fixed (`JetpackCat.letGo` as the pull starts, `Widowmaker` hook attach):** mode 24 -> 16 (Lifeline still on, the tow
   ended) and she reached the wall, x 13.7.
+
+## #142: Lifeline on a dedicated server, two real clients (0.3.91)
+`runServer` (world `potgserver`, driven over RCON) with both clients connected (no pack). A stone platform at y 149. Jetpack
+Cat (client 1) switched Lifeline on, allied Kiriko (client 2) caught it (Interact), then the cat held forward and Frenetic
+Flight (right button) for 4.2 s. Positions polled every ~0.3 s on each client:
+- The towed player went 19-29 m/s for about 3 s (23 m/s sustained), 70 m across and up to y 158. Full health throughout.
+- Then she let go (jump) at y 160: fell 85 m to the ground (y 75) and landed unhurt (20/20); the cat's tow ended (mode 24 -> 16).
+- The server log since the start of the tow: no kick, no "moved too quickly", no "moved wrongly".
