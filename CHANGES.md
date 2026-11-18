@@ -4,6 +4,14 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.92 (on main; general play: techniques/testing/runs/genplay_0392/run.md)
+
+- **The communication wheel's page buttons take a quick click (found in the general play):** with T held, a fast click of the
+  right button (or left) sometimes left the wheel on its first page, so letting go sent "Need healing" instead of an emote.
+  The wheel looked only at whether the button was held, and a click pressed and let go between two game ticks never shows
+  held. It now also counts those clicks. Reproduced twice with a real click on 0.3.91, then played on the fix: the same click
+  turned to EMOTES and Pod Pet played.
+
 ## 2026-11-18: 0.3.91
 
 - **Emote props load when an emote first shows them (#166, step 2):** the 102 prop models (0.18 GiB of textures) are no

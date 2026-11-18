@@ -82,15 +82,22 @@ public final class CommsWheel {
 		}
 		if (held && down && !open && now - pressedAt > TAP_MS) {
 			open = true;
+			// clicks from before it opened don't turn its page
+			HeroControls.mouseButtonClicked(InputConstants.MOUSE_BUTTON_LEFT);
+			HeroControls.mouseButtonClicked(InputConstants.MOUSE_BUTTON_RIGHT);
 		}
 		if (held && open) {
 			boolean left = mc.mouseHandler.isLeftPressed() || HeroControls.mouseButtonHeld(InputConstants.MOUSE_BUTTON_LEFT);
 			boolean right = mc.mouseHandler.isRightPressed() || HeroControls.mouseButtonHeld(InputConstants.MOUSE_BUTTON_RIGHT);
-			if (left && !leftWas) {
+			// a press is the button going down, or a click pressed and let go between two ticks, which isDown never saw (found
+			// playing, 0.3.91: a quick right click left the wheel on its first page); one press turns the page once either way
+			boolean leftClicked = HeroControls.mouseButtonClicked(InputConstants.MOUSE_BUTTON_LEFT);
+			boolean rightClicked = HeroControls.mouseButtonClicked(InputConstants.MOUSE_BUTTON_RIGHT);
+			if (left && !leftWas || leftClicked && !left) {
 				page = page == Page.EMOTES ? Page.COMMUNICATIONS : Page.VOICE_LINES;
 				pointerX = pointerY = 0;
 			}
-			if (right && !rightWas) {
+			if (right && !rightWas || rightClicked && !right) {
 				page = page == Page.VOICE_LINES ? Page.COMMUNICATIONS : Page.EMOTES;
 				pointerX = pointerY = 0;
 			}
