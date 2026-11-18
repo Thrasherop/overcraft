@@ -4,6 +4,14 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.111
+
+- **Play of the Game segments (#170):** the recording rolled to a new 5-minute segment even in the middle of a fight, and a
+  play scored across the roll lost its start. The old segment, which no highlight used yet, was dropped, taking the play's
+  first kills with it (seen at a roll at 11:35:49). Now the roll waits while anything has scored in the last 12 s, at most a
+  minute past the 5. Played: kills every 3 s around a roll due at about 11:53:05; the next segment opened at 11:53:45, 13 s
+  after the last kill. Not checked yet: watching a kept highlight from such a play to see that it's whole.
+
 ## 2026-11-18: 0.3.110
 
 - **Replays keep their time of day (#170):** a highlight recorded at midnight replayed in daylight, because the time packets
