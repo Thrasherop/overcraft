@@ -4,6 +4,14 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.116
+
+- **A dead enemy's frags and rockets still burst (#46):** once an enemy Junkrat or Pharah died and was removed (a second
+  later), their frags and rockets still in the air vanished without a blast. Reproduced: two frags out when Junkrat died, both
+  gone within 2 s, no blast sound and no damage. Now each projectile remembers who fired it. Replayed: the same frags burst
+  (two frag blasts and one on the terrain). Not measured: the damage of one landing after he's gone (the frags burst before a
+  target could be placed on one), though the damage path doesn't ask whether the shooter is alive.
+
 ## 2026-11-18: 0.3.115
 
 - **Held or hacked enemy heroes don't react (#46):** an enemy hero that's asleep, stunned, knocked down or hacked no longer
