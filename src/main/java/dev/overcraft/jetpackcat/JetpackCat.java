@@ -591,7 +591,8 @@ public final class JetpackCat implements HeroKit {
 	 * A player on a Jetpack Cat's rope used a movement ability: the rope lets go of them (W, Lifeline: "a movement ability ends
 	 * the tow"; #142), as when she switches it off, but her Lifeline stays on. Called from each hero's movement ability as it
 	 * starts (Blink, Jump Jet, Jet Dash, Combat Roll, Glide Boost, Power Slide, Swift Step, Rejuvenating Dash, Guardian Angel,
-	 * Translocator, Boosters).
+	 * Translocator, Boosters, Grappling Hook's pull). Not Ashe's Coach Gun: a weapon whose blast throws her, and no source calls
+	 * it a movement ability.
 	 */
 	public static void letGo(ServerPlayer towed) {
 		for (ServerPlayer cat : towed.level().getServer().getPlayerList().getPlayers()) {

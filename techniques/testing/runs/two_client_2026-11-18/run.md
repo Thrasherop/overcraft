@@ -35,3 +35,11 @@ off, then held jump. The landing hit Cassidy (20 -> 19) and the carry lifted cli
 - (A first cast aimed 5° down dove ~18 m, past Cassidy: the dive point is where the view meets the ground.)
 
 **Not tried:** a full pack on either client (doesn't fit), real mouse and keys on client 2, a dedicated server for the carry.
+
+## #142: Widowmaker's Grappling Hook off a Jetpack Cat's rope (fixed in 0.3.89)
+No teams. Jetpack Cat (client 1) switched Lifeline on (Shift); Widowmaker (client 2) 2 m off caught it (Interact); the cat
+flew up (jump held) towing her, then she grappled a stone wall 12 m ahead (Shift). The cat's synced `mode` reads the tow
+(`MODE_LIFELINE` 16 + `MODE_TOWING` 8).
+- **Old build (0.3.88):** mode stayed 24 through the pull; she reached x 7.9, held back by the rope.
+- **Fixed (`JetpackCat.letGo` as the pull starts, `Widowmaker` hook attach):** mode 24 -> 16 (Lifeline still on, the tow
+  ended) and she reached the wall, x 13.7.

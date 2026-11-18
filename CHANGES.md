@@ -4,6 +4,15 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.89
+
+- **Widowmaker's Grappling Hook lets go of a Jetpack Cat's rope (#142):** a player on her Lifeline who grapples away now leaves
+  the rope as the pull starts, as with every other movement ability (a hook that misses keeps you on it). Before, the rope held
+  her back: she reached 7.9 m toward the wall instead of the wall at 13.7 m. Played with two clients
+  (techniques/testing/runs/two_client_2026-11-18/run.md).
+- **Two-client checks done:** Torbjörn's turret leaves an allied player alone (#146, closed), an ally sees Widowmaker's
+  Infra-Sight (#138, closed), and a player carried by an enemy's Catnapper sees her rope (#142).
+
 ## 2026-11-17: 0.3.88 (on main; general play: techniques/testing/runs/genplay_0388/run.md)
 
 - **Choose your sprays (#41):** the Voice Lines screen (Esc, Voice Lines) has a third tab, SPRAYS: pick one of the four
