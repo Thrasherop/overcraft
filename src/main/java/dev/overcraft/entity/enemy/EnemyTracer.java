@@ -200,7 +200,22 @@ public class EnemyTracer extends EnemyHeroEntity {
 	 * Blink: up to 7.5 m along {@code way} (flat), in 1.5 m steps while each is clear of blocks (her Blink's own steps:
 	 * TracerStats.BLINK_STEP), a step up or down a block allowed. Takes a charge.
 	 */
-	private void blink(ServerLevel level, Vec3 way) {
+	/**
+	 * Her box clear every 0.3 m from {@code a} to {@code b}: a 1.5 m step checked only at its end jumped a shut door, a pane or a fence
+	 * (the critique of c728bea).
+	 */
+	private boolean clearBetween(ServerLevel level, Vec3 a, Vec3 b) {
+		double length = b.distanceTo(a);
+		for (double d = 0.3; d < length; d += 0.3) {
+			Vec3 at = a.add(b.subtract(a).scale(d / length));
+			if (!level.noCollision(this, getBoundingBox().move(at.subtract(position())))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+		private void blink(ServerLevel level, Vec3 way) {
 		Vec3 flat = new Vec3(way.x, 0, way.z);
 		if (blinks <= 0 || blinkWait > 0 || flat.lengthSqr() < 1.0E-6 || isPassenger()) {
 			return;
@@ -218,7 +233,7 @@ public class EnemyTracer extends EnemyHeroEntity {
 					break;
 				}
 			}
-			if (next == null) {
+			if (next == null || !clearBetween(level, to, next)) {
 				break;
 			}
 			to = next;

@@ -199,4 +199,15 @@ public class EnemyPharah extends EnemyHeroEntity {
 			play(level, "reload", getEyePosition(), 30);
 		}
 	}
+
+	/**
+	 * Loaded from a save she's on the ground: her flight state isn't saved but NoGravity is, and a Pharah loaded mid-hover hung in the
+	 * air for good (the critique of c728bea).
+	 */
+	@Override
+	protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput input) {
+		super.readAdditionalSaveData(input);
+		flight = GROUND;
+		setNoGravity(false);
+	}
 }

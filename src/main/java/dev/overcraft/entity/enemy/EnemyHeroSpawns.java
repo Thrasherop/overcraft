@@ -101,7 +101,8 @@ public final class EnemyHeroSpawns {
 	private static boolean crowded(ServerLevel level, Mob at) {
 		double r = EnemyHeroStats.CAP_RADIUS;
 		for (ServerPlayer player : level.players()) {
-			if (player.distanceToSqr(at) > r * r) {
+			// natural spawns land 24-128 m from a player: any player that far may be the one it walks to (critique of c728bea)
+			if (player.distanceToSqr(at) > 128 * 128) {
 				continue;
 			}
 			int near = level.getEntitiesOfClass(EnemyHeroEntity.class, new AABB(player.position(), player.position()).inflate(r),

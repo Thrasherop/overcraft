@@ -47,7 +47,10 @@ public class EnemyHeroRenderer extends MobRenderer<EnemyHeroEntity, HumanoidRend
 
 	@Override
 	protected boolean shouldShowName(EnemyHeroEntity entity, double distanceToCameraSq) {
-		return distanceToCameraSq < NAME_RANGE * NAME_RANGE && entity.isAlive() && super.shouldShowName(entity, distanceToCameraSq);
+		// in sight only: Minecraft draws a shown name through walls, which gave every enemy hero away (critique of c728bea)
+		var viewer = net.minecraft.client.Minecraft.getInstance().player;
+		return distanceToCameraSq < NAME_RANGE * NAME_RANGE && entity.isAlive() && (viewer == null || viewer.hasLineOfSight(entity))
+			&& super.shouldShowName(entity, distanceToCameraSq);
 	}
 
 	@Override

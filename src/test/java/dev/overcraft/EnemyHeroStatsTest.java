@@ -15,9 +15,9 @@ class EnemyHeroStatsTest {
 	@Test
 	void damageScalesByDifficulty() {
 		assertEquals(0, EnemyHeroStats.playerDamageFactor(Difficulty.PEACEFUL));
-		assertEquals(0.4, EnemyHeroStats.playerDamageFactor(Difficulty.EASY));
-		assertEquals(0.5, EnemyHeroStats.playerDamageFactor(Difficulty.NORMAL));
-		assertEquals(0.65, EnemyHeroStats.playerDamageFactor(Difficulty.HARD));
+		assertEquals(0.2, EnemyHeroStats.playerDamageFactor(Difficulty.EASY));
+		assertEquals(0.3, EnemyHeroStats.playerDamageFactor(Difficulty.NORMAL));
+		assertEquals(0.4, EnemyHeroStats.playerDamageFactor(Difficulty.HARD));
 		// worse aim on easier difficulties
 		assertTrue(EnemyHeroStats.extraSpread(Difficulty.EASY) > EnemyHeroStats.extraSpread(Difficulty.HARD));
 	}

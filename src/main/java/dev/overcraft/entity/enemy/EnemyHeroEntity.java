@@ -125,7 +125,9 @@ public abstract class EnemyHeroEntity extends Monster {
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
 		boolean hurt = super.hurtServer(level, source, damage);
-		if (hurt && isAlive() && source.getEntity() instanceof LivingEntity attacker && attacker != this) {
+		// (a monster's stray arrow isn't a fight: HurtByTargetGoal ignores it too, critique of c728bea)
+		if (hurt && isAlive() && source.getEntity() instanceof LivingEntity attacker && attacker != this
+			&& !(attacker instanceof net.minecraft.world.entity.monster.Enemy)) {
 			hurtBy(level, attacker);
 		}
 		return hurt;

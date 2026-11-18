@@ -19,13 +19,16 @@ public final class EnemyHeroStats {
 	public static final double CAP_RADIUS = 64;
 
 	// ---- damage and aim (ours: the plan's "Damage to a player" and "Aim") ----
-	/** What their Overwatch damage is multiplied by on a player: Easy 0.4, Normal 0.5, Hard 0.65 (ours); Peaceful none. */
+	/**
+	 * What their Overwatch damage is multiplied by on a player: Easy 0.2, Normal 0.3, Hard 0.4 (ours; play 2026-11-17 at 0.5 on Normal: Junkrat
+	 * ~7.5 health a second, Tracer up close ~5.3, Cassidy ~2.2, against a skeleton's 2-3: a plain player died in 3 s). Peaceful none.
+	 */
 	public static double playerDamageFactor(Difficulty difficulty) {
 		return switch (difficulty) {
 			case PEACEFUL -> 0;
-			case EASY -> 0.4;
-			case NORMAL -> 0.5;
-			case HARD -> 0.65;
+			case EASY -> 0.2;
+			case NORMAL -> 0.3;
+			case HARD -> 0.4;
 		};
 	}
 
