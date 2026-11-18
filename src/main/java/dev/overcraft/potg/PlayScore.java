@@ -249,6 +249,23 @@ public final class PlayScore {
 		maxTickNanos = Math.max(maxTickNanos, d);
 	}
 
+	/**
+	 * Whether this player scored anything in the last WINDOW seconds: a play may be going on, so their recorder doesn't roll
+	 * its segment now (PotgRecorder; #170, the critique's 5: a window across a roll lost its start).
+	 */
+	public static boolean busy(UUID id) {
+		Rows r = ROWS.get(id);
+		if (!open || r == null) {
+			return false;
+		}
+		for (int c = 0; c < 4; c++) {
+			if (r.now[c] > 0 || windowSum(r.seconds[c]) > 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private static void step(MinecraftServer server, UUID id, Rows r) {
 		double[] sums = new double[4];
 		for (int c = 0; c < 4; c++) {
