@@ -4,7 +4,13 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-17: 0.3.87 on next (not on main yet)
+## 2026-11-17: 0.3.88 on next (not on main yet)
+
+- **Choose your sprays (#41):** the Voice Lines screen (Esc, Voice Lines) has a third tab, SPRAYS: pick one of the four
+  wheel slots, then any of the hero's sprays in your asset pack. The Y tap sprays the UP slot; the wheel shows all four.
+  Saved per hero with the voice lines and emotes. Played: Tracer's "pixel" put in LEFT, shown on the wheel's left, sprayed
+  on a wall, still equipped after a restart (screenshots loadout_pixel.png, spray_wheel_loadout.png, spray_pixel_wall.png,
+  loadout_sprays_title.png).
 
 - **Sprays (#41):** tap Y to spray your hero's icon on the wall or floor in front of you; hold Y for a wheel of four of the
   hero's sprays, point at one and let go. One spray each: a new one, or switching hero, erases the last. The images are the

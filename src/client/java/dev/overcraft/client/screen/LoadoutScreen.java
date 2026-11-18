@@ -45,7 +45,8 @@ public class LoadoutScreen extends OwScreen {
 
 	private final Screen parent;
 	private int slot;
-	private boolean emotes;
+	/** 0 voice lines, 1 emotes, 2 sprays (#41). */
+	private int tab;
 
 	public LoadoutScreen(Screen parent) {
 		super(Component.translatable("overcraft.loadout.title"));
@@ -72,9 +73,9 @@ public class LoadoutScreen extends OwScreen {
 		}
 		float x = refX(event.x());
 		float y = refY(event.y());
-		for (int t = 0; t < 2; t++) {
+		for (int t = 0; t < 3; t++) {
 			if (x >= tabX(t) && x < tabX(t) + 200 && y >= TABS_TOP - 30 && y < TABS_TOP + 6) {
-				emotes = t == 1;
+				tab = t;
 				return true;
 			}
 		}
@@ -87,17 +88,19 @@ public class LoadoutScreen extends OwScreen {
 		List<String> lines = entries(hero);
 		for (int i = 0; i < lines.size(); i++) {
 			if (x >= lineX(i) && x < lineX(i) + COLUMN_W - 20 && y >= lineY(i) && y < lineY(i) + ROW_H - 4) {
-				if (!emotes && Loadout.blocked(hero, lines.get(i))) {
+				if (tab == 0 && Loadout.blocked(hero, lines.get(i))) {
 					// greyed out: no pick, no listen
 					return true;
 				}
 				if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
-					if (!emotes) {
+					if (tab == 0) {
 						minecraft.getSoundManager().play(SimpleSoundInstance.forUI(
 							SoundEvent.createVariableRangeEvent(Overcraft.id(hero.id + ".voiceline." + lines.get(i))), 1));
 					}
 				} else {
-					if (emotes) {
+					if (tab == 2) {
+						Loadout.setSpray(hero, slot, lines.get(i));
+					} else if (tab == 1) {
 						Loadout.setEmote(hero, slot, lines.get(i));
 					} else {
 						Loadout.setVoiceLine(hero, slot, lines.get(i));
@@ -115,11 +118,11 @@ public class LoadoutScreen extends OwScreen {
 	}
 
 	private List<String> entries(Hero hero) {
-		return emotes ? Loadout.availableEmotes(hero) : Loadout.available(hero);
+		return tab == 2 ? Loadout.availableSprays(hero) : tab == 1 ? Loadout.availableEmotes(hero) : Loadout.available(hero);
 	}
 
 	private String name(Hero hero, String id) {
-		return emotes ? Loadout.emoteName(id) : name(hero, id, true);
+		return tab != 0 ? (id.isEmpty() ? "-" : Loadout.emoteName(id)) : name(hero, id, true);
 	}
 
 	@Override
@@ -133,19 +136,19 @@ public class LoadoutScreen extends OwScreen {
 		begin(g);
 		HudText.draw(g, Face.BODY, Component.translatable("overcraft.menu.title").getString().toUpperCase(Locale.ROOT),
 			LEFT, 150, 15, ORANGE, Align.LEFT);
-		HudText.draw(g, Face.NUMBERS, getTitle().getString().toUpperCase(Locale.ROOT), LEFT, 230, 64, WHITE, Align.LEFT);
-		for (int t = 0; t < 2; t++) {
-			boolean on = (t == 1) == emotes;
-			String tab = Component.translatable(t == 0 ? "overcraft.wheel.voice_lines" : "overcraft.wheel.emotes").getString()
-				.toUpperCase(Locale.ROOT);
-			HudText.draw(g, Face.BODY, tab, tabX(t), TABS_TOP, 18, on ? WHITE : TEXT_DIM, Align.LEFT);
+		HudText.draw(g, Face.NUMBERS, Component.translatable(tab == 2 ? "overcraft.wheel.sprays" : tab == 1 ? "overcraft.wheel.emotes" : "overcraft.loadout.title").getString().toUpperCase(Locale.ROOT), LEFT, 230, 64, WHITE, Align.LEFT);
+		for (int t = 0; t < 3; t++) {
+			boolean on = t == tab;
+			String label = Component.translatable(t == 0 ? "overcraft.wheel.voice_lines" : t == 1 ? "overcraft.wheel.emotes"
+				: "overcraft.wheel.sprays").getString().toUpperCase(Locale.ROOT);
+			HudText.draw(g, Face.BODY, label, tabX(t), TABS_TOP, 18, on ? WHITE : TEXT_DIM, Align.LEFT);
 			if (on) {
-				fill(g, tabX(t), TABS_TOP + 6, HudText.width(Face.BODY, tab, 18), 3, ORANGE);
+				fill(g, tabX(t), TABS_TOP + 6, HudText.width(Face.BODY, label, 18), 3, ORANGE);
 			}
 		}
 		Hero hero = ClientHero.hero();
 		if (hero != null) {
-			List<String> equipped = emotes ? Loadout.emotes(hero) : Loadout.voiceLines(hero);
+			List<String> equipped = tab == 2 ? Loadout.sprays(hero) : tab == 1 ? Loadout.emotes(hero) : Loadout.voiceLines(hero);
 			for (int i = 0; i < Loadout.SLOTS; i++) {
 				float x = slotX(i);
 				boolean chosen = i == slot;
@@ -164,7 +167,7 @@ public class LoadoutScreen extends OwScreen {
 				float y = lineY(i);
 				boolean over = rx >= x && rx < x + COLUMN_W - 20 && ry >= y && ry < y + ROW_H - 4;
 				boolean on = equipped.contains(lines.get(i));
-				boolean blocked = !emotes && Loadout.blocked(hero, lines.get(i));
+				boolean blocked = tab == 0 && Loadout.blocked(hero, lines.get(i));
 				fill(g, x, y, COLUMN_W - 20, ROW_H - 4, over && !blocked ? ROW_HOVER : ROW);
 				HudText.draw(g, Face.BODY, name(hero, lines.get(i)), x + 12, y + 25, 13, blocked ? GREYED : on ? ORANGE : WHITE, Align.LEFT);
 				if (over && blocked) {
@@ -179,13 +182,13 @@ public class LoadoutScreen extends OwScreen {
 				HudText.draw(g, Face.BODY, note, rx + 26, ry - 13, 14, WHITE, Align.LEFT);
 			}
 			if (lines.isEmpty()) {
-				HudText.draw(g, Face.BODY, Component.translatable(emotes ? "overcraft.loadout.none_emotes" : "overcraft.loadout.none")
+				HudText.draw(g, Face.BODY, Component.translatable(tab == 2 ? "overcraft.loadout.none_sprays" : tab == 1 ? "overcraft.loadout.none_emotes" : "overcraft.loadout.none")
 					.getString(), LEFT, LIST_TOP + 20, 14, TEXT_DIM, Align.LEFT);
 			}
 		}
 		keyBox(g, "ESC", LEFT + 8, 1010, WHITE);
-		// emotes can't be heard: no right click on their tab
-		HudText.draw(g, Face.BODY, Component.translatable(emotes ? "overcraft.loadout.hint_emotes" : "overcraft.loadout.hint").getString()
+		// emotes and sprays can't be heard: no right click on their tabs
+		HudText.draw(g, Face.BODY, Component.translatable(tab == 2 ? "overcraft.loadout.hint_sprays" : tab == 1 ? "overcraft.loadout.hint_emotes" : "overcraft.loadout.hint").getString()
 			.toUpperCase(Locale.ROOT), LEFT + 40, 1017, 14, TEXT, Align.LEFT);
 		g.pose().popMatrix();
 	}

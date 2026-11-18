@@ -90,20 +90,15 @@ public final class SprayWheel {
 		}
 	}
 
-	/** The current hero's sprays in the pack, the Icon first, at most four; else the portrait. */
+	/** The current hero's four equipped sprays (the loadout's SPRAYS tab: Loadout.sprays), empty slots left out; else the portrait. */
 	private static List<String> sprays() {
 		Hero hero = ClientHero.hero();
 		if (hero == null) {
 			return List.of();
 		}
-		List<String> names = new ArrayList<>(Minecraft.getInstance().getResourceManager()
-			.listResources("textures/sprays/" + hero.id, id -> id.getPath().endsWith(".png")).keySet().stream()
-			.map(id -> id.getPath().substring(id.getPath().lastIndexOf('/') + 1, id.getPath().length() - 4))
-			.filter(n -> n.matches("[a-z0-9_]{1,48}")).sorted().toList());
-		if (names.remove("icon")) {
-			names.addFirst("icon");
-		}
-		return names.isEmpty() ? List.of("portrait") : List.copyOf(names.subList(0, Math.min(4, names.size())));
+		List<String> names = new ArrayList<>(Loadout.sprays(hero));
+		names.removeIf(String::isEmpty);
+		return names.isEmpty() ? List.of("portrait") : List.copyOf(names);
 	}
 
 	private static @Nullable String hovered() {
