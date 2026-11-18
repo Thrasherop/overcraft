@@ -229,15 +229,25 @@ public final class Sombra implements HeroKit {
 		return Combat.inSight(player.level(), player.getEyePosition(), e, player);
 	}
 
-	/** What EMP and Hotfix hack: Lifeweaver's platform and tree (a Sombra's beacon flies 0.17 s and can't be touched: W). */
-	private static boolean deployable(net.minecraft.world.entity.Entity e) {
+	/**
+	 * What EMP and Hotfix hack: Lifeweaver's platform and tree, and a Torbjörn's turret, a player's or an enemy hero's (owner,
+	 * 2026-11-18: "Hack should shut down turrets"; Overwatch's Hack disables a turret). A Sombra's beacon flies 0.17 s and can't be
+	 * touched (W). A turret is a mob, so Hotfix asks this, not "is it living", before it heals.
+	 */
+	static boolean deployable(net.minecraft.world.entity.Entity e) {
 		return e instanceof dev.overcraft.entity.PetalPlatformEntity
-			|| e instanceof dev.overcraft.entity.TreeOfLifeEntity;
+			|| e instanceof dev.overcraft.entity.TreeOfLifeEntity
+			|| e instanceof dev.overcraft.entity.TurretEntity;
 	}
 
 	private static boolean enemyDeployable(ServerPlayer player, net.minecraft.world.entity.Entity d) {
+		if (d instanceof dev.overcraft.entity.enemy.EnemyTurretEntity) {
+			// an enemy Torbjörn's: the monsters' side, every player's enemy
+			return true;
+		}
 		net.minecraft.world.entity.Entity owner = d instanceof dev.overcraft.entity.PetalPlatformEntity p ? player.level().getEntity(p.ownerId())
-			: d instanceof dev.overcraft.entity.TreeOfLifeEntity t ? player.level().getEntity(t.ownerId()) : null;
+			: d instanceof dev.overcraft.entity.TreeOfLifeEntity t ? player.level().getEntity(t.ownerId())
+			: d instanceof dev.overcraft.entity.TurretEntity turret ? turret.getOwner() : null;
 		return owner instanceof LivingEntity living && living != player && Allies.againstHero(player, living);
 	}
 
@@ -436,7 +446,7 @@ public final class Sombra implements HeroKit {
 				s.hotfixTarget = null;
 				s.weaponRecovery = Math.max(s.weaponRecovery, Ow.ticks(HOTFIX_RECOVERY));
 				SombraSounds.split(player, "hotfix.end", player.getEyePosition(), 70);
-				if (target instanceof LivingEntity ally) {
+				if (!deployable(target) && target instanceof LivingEntity ally) {
 					s.hotfixCharges--;
 					HotfixHeal.start(player, ally);
 					dev.overcraft.hero.Voice.say(player, "hotfix", 1);
@@ -469,13 +479,13 @@ public final class Sombra implements HeroKit {
 		}
 		s.hotfixTarget = target.getId();
 		s.hotfixChannel = 0;
-		boolean hack = !(target instanceof LivingEntity);
+		boolean hack = deployable(target);
 		SombraSounds.split(player, "hotfix.cast", player.getEyePosition(), 70);
 		SombraSounds.own(player, hack ? "hack.channel" : "hotfix.channel");
 		SombraSounds.at(player.level(), hack ? "hack.channel_3p" : "hotfix.channel_3p", player.getEyePosition(), 50);
 		// its strands from her left forearm to them over the channel (7C6E.. to an ally, 1AC7.. to a hacked object)
 		Effects.play(player.level(), "sombra_strands", player.position(), Vec3.ZERO, target,
-			player.getId() * 2 + (target instanceof LivingEntity ? 0 : 1), player);
+			player.getId() * 2 + (hack ? 1 : 0), player);
 		// Hotfix in stealth reveals her without ending it (BZ 2026-10-06; ours: for its channel and recovery)
 		Stealth.reveal(player, s, HOTFIX_CAST + HOTFIX_RECOVERY);
 		Combat.animate(player, "hotfix");

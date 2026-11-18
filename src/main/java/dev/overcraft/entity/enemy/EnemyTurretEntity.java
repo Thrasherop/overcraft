@@ -117,6 +117,10 @@ public class EnemyTurretEntity extends TurretEntity implements Enemy {
 	/** As TurretEntity's own fight (its turn, its cone, its rate), for him. */
 	private void fight(ServerLevel level, EnemyTorbjorn owner) {
 		fireIn = Math.max(0, fireIn - 1);
+		// hacked by a player's Sombra: shut down for the hack, as a player's turret is (TurretEntity.fight)
+		if (dev.overcraft.sombra.Hack.hacked(this)) {
+			return;
+		}
 		LivingEntity target = tickCount % 2 == 0 || targetId != null ? target(level, owner) : null;
 		if (target == null) {
 			return;

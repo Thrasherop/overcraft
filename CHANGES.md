@@ -4,6 +4,17 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.118
+
+- **A game rule for enemy heroes (owner):** `/gamerule overcraft:enemy_hero_chance <0-100>`, the percent of natural night
+  zombies, skeletons and husks that come as an enemy hero instead. 0 turns them off; the default 8 is the old 1 in 12. The cap
+  (2 within 64 m of a player) still holds. Played: at 100, 40 s of night brought 55 enemy heroes and one zombie; at 0, none
+  (20 zombies, 26 skeletons).
+- **Sombra's hack shuts down turrets (owner):** Hotfix's hack and EMP now hack a Torbjörn's turret, an enemy hero's or an enemy
+  player's, and a hacked turret stops firing for the hack (10 s, the game data's). Before, a turret counted as a living thing,
+  so Hotfix tried to heal it. Played: an enemy turret fired 14 shots in 4 s at Sombra, none in the 4 s after her hack, and 13
+  again once the hack was over.
+
 ## 2026-11-18: 0.3.117
 
 - **Enemy heroes leave at daybreak (#46, the owner's choice):** they come with the night and now go once day is here, in a
