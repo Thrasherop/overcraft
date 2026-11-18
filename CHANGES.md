@@ -4,6 +4,17 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.104
+
+- **Hero mode and plain Minecraft, after an independent critique** (checked on the fix in the game; not first reproduced on
+  the old build):
+  - Interact (F) in hero mode used the hidden held item: it could place the block, pour a lava bucket or throw an ender
+    pearl. It now only opens doors, chests and the like, as an empty hand would (dirt in hand: nothing placed, the door opened).
+  - The hero's own regeneration kept healing in Minecraft mode, even starving. Minecraft mode now heals as Minecraft does
+    (food 8: health held at 12 for 10 s).
+  - A safe landing (Juno always, others after a movement ability) also cancelled ender pearl and dripstone damage. Only real
+    falls are excused now (Juno took the pearl's 5).
+
 ## 2026-11-18: 0.3.103
 
 - **Perks, after an independent critique:**

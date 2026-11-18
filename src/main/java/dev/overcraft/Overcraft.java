@@ -258,7 +258,8 @@ public class Overcraft implements ModInitializer {
 				return false;
 			}
 			// a fall in hero mode hurts from the hero's own safe height (LivingEntityMixin), unless an ability lands it (#35)
-			return !(source.is(DamageTypeTags.IS_FALL) && entity instanceof Player player && HeroManager.inHeroPlay(player)
+			// a real fall only: IS_FALL also holds an ender pearl's and a stalagmite's, which a safe landing doesn't excuse (a critique)
+			return !(source.is(net.minecraft.world.damagesource.DamageTypes.FALL) && entity instanceof Player player && HeroManager.inHeroPlay(player)
 				&& HeroManager.fallIsSafe(player));
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register(KillFeed::onDeath);
