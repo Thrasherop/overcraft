@@ -397,12 +397,17 @@ public class TurretEntity extends Mob implements OwnableEntity, SurfaceStuck {
 		}
 	}
 
+	/** It fired now: in combat (inCombat) and its fire layer for the renderer (SHOT_AT). Also an enemy Torbjörn's turret's (#46). */
+	protected void fired() {
+		firedAt = level().getGameTime();
+		entityData.set(SHOT_AT, tickCount);
+	}
+
 	/** One hitscan shot at {@code target}'s middle: an enemy barrier between takes it (Barriers.between). */
 	private void shoot(ServerLevel level, ServerPlayer owner, LivingEntity target, double damage, boolean missile) {
 		Vec3 gun = gun();
 		Vec3 at = target.getBoundingBox().getCenter();
-		firedAt = level.getGameTime();
-		entityData.set(SHOT_AT, tickCount);
+		fired();
 		Barriers.Shape barrier = Barriers.between(level, gun, at, owner);
 		if (barrier != null) {
 			barrier.barrierTake(damage, at);

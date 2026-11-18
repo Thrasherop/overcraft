@@ -4,7 +4,14 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-17: 0.3.85 on next (not on main yet)
+## 2026-11-17: 0.3.86 on next (not on main yet)
+
+- **Four more enemy heroes at night (#46):** Ashe (aimed Viper shots at range, Coach Gun up close), Sojourn (Railgun bursts and
+  a Charged Shot once her energy is high), Torbjörn (rivets and a turret he throws, which shoots you and your pets, never
+  monsters) and Widowmaker (from 20-40 m, each shot after a 1.5 s aim you can see as a red line and dodge). Eight heroes now
+  take turns replacing night spawns. Summon: /summon overcraft:enemy_ashe (sojourn, torbjorn, widowmaker).
+
+## 2026-11-17: 0.3.85
 
 - **The kill feed shows an enemy hero's portrait (#46)** when you kill one, as it does for players.
 

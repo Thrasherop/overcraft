@@ -68,9 +68,14 @@ public abstract class EnemyHeroEntity extends Monster {
 
 	/** Its health (Overwatch's, at the mod's 250 = 20 scale), its run and its sight. */
 	public static AttributeSupplier.Builder attributes(int owHealth, double runMetresPerSecond) {
+		return attributes(owHealth, runMetresPerSecond, EnemyHeroStats.FOLLOW_RANGE);
+	}
+
+	/** The same with its own sight ({@code followRange} m: Widowmaker's, EnemyHeroStats.WIDOW_FOLLOW_RANGE). */
+	public static AttributeSupplier.Builder attributes(int owHealth, double runMetresPerSecond, double followRange) {
 		return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, Ow.hp(owHealth))
 			.add(Attributes.MOVEMENT_SPEED, EnemyHeroStats.speedAttribute(runMetresPerSecond))
-			.add(Attributes.FOLLOW_RANGE, EnemyHeroStats.FOLLOW_RANGE);
+			.add(Attributes.FOLLOW_RANGE, followRange);
 	}
 
 	public abstract Hero hero();
@@ -119,6 +124,24 @@ public abstract class EnemyHeroEntity extends Monster {
 		if (!level().isClientSide() && !hero().id.equals(getAttached(HeroManager.HERO))) {
 			// the hero it's drawn as, synced to every client (the renderer reads it as it reads a player's)
 			setAttached(HeroManager.HERO, hero().id);
+		}
+		if (!level().isClientSide()) {
+			noteTarget();
+		}
+	}
+
+	/** The target it had last tick (server; by identity: a cast or an aim belongs to one). */
+	private @Nullable LivingEntity lastTarget;
+
+	/** Its target changed or went: a kit drops its cast or aim (Coach Gun's, the turret's throw, an aim down the sights). */
+	protected void targetChanged() {
+	}
+
+	/** A new target, or none: whatever was cast or aimed at the old one stops (the critique of 29c1797). Before each fight tick too. */
+	private void noteTarget() {
+		if (getTarget() != lastTarget) {
+			lastTarget = getTarget();
+			targetChanged();
 		}
 	}
 
@@ -325,6 +348,7 @@ public abstract class EnemyHeroEntity extends Monster {
 				mob.getMoveControl().strafe(backwards ? -0.5f : 0.5f, clockwise ? 0.5f : -0.5f);
 				mob.lookAt(target, 30, 30);
 			}
+			mob.noteTarget();
 			mob.fight(level, target, distance, sees);
 		}
 	}
