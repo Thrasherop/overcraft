@@ -66,3 +66,5 @@ Gradle, code edits and git on this checkout. Up: [Techniques](../README.md) · e
 
 ## A real install after fix/polish-2 (0.3.31 needs its pack rebuilt)
 `Overcraft.ASSETS_NEEDED` is 0.3.31: an older zip shows its assets' version in red in the pause menu (`f_4_pause`). In this order, each over the player's extraction: `py tools/build_asset_pack.py effects <dirs>` (bakes `mercy_wing_glow`), `py tools/build_asset_pack.py glows <roots>` (`glow_maps.py`: glows and `hero_models/colour/`, the dreads), then `py tools/build_asset_pack.py zip`: **zip doesn't run the others** (critique_parts). `zip` lists what's missing (`missing()`, which now knows these two). With an old pack: Mercy's wing glow falls back to a very faint soft ball; the dreads stay undrawn and the log warns. Played: the old pack's red version here; the fallbacks and a real install's zip were **not** played. The dev pack at `overcraft_ana/local-assets/pack` has these two files, placed by hand and still says 0.3.30.
+
+See also [mob-heroes](mob-heroes.md): what a mob needs to be drawn and fought as a hero (#46), and its traps.

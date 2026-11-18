@@ -1,6 +1,6 @@
 # Enemy heroes at night (#46): plan
 
-Up: [techniques map](../../techniques/README.md). The owner's request (2026-10-27): at night, some hostile spawns are enemy heroes.
+Up: [techniques map](../../techniques/README.md). The general lessons: [mob-heroes](../../techniques/building/mob-heroes.md). The owner's request (2026-10-27): at night, some hostile spawns are enemy heroes.
 The owner's decision (2026-11-14, on #46): after the heroes and everything else; real mobs per hero with cut-down kits, Minecraft's
 own pathing and targeting; start with 3-4 simple heroes (Tracer, Junkrat, Cassidy, Pharah), damage scaled down. Fake players were
 considered and rejected (player list, sleep count, no pathing, fragile in multiplayer).
