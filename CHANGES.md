@@ -4,6 +4,13 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.117
+
+- **Enemy heroes leave at daybreak (#46, the owner's choice):** they come with the night and now go once day is here, in a
+  puff of smoke (checked once a second; a thunderstorm's dark keeps them, as it lets them spawn). One kept on purpose (a name
+  tag, or summoned with persistence) stays. Played: at midnight an enemy Cassidy and a kept Widowmaker; three seconds after
+  the time was set to day the Cassidy was gone and the Widowmaker still there.
+
 ## 2026-11-18: 0.3.116
 
 - **A dead enemy's frags and rockets still burst (#46):** once an enemy Junkrat or Pharah died and was removed (a second

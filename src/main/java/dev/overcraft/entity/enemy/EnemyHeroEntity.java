@@ -127,7 +127,24 @@ public abstract class EnemyHeroEntity extends Monster {
 		}
 		if (!level().isClientSide()) {
 			noteTarget();
+			leaveAtDay();
 		}
+	}
+
+	/**
+	 * They came with the night, and leave once day is here (owner, 2026-11-18, #46: "they should leave once the day is here"; a
+	 * zombie burns, these go). Checked once a second: in the Overworld, when it's no longer dark outside (Level.isDarkOutside, the
+	 * same test their spawn makes, so a thunderstorm's dark keeps them), a puff of smoke and gone. Not one kept on purpose (a name
+	 * tag, /summon with PersistenceRequired). His turret follows him 2 s later (EnemyTurretEntity).
+	 */
+	private void leaveAtDay() {
+		if (tickCount % 20 != 0 || !(level() instanceof ServerLevel level) || level.dimension() != Level.OVERWORLD
+			|| level.isDarkOutside() || isPersistenceRequired() || !isAlive()) {
+			return;
+		}
+		level.sendParticles(net.minecraft.core.particles.ParticleTypes.POOF, getX(), getY() + getBbHeight() / 2, getZ(), 20,
+			getBbWidth() / 2, getBbHeight() / 3, getBbWidth() / 2, 0.02);
+		discard();
 	}
 
 	/** The target it had last tick (server; by identity: a cast or an aim belongs to one). */
