@@ -95,6 +95,10 @@ public final class OcEntities {
 			.noLootTable().noSave()
 			.sized((float) dev.overcraft.lifeweaver.LifeweaverStats.PLATFORM_RADIUS * 2, (float) dev.overcraft.lifeweaver.LifeweaverStats.PLATFORM_THICKNESS)
 			.clientTrackingRange(10).updateInterval(1));
+	/** A spray on a wall (#41): saved with its chunk (it lasts), drawn by the client from the local pack. */
+	public static final EntityType<dev.overcraft.entity.SprayEntity> SPRAY = register("spray",
+		EntityType.Builder.<dev.overcraft.entity.SprayEntity>of(dev.overcraft.entity.SprayEntity::new, MobCategory.MISC)
+			.noLootTable().sized(0.1f, 0.1f).clientTrackingRange(8).updateInterval(20));
 	public static final EntityType<dev.overcraft.entity.SeedEntity> SEED = register("seed",
 		EntityType.Builder.<dev.overcraft.entity.SeedEntity>of(dev.overcraft.entity.SeedEntity::new, MobCategory.MISC)
 			.noLootTable().noSave().sized(0.3f, 0.3f).clientTrackingRange(8).updateInterval(2));
