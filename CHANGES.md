@@ -4,6 +4,14 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.119
+
+- **A hacked enemy hero uses no abilities (#46):** under Sombra's hack an enemy Tracer no longer Blinks, an enemy Torbjörn
+  doesn't throw his turret and an enemy Ashe doesn't fire her Coach Gun; their guns still fire, as a hacked player's do.
+  Pharah keeps her Hover Jets (a passive). Played: with no hack a summoned Torbjörn had his turret out within 5 s; hacked for
+  10 s, none at 3, 6 and 9 s, and he threw it once the hack ended.
+- **Dev only:** the asset pack's `zip --slim` build option (see the commit), for the owner's playtest of a smaller pack.
+
 ## 2026-11-18: 0.3.118
 
 - **A game rule for enemy heroes (owner):** `/gamerule overcraft:enemy_hero_chance <0-100>`, the percent of natural night

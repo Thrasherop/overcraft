@@ -217,7 +217,8 @@ public class EnemyTracer extends EnemyHeroEntity {
 
 		private void blink(ServerLevel level, Vec3 way) {
 		Vec3 flat = new Vec3(way.x, 0, way.z);
-		if (blinks <= 0 || blinkWait > 0 || flat.lengthSqr() < 1.0E-6 || isPassenger()) {
+		// not while hacked: no abilities (Sombra's Hack; the critique of #46: a hacked Tracer still Blinked in her fight)
+		if (blinks <= 0 || blinkWait > 0 || flat.lengthSqr() < 1.0E-6 || isPassenger() || dev.overcraft.sombra.Hack.silenced(this)) {
 			return;
 		}
 		flat = flat.normalize();

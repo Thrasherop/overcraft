@@ -145,7 +145,8 @@ public class EnemyAshe extends EnemyHeroEntity {
 			}
 			return;
 		}
-		if (EnemyHeroStats.asheCoach(distance, sees, coachCooldown) && onGround()) {
+		// (not while hacked: no abilities, the critique of #46)
+		if (EnemyHeroStats.asheCoach(distance, sees, coachCooldown) && onGround() && !dev.overcraft.sombra.Hack.silenced(this)) {
 			// the Coach Gun's cast (0.55 s, the blast 0.165 s in: AsheStats); it ends an aim, not the reload's shells (ours: she reloads
 			// all at once)
 			coachCast = 0;
