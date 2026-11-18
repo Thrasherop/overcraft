@@ -4,7 +4,7 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-18: 0.3.97
+## 2026-11-18: 0.3.97 (on main; general play at 2 GB: techniques/testing/runs/genplay_0397/run.md)
 
 - **The last of the reload leaks (#166, from an independent critique):** caches of mesh flags and projectile and prop meshes
   kept the old models' meshes alive after every reload (pieces 448 -> 615 -> 629 over two reloads, reproduced); they're now
