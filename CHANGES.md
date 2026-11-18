@@ -4,6 +4,15 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-17: 0.3.76 on next (not on main yet)
+
+- **Torbjörn, Anchor Bolts (#146):** a turret thrown at a wall or a ceiling now sits on it as in Overwatch (sideways on a
+  wall, upside down under a ceiling), turning to aim along it; if the block it's bolted to is mined or blown up it falls and
+  lands. Before, it stood upright against the wall and stayed floating when its block went. It keeps its place through a
+  chunk unloading. Hammer Time played too: +20 % with the hammer out, adding with Overload's +30 %.
+- **Widowmaker's other two perks played (#138):** Widow's Bite pierces enemies at 150 when charged past 100 %; Sniper's
+  Instinct doubles the charge for 2 s after a Grappling Hook pull. No change needed.
+
 ## 2026-11-17: 0.3.75 on next (not on main yet)
 
 - **Widowmaker (#138):** pick her from the select screen. Widow's Kiss from the hip (14, 10 a second) and scoped on the right
