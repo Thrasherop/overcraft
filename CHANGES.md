@@ -12,7 +12,7 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
   closing resources any more (it could reopen and lock a zip pack). A prop whose file fails to load no longer puts the
   weapons away for nothing. Played: Fox Cuddles' fox and Kiriko's kunai drawn after two reloads.
 
-## 2026-11-18: 0.3.96
+## 2026-11-18: 0.3.96 (on main with 0.3.97)
 
 - **Animations' turns take half the memory (#166):** bone rotations, over half the animation data, are kept as 16-bit
   numbers (at most 0.004 degrees off). Live heap data with the full pack: 1.31 -> 1.20 GB, more room at the launcher's
@@ -25,7 +25,7 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
   read whole into memory first. Those two lists are now read as plain numbers as they stream in. Played at 2 GB: three
   reloads in a row passed (133 models, heap 1.35-1.48 GB), and heroes, enemy heroes, a turret and Purr's effects drew after.
 
-## 2026-11-18: 0.3.94
+## 2026-11-18: 0.3.94 (on main with 0.3.95)
 
 - **A resource reload no longer runs out of memory (#166, found testing):** with the local pack and the Minecraft launcher's
   default 2 GB, F3+T (or changing a resource pack or the language) crashed with "Java heap space": the old models stayed
@@ -34,7 +34,7 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
   Reproduced at 2 GB on 0.3.93; on the fix two reloads in a row passed with the model count and heap flat (131 models,
   ~1.3 GB), and Kiriko drew in first and third person after them.
 
-## 2026-11-18: 0.3.93
+## 2026-11-18: 0.3.93 (on main with 0.3.95)
 
 - **Animations take less memory (#166):** a clip's bones share one copy of its key times, and a bone that holds still through
   a clip keeps one key instead of hundreds. The clips' arrays went from 800 to 581 MB, and a fresh client from 7.45 to 7.27
