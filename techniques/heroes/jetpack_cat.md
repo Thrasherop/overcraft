@@ -310,3 +310,15 @@ Up: [Techniques](../README.md) · record: [catnap_139](../testing/runs/catnap_13
   arrival; a wall ends it (ours, `horizontalCollision`). Aimed at a wall, the spot steps 0.35 m off its face (it lay on the
   wall, 1.6 m up). Ground 9.19 m and 25.0 m exact, air unchanged in speed, carry, cancel and hits as before.
 - **Open:** she lands 0.25 m up and hovers there; a snap back of up to ~1.3 m on arrival; slopes, water, a second client untried.
+
+## Catnapper's carry on the rope (2026-11-17, #142)
+The carry held a mob at a point 1 m under her feet (a spring to that point each tick), so it never swung. A carried mob now goes
+through Lifeline's own rope (`tow`, now with a length: the mob's height + 1 m, its top 1 m under her feet hanging straight). An
+enemy *player* keeps the point hold, since their client runs the rope only for Lifeline (ClientTow). Measured with the harness's
+`ents` (cat and husk every 0.08 s) on the same climb (Space + W, a 90-degree turn at 1.6 s), the husk weakened so it couldn't hit:
+- **Old build** (`carry_old_fly.txt`): the husk 3.1-3.3 m under her, never more than 0.44 m off to a side, through the turn.
+- **New build** (`carry_new.txt`): picked up 2.9 m behind, swinging through to 1.3 m ahead and 1.3 m out at the turn, back to 0.9 m
+  behind; 3.3-3.9 m under her. Screenshots `run/screenshots/carry_rope_1/_2.png` looking down: the tether slants as it swings.
+**Lessons:** her flight in the harness is `key jump` (the `secondary_fire` action is bound to her left mouse); a husk carried with
+its AI killed her twice during setup (give it Weakness 255); leftover water from another test drowned her between runs.
+Not tried: a player carried (unchanged code path), the rope through terrain during a carry.
