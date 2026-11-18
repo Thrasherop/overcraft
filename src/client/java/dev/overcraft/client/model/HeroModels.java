@@ -574,7 +574,7 @@ public final class HeroModels {
 			for (SkinnedModel.Channel c : clip.channels()) {
 				int node = model.model().node(clips.model().nodeNames[c.node()]);
 				if (node >= 0) {
-					channels.add(new SkinnedModel.Channel(node, c.path(), c.times(), c.values(), c.step()));
+					channels.add(new SkinnedModel.Channel(node, c.path(), c.times(), c.values(), c.step(), c.quat()));
 				}
 			}
 			model.model().clips.putIfAbsent(clip.name(), new SkinnedModel.Clip(clip.name(), clip.duration(), channels));

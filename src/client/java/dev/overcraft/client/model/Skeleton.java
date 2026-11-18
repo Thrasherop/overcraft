@@ -53,8 +53,8 @@ public final class Skeleton {
 				case 'T' -> pose.t[ch.node()].set(lerp(v, i * 3, j * 3, f, 0), lerp(v, i * 3, j * 3, f, 1), lerp(v, i * 3, j * 3, f, 2));
 				case 'S' -> pose.s[ch.node()].set(lerp(v, i * 3, j * 3, f, 0), lerp(v, i * 3, j * 3, f, 1), lerp(v, i * 3, j * 3, f, 2));
 				case 'R' -> {
-					Quaternionf a = new Quaternionf(v[i * 4], v[i * 4 + 1], v[i * 4 + 2], v[i * 4 + 3]);
-					Quaternionf b = new Quaternionf(v[j * 4], v[j * 4 + 1], v[j * 4 + 2], v[j * 4 + 3]);
+					Quaternionf a = new Quaternionf(ch.value(i * 4), ch.value(i * 4 + 1), ch.value(i * 4 + 2), ch.value(i * 4 + 3));
+					Quaternionf b = new Quaternionf(ch.value(j * 4), ch.value(j * 4 + 1), ch.value(j * 4 + 2), ch.value(j * 4 + 3));
 					pose.r[ch.node()].set(a.slerp(b, f).normalize());
 				}
 				default -> {

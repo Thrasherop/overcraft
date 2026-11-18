@@ -65,7 +65,33 @@ public final class SkinnedModel {
 	}
 
 	/** One animation track: a node's translation, rotation or scale over time. */
-	public record Channel(int node, char path, float[] times, float[] values, boolean step) {
+	/**
+	 * One bone's keys for one of translation, rotation or scale. Rotations are kept as 16-bit integers ({@code quat}, the value
+	 * times 32767: at most 3e-5 off, about 0.004 degrees), the rest as floats ({@code values}): rotations were over half the clips'
+	 * memory, and at the launcher's default 2 GB the heap had little to spare (#166). Read the keys through value and length.
+	 */
+	public record Channel(int node, char path, float[] times, float @org.jspecify.annotations.Nullable [] values, boolean step,
+		short @org.jspecify.annotations.Nullable [] quat) {
+		public Channel(int node, char path, float[] times, float[] values, boolean step) {
+			this(node, path, times, path == 'R' ? null : values, step, path == 'R' ? quantize(values) : null);
+		}
+
+		/** The key data's i-th number (key k's component c is k * width + c). */
+		public float value(int i) {
+			return quat != null ? quat[i] * (1f / 32767f) : values[i];
+		}
+
+		public int length() {
+			return quat != null ? quat.length : values.length;
+		}
+
+		private static short[] quantize(float[] values) {
+			short[] out = new short[values.length];
+			for (int i = 0; i < values.length; i++) {
+				out[i] = (short) Math.round(Math.clamp(values[i], -1f, 1f) * 32767f);
+			}
+			return out;
+		}
 	}
 
 	public record Clip(String name, float duration, List<Channel> channels) {
