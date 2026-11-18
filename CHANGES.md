@@ -4,6 +4,18 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.113
+
+- **Play of the Game on a dedicated server (#170):** a player in the air when the showing began (Pharah hovering) was kicked
+  for flying 4 s into the replay ("Flying is not enabled on this server"). The server's floating check missed viewers once the
+  replay had taken them out of the player list. Reproduced on a dedicated server (allow-flight off): Pharah hovering at y 68.6
+  when the card appeared was kicked. Replayed on the fix: the same hover (y 69.8), the replay played through, and the showing
+  ended normally.
+- **A viewer who quits mid-replay (#170):** the others no longer wait 13-20 s for the timeout; the showing ends once nobody is
+  left watching. Not played yet: it needs a server and two clients, more memory than the machine had free today.
+- **Dev runs keep their temp files on E: (owner):** every dev client and server writes Java's temp files to the checkout's
+  `run/tmp`, not C:'s temp folder. Seen in use on the dedicated server.
+
 ## 2026-11-18: 0.3.112
 
 - **Play of the Game, a stale replay (#170):** a showing's replay starts when its recording finishes zipping; if that took
