@@ -999,6 +999,14 @@ public final class Combat {
 		}
 	}
 
+	/** The same for a mob drawn as a hero (an enemy hero, #46): everyone who can see it plays the clip (HeroAnimator). */
+	public static void animate(net.minecraft.world.entity.Mob hero, String clip) {
+		HeroActionPayload payload = new HeroActionPayload(hero.getId(), clip);
+		for (ServerPlayer watcher : PlayerLookup.tracking(hero)) {
+			ServerPlayNetworking.send(watcher, payload);
+		}
+	}
+
 	/** Tells the hero and everyone who can see them to play an animation (a throw, a cast). */
 	public static void animate(ServerPlayer hero, String clip) {
 		dev.overcraft.comms.Comms.animated(hero, clip);

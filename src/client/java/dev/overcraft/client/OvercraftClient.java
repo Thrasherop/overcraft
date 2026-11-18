@@ -278,6 +278,11 @@ public class OvercraftClient implements ClientModInitializer {
 		EntityRendererRegistry.register(OcEntities.DYNAMITE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"ashe_dynamite", 1f, false, 1, false));
 		EntityRendererRegistry.register(OcEntities.BOB, dev.overcraft.client.model.LifeweaverPropRenderer::bob);
+		// the enemy heroes at night (#46): drawn as their heroes (EnemyHeroRenderer)
+		EntityRendererRegistry.register(OcEntities.ENEMY_TRACER, dev.overcraft.client.model.EnemyHeroRenderer::new);
+		EntityRendererRegistry.register(OcEntities.ENEMY_CASSIDY, dev.overcraft.client.model.EnemyHeroRenderer::new);
+		EntityRendererRegistry.register(OcEntities.ENEMY_JUNKRAT, dev.overcraft.client.model.EnemyHeroRenderer::new);
+		EntityRendererRegistry.register(OcEntities.ENEMY_PHARAH, dev.overcraft.client.model.EnemyHeroRenderer::new);
 		// Widowmaker's Venom Mine (10A75) and grappling claw (0711, its rope drawn by WidowmakerFx.hook)
 		EntityRendererRegistry.register(OcEntities.VENOM_MINE, ctx -> new dev.overcraft.client.model.ProjectileModelRenderer<>(ctx,
 			"widowmaker_mine", 0.3f, false, 1, false));

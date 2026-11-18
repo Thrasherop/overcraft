@@ -1,5 +1,6 @@
 {
   "values": [
-    "overcraft:blast"
+    "overcraft:blast",
+    "overcraft:enemy_blast"
   ]
 }

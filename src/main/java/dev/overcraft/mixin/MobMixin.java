@@ -29,4 +29,15 @@ public abstract class MobMixin {
 	private boolean overcraft$savedAi(Mob self, Operation<Boolean> original) {
 		return Sleep.ownAi(() -> original.call(self));
 	}
+
+	/**
+	 * Enemy heroes at night (#46): a natural spawn is marked here, at the end of Mob.finalizeSpawn (a zombie's and a skeleton's own
+	 * finalizeSpawn call it first), and swapped for a hero on the next tick (EnemyHeroSpawns).
+	 */
+	@Inject(method = "finalizeSpawn", at = @At("TAIL"))
+	private void overcraft$enemyHero(net.minecraft.world.level.ServerLevelAccessor level, net.minecraft.world.DifficultyInstance difficulty,
+									 net.minecraft.world.entity.EntitySpawnReason reason, net.minecraft.world.entity.SpawnGroupData groupData,
+									 CallbackInfoReturnable<net.minecraft.world.entity.SpawnGroupData> cir) {
+		dev.overcraft.entity.enemy.EnemyHeroSpawns.finalized((Mob) (Object) this, level, reason);
+	}
 }

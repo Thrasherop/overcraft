@@ -3,6 +3,7 @@
     "overcraft:field",
     "overcraft:gravitic_flux",
     "overcraft:gravitic_slam",
-    "overcraft:blast"
+    "overcraft:blast",
+    "overcraft:enemy_blast"
   ]
 }
