@@ -938,9 +938,14 @@ public final class HeroModelRenderer {
 	private static final float SHADOW_CELL = 0.035f;
 	private static final Map<SkinnedModel.Piece, ShadowMesh> SHADOW_MESHES = new IdentityHashMap<>();
 
-	/** The shadow meshes made from models now gone (a reload, a freed model: HeroModels): made again when next drawn. */
+	/** What's kept per mesh piece (shadow meshes, prop / eye-shadow / closed flags) from models now gone: made again when next drawn. */
 	public static void forgetShadows() {
 		SHADOW_MESHES.clear();
+		// the other caches keyed by piece (a record: value equality, so no weak keys) would keep freed models' meshes too (#166,
+		// a critique: pieces 448 -> 615 -> 629 over two reloads)
+		PROPS.clear();
+		EYE_SHADOWS.clear();
+		CLOSED.clear();
 	}
 
 	private static ShadowMesh shadowMesh(SkinnedModel.Piece piece) {
@@ -1565,7 +1570,7 @@ public final class HeroModelRenderer {
 	/** Dev only: the view model's hand bones in the view's space as last drawn in Minecraft mode (DevServer "viewbones"). */
 	public static final Map<String, Vector3f> VIEW_BONES = new java.util.TreeMap<>();
 
-	private static final Map<SkinnedModel, Set<Integer>> ALL_PROPS = new IdentityHashMap<>();
+	private static final Map<SkinnedModel, Set<Integer>> ALL_PROPS = new java.util.WeakHashMap<>(); // weak: freed models go (#166)
 
 	/** Every held prop's bone (her kunai, ofuda and Suzu), all put away: Minecraft mode holds Minecraft's items. */
 	private static Set<Integer> allProps(SkinnedModel model) {

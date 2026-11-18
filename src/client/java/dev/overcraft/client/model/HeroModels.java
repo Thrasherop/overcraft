@@ -443,7 +443,8 @@ public final class HeroModels {
 
 	/** Whether the pack has this model, loaded or not: a prop's presence (EmoteProps.holds) shouldn't wait on its loading. */
 	public static boolean has(String name) {
-		return name.startsWith("prop_") ? PROPS_PRESENT.contains(name) : get(name) != null;
+		// (a prop whose file failed to load isn't there: holds would put the weapons away for nothing)
+		return name.startsWith("prop_") ? PROPS_PRESENT.contains(name) && !PROPS.missing.contains(name) : get(name) != null;
 	}
 
 	private static @Nullable Loaded firstPersonModel(String name) {
@@ -511,6 +512,10 @@ public final class HeroModels {
 			return;
 		}
 		generation++;
+		// nothing loads on demand from the old resources meanwhile: their packs are closing (a critique: a zip pack reopened and
+		// left locked), and a load now would add to the reload's own peak
+		lastResources = null;
+		PROPS_PRESENT.clear();
 		TextureManager textures = mc.getTextureManager();
 		REGISTERED.forEach(textures::release);
 		REGISTERED.clear();

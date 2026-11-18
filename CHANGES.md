@@ -4,6 +4,14 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.97
+
+- **The last of the reload leaks (#166, from an independent critique):** caches of mesh flags and projectile and prop meshes
+  kept the old models' meshes alive after every reload (pieces 448 -> 615 -> 629 over two reloads, reproduced); they're now
+  cleared with the models, and the count holds (427 -> 422 -> 422). During a reload nothing loads on demand from the old,
+  closing resources any more (it could reopen and lock a zip pack). A prop whose file fails to load no longer puts the
+  weapons away for nothing. Played: Fox Cuddles' fox and Kiriko's kunai drawn after two reloads.
+
 ## 2026-11-18: 0.3.96
 
 - **Animations' turns take half the memory (#166):** bone rotations, over half the animation data, are kept as 16-bit

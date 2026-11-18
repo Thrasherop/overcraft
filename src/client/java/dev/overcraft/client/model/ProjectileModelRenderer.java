@@ -45,7 +45,7 @@ public class ProjectileModelRenderer<T extends OwProjectile> extends ThrownItemR
 	private record Prepared(Matrix4f[] skin, Quaternionf align) {
 	}
 
-	private static final Map<SkinnedModel, Prepared> PREPARED = new IdentityHashMap<>();
+	private static final Map<SkinnedModel, Prepared> PREPARED = new java.util.WeakHashMap<>(); // weak: freed models go (#166)
 
 	private final String model;
 	private final boolean flip;
