@@ -204,7 +204,8 @@ public class EnemySojourn extends EnemyHeroEntity {
 		Vec3 look = bodyOf(target).subtract(eye).normalize();
 		// one aimed shot: no spread but the difficulty's (hers has none, SojournStats)
 		Vec3 dir = dev.overcraft.sombra.Sombra.cone(look, spread(0), random);
-		Traced t = trace(level, eye, dir, CHARGED_RANGE, CHARGED_RADIUS);
+		Traced t = trace(level, eye, dir, CHARGED_RANGE, CHARGED_RADIUS,
+			m -> EnemyHeroStats.sojournCharged(spent) * Widowmaker.falloff(m, CHARGED_FALLOFF_START, CHARGED_FALLOFF_END, CHARGED_FALLOFF_MIN));
 		Vec3 from = fromEyes(look, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD);
 		Effects.play(level, "sojourn_tracer", from, t.at().subtract(from), this, (int) Math.round(spent), this);
 		play(level, Railgun.chargedFireSound(spent), eye, 100);

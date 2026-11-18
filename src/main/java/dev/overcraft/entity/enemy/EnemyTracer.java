@@ -158,7 +158,7 @@ public class EnemyTracer extends EnemyHeroEntity {
 		Map<LivingEntity, Boolean> crits = new LinkedHashMap<>();
 		for (int i = 0; i < BULLETS; i++) {
 			Vec3 dir = dev.overcraft.sombra.Sombra.cone(look, spread(SPREAD_MAX), random);
-			Traced t = trace(level, eye, dir, RANGE, RADIUS);
+			Traced t = trace(level, eye, dir, RANGE, RADIUS, m -> Tracer.bulletDamage(m, false));
 			Vec3 muzzle = fromEyes(look, i == 0 ? -MUZZLE_SIDE : MUZZLE_SIDE, MUZZLE_UP, MUZZLE_AHEAD);
 			Effects.play(level, "tracer_shot", muzzle, t.at().subtract(muzzle), this, 0, this);
 			if (t.target() != null) {

@@ -148,7 +148,7 @@ public class EnemyWidowmaker extends EnemyHeroEntity {
 	private void shot(ServerLevel level, Vec3 look) {
 		Vec3 eye = getEyePosition();
 		Vec3 dir = dev.overcraft.sombra.Sombra.cone(look, spread(0) / 2, random);
-		Traced t = trace(level, eye, dir, REACH, SCOPED_RADIUS);
+		Traced t = trace(level, eye, dir, REACH, SCOPED_RADIUS, m -> EnemyHeroStats.widowShot(m, false));
 		Vec3 from = fromEyes(look, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD);
 		Effects.play(level, "widow_shot", from, t.at().subtract(from), this, Widowmaker.SHOT_FULL, this);
 		if (t.target() != null) {

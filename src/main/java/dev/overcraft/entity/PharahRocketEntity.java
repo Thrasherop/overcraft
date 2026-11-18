@@ -40,7 +40,11 @@ public class PharahRocketEntity extends OwProjectile {
 	public PharahRocketEntity(LivingEntity owner, Level level, Kind kind) {
 		super(OcEntities.PHARAH_ROCKET, owner, level, new ItemStack(Items.FIREWORK_ROCKET));
 		entityData.set(KIND, kind.ordinal());
+		this.enemyShooter = owner instanceof dev.overcraft.entity.enemy.EnemyHeroEntity mob ? mob : null;
 	}
+
+	/** The enemy Pharah who fired it (#46), kept so it still bursts after she's dead and removed (as FragEntity's). */
+	private dev.overcraft.entity.enemy.@org.jspecify.annotations.Nullable EnemyHeroEntity enemyShooter;
 
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
@@ -118,8 +122,9 @@ public class PharahRocketEntity extends OwProjectile {
 		}
 		if (getOwner() instanceof ServerPlayer owner) {
 			Pharah.burst(owner, this, at, direct);
-		} else if (getOwner() instanceof dev.overcraft.entity.enemy.EnemyHeroEntity mob) {
-			// an enemy Pharah's (#46): the same numbers, the mob's own rules (EnemyBlasts)
+		} else if ((getOwner() instanceof dev.overcraft.entity.enemy.EnemyHeroEntity live ? live : enemyShooter) instanceof
+			dev.overcraft.entity.enemy.EnemyHeroEntity mob) {
+			// an enemy Pharah's (#46): the same numbers, the mob's own rules (EnemyBlasts); hers, dead or alive
 			dev.overcraft.entity.enemy.EnemyBlasts.rocket(mob, this, at, direct);
 		}
 		discard();

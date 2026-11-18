@@ -227,35 +227,37 @@ public final class OcEntities {
 		.noLootTable().noSave().sized(0.8f, 0.8f).clientTrackingRange(8).updateInterval(1));
 
 	/**
+	 * Gone on Peaceful, as a zombie is (notInPeaceful: Mob.checkDespawn; the critique of #46, reproduced: a Junkrat stayed and
+	 * kept hurting a villager after the switch).
 	 * The enemy heroes at night (#46, entity.enemy): monsters, a player's 0.6 x 1.8 box (ours: their models stand about a player's
 	 * height), their drops their own (EnemyHeroEntity.dropCustomDeathLoot). /summon overcraft:enemy_tracer (and _cassidy, _junkrat,
 	 * _pharah) brings one.
 	 */
 	public static final EntityType<dev.overcraft.entity.enemy.EnemyTracer> ENEMY_TRACER = register("enemy_tracer",
 		EntityType.Builder.<dev.overcraft.entity.enemy.EnemyTracer>of(dev.overcraft.entity.enemy.EnemyTracer::new, MobCategory.MONSTER)
-			.noLootTable().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
+			.noLootTable().notInPeaceful().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
 	public static final EntityType<dev.overcraft.entity.enemy.EnemyCassidy> ENEMY_CASSIDY = register("enemy_cassidy",
 		EntityType.Builder.<dev.overcraft.entity.enemy.EnemyCassidy>of(dev.overcraft.entity.enemy.EnemyCassidy::new, MobCategory.MONSTER)
-			.noLootTable().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
+			.noLootTable().notInPeaceful().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
 	public static final EntityType<dev.overcraft.entity.enemy.EnemyJunkrat> ENEMY_JUNKRAT = register("enemy_junkrat",
 		EntityType.Builder.<dev.overcraft.entity.enemy.EnemyJunkrat>of(dev.overcraft.entity.enemy.EnemyJunkrat::new, MobCategory.MONSTER)
-			.noLootTable().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
+			.noLootTable().notInPeaceful().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
 	public static final EntityType<dev.overcraft.entity.enemy.EnemyPharah> ENEMY_PHARAH = register("enemy_pharah",
 		EntityType.Builder.<dev.overcraft.entity.enemy.EnemyPharah>of(dev.overcraft.entity.enemy.EnemyPharah::new, MobCategory.MONSTER)
-			.noLootTable().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
+			.noLootTable().notInPeaceful().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
 	/** Batch 2 (#46): /summon overcraft:enemy_ashe (and _sojourn, _torbjorn, _widowmaker). */
 	public static final EntityType<dev.overcraft.entity.enemy.EnemyAshe> ENEMY_ASHE = register("enemy_ashe",
 		EntityType.Builder.<dev.overcraft.entity.enemy.EnemyAshe>of(dev.overcraft.entity.enemy.EnemyAshe::new, MobCategory.MONSTER)
-			.noLootTable().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
+			.noLootTable().notInPeaceful().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
 	public static final EntityType<dev.overcraft.entity.enemy.EnemySojourn> ENEMY_SOJOURN = register("enemy_sojourn",
 		EntityType.Builder.<dev.overcraft.entity.enemy.EnemySojourn>of(dev.overcraft.entity.enemy.EnemySojourn::new, MobCategory.MONSTER)
-			.noLootTable().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
+			.noLootTable().notInPeaceful().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
 	public static final EntityType<dev.overcraft.entity.enemy.EnemyTorbjorn> ENEMY_TORBJORN = register("enemy_torbjorn",
 		EntityType.Builder.<dev.overcraft.entity.enemy.EnemyTorbjorn>of(dev.overcraft.entity.enemy.EnemyTorbjorn::new, MobCategory.MONSTER)
-			.noLootTable().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
+			.noLootTable().notInPeaceful().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
 	public static final EntityType<dev.overcraft.entity.enemy.EnemyWidowmaker> ENEMY_WIDOWMAKER = register("enemy_widowmaker",
 		EntityType.Builder.<dev.overcraft.entity.enemy.EnemyWidowmaker>of(dev.overcraft.entity.enemy.EnemyWidowmaker::new, MobCategory.MONSTER)
-			.noLootTable().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
+			.noLootTable().notInPeaceful().sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10));
 	/** An enemy Torbjorn's turret (EnemyTurretEntity): his turret's box; MISC, so it isn't counted as a monster spawn. */
 	public static final EntityType<dev.overcraft.entity.enemy.EnemyTurretEntity> ENEMY_TURRET = register("enemy_turret",
 		EntityType.Builder.<dev.overcraft.entity.enemy.EnemyTurretEntity>of(dev.overcraft.entity.enemy.EnemyTurretEntity::new, MobCategory.MISC)

@@ -44,7 +44,15 @@ public class FragEntity extends OwProjectile {
 		super(OcEntities.FRAG, owner, level, new ItemStack(Items.FIRE_CHARGE));
 		this.bomb = bomb;
 		this.fuse = fuseTicks;
+		this.enemyShooter = owner instanceof dev.overcraft.entity.enemy.EnemyHeroEntity mob ? mob : null;
 	}
+
+	/**
+	 * The enemy Junkrat who threw it (#46), kept: once he's dead and removed (a second after), getOwner() no longer finds him and
+	 * his frags vanished without bursting (the critique of #46, reproduced: two frags at a player's feet, no blast, no damage). A
+	 * dead skeleton's arrows still land. Not saved: a frag doesn't outlive its chunk's unload anyway.
+	 */
+	private dev.overcraft.entity.enemy.@Nullable EnemyHeroEntity enemyShooter;
 
 	public boolean bomb() {
 		return bomb;
@@ -155,8 +163,9 @@ public class FragEntity extends OwProjectile {
 		done = true;
 		if (getOwner() instanceof ServerPlayer owner && owner.level() == level()) {
 			Junkrat.fragBurst(owner, this, at, direct);
-		} else if (getOwner() instanceof dev.overcraft.entity.enemy.EnemyHeroEntity mob && mob.level() == level()) {
-			// an enemy Junkrat's (#46): the same numbers, the mob's own rules (EnemyBlasts)
+		} else if ((getOwner() instanceof dev.overcraft.entity.enemy.EnemyHeroEntity live ? live : enemyShooter) instanceof
+			dev.overcraft.entity.enemy.EnemyHeroEntity mob && mob.level() == level()) {
+			// an enemy Junkrat's (#46): the same numbers, the mob's own rules (EnemyBlasts); his, dead or alive
 			dev.overcraft.entity.enemy.EnemyBlasts.frag(mob, this, at, direct);
 		}
 		discard();
