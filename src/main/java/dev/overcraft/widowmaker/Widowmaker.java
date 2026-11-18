@@ -505,6 +505,9 @@ public final class Widowmaker implements HeroKit {
 		w.pullZ = feet.z;
 		w.hookPhase = 3;
 		w.hookTicks = 0;
+		// a movement ability lets go of a Jetpack Cat's rope (W, Lifeline: "using movement abilities ... will disconnect the
+		// tether"; #142): the pull is the movement, so a hook that missed keeps her on it (ours)
+		dev.overcraft.jetpackcat.JetpackCat.letGo(owner);
 		WidowmakerSounds.split(owner, "grapple.attach", hook.position(), 40);
 		WidowmakerSounds.split(owner, "grapple.pull", owner.position(), 30);
 		Combat.animate(owner, "grapple_pull");

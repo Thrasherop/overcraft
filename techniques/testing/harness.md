@@ -280,3 +280,15 @@ boosting bit every 0.04 s): held Shift ended Boosters at 0.57 s before the fix, 
 - **Two clients need ~6 GB free** (2026-11-17): with a builder agent's Gradle build running in another worktree, client 2 died at
   launch ("insufficient memory ... malloc failed", `run2/hs_err_pid*.log`) with 1.6 of 15.6 GB free. Run the two-client pass when
   no other Gradle build is going (check free memory first: `Get-CimInstance Win32_OperatingSystem` FreePhysicalMemory).
+- **Two clients fit without the pack** (2026-11-18, [run](runs/two_client_2026-11-18/run.md)): a client in a world commits 8.5 GB
+  with the full local pack and 2.7 GB with `OC_ASSET_PACK` pointing at an empty folder (most of the difference is the driver's copies
+  of every model's textures). For a check that needs a few textures, a slim pack (the pack's `pack.mcmeta` plus just those files,
+  in the scratchpad) costs nothing. Close a client with `CloseMainWindow` first, then edit its `options.txt`: it rewrites the file
+  as it closes.
+- **`ult 100` right after `changehero` fills to the old hero's cost** (the client's last sync): wait a second, or read `ult`
+  against `ultCost` in `state` before pressing Q.
+- **Catnapper dives to where the view meets the ground:** at 5° down from 1.62 m that is ~18 m off. Aim at the target's feet
+  (`tp ... facing <x> <y> <z>`).
+- **Don't `/tp` a hero mid-fall from an ability** (2026-11-18): a teleport of D.Va's pilot, still falling from the eject, put her on
+  the ground on the server, which ended the eject's fall protection while her client went on falling; she died "doomed to fall".
+  Let her land first. Played without the teleport: an eject off a 49 m ledge landed her unhurt.

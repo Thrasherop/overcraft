@@ -4,7 +4,40 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-17: 0.3.88 on next (not on main yet)
+## 2026-11-18: 0.3.92 (on main; general play: techniques/testing/runs/genplay_0392/run.md)
+
+- **The communication wheel's page buttons take a quick click (found in the general play):** with T held, a fast click of the
+  right button (or left) sometimes left the wheel on its first page, so letting go sent "Need healing" instead of an emote.
+  The wheel looked only at whether the button was held, and a click pressed and let go between two game ticks never shows
+  held. It now also counts those clicks. Reproduced twice with a real click on 0.3.91, then played on the fix: the same click
+  turned to EMOTES and Pod Pet played.
+
+## 2026-11-18: 0.3.91
+
+- **Emote props load when an emote first shows them (#166, step 2):** the 102 prop models (0.18 GiB of textures) are no
+  longer read at start; up to 16 stay loaded, older ones are freed. Startup now reads 172 models instead of 316. The memory
+  saved is small (a fresh client in a world: 7.52 -> 7.45 GB). Played: Kiriko's Pod Pet, its pod drawn beside her and her
+  weapons put away, as before.
+
+## 2026-11-18: 0.3.90
+
+- **Less memory with the local asset pack (#166, step 1):** each hero's first-person arms now load when that hero is first
+  shown in first person, instead of all 21 at start (about 0.86 GiB of textures, and only one is ever on screen). Two are kept
+  (D.Va's mech and pilot arms swap back and forth); older ones are freed. A fresh client in a world went from 8.5 to 7.5 GB;
+  after 21 loads in a row, switching through 8 heroes twice, it stayed at 8.3 GB (no leak: the second round added 0.01 GB).
+  Played: Kiriko, Tracer, D.Va's cockpit, D.Va's pilot after an eject, and Kiriko again after hers was freed, each drawn in
+  first person. Also frees the pure-black layer images that were skipped but never closed.
+
+## 2026-11-18: 0.3.89
+
+- **Widowmaker's Grappling Hook lets go of a Jetpack Cat's rope (#142):** a player on her Lifeline who grapples away now leaves
+  the rope as the pull starts, as with every other movement ability (a hook that misses keeps you on it). Before, the rope held
+  her back: she reached 7.9 m toward the wall instead of the wall at 13.7 m. Played with two clients
+  (techniques/testing/runs/two_client_2026-11-18/run.md).
+- **Two-client checks done:** Torbjörn's turret leaves an allied player alone (#146, closed), an ally sees Widowmaker's
+  Infra-Sight (#138, closed), and a player carried by an enemy's Catnapper sees her rope (#142).
+
+## 2026-11-17: 0.3.88 (on main; general play: techniques/testing/runs/genplay_0388/run.md)
 
 - **Choose your sprays (#41):** the Voice Lines screen (Esc, Voice Lines) has a third tab, SPRAYS: pick one of the four
   wheel slots, then any of the hero's sprays in your asset pack. The Y tap sprays the UP slot; the wheel shows all four.

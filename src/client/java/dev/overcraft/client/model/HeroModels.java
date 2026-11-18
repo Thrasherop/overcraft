@@ -112,7 +112,8 @@ public final class HeroModels {
 
 	/** The hero's first-person view model (hero_models/<hero>_1p.glb: Overwatch's first-person arms). */
 	public static @Nullable Loaded firstPerson(Hero hero) {
-		return EXTRA_MODELS.get(hero.id + "_1p");
+		// loaded on first use (#166): null for the frame or so it takes
+		return firstPersonModel(hero.id + "_1p");
 	}
 
 	/**
@@ -129,7 +130,7 @@ public final class HeroModels {
 	/** The first-person model for the body this player is in (D.Va's cockpit 10354, or the pilot's arms F32B). */
 	public static @Nullable Loaded firstPerson(Hero hero, net.minecraft.world.entity.@Nullable Entity entity) {
 		if (hero == Hero.DVA && entity instanceof net.minecraft.world.entity.player.Player player && dev.overcraft.dva.Dva.pilotBody(player)) {
-			return EXTRA_MODELS.get("dva_pilot_1p");
+			return firstPersonModel("dva_pilot_1p");
 		}
 		return firstPerson(hero);
 	}
@@ -143,7 +144,8 @@ public final class HeroModels {
 
 	/** A model that isn't a hero's (see {@link #EXTRAS}). */
 	public static @Nullable Loaded get(String name) {
-		return EXTRA_MODELS.get(name);
+		// an emote's prop loads when first drawn (#166): null for the frame or so it takes
+		return name.startsWith("prop_") ? lazy(name, PROPS, false) : EXTRA_MODELS.get(name);
 	}
 
 	public static void init() {
@@ -156,7 +158,7 @@ public final class HeroModels {
 
 				@Override
 				protected void apply(Map<String, Prepared> prepared, SharedState state) {
-					register(prepared);
+					register(prepared, state.resourceManager());
 				}
 			});
 	}
@@ -292,6 +294,7 @@ public final class HeroModels {
 	private static Map<String, Prepared> load(ResourceManager resources) {
 		Map<String, Prepared> out = new HashMap<>();
 		Map<String, NativeImage> glowImages = new HashMap<>();
+		java.util.Set<String> propsFound = new java.util.HashSet<>();
 		List<String> names = new ArrayList<>(EXTRAS);
 		// the emotes' props, by the ids the emote data names (prop_<model id>)
 		names.addAll(EmoteData.load(resources));
@@ -332,34 +335,20 @@ public final class HeroModels {
 			}
 		}
 		for (String name : names) {
-			// a name that isn't a valid resource path is skipped, not the whole reload (an upper-case prop id threw out
-			// every resource pack)
-			Identifier id = Identifier.tryBuild(Overcraft.MOD_ID, "hero_models/" + name + ".glb");
-			Optional<Resource> res = id == null ? Optional.empty() : resources.getResource(id);
-			if (id == null) {
-				Overcraft.LOG.error("Not a valid model name: {}", name);
-			}
-			if (res.isEmpty()) {
+			// the first-person arms load when first drawn (firstPerson): only the current hero's is ever on screen, and all 21
+			// held ~0.86 GiB of textures (#166)
+			if (firstPersonName(name)) {
 				continue;
 			}
-			try (InputStream in = res.get().open()) {
-				SkinnedModel model = SkinnedModel.load(in.readAllBytes());
-				List<NativeImage> images = new ArrayList<>();
-				for (byte[] png : model.images) {
-					images.add(readImage(png));
+			// the emotes' props too (~0.5 GiB of textures, drawn only in an emote): only whether each is there
+			if (name.startsWith("prop_")) {
+				Identifier id = Identifier.tryBuild(Overcraft.MOD_ID, "hero_models/" + name + ".glb");
+				if (id != null && resources.getResource(id).isPresent()) {
+					propsFound.add(name);
 				}
-				// the PNG bytes, read: kept they'd hold the pack's 2 GB of images on the heap twice over during a reload (F3+T ran out of memory at 3 GB, played)
-				model.images.clear();
-				// her cloth's drivers, from the game data (ClothSim)
-				model.clothDrivers = ClothSim.readDrivers(resources, name);
-				colourHair(resources, model, images);
-				Map<String, PreparedGlow> glow = readGlow(resources, name, glowImages);
-				out.put(name, new Prepared(model, images, glow, litPieces(model, glow)));
-				Overcraft.LOG.info("Hero model {}: {} nodes, {} joints, {} pieces, {} clips {}", name, model.nodeNames.length,
-					model.joints.length, model.pieces.size(), model.clips.size(), model.clips.keySet());
-			} catch (Exception e) {
-				Overcraft.LOG.error("Couldn't load the {} model", name, e);
+				continue;
 			}
+			loadOne(resources, name, glowImages, out);
 		}
 		// a pack from before these parts degrades quietly in play (critique_parts F): say so where it can be seen
 		for (String part : WeaponParts.names()) {
@@ -369,10 +358,171 @@ public final class HeroModels {
 		}
 		for (Hero hero : Hero.values()) {
 			mergeClips(out, hero.id + "_clips", hero.id);
-			mergeClips(out, hero.id + "_1p_clips", hero.id + "_1p");
 			mergeClips(out, hero.id + "_intro_clips", hero.id);
 		}
+		propsFoundByLoad = propsFound;
 		return out;
+	}
+
+	/** A first-person model or its clips file: loaded on first use, not with the reload (#166). */
+	private static boolean firstPersonName(String name) {
+		return name.endsWith("_1p") || name.endsWith("_1p_clips");
+	}
+
+	/** One model file read into {@code out} (absent: nothing). Any thread: no textures are made here. */
+	private static void loadOne(ResourceManager resources, String name, Map<String, NativeImage> glowImages, Map<String, Prepared> out) {
+		// a name that isn't a valid resource path is skipped, not the whole reload (an upper-case prop id threw out
+		// every resource pack)
+		Identifier id = Identifier.tryBuild(Overcraft.MOD_ID, "hero_models/" + name + ".glb");
+		Optional<Resource> res = id == null ? Optional.empty() : resources.getResource(id);
+		if (id == null) {
+			Overcraft.LOG.error("Not a valid model name: {}", name);
+		}
+		if (res.isEmpty()) {
+			return;
+		}
+		try (InputStream in = res.get().open()) {
+			SkinnedModel model = SkinnedModel.load(in.readAllBytes());
+			List<NativeImage> images = new ArrayList<>();
+			for (byte[] png : model.images) {
+				images.add(readImage(png));
+			}
+			// the PNG bytes, read: kept they'd hold the pack's 2 GB of images on the heap twice over during a reload (F3+T ran out of memory at 3 GB, played)
+			model.images.clear();
+			// her cloth's drivers, from the game data (ClothSim)
+			model.clothDrivers = ClothSim.readDrivers(resources, name);
+			colourHair(resources, model, images);
+			Map<String, PreparedGlow> glow = readGlow(resources, name, glowImages);
+			out.put(name, new Prepared(model, images, glow, litPieces(model, glow)));
+			Overcraft.LOG.info("Hero model {}: {} nodes, {} joints, {} pieces, {} clips {}", name, model.nodeNames.length,
+				model.joints.length, model.pieces.size(), model.clips.size(), model.clips.keySet());
+		} catch (Exception e) {
+			Overcraft.LOG.error("Couldn't load the {} model", name, e);
+		}
+	}
+
+	// ---- models loaded on first use (#166): first-person arms, emote props ----
+
+	/** The resources of the last reload, for the models loaded after it; its count, so a load begun before a reload is dropped. */
+	private static @Nullable ResourceManager lastResources;
+	private static int generation;
+
+	/**
+	 * A kind of model loaded when first drawn: those loaded and their own textures, least recently drawn first, at most {@code keep}
+	 * of them (the oldest freed past that); those being read in the background; those with no file (not asked for again until the
+	 * next reload).
+	 */
+	private static final class Pool {
+		final int keep;
+		final Map<String, List<Identifier>> loaded = new java.util.LinkedHashMap<>(8, 0.75f, true);
+		final java.util.Set<String> pending = new java.util.HashSet<>();
+		final java.util.Set<String> missing = new java.util.HashSet<>();
+
+		Pool(int keep) {
+			this.keep = keep;
+		}
+
+		void clear() {
+			loaded.clear();
+			pending.clear();
+			missing.clear();
+		}
+	}
+
+	/** First-person arms: two kept (D.Va's mech and pilot arms swap back and forth). Only the current hero's is ever on screen. */
+	private static final Pool FIRST_PERSON = new Pool(2);
+	/** Emote props (prop_<id>): enough for a few emotes' worth, as one emote can spawn several and nest them. */
+	private static final Pool PROPS = new Pool(16);
+	/** The prop models the pack has (read at the reload: their names only), for what asks whether an emote has props. */
+	private static final java.util.Set<String> PROPS_PRESENT = new java.util.HashSet<>();
+	/** The props the last load found (its thread), taken into PROPS_PRESENT as the reload's models are registered (the render thread). */
+	private static volatile java.util.Set<String> propsFoundByLoad = java.util.Set.of();
+
+	/** Whether the pack has this model, loaded or not: a prop's presence (EmoteProps.holds) shouldn't wait on its loading. */
+	public static boolean has(String name) {
+		return name.startsWith("prop_") ? PROPS_PRESENT.contains(name) : get(name) != null;
+	}
+
+	private static @Nullable Loaded firstPersonModel(String name) {
+		return lazy(name, FIRST_PERSON, true);
+	}
+
+	/** {@code name}'s model if it's loaded; else null, and it's asked for (drawn from a frame or so later). */
+	private static @Nullable Loaded lazy(String name, Pool pool, boolean clips) {
+		Loaded loaded = EXTRA_MODELS.get(name);
+		if (loaded != null) {
+			// drawn: the most recent
+			pool.loaded.get(name);
+			return loaded;
+		}
+		ResourceManager resources = lastResources;
+		if (resources == null || pool.pending.contains(name) || pool.missing.contains(name)) {
+			return null;
+		}
+		pool.pending.add(name);
+		int gen = generation;
+		java.util.concurrent.CompletableFuture.supplyAsync(() -> {
+			Map<String, Prepared> out = new HashMap<>();
+			Map<String, NativeImage> glowImages = new HashMap<>();
+			loadOne(resources, name, glowImages, out);
+			if (clips) {
+				loadOne(resources, name + "_clips", glowImages, out);
+				mergeClips(out, name + "_clips", name);
+			}
+			return out;
+		}, net.minecraft.util.Util.backgroundExecutor()).whenCompleteAsync((out, error) -> {
+			if (gen != generation) {
+				// a reload came in meanwhile: its own resources may differ (and it cleared the pool)
+				if (out != null) {
+					out.values().forEach(HeroModels::close);
+				}
+				return;
+			}
+			pool.pending.remove(name);
+			Prepared p = out == null ? null : out.get(name);
+			if (error != null || p == null) {
+				if (error != null) {
+					Overcraft.LOG.error("Couldn't load the {} model", name, error);
+				}
+				pool.missing.add(name);
+				return;
+			}
+			while (pool.loaded.size() >= pool.keep) {
+				release(pool, pool.loaded.keySet().iterator().next());
+			}
+			List<Identifier> ids = new ArrayList<>();
+			registerOne(Minecraft.getInstance().getTextureManager(), name, p, ids);
+			pool.loaded.put(name, ids);
+		}, Minecraft.getInstance());
+		return null;
+	}
+
+	/** A model no longer drawn: its own textures go (not the glow images, which a body shares with its arms and props). */
+	private static void release(Pool pool, String name) {
+		List<Identifier> ids = pool.loaded.remove(name);
+		EXTRA_MODELS.remove(name);
+		if (ids != null) {
+			TextureManager textures = Minecraft.getInstance().getTextureManager();
+			for (Identifier id : ids) {
+				textures.release(id);
+				REGISTERED.remove(id);
+			}
+		}
+	}
+
+	/** A prepared model never made into textures: its images freed. */
+	private static void close(Prepared p) {
+		p.images().forEach(image -> {
+			if (image != null) {
+				image.close();
+			}
+		});
+		p.glow().values().forEach(g -> {
+			g.image().close();
+			if (g.alt() != null) {
+				g.alt().close();
+			}
+		});
 	}
 
 	/**
@@ -585,11 +735,15 @@ public final class HeroModels {
 		if (!REGISTERED.contains(id)) {
 			textures.register(id, new HeroTexture(id, image));
 			REGISTERED.add(id);
+		} else {
+			// already made from another model's copy (a first-person model loaded later reads its own): this copy isn't needed
+			// (closing is a no-op on the reload's shared copy, which the texture already closed)
+			image.close();
 		}
 		return id;
 	}
 
-	private static void register(Map<String, Prepared> prepared) {
+	private static void register(Map<String, Prepared> prepared, ResourceManager resources) {
 		HeroArt.clear();
 		AimSheet.clear();
 		dev.overcraft.client.assets.AssetPackVersion.clear();
@@ -600,7 +754,19 @@ public final class HeroModels {
 		REGISTERED.clear();
 		MODELS.clear();
 		EXTRA_MODELS.clear();
-		prepared.forEach((name, p) -> {
+		// the first-person models start over from these resources (their textures were in REGISTERED: gone above)
+		lastResources = resources;
+		generation++;
+		FIRST_PERSON.clear();
+		PROPS.clear();
+		PROPS_PRESENT.clear();
+		PROPS_PRESENT.addAll(propsFoundByLoad);
+		prepared.forEach((name, p) -> registerOne(textures, name, p, null));
+	}
+
+	/** One prepared model made into textures and put in the tables; its own texture ids also added to {@code ids} if given. */
+	private static void registerOne(TextureManager textures, String name, Prepared p, @Nullable List<Identifier> own) {
+		{
 			Identifier[] ids = new Identifier[p.images().size()];
 			boolean[] flat = new boolean[ids.length];
 			// the eyeballs' images: only the iris is opaque in them, Overwatch's eye shader draws the white around it.
@@ -622,7 +788,10 @@ public final class HeroModels {
 				if (image == null || isBlack(image)) {
 					// a pure black, opaque image is a layer Overwatch's shader colours: Lúcio's dreads' hair cards (material
 					// 8052, a grey strand gradient its hair shader tints, exported black) stood off his head as a black
-					// crown. Not drawn, as Kiriko's eye shadows aren't
+					// crown. Not drawn, as Kiriko's eye shadows aren't (and freed: kept, its pixels stayed allocated until exit)
+					if (image != null) {
+						image.close();
+					}
 					continue;
 				}
 				flat[i] = isFlat(image);
@@ -632,6 +801,9 @@ public final class HeroModels {
 				Identifier id = Overcraft.id("hero_models/" + name + "/" + i);
 				textures.register(id, new HeroTexture(id, image));
 				REGISTERED.add(id);
+				if (own != null) {
+					own.add(id);
+				}
 				ids[i] = id;
 			}
 			Map<String, Glow> glow = new HashMap<>();
@@ -647,6 +819,6 @@ public final class HeroModels {
 			} else {
 				EXTRA_MODELS.put(name, loaded);
 			}
-		});
+		}
 	}
 }
