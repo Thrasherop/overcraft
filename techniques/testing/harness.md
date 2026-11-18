@@ -261,3 +261,11 @@ compile through PowerShell (`Set-Location ...; & .\gradlew.bat build`) and check
 - **A roofed test arena is dark enough for spiders even with `doMobSpawning` off** (mobs spawned before it): light it (a glowstone
   ceiling) and clear hostiles, or the death screen eats the next input.
 - **H changes hero only at her bed:** set `/spawnpoint @p` where she stands to test H mid-game.
+
+## Held keys repeat (2026-11-17, #148)
+Minecraft counts every key event but the release as a click (`KeyboardHandler.keyPress`: action != 0 -> `KeyMapping.click`), so a
+key held past Windows' repeat delay (~0.5 s) clicks about 30 times a second. Hero presses are now edges (`ClientHero.drain`: a click
+while the key wasn't down at the last tick). **Testing a held key:** computer use's `hold_key` sends one keydown and no repeats, so
+it can't reproduce this; `scratchpad/holdrepeat.ps1` (keybd_event: a keydown, a 0.5 s delay, then a keydown every 33 ms, then the
+keyup) does, as a real held key does (GLFW turns a keydown on a key already down into REPEAT). Timed with `boostlog.py` (her synced
+boosting bit every 0.04 s): held Shift ended Boosters at 0.57 s before the fix, 1.9 s after; a tap 2.06 s; a second tap still ends it.

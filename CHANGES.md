@@ -4,7 +4,13 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-17: 0.3.79 on next (not on main yet)
+## 2026-11-17: 0.3.80 on next (not on main yet)
+
+- **D.Va's Boosters no longer cut out when Shift is held (#148):** a key held down repeats about 30 times a second after half a
+  second, and each repeat counted as a new press, which ends Boosters. Held, it now flies its full 2 s; a second tap still ends
+  it early, as in Overwatch. Every hero key works this way now: holding one is one press.
+
+## 2026-11-17: 0.3.79
 
 - **The last Minecraft particles are gone (#150):** Illari's Outburst, Sunburn, Solar Flare, and her pylon's heals, hits and
   breaking now draw her own effects; Torbjörn's turret breaking, D.Va's Light Gun hits and the Captive Sun in flight no longer

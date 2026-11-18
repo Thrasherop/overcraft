@@ -594,11 +594,24 @@ public final class ClientHero {
 		}
 	}
 
+	/** The hero keys that were down at the last tick (drain's edge). */
+	private static final java.util.Set<KeyMapping> WAS_DOWN = new java.util.HashSet<>();
+
+	/**
+	 * Whether {@code key} was pressed since the last tick: a click while it wasn't already down. Minecraft counts every key event
+	 * but the release as a click (KeyboardHandler.keyPress: action != 0 -> KeyMapping.click), so a key held past Windows' repeat
+	 * delay clicked ~30 times a second: held Shift ended D.Va's Boosters 0.57 s in (#148, reproduced with real auto-repeat). A tap
+	 * between two ticks still counts (it clicked, and it wasn't down before).
+	 */
 	private static boolean drain(KeyMapping key) {
 		boolean any = false;
 		while (key.consumeClick()) {
 			any = true;
 		}
-		return any;
+		boolean held = !WAS_DOWN.add(key);
+		if (!key.isDown()) {
+			WAS_DOWN.remove(key);
+		}
+		return any && !held;
 	}
 }
