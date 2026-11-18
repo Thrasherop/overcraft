@@ -289,3 +289,6 @@ boosting bit every 0.04 s): held Shift ended Boosters at 0.57 s before the fix, 
   against `ultCost` in `state` before pressing Q.
 - **Catnapper dives to where the view meets the ground:** at 5° down from 1.62 m that is ~18 m off. Aim at the target's feet
   (`tp ... facing <x> <y> <z>`).
+- **Don't `/tp` a hero mid-fall from an ability** (2026-11-18): a teleport of D.Va's pilot, still falling from the eject, put her on
+  the ground on the server, which ended the eject's fall protection while her client went on falling; she died "doomed to fall".
+  Let her land first. Played without the teleport: an eject off a 49 m ledge landed her unhurt.
