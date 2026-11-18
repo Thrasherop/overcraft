@@ -4,7 +4,11 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-17: 0.3.84 on next (not on main yet)
+## 2026-11-17: 0.3.85 on next (not on main yet)
+
+- **The kill feed shows an enemy hero's portrait (#46)** when you kill one, as it does for players.
+
+## 2026-11-17: 0.3.84
 
 - **Enemy Pharahs show their jet flames (#46)** while they hover, as a player Pharah does.
 
