@@ -182,3 +182,14 @@ the doomed mob's one inert tick doesn't show (a zombie standing still a tick) an
 - **Casts and aims belong to a target.** `EnemyHeroEntity.targetChanged()` (checked before each fight tick and each tick) drops
   Ashe's unfired Coach Gun (cooldown given back) and her aim, Torbjörn's unthrown turret, and Widowmaker's aim, so a new target
   always gets her whole 1.5 s.
+
+## Batch 2 played, 2026-11-17 (Normal, as Torbjorn, the eh_test script: health every 0.5 s)
+- **Ashe:** kept 10-16 m, an aimed Viper shot about every 2 s, 1.24 health a hit.
+- **Sojourn:** bursts plus bigger hits (2.5, 2.1: her Charged Shot), ~1.1 health a second; her rounds still in flight after the
+  arena was cleared killed Torbjorn: "was shot by SOJOURN".
+- **Torbjorn:** rivets ~1.2 a second, ~3 once his turret was up (from ~4 s): Torbjorn (24) dead in 11 s. The strongest of the
+  eight: worth the owner's word.
+- **Widowmaker:** held 20-27 m, one hit in 12 s (0.85).
+- **Natural spawns through the new add-time swap mixin:** the game loads; 90 s of midnight: 58 ordinary mobs and 6 enemy heroes
+  (Tracer, Junkrat, Pharah, Torbjorn, 2 Sojourn); only one within 64 m (a Sojourn at 24 m), the rest 71-103 m out: the cap held.
+- **Not tried:** Coach Gun's push up close, the turret against a tamed wolf, Widow's line dodged by a sidestep, a second player.
