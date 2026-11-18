@@ -67,13 +67,15 @@ public class EnemyTurretEntity extends TurretEntity implements Enemy {
 			return;
 		}
 		EnemyTorbjorn torbjorn = torbjorn();
-		if (torbjorn == null) {
-			if (++orphaned >= Ow.ticks(EnemyHeroStats.TURRET_ORPHAN)) {
-				discard();
-			}
+		orphaned = torbjorn == null ? orphaned + 1 : 0;
+		if (!EnemyHeroStats.turretStays(torbjorn != null, torbjorn != null && torbjorn.holds(this), orphaned)) {
+			// he's gone, or he has another out (he forgot this one while its chunk was unloaded): it goes
+			discard();
 			return;
 		}
-		orphaned = 0;
+		if (torbjorn == null) {
+			return;
+		}
 		if (built() && level.getDifficulty() != net.minecraft.world.Difficulty.PEACEFUL) {
 			fight(level, torbjorn);
 		}
@@ -81,7 +83,9 @@ public class EnemyTurretEntity extends TurretEntity implements Enemy {
 
 	private boolean canShoot(ServerLevel level, EnemyTorbjorn owner, LivingEntity e) {
 		Vec3 gun = gun();
-		return e.isAlive() && e != this && Allies.lockOn(owner, e) && e.getBoundingBox().getCenter().distanceTo(gun) <= TURRET_RANGE
+		// (not a creative or spectating player, as Minecraft's own targeting: the critique of 29c1797)
+		return e.isAlive() && e != this && Allies.lockOn(owner, e) && EnemyHeroStats.scanMayPick(e instanceof net.minecraft.world.entity.player.Player,
+			e instanceof net.minecraft.world.entity.player.Player p && p.isCreative(), e.isSpectator()) && e.getBoundingBox().getCenter().distanceTo(gun) <= TURRET_RANGE
 			&& Combat.inSight(level, gun, e, this);
 	}
 

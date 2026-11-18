@@ -111,6 +111,37 @@ class EnemyHeroStatsTest {
 			new Vec3[] {new Vec3(3, -1.1, 0), new Vec3(-2, -1.1, 2)});
 	}
 
+	@Test
+	void asheLaunchSparesHerUntilShesLandedOrAGraceOnTheGround() {
+		// in the air: held
+		assertTrue(EnemyHeroStats.asheLaunchHeld(true, false, 3));
+		// up and back down: done
+		assertFalse(EnemyHeroStats.asheLaunchHeld(true, true, 8));
+		// a flat launch that never left the ground: held through the grace, not the first grounded tick
+		assertTrue(EnemyHeroStats.asheLaunchHeld(false, true, 1));
+		assertTrue(EnemyHeroStats.asheLaunchHeld(false, true, EnemyHeroStats.ASHE_LAUNCH_GRACE - 1));
+		assertFalse(EnemyHeroStats.asheLaunchHeld(false, true, EnemyHeroStats.ASHE_LAUNCH_GRACE));
+		// slid off a ledge after the grace began: in the air again, held
+		assertTrue(EnemyHeroStats.asheLaunchHeld(false, false, 10));
+	}
+
+	@Test
+	void scanSkipsCreativeAndSpectators() {
+		assertTrue(EnemyHeroStats.scanMayPick(true, false, false));
+		assertFalse(EnemyHeroStats.scanMayPick(true, true, false));
+		assertFalse(EnemyHeroStats.scanMayPick(true, false, true));
+		assertTrue(EnemyHeroStats.scanMayPick(false, false, false));
+	}
+
+	@Test
+	void turretGoesWhenItsTorbjornHasAnother() {
+		assertTrue(EnemyHeroStats.turretStays(true, true, 0));
+		assertFalse(EnemyHeroStats.turretStays(true, false, 0));
+		// he isn't loaded yet: it waits 2 s
+		assertTrue(EnemyHeroStats.turretStays(false, false, 39));
+		assertFalse(EnemyHeroStats.turretStays(false, false, 40));
+	}
+
 	private static void lands(double v, double g, Vec3[] targets) {
 		for (Vec3 to : targets) {
 			Vec3 dir = EnemyHeroStats.lob(to, v, g);

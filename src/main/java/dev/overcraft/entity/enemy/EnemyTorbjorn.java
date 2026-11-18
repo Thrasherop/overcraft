@@ -61,6 +61,7 @@ public class EnemyTorbjorn extends EnemyHeroEntity {
 	private int turretCast = -1;
 	private int turretCooldown;
 	private @Nullable UUID turret;
+	private int turretMissing;
 
 	public EnemyTorbjorn(EntityType<? extends EnemyTorbjorn> type, Level level) {
 		super(type, level);
@@ -95,6 +96,17 @@ public class EnemyTorbjorn extends EnemyHeroEntity {
 		return thirdPerson(TorbjornSounds::of, name);
 	}
 
+	/** Whether {@code t} is the turret he has out (EnemyTurretEntity: one that isn't goes). */
+	public boolean holds(EnemyTurretEntity t) {
+		return t.getUUID().equals(turret);
+	}
+
+	/** A new target or none: a throw not yet made is dropped (the critique of 29c1797: it went later without its checks). */
+	@Override
+	protected void targetChanged() {
+		turretCast = -1;
+	}
+
 	/** His turret, out and alive, or null. */
 	private @Nullable EnemyTurretEntity turret(ServerLevel level) {
 		return turret != null && level.getEntity(turret) instanceof EnemyTurretEntity t && t.isAlive() ? t : null;
@@ -109,10 +121,16 @@ public class EnemyTorbjorn extends EnemyHeroEntity {
 		if (turretCooldown > 0) {
 			turretCooldown--;
 		}
-		if (turret != null && tickCount % 20 == 0 && turret(level) == null) {
-			// broken (or gone): the data's in-combat cooldown before the next (TorbjornStats.TURRET_COOLDOWN)
-			turret = null;
-			turretCooldown = Ow.ticks(TURRET_COOLDOWN);
+		if (turret != null && turret(level) == null) {
+			// broken or gone for 2 s (not a chunk's load order): the data's in-combat cooldown before the next
+			// (TorbjornStats.TURRET_COOLDOWN). One he forgets goes itself on meeting him again (EnemyTurretEntity: not his)
+			if (++turretMissing >= Ow.ticks(EnemyHeroStats.TURRET_ORPHAN)) {
+				turret = null;
+				turretMissing = 0;
+				turretCooldown = Ow.ticks(TURRET_COOLDOWN);
+			}
+		} else {
+			turretMissing = 0;
 		}
 		if (reload >= 0 && ++reload >= Ow.ticks(RELOAD)) {
 			reload = -1;

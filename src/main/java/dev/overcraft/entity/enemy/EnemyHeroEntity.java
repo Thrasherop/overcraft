@@ -125,6 +125,24 @@ public abstract class EnemyHeroEntity extends Monster {
 			// the hero it's drawn as, synced to every client (the renderer reads it as it reads a player's)
 			setAttached(HeroManager.HERO, hero().id);
 		}
+		if (!level().isClientSide()) {
+			noteTarget();
+		}
+	}
+
+	/** The target it had last tick (server; by identity: a cast or an aim belongs to one). */
+	private @Nullable LivingEntity lastTarget;
+
+	/** Its target changed or went: a kit drops its cast or aim (Coach Gun's, the turret's throw, an aim down the sights). */
+	protected void targetChanged() {
+	}
+
+	/** A new target, or none: whatever was cast or aimed at the old one stops (the critique of 29c1797). Before each fight tick too. */
+	private void noteTarget() {
+		if (getTarget() != lastTarget) {
+			lastTarget = getTarget();
+			targetChanged();
+		}
 	}
 
 	@Override
@@ -330,6 +348,7 @@ public abstract class EnemyHeroEntity extends Monster {
 				mob.getMoveControl().strafe(backwards ? -0.5f : 0.5f, clockwise ? 0.5f : -0.5f);
 				mob.lookAt(target, 30, 30);
 			}
+			mob.noteTarget();
 			mob.fight(level, target, distance, sees);
 		}
 	}

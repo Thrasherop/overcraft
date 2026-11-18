@@ -168,3 +168,17 @@ tamed wolf but never a zombie, is shot at by a player hero's lock-ons, breaks, a
 (x0.3 on Normal: ~1.1 health a second) on top of his rivets is too much; Widowmaker finds a target at 40 m (her 48 m sight), the
 sight line shows from her rifle and holds still at the end, a sidestep in the last 0.25 s dodges, and behind cover the aim resets;
 the doomed mob's one inert tick doesn't show (a zombie standing still a tick) and a restored one fights again.
+
+### Batch 2: the critique of 29c1797, fixed (not played)
+- **Spawn swap at add time.** The inert flags (NoAI, no pickup, silent) are gone: Zombie's and AbstractSkeleton's finalizeSpawn
+  roll their pickup after Mob's (so it overwrote ours, and a restore wrote false for good), and an autosave before the tick's end
+  could save a frozen, silent zombie. Now `EnemySpawnSwapMixin` (ServerLevel.addFreshEntity, HEAD) swaps a marked mob as
+  NaturalSpawner adds it: the hero is added instead and the mob never enters the world; nothing on the mob is touched, so a swap
+  that doesn't happen leaves it as Minecraft made it. Marks not added by the tick's end are dropped.
+- **Turret ownership.** A turret goes when its Torbjörn is here and holds another (`turretStays`, his `holds`); he forgets a
+  missing turret only after 2 s missing, not one check.
+- **Turret scan** skips creative and spectating players (`scanMayPick`), as Minecraft's targeting does.
+- **Ashe's launch** spares her a fall until she's been airborne and landed, or 1 s on the ground (`asheLaunchHeld`).
+- **Casts and aims belong to a target.** `EnemyHeroEntity.targetChanged()` (checked before each fight tick and each tick) drops
+  Ashe's unfired Coach Gun (cooldown given back) and her aim, Torbjörn's unthrown turret, and Widowmaker's aim, so a new target
+  always gets her whole 1.5 s.

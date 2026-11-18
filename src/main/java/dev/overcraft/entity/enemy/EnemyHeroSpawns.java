@@ -3,7 +3,6 @@ package dev.overcraft.entity.enemy;
 import dev.overcraft.registry.OcEntities;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
@@ -14,41 +13,31 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Where enemy heroes come from (#46, the plan's "How often", ours): at night in the Overworld, a zombie, skeleton or husk that
  * Minecraft spawns naturally (EntitySpawnReason.NATURAL) is, 1 time in 12, replaced by one of the eight enemy heroes, equally
  * likely, never in Peaceful, and never when a player within 64 m of it already has 2 within 64 m.
  * <p>
- * Minecraft has no hook for this, so MobMixin marks the mob from Mob.finalizeSpawn (before the spawner adds it to the world) and
- * the swap happens on the server's next tick: the hero is made at the mob's place and facing, finalized as a natural spawn, and
- * the mob is discarded unseen. Marked, it's inert until then (no AI, no pickup, silent: the critique's finding 5 of batch 1, a
- * zombie that lived a tick could take a swing or pick up an item); a swap that doesn't happen gives it all back.
- * Mobs made any other way (spawners, eggs, /summon, chunk generation, reinforcements) never change.
+ * Minecraft has no hook for this, so MobMixin marks the mob from Mob.finalizeSpawn's end, and EnemySpawnSwapMixin swaps it as the
+ * spawner adds it (ServerLevel.addFreshEntity): the hero is made at the mob's place and facing, finalized as a natural spawn and added
+ * instead, and the mob never enters the world. Nothing on the mob is changed, so a swap that doesn't happen (crowded, a jockey, no
+ * room) leaves it exactly as Minecraft made it (the critique of 29c1797: the old next-tick swap's inert flags were overwritten by the
+ * zombie's own pickup roll and could be saved). Marks not added by the tick's end are dropped. Mobs made any other way (spawners,
+ * eggs, /summon, chunk generation, reinforcements) never change.
  */
 public final class EnemyHeroSpawns {
 	private EnemyHeroSpawns() {
 	}
 
-	/** Marked this tick, swapped at its end (server thread only). */
-	private static final List<Pending> PENDING = new ArrayList<>();
-
-	/** A marked mob and what it had before it was made inert. */
-	private record Pending(Mob mob, boolean noAi, boolean pickUp, boolean silent) {
-		void restore() {
-			mob.setNoAi(noAi);
-			mob.setCanPickUpLoot(pickUp);
-			mob.setSilent(silent);
-		}
-	}
+	/** Marked, waiting for the spawner to add them (server thread only; by identity). */
+	private static final java.util.Set<Mob> PENDING = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
 
 	/** Dev only: off, to see a night without them (and the rule's effect). */
 	public static boolean devOff;
 
 	public static void init() {
-		ServerTickEvents.END_SERVER_TICK.register(EnemyHeroSpawns::tick);
+		// a mark the spawner didn't add this tick (never expected) doesn't linger
+		ServerTickEvents.END_SERVER_TICK.register(server -> PENDING.clear());
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> PENDING.clear());
 	}
 
@@ -62,12 +51,19 @@ public final class EnemyHeroSpawns {
 			return;
 		}
 		if (EnemyHeroStats.mayReplace(level.getRandom().nextInt(EnemyHeroStats.SPAWN_ONE_IN), 0)) {
-			PENDING.add(new Pending(mob, mob.isNoAi(), mob.canPickUpLoot(), mob.isSilent()));
-			// inert until the swap at the tick's end: it ticks once in the world before then
-			mob.setNoAi(true);
-			mob.setCanPickUpLoot(false);
-			mob.setSilent(true);
+			PENDING.add(mob);
 		}
+	}
+
+	/**
+	 * From ServerLevel.addFreshEntity's start (EnemySpawnSwapMixin): a marked mob being added is swapped for its hero, which is added
+	 * in its place. True when it was (the mob is then not added); false lets the add go on as Minecraft's.
+	 */
+	public static boolean adding(ServerLevel level, net.minecraft.world.entity.Entity entity) {
+		if (PENDING.isEmpty() || !(entity instanceof Mob mob) || !PENDING.remove(mob)) {
+			return false;
+		}
+		return mob.level() == level && swap(mob);
 	}
 
 	/** The kinds a hero may stand in for: the plan's zombie, skeleton and husk (exactly those, not their variants). */
@@ -80,21 +76,7 @@ public final class EnemyHeroSpawns {
 		return level.dimension() == Level.OVERWORLD && level.isDarkOutside() && level.getDifficulty() != Difficulty.PEACEFUL;
 	}
 
-	private static void tick(MinecraftServer server) {
-		if (PENDING.isEmpty()) {
-			return;
-		}
-		List<Pending> marked = new ArrayList<>(PENDING);
-		PENDING.clear();
-		for (Pending p : marked) {
-			Mob mob = p.mob();
-			if (!swap(mob)) {
-				p.restore();
-			}
-		}
-	}
-
-	/** Swaps {@code mob} for an enemy hero; false when it stays. */
+	/** Swaps {@code mob}, not yet in the world, for an enemy hero added in its place; false when it stays. */
 	private static boolean swap(Mob mob) {
 		if (mob.isRemoved() || !mob.isAlive() || !(mob.level() instanceof ServerLevel level) || mob.isPassenger() || mob.isVehicle()
 			|| !night(level) || crowded(level, mob)) {

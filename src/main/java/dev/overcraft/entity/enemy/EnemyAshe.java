@@ -61,6 +61,9 @@ public class EnemyAshe extends EnemyHeroEntity {
 	private int coachCast = -1;
 	/** Launched by her own Coach Gun: no fall damage until she lands (ours, as a player hero's softLanding). */
 	private boolean launched;
+	/** Ticks since that launch, and whether she has left the ground since (EnemyHeroStats.asheLaunchHeld). */
+	private int launchedFor;
+	private boolean launchAirborne;
 
 	public EnemyAshe(EntityType<? extends EnemyAshe> type, Level level) {
 		super(type, level);
@@ -109,13 +112,25 @@ public class EnemyAshe extends EnemyHeroEntity {
 		if (coachCooldown > 0) {
 			coachCooldown--;
 		}
-		if (launched && onGround() && getDeltaMovement().y <= 0) {
-			launched = false;
+		if (launched) {
+			launchedFor++;
+			launchAirborne |= !onGround();
+			launched = EnemyHeroStats.asheLaunchHeld(launchAirborne, onGround(), launchedFor);
 		}
 		if (reload >= 0 && ++reload >= Ow.ticks(Ashe.reloadSeconds(0))) {
 			reload = -1;
 			ammo = AMMO;
 		}
+	}
+
+	/** A new target or none: a Coach Gun not yet fired is dropped and its cooldown given back (ours), and so is her aim. */
+	@Override
+	protected void targetChanged() {
+		if (coachCast >= 0) {
+			coachCast = -1;
+			coachCooldown = 0;
+		}
+		aiming = -1;
 	}
 
 	@Override
@@ -225,6 +240,8 @@ public class EnemyAshe extends EnemyHeroEntity {
 		getNavigation().stop();
 		Combat.launch(this, Ashe.coachSelf(look).scale(1 / 20.0), null, COACH_BLOW.by(hero()));
 		launched = true;
+		launchedFor = 0;
+		launchAirborne = false;
 		resetFallDistance();
 		play(level, "coach_gun.fire", eye, 120);
 		Effects.play(level, "ashe_coach", eye.add(look).add(0, -0.2, 0), look, this, 0, this);

@@ -21,6 +21,7 @@
 		"MeleeHitMixin",
 		"PlayerMeleeMixin",
 		"MobMixin",
+		"EnemySpawnSwapMixin",
 		"ConversionTypeMixin",
 		"BucketableMixin",
 		"ResurrectedLootMixin",

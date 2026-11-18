@@ -94,6 +94,12 @@ public class EnemyWidowmaker extends EnemyHeroEntity {
 		}
 	}
 
+	/** A new target or none: her aim starts over, so every target gets the whole 1.5 s warning (the critique of 29c1797). */
+	@Override
+	protected void targetChanged() {
+		aiming = -1;
+	}
+
 	@Override
 	protected void fight(ServerLevel level, LivingEntity target, double distance, boolean sees) {
 		if (shotWait > 0) {

@@ -129,6 +129,31 @@ public final class EnemyHeroStats {
 		return sees && cooldown <= 0 && metres <= ASHE_COACH_WITHIN;
 	}
 
+	/** Her own launch keeps her safe from fall damage for at least 1 s on the ground (ours: a flat launch slides her on, off a ledge). */
+	public static final int ASHE_LAUNCH_GRACE = 20;
+
+	/**
+	 * Whether Ashe's own Coach Gun launch still spares her a fall, {@code ticks} after it: until she has been in the air and landed,
+	 * or, never lifted off (a flat or downward launch), until ASHE_LAUNCH_GRACE has passed with her on the ground (ours; the critique
+	 * of 29c1797: a flag cleared on the first grounded tick let a slide off a ledge hurt her).
+	 */
+	public static boolean asheLaunchHeld(boolean wasAirborne, boolean onGround, int ticks) {
+		return !onGround || !wasAirborne && ticks < ASHE_LAUNCH_GRACE;
+	}
+
+	/** Who an enemy's own target scan may pick: not a creative or spectating player, as Minecraft's own targeting (TargetingConditions). */
+	public static boolean scanMayPick(boolean player, boolean creative, boolean spectator) {
+		return !player || !creative && !spectator;
+	}
+
+	/**
+	 * Whether a turret should stay: its Torbjörn here, alive, and holding this turret as his; or he isn't loaded yet (it waits
+	 * TURRET_ORPHAN, then goes). The critique of 29c1797: a turret he had forgotten (its chunk unloaded) fought beside his next one.
+	 */
+	public static boolean turretStays(boolean builderHere, boolean his, int ticksAlone) {
+		return builderHere ? his : ticksAlone < dev.overcraft.Ow.ticks(TURRET_ORPHAN);
+	}
+
 	/** Sojourn keeps 8 to 20 m (ours: mid range, the plan's). */
 	public static final double SOJOURN_NEAR = 8, SOJOURN_FAR = 20;
 	/** Railgun bursts of 8 rounds, 0.5 s at her 16 a second (ours: the length; the rate is SojournStats.RAILGUN_RATE). */
