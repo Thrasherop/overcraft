@@ -13,7 +13,7 @@ done: a linked graph of notes). This file is the state of play and the path forw
 - **Waiting on the owner** (asked on each issue): #166 step 3 (load hero bodies on first appearance: ~1.5 GB, a second of
   pop-in), #46 (enemy Torbjorn's strength), #142 (a Workshop recording of an ally on Jetpack Cat's rope for the force law),
   #57 / #59 (their playtest), #6 (DataTool support for the installed build).
-- **Testing:** general plays before main are in `techniques/testing/runs/genplay_*/run.md` (latest genplay_0395, at a 2 GB
+- **Testing:** general plays before main are in `techniques/testing/runs/genplay_*/run.md` (latest genplay_0107, at a 2 GB
   heap); two clients: `runs/two_client_2026-11-18/run.md`; harness lessons: `techniques/testing/harness.md`.
   `OC_XMX=2G` launches client 1 at a player's heap; `OC_ASSET_PACK` at an empty folder runs a client without the pack.
 - Branches: work happens on short branches merged fast-forward into `next`; `main` gets `next` by a merge after a general
