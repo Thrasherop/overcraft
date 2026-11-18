@@ -120,6 +120,16 @@ public final class Combat {
 	 * Minecraft's rule, EnderDragon.hurt). The dragon's death runs inside this hurt too (LivingEntity.die calls its
 	 * handleKillingBlow, which starts the DYING phase), so its kill is told with the blow like any other.
 	 */
+	/**
+	 * Where a shot from {@code from} to {@code to} meets {@code box}: {@code from} itself when it starts inside (AABB.clip only finds
+	 * a box entered from outside: a shot from inside a big slime, or a mob pressed into the shooter, went through it: a critique,
+	 * reproduced), as Minecraft's own ProjectileUtil does.
+	 */
+	public static java.util.Optional<net.minecraft.world.phys.Vec3> clipFrom(net.minecraft.world.phys.AABB box, net.minecraft.world.phys.Vec3 from,
+																				net.minecraft.world.phys.Vec3 to) {
+		return box.contains(from) ? java.util.Optional.of(from) : box.clip(from, to);
+	}
+
 	public static float damagePart(ServerLevel level, EnderDragonPart part, DamageSource source, double owDamage, Blow blow) {
 		return deal(part.parentMob, part, source, blow, () -> part.hurtServer(level, source, Ow.hp(owDamage)));
 	}

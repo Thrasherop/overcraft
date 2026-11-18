@@ -389,7 +389,7 @@ public final class Widowmaker implements HeroKit {
 			if (target == null || !target.isAlive() || target == shooter || !Allies.canHurt(shooter, target)) {
 				continue;
 			}
-			java.util.Optional<Vec3> on = e.getBoundingBox().inflate(radius).clip(from, to);
+			java.util.Optional<Vec3> on = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(radius), from, to);
 			if (on.isPresent()) {
 				double d = on.get().distanceTo(from);
 				found.add(new Hit(target, on.get(), d, e instanceof EnderDragonPart part ? part : null));

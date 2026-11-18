@@ -602,7 +602,7 @@ public final class Tracer implements HeroKit {
 				if (target == null || !target.isAlive() || !Allies.canHurt(player, target)) {
 					continue;
 				}
-				java.util.Optional<Vec3> hit = e.getBoundingBox().inflate(RADIUS).clip(eye, block);
+				java.util.Optional<Vec3> hit = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(RADIUS), eye, block);
 				if (hit.isPresent() && hit.get().distanceToSqr(eye) < bestDist) {
 					best = target;
 					bestAt = hit.get();

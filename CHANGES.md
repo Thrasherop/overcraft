@@ -4,6 +4,12 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.106
+
+- **Point-blank shots (#169):** a hitscan shot fired from inside a big mob's box (a large slime or magma cube, or a mob pressed
+  into you) went straight through it. It now hits. Reproduced: three Cassidy shots from inside a big slime left it at 100;
+  on the fix each took 11.2.
+
 ## 2026-11-18: 0.3.105
 
 - **Hitscan against the Ender Dragon, from an independent critique:** every hitscan weapon (Cassidy, Tracer, Widowmaker,

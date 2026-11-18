@@ -329,7 +329,7 @@ public final class Cassidy implements HeroKit {
 			if (target == null || !target.isAlive() || !Allies.canHurt(player, target)) {
 				continue;
 			}
-			java.util.Optional<Vec3> hit = e.getBoundingBox().inflate(RADIUS).clip(eye, block);
+			java.util.Optional<Vec3> hit = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(RADIUS), eye, block);
 			if (hit.isPresent()) {
 				// the part it crossed, when it's one of the dragon's (its head takes the whole hit: Combat.damagePart)
 				hits.add(new Object[] {target, hit.get(), hit.get().distanceTo(eye), e instanceof EnderDragonPart part ? part : null});

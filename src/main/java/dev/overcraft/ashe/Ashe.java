@@ -323,7 +323,7 @@ public final class Ashe implements HeroKit {
 		Hit hit = firstHit(level, player, eye, block, RADIUS);
 		DynamiteEntity stick = s.ashe.dynamite == null ? null : dynamite(player, s.ashe);
 		if (stick != null) {
-			java.util.Optional<Vec3> on = stick.getBoundingBox().inflate(DYNAMITE_SHOOT_BOX / 2).clip(eye, block);
+			java.util.Optional<Vec3> on = dev.overcraft.hero.Combat.clipFrom(stick.getBoundingBox().inflate(DYNAMITE_SHOOT_BOX / 2), eye, block);
 			if (on.isPresent() && (hit == null || on.get().distanceTo(eye) < hit.metres)) {
 				// shot: it goes off at once (D 1502: the Viper hits it like a target)
 				shotFx(level, player, player, fromEyes(player, MUZZLE_RIGHT, MUZZLE_UP, MUZZLE_AHEAD), on.get(), scoped ? SHOT_SCOPED : SHOT_HIP, null, false);
@@ -394,7 +394,7 @@ public final class Ashe implements HeroKit {
 			if (target == null || !target.isAlive() || target == source || target instanceof BobEntity || !Allies.canHurt(side, target)) {
 				continue;
 			}
-			java.util.Optional<Vec3> on = e.getBoundingBox().inflate(radius).clip(from, to);
+			java.util.Optional<Vec3> on = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(radius), from, to);
 			if (on.isPresent()) {
 				double d = on.get().distanceTo(from);
 				if (best == null || d < best.metres) {

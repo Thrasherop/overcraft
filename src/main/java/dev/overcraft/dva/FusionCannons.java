@@ -169,7 +169,7 @@ public final class FusionCannons {
 					// allies are passed through (it doesn't heal)
 					continue;
 				}
-				java.util.Optional<Vec3> hit = e.getBoundingBox().inflate(FUSION_RADIUS).clip(eye, block);
+				java.util.Optional<Vec3> hit = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(FUSION_RADIUS), eye, block);
 				if (hit.isPresent() && hit.get().distanceToSqr(eye) < bestDist) {
 					best = target;
 					bestAt = hit.get();

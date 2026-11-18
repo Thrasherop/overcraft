@@ -88,7 +88,7 @@ public class AnaDartEntity extends OwProjectile {
 			if (e == owner || !e.isAlive() || e.getHealth() >= e.getMaxHealth() || !Allies.isAlly(owner, e)) {
 				continue;
 			}
-			Optional<Vec3> hit = e.getBoundingBox().inflate(r).clip(from, to);
+			Optional<Vec3> hit = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(r), from, to);
 			if (hit.isPresent() && hit.get().distanceToSqr(from) < bestDist) {
 				best = e;
 				bestDist = hit.get().distanceToSqr(from);
