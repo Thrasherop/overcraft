@@ -4,6 +4,16 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.100
+
+- **Hero select and rejoining, after an independent critique:** each reproduced in the game first, then replayed.
+  - Picking a hero on a select screen left open over a death (a fall, a mob) brought the dead player back on the server while
+    the death screen stayed up, and Respawn was then refused: stuck until relog. A pick while dead is now ignored.
+  - The free pick you get on joining stayed usable anywhere until spent: Esc on the join screen, walk 2 km, press H, and the
+    select opened. It now holds only where you joined, like the bed rule.
+  - Rejoining refilled your health (left at 7, back at 20). You come back with what you left with.
+  - Changing hero now ends an emote you were doing.
+
 ## 2026-11-18: 0.3.99
 
 - **The communication wheel and loadout, after an independent critique:** each reproduced in the game first, then replayed.

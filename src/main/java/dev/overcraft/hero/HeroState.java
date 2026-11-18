@@ -454,6 +454,12 @@ public final class HeroState {
 	public boolean canChangeHero;
 	/** The free pick on joining the world hasn't been used yet. */
 	public boolean freePick;
+	/**
+	 * Where the join's free pick holds (the join's spot, within the change range, as a bed's): null for an operator's anywhere pick
+	 * (/changehero). A rejoin's pick kept after Esc worked anywhere until used (a critique, reproduced: H 2 km away).
+	 */
+	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 freePickAt;
+	public net.minecraft.resources.@org.jspecify.annotations.Nullable ResourceKey<net.minecraft.world.level.Level> freePickIn;
 	/** Where (and in which dimension) the player last respawned: their spawn room too (HeroManager.nearRespawn). */
 	public net.minecraft.world.phys.@org.jspecify.annotations.Nullable Vec3 respawnedAt;
 	public net.minecraft.resources.@org.jspecify.annotations.Nullable ResourceKey<net.minecraft.world.level.Level> respawnedIn;
