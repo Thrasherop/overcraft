@@ -310,7 +310,7 @@ boosting bit every 0.04 s): held Shift ended Boosters at 0.57 s before the fix, 
   compile check printed "'gradlew.bat' is not recognized" and passed a check that only looked for "error". Call it by its
   full path with `-p E:\claude\mods\overcraft`, and treat "not recognized" or "FAILED" as a failure (relaunch.ps1, dserver.ps1).
 - **`oc_scratch/dserver.ps1`** starts the dedicated server (`run/`, world `potgserver`, RCON 25575 through `rcon.py`) and one
-  client connected to it. The server has no `-Doverkraft.dev`, so the dev `overcraft potg` commands aren't there: watch
+  client connected to it. The server has no `-Dovercraft.dev`, so the dev `overcraft potg` commands aren't there: watch
   highlights through K and the menu. `rcon.py "kick <name>"` works on a viewer during the card (still in the player list).
 - **In single player the integrated server pauses while its only player watches a highlight**, so nothing in the world moves
   then (a dragon can't die mid-watch). Test "the world goes on during a watch" on the dedicated server.
