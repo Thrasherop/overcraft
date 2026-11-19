@@ -4,6 +4,16 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.123
+
+- **A corrupt highlight ends at once instead of hanging (#172):** a zip with a broken chunk cache made the replay re-read the
+  broken file for every missing chunk and crawl until the POTG's watchdog (reproduced: 37 s, 311 load errors). An unreadable
+  chunk cache now ends the stream, and a stream that fails tells the showing it's over (it used to stop the viewer without
+  saying so). Played: the corrupted copy ended 1 s into its replay with the player back and "Exception while viewing replay";
+  the restored zip and another highlight played through.
+- **Not reproduced:** a player riding a boat stays aboard through a POTG (single player). **By design:** under the 300 High
+  Score floor, any other category wins (the patent's rule).
+
 ## 2026-11-18: 0.3.122
 
 - **A kill by Minecraft's own weapons no longer scores for Play of the Game (#172):** an arrow shot in Minecraft mode, with G

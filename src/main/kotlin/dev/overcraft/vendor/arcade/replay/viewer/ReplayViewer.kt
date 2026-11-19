@@ -264,8 +264,15 @@ public class ReplayViewer internal constructor(
                 throw e
             } catch (e: Exception) {
                 ArcadeUtils.logger.error("Exception while viewing replay", e)
+                // Overcraft (#172): an owner (a POTG) hears it's over now and puts the viewer back itself (before, its other
+                // viewers waited for the watchdog); without one, the viewer stops itself as before (stopping twice would
+                // put the player back twice)
+                val owned = this@ReplayViewer.onFinished != null && !this@ReplayViewer.finished
+                finish()
                 server.execute {
-                    stop()
+                    if (!owned) {
+                        stop()
+                    }
                     player.sendSystemMessage(
                         Component.literal("Exception while viewing replay, see logs for more info").withStyle(net.minecraft.ChatFormatting.RED)
                     )
