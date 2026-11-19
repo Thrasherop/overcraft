@@ -4,7 +4,14 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
-## 2026-11-19: on next (not yet a version)
+## 2026-11-19: 0.3.131
+
+- **Ashe's comms wheel voice lines (#174):** the wheel showed raw keys ("overcraft.voiceline.ashe.girl_who_has_everything")
+  and played nothing: her line list was in the local pack but her sounds and names weren't (a pack sounds build from before
+  she joined it). Rebuilt with `build_asset_pack.py sounds`: her 42 lines, nothing else lost (3081 -> 3123 events). The wheel
+  now lists only lines the pack has a sound for, so a list without its sounds can't show raw keys again. Played: the voice
+  page shows "Spell on You", "Life Is a Highway"..., and picking one says "Ashe: Life is a highway." **A player's asset zip
+  needs rebuilding for her lines.**
 
 - **Ashe's and Widowmaker's scopes slow the mouse (#173):** fully scoped, Ashe turns at 60 % and Widowmaker at 30 % (the data's
   zoomed-aim sensitivity: Ashe 14FC #565 0.6, once read as a move speed; Widow 001B #115 0.3), as Ana (30 %) and Silver

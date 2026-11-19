@@ -50,8 +50,14 @@ public final class Loadout {
 		List<String> ids = new ArrayList<>();
 		if (resource.isPresent()) {
 			try (Reader reader = resource.get().openAsReader()) {
+				var sounds = Minecraft.getInstance().getSoundManager();
 				for (JsonElement entry : GSON.fromJson(reader, JsonArray.class)) {
-					ids.add(entry.getAsJsonObject().get("id").getAsString());
+					String id = entry.getAsJsonObject().get("id").getAsString();
+					// only a line the pack has a sound for: a list without its sounds (Ashe's, 2026-11-19: her list was
+					// built but her sounds and names weren't) showed raw keys that played nothing
+					if (sounds.getSoundEvent(Overcraft.id(hero.id + ".voiceline." + id)) != null) {
+						ids.add(id);
+					}
 				}
 			} catch (IOException | RuntimeException e) {
 				Overcraft.LOG.warn("Couldn't read the voice lines for {}: {}", hero.id, e.toString());
@@ -87,12 +93,15 @@ public final class Loadout {
 		return BLOCKED.getOrDefault(hero.id, java.util.Set.of()).contains(id);
 	}
 
-	/** The four equipped voice lines (up, right, down, left); an empty slot is "" (a blocked line equipped before is too). */
+	/**
+	 * The four equipped voice lines (up, right, down, left); an empty slot is "" (so is a blocked line equipped before, or
+	 * one the pack no longer has).
+	 */
 	public static List<String> voiceLines(Hero hero) {
 		List<String> pickable = new ArrayList<>(available(hero));
 		pickable.removeIf(id -> blocked(hero, id));
 		List<String> chosen = new ArrayList<>(chosen(VOICE_LINES, hero, pickable));
-		chosen.replaceAll(id -> blocked(hero, id) ? "" : id);
+		chosen.replaceAll(id -> blocked(hero, id) || !pickable.contains(id) ? "" : id);
 		return chosen;
 	}
 
