@@ -93,10 +93,15 @@ public final class PlayScore {
 	}
 
 	private static @Nullable Rows rows(@Nullable Entity who) {
+		return rows(who, true);
+	}
+
+	/** heroMode: the row only while the player is in hero mode (fights); false: any time a hero is picked (progression). */
+	private static @Nullable Rows rows(@Nullable Entity who, boolean heroMode) {
 		if (!open || !(who instanceof ServerPlayer player)) {
 			return null;
 		}
-		if (HeroManager.hero(player) == null || !HeroManager.heroMode(player)) {
+		if (HeroManager.hero(player) == null || heroMode && !HeroManager.heroMode(player)) {
 			return null;
 		}
 		Rows r = ROWS.computeIfAbsent(player.getUUID(), k -> new Rows());
@@ -108,7 +113,9 @@ public final class PlayScore {
 	public static void damage(@Nullable Entity attacker, LivingEntity target, double dealt, Blow blow) {
 		long t0 = System.nanoTime();
 		Rows r = rows(attacker);
-		if (r != null && dealt > 0 && target != attacker && !Allies.isBystander((LivingEntity) attacker, target)) {
+		// an ally hurt with friendly fire on scores nothing (#172: an ally is never a bystander, so it did)
+		if (r != null && dealt > 0 && target != attacker && !Allies.isBystander((LivingEntity) attacker, target)
+			&& !Allies.wasAlly((LivingEntity) attacker, target)) {
 			r.now[Category.HIGH_SCORE.ordinal()] += dealt * PotgValues.DAMAGE_PER_HP;
 			PlayerStats.damage((ServerPlayer) attacker, dealt);
 			if (blow.crit()) {
@@ -127,7 +134,7 @@ public final class PlayScore {
 		long t0 = System.nanoTime();
 		Rows r = rows(killer);
 		String type = net.minecraft.world.entity.EntityType.getKey(victim.getType()).toString();
-		if (r != null && killer != victim
+		if (r != null && killer != victim && !Allies.wasAlly((LivingEntity) killer, victim)
 			&& (!Allies.isBystander((LivingEntity) killer, victim) || PotgValues.KILL_BONUS.containsKey(type))) {
 			double worth = killWorth(type, Ow.toOw(victim.getMaxHealth()));
 			r.now[Category.HIGH_SCORE.ordinal()] += worth;
@@ -180,9 +187,13 @@ public final class PlayScore {
 		}
 	}
 
-	/** A progression event (PotgValues: a crystal, an eye, the portal, a first entry) by this player, to High Score. */
+	/**
+	 * A progression event (PotgValues: a crystal, an eye, the portal, a first entry) by this player, to High Score. In either
+	 * mode while a hero is picked: an eye of ender only goes in from Minecraft mode, since hero mode's interact no longer uses the
+	 * held item (0.3.104), so the hero-mode-only rule left eyes scoring nothing (#172).
+	 */
 	public static void progress(@Nullable Entity who, double worth, String what) {
-		Rows r = rows(who);
+		Rows r = rows(who, false);
 		if (r != null) {
 			r.now[Category.HIGH_SCORE.ordinal()] += worth;
 			logEvent(r, worth, what);
@@ -226,7 +237,10 @@ public final class PlayScore {
 				continue;
 			}
 			double cost = Combat.ultCost(s);
-			if (r.lastUlt >= cost && s.ultCharge < r.lastUlt - cost * 0.5 && r.lastHero == s.hero) {
+			// D.Va's mech breaking keeps its charge for the next mech (Dva.eject: dvaMechUlt) and zeroes the pilot's: not an ult
+			// (#172: it scored one, the cost dropping to the pilot's in the same tick). Self-Destruct spends it first: dvaMechUlt 0.
+			boolean mechKept = s.hero == dev.overcraft.hero.Hero.DVA && s.dvaEjectedAt == player.level().getGameTime() && s.dvaMechUlt > 0;
+			if (r.lastUlt >= cost && s.ultCharge < r.lastUlt - cost * 0.5 && r.lastHero == s.hero && !mechKept) {
 				r.now[Category.HIGH_SCORE.ordinal()] += PotgValues.ULT_START * PotgValues.ULT_SHARE;
 				Overcraft.LOG.info(String.format(Locale.ROOT, "[POTG] %s: +%.0f High Score (ult)", r.name, PotgValues.ULT_START * PotgValues.ULT_SHARE));
 			}

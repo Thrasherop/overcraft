@@ -31,7 +31,10 @@ final class PotgState {
 	static void setLastPotg(MinecraftServer server, long ms) {
 		try {
 			Files.createDirectories(PotgRecorder.root(server));
-			Files.writeString(file(server), Long.toString(ms));
+			// written whole, then moved over the old one (#172: written in place, a crash mid-write lost it)
+			Path tmp = file(server).resolveSibling(file(server).getFileName() + ".tmp");
+			Files.writeString(tmp, Long.toString(ms));
+			Files.move(tmp, file(server), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			Overcraft.LOG.warn("[POTG] couldn't save the POTG state: {}", e.toString());
 		}

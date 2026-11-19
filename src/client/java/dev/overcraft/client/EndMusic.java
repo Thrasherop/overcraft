@@ -66,12 +66,14 @@ public final class EndMusic {
 		}
 		target = volumeAt(payload.share());
 		if (!inFight || payload.fight() != fight) {
+			// the same fight after a showing silenced it (pauseForShowing): on the loop, not its intro again
+			boolean same = fight != 0 && payload.fight() == fight;
 			stopNow();
 			inFight = true;
 			fight = payload.fight();
 			level = target;
 			on = true;
-			start(true);
+			start(!same);
 		} else if (!on || fading >= 0) {
 			// the same fight back (its dragon loaded again): on the loop, not its intro again
 			stopNow();
@@ -110,6 +112,10 @@ public final class EndMusic {
 			// the sounds are paused with the game: so is the intro's clock
 			return;
 		}
+		if (ClientPotg.active()) {
+			// silent through a showing (pauseForShowing), and no restart of a stopped section
+			return;
+		}
 		level += (target - level) * EASE;
 		if (fading >= 0) {
 			if (--fading < 0) {
@@ -133,6 +139,16 @@ public final class EndMusic {
 			on = true;
 			start(false);
 		}
+	}
+
+	/**
+	 * A showing starts here (ClientPotg): the fight's music stops for it (#172: it played over a watched highlight, and with the
+	 * live news held back it never heard the fight end, looping on after). The fight is remembered: the server sends where it
+	 * stands once the viewer is back (PotgReplay.viewerDoneWatching), and the same fight goes on from its loop.
+	 */
+	public static void pauseForShowing() {
+		stopNow();
+		inFight = false;
 	}
 
 	/** Leaving the world: nothing carries over. */

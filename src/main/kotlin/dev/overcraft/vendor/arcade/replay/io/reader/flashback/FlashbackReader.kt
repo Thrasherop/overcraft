@@ -183,9 +183,12 @@ public class FlashbackReader(
             this.loadChunkCache(index)
             packet = this.cache.getIfPresent(index)
         }
-        if (packet != null) {
-            consumer.invoke(ReplayPacketData(ConnectionProtocol.PLAY, packet, this.tickAsDuration))
+        if (packet == null) {
+            // Overcraft (#172): an unreadable chunk cache (a corrupt zip) ends the stream, and with it the showing; before, each
+            // missing chunk read the whole broken file again and the replay crawled until the POTG's watchdog (37 s)
+            throw IllegalStateException("Chunk cache $index can't be read")
         }
+        consumer.invoke(ReplayPacketData(ConnectionProtocol.PLAY, packet, this.tickAsDuration))
     }
 
     @Suppress("UnusedVariable", "Unused")

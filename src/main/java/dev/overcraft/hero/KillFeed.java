@@ -47,7 +47,13 @@ public final class KillFeed {
 			}
 		}
 		Combat.forget(victim);
-		dev.overcraft.potg.PlayScore.kill(killer, victim);
+		// Minecraft's own weapons don't score a kill (#172: an arrow shot in Minecraft mode, G pressed before it landed, scored
+		// +250), as their damage never does: the player's own hit with no hero blow (a sword), or a Minecraft projectile or TNT.
+		// A hero's projectiles are the mod's own entities (the kunai hurts directly, with no Combat.deal blow, and still scores)
+		Entity direct = source.getDirectEntity();
+		boolean minecraftWeapon = blow == null && direct != null && (direct == killer
+			|| net.minecraft.world.entity.EntityType.getKey(direct.getType()).getNamespace().equals("minecraft"));
+		dev.overcraft.potg.PlayScore.kill(minecraftWeapon ? null : killer, victim);
 		Voice.onKill(victim, source, killer, blow);
 		boolean heroKiller = blow != null || killer instanceof Player player && HeroManager.hero(player) != null;
 		if (!heroKiller && !(victim instanceof Player)) {

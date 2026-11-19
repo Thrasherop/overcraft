@@ -112,24 +112,44 @@ public final class MobStats {
 		}
 	}
 
-	/** Once a second (PlayScore's step): the list trimmed and saved, if anything changed. */
+	/** How many mobs are followed in memory (the saved list is the top KEPT): a 9th mob's damage isn't reset each second (#172). */
+	private static final int FOLLOWED = 64;
+	/** At most one save this often during a fight (#172: it wrote on the server thread every second); forced at a stop. */
+	private static final long SAVE_EVERY_MS = 10_000;
+	private static long savedAt;
+
+	/** Once a second (PlayScore's step): saved, if anything changed and the last save is SAVE_EVERY_MS old. */
 	public static void flush(MinecraftServer server) {
-		if (!dirty) {
+		flush(server, false);
+	}
+
+	/** force: now (the server stopping, the dragon's decision). */
+	public static void flush(MinecraftServer server, boolean force) {
+		long now = System.currentTimeMillis();
+		if (!dirty || !force && now - savedAt < SAVE_EVERY_MS) {
 			return;
 		}
 		dirty = false;
-		List<Mob> list = top();
-		MOBS.clear();
-		for (Mob m : list) {
-			MOBS.put(m.uuid, m);
+		savedAt = now;
+		if (MOBS.size() > FOLLOWED) {
+			List<Mob> all = sorted();
+			MOBS.clear();
+			for (Mob m : all.subList(0, FOLLOWED)) {
+				MOBS.put(m.uuid, m);
+			}
 		}
-		save(server, "mobs.json", list);
+		save(server, "mobs.json", top());
+	}
+
+	private static List<Mob> sorted() {
+		List<Mob> all = new ArrayList<>(MOBS.values());
+		all.sort(Comparator.comparingInt((Mob m) -> m.playersKilled).thenComparingDouble(m -> m.damageToPlayers).reversed());
+		return all;
 	}
 
 	/** The top {@link #KEPT} by players killed, then damage, and every dragon. */
 	public static List<Mob> top() {
-		List<Mob> all = new ArrayList<>(MOBS.values());
-		all.sort(Comparator.comparingInt((Mob m) -> m.playersKilled).thenComparingDouble(m -> m.damageToPlayers).reversed());
+		List<Mob> all = sorted();
 		List<Mob> out = new ArrayList<>();
 		for (Mob m : all) {
 			if (out.size() < KEPT || m.type.equals("minecraft:ender_dragon")) {
@@ -147,8 +167,7 @@ public final class MobStats {
 		save(server, "mobs_last.json", list);
 		Overcraft.LOG.info("[POTG] mobs this run: {}", GSON.toJson(list).replaceAll("\\s+", " "));
 		MOBS.clear();
-		dirty = true;
-		flush(server);
+		dirty = false;
 		save(server, "mobs.json", List.of());
 	}
 
@@ -171,9 +190,12 @@ public final class MobStats {
 	private static void save(MinecraftServer server, String name, List<Mob> list) {
 		try {
 			Files.createDirectories(PotgRecorder.root(server));
-			try (Writer w = Files.newBufferedWriter(file(server, name))) {
+			// written whole, then moved into place (#172)
+			Path tmp = file(server, name + ".tmp");
+			try (Writer w = Files.newBufferedWriter(tmp)) {
 				GSON.toJson(list, w);
 			}
+			Files.move(tmp, file(server, name), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			Overcraft.LOG.warn("[POTG] couldn't save {}: {}", name, e.toString());
 		}

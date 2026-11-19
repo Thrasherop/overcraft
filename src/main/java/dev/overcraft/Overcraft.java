@@ -287,6 +287,8 @@ public class Overcraft implements ModInitializer {
 		// wherever they are (the owner on 0.3.66, #161: a player in the Nether had no music); the music runs on into the POTG
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			if (entity instanceof EnderDragon && entity.level() instanceof ServerLevel level) {
+				// a highlight watched alone ends first: its viewer gets this VICTORY once back (#172)
+				dev.overcraft.potg.PotgReplay.soloEndsAtDragonDeath(level.getServer());
 				for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
 					ServerPlayNetworking.send(player, new VictoryPayload());
 				}
@@ -329,7 +331,8 @@ public class Overcraft implements ModInitializer {
 			dev.overcraft.potg.PlayScore.open();
 		});
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-			dev.overcraft.potg.MobStats.flush(server);
+			dev.overcraft.potg.PotgReplay.serverStopping(server);
+			dev.overcraft.potg.MobStats.flush(server, true);
 			dev.overcraft.potg.PlayerStats.flush(server);
 			dev.overcraft.potg.PotgRecorder.stopAll(server);
 		});

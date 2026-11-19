@@ -4,6 +4,66 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.124
+
+The last of the POTG review's bookkeeping (#172), found by reading the code; not reproduced in play:
+- **The end screen's mob list** is saved at most every 10 s during a fight (it wrote on the server thread every second), and
+  always at a stop and at the dragon; it's written whole, then moved into place. A 9th mob that hurts players is followed
+  (up to 64), not reset each second by the top-8 trim. Played: a husk fight, saves 10 s apart, its 225 damage kept.
+- **A death just after a kept window** takes only the latest window in reach again, so two highlights of one play no longer
+  end up the same.
+- **Two plays of the same score:** the earlier one is the POTG (it went by the order of the players' folders).
+
+## 2026-11-18: 0.3.123
+
+- **A corrupt highlight ends at once instead of hanging (#172):** a zip with a broken chunk cache made the replay re-read the
+  broken file for every missing chunk and crawl until the POTG's watchdog (reproduced: 37 s, 311 load errors). An unreadable
+  chunk cache now ends the stream, and a stream that fails tells the showing it's over (it used to stop the viewer without
+  saying so). Played: the corrupted copy ended 1 s into its replay with the player back and "Exception while viewing replay";
+  the restored zip and another highlight played through.
+- **Not reproduced:** a player riding a boat stays aboard through a POTG (single player). **By design:** under the 300 High
+  Score floor, any other category wins (the patent's rule).
+
+## 2026-11-18: 0.3.122
+
+- **A kill by Minecraft's own weapons no longer scores for Play of the Game (#172):** an arrow shot in Minecraft mode, with G
+  pressed before it landed, scored +250 (reproduced). Now a kill made with the player's bare hit and no hero blow, or with a
+  Minecraft projectile or TNT, scores nothing. Played after the fix: the arrow kill, nothing; Cassidy's shot and Kiriko's kunai
+  (which hurts directly, with no hero blow recorded), +250 each.
+
+## 2026-11-18: 0.3.121
+
+More of the POTG review (#172), on how highlights are stored:
+- **A segment's zip is written beside it and moved into place when whole,** so a crash mid-zip can't leave a partial zip that
+  a highlight trusts.
+- **The zips a new highlight replaces stay until its own segment is zipped** (before, they were deleted at once, and a crash
+  before the new zip lost both). Played: a 1500 play replaced a 450; seg-3.zip stayed while seg-9 recorded, and went once
+  watching zipped seg-9 (13.7 MB, no `.part` left), which then played.
+- **A segment that fails to zip drops its highlights** (and says so in the log) instead of listing a dead one all session.
+
+## 2026-11-18: 0.3.120
+
+Play of the Game, after the owner's heavy review round (#172; four independent critics). Each was reproduced in the game first
+where play could reach it, then played again on the fix.
+- **A dedicated server crashed when a player watched their own highlight** (found in this round's play): the viewer's recorder
+  was stopped from the zip's writer thread, by then the new segment the server thread was recording into. Both are stopped on
+  the server thread now, and a recorder that fails drops its segment instead of the server.
+- **Eyes of ender score again:** since 0.3.104 an eye goes in only from Minecraft mode, where nothing scored. Progression (an eye,
+  the portal, an end crystal, a first entry) now scores in either mode while a hero is picked. Old build: eye in, no score; now
+  "+100 eye of ender placed".
+- **D.Va's mech breaking no longer scores an ult** (old build: "+150 (ult)" and a highlight saved for it). Self-Destruct still does.
+- **With friendly fire on, hurting or killing an ally scores nothing** (old build: an ally villager's death, +250 and a highlight).
+- **Watching a highlight:** the pointer is hidden for the whole showing; the dragon fight's music stops for it and comes back
+  from its loop once you're back (it played over the highlight before); and if the dragon dies while you watch, the highlight
+  ends there and you get VICTORY once back (it was lost). Played on a dedicated server.
+- **`/stop` during a replay** ends the showing first, so its viewers are saved (7 diamonds given just before the watch were there
+  after a restart).
+- **An unreadable `highlights.json`** is kept as `highlights.json.bad` and no segment of that player's is deleted that session
+  (before, the empty list made the next tidy delete every kept zip). The last POTG's time is written whole, then moved into place.
+- **Not reproduced:** a player dead when a POTG starts gets their death screen and Respawn back afterwards (single player, the
+  dev command).
+- **Dev only:** the harness `state` has `cursorShown` and `endMusic`.
+
 ## 2026-11-18: 0.3.119
 
 - **A hacked enemy hero uses no abilities (#46):** under Sombra's hack an enemy Tracer no longer Blinks, an enemy Torbjörn

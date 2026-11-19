@@ -71,6 +71,7 @@ public final class Highlights {
 	public static void clear() {
 		KEPT_BY.clear();
 		LOADED.clear();
+		UNREADABLE.clear();
 	}
 
 	/** A player's highlights, best first (loaded from the world on first use). */
@@ -89,7 +90,15 @@ public final class Highlights {
 						}
 					}
 				} catch (Exception e) {
-					Overcraft.LOG.warn("[POTG] couldn't read {}: {}", file, e.toString());
+					// kept aside, and nothing of this player's is tidied away this session (#172: the empty list made the next
+					// tidy delete every kept zip); a new highlight still saves a fresh list
+					UNREADABLE.add(id);
+					try {
+						Files.copy(file, file.resolveSibling("highlights.json.bad"), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+					} catch (IOException ignored) {
+						// the warning below says it all
+					}
+					Overcraft.LOG.warn("[POTG] couldn't read {} (kept as highlights.json.bad; no segment deleted): {}", file, e.toString());
 				}
 			}
 			list.sort(Comparator.comparingDouble((Highlight h) -> h.score).reversed());
@@ -179,15 +188,18 @@ public final class Highlights {
 			return;
 		}
 		MinecraftServer server = player.level().getServer();
-		boolean changed = false;
+		// only the latest window in reach is taken again (#172: each one in reach was, and two of one play ended up the same)
+		Highlight latest = null;
 		for (Highlight h : of(server, player.getUUID())) {
-			if (h.segment.equals(clip.segment()) && clip.tick() - h.endTick <= reachTicks && clip.tick() > h.endTick) {
-				Overcraft.LOG.info("[POTG] {}: {} taken again to show the death ({} ticks after it)", h.player, h.category, clip.tick() - h.endTick);
-				h.endTick = clip.tick();
-				changed = true;
+			if (h.segment.equals(clip.segment()) && clip.tick() - h.endTick <= reachTicks && clip.tick() > h.endTick
+				&& (latest == null || h.endTick > latest.endTick)) {
+				latest = h;
 			}
 		}
-		if (changed) {
+		if (latest != null) {
+			Overcraft.LOG.info("[POTG] {}: {} taken again to show the death ({} ticks after it)", latest.player, latest.category,
+				clip.tick() - latest.endTick);
+			latest.endTick = clip.tick();
 			save(server, player.getUUID());
 		}
 	}
@@ -206,15 +218,31 @@ public final class Highlights {
 		}
 	}
 
+	/** A segment that didn't save (PotgRecorder.finish): its highlights are removed and the list saved. */
+	static void dropSegment(MinecraftServer server, UUID id, String segment) {
+		if (of(server, id).removeIf(h -> h.segment.equals(segment))) {
+			save(server, id);
+		}
+	}
+
+	/** Players whose highlights.json couldn't be read this session: their segments are never deleted (the list can't say which are used). */
+	private static final Set<UUID> UNREADABLE = new HashSet<>();
+
 	/** Deletes every saved segment of this player's no highlight uses (never the one being recorded). */
 	static void tidy(MinecraftServer server, UUID id) {
 		Path dir = PotgRecorder.dir(server, id);
-		if (!Files.isDirectory(dir)) {
+		of(server, id);
+		if (!Files.isDirectory(dir) || UNREADABLE.contains(id)) {
 			return;
 		}
 		Set<String> used = new HashSet<>();
 		for (Highlight h : of(server, id)) {
 			used.add(h.segment);
+			if (!Files.exists(dir.resolve(h.segment))) {
+				// a highlight whose segment isn't zipped yet (still recording, or zipping): the zips it replaced stay until it
+				// is (#172: deleted first, a crash in between lost both); the finished zip's tidy deletes them
+				return;
+			}
 		}
 		String current = PotgRecorder.current(id);
 		try (Stream<Path> files = Files.list(dir)) {
@@ -272,7 +300,8 @@ public final class Highlights {
 		UUID whose = null;
 		for (UUID id : owners(server)) {
 			for (Highlight h : of(server, id)) {
-				if (h.epochMs > sinceMs && (best == null || h.score > best.score)) {
+				// a tie goes to the earlier play (#172: it went by the folders' order)
+				if (h.epochMs > sinceMs && (best == null || h.score > best.score || h.score == best.score && h.epochMs < best.epochMs)) {
 					best = h;
 					whose = id;
 				}

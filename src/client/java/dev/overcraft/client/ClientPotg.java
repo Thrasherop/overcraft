@@ -90,6 +90,7 @@ public final class ClientPotg {
 				back = false;
 				cardUntil = now + Math.round(p.cardSeconds() * 1000);
 				giveUpAt = now + 90_000;
+				EndMusic.pauseForShowing();
 				PotgCard.show(p.phase() == PotgPayload.CARD, p.data());
 				mc.gui.setScreen(new PotgCard.Holder());
 			}
