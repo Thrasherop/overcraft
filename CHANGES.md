@@ -4,6 +4,14 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.127
+
+- **Catnapper's aim over water (#171, perhaps the owner's case):** aimed at water, the marker and the landing went to the
+  bottom, so the marker was hidden under the water (reproduced: a 4-deep pool, no ring and no paw lines). They now stop at
+  the water's surface. Played: the ring on the pool's surface; the dive landed there, afloat, no damage. Aimed while
+  swimming (eyes under water), the aim still goes through the water to the bottom ahead, where she can see it (a first
+  try stopped it in the water 0.3 m in front of her).
+
 ## 2026-11-18: 0.3.126
 
 - **A viewer who leaves during the card and comes back** isn't pulled into the replay without a viewer's protections (#172),
