@@ -89,7 +89,10 @@ public final class ClientPotg {
 				active = true;
 				back = false;
 				cardUntil = now + Math.round(p.cardSeconds() * 1000);
-				giveUpAt = now + 90_000;
+				// a lost END gives up a little after the server's own watchdog would have ended it, and its end screen
+				// (#172: a flat 90 s locked the player out for over a minute)
+				giveUpAt = cardUntil + dev.overcraft.potg.PotgReplay.WINDOW_TICKS * 50L
+					+ dev.overcraft.potg.PotgReplay.WATCHDOG_EXTRA_MS + dev.overcraft.potg.PotgReplay.OUTRO_MS + 5_000;
 				EndMusic.pauseForShowing();
 				PotgCard.show(p.phase() == PotgPayload.CARD, p.data());
 				mc.gui.setScreen(new PotgCard.Holder());
@@ -131,6 +134,7 @@ public final class ClientPotg {
 			return;
 		}
 		PotgCard.tick(mc);
+		PotgCard.advance(mc);
 		long now = net.minecraft.util.Util.getMillis();
 		if (now > giveUpAt || back && PotgCard.finished()) {
 			finish(mc);

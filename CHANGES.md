@@ -4,6 +4,17 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.125
+
+The last client items of the POTG review (#172), found by reading the code:
+- **A minimized window finishes its end screen on time:** the end screen's clock only moved while frames drew, so a minimized
+  viewer never said it was done and the server held the world to its worst case. It now moves each tick. Played minimized:
+  "end screen over (every end screen done)" 7 s after the replay. (The old build wasn't played minimized first.)
+- **A lost END gives up sooner:** a little after the server's own watchdog would have ended the showing (about 50 s for a
+  POTG), not a flat 90 s.
+- **Won't fix:** a resource reload (F3+T) during a showing silences its music; Minecraft's sound engine restarts and the track
+  can't resume where it was, and restarting it from the top would be out of step.
+
 ## 2026-11-18: 0.3.124
 
 The last of the POTG review's bookkeeping (#172), found by reading the code; not reproduced in play:
