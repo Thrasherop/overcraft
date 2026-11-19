@@ -185,6 +185,7 @@ public final class PotgReplay {
 		}
 		MinecraftServer server = level.getServer();
 		PlayScore.close(server);
+		PotgState.setDragonKilled(server);
 		Overcraft.LOG.info("[POTG] the dragon died, killer {} ({}); scoring closed; the POTG in {} ms", killer == null ? "(none)"
 			: killer.getName().getString() + (killer instanceof Player p && !(HeroManager.hero(p) != null && HeroManager.heroMode(p)) ? ", out of hero mode" : ""),
 			"the plays decide", CARD_AFTER_KILL_MS);
@@ -335,7 +336,7 @@ public final class PotgReplay {
 	public static boolean dragonKilled(MinecraftServer server) {
 		ServerLevel end = server.getLevel(net.minecraft.world.level.Level.END);
 		var fight = end == null ? null : end.getDragonFight();
-		return fight != null && fight.hasPreviouslyKilledDragon();
+		return fight != null && fight.hasPreviouslyKilledDragon() || PotgState.dragonKilled(server);
 	}
 
 	/**
@@ -346,6 +347,11 @@ public final class PotgReplay {
 		MinecraftServer server = player.level().getServer();
 		if (watch == dev.overcraft.net.HighlightsPayload.DONE) {
 			viewerDoneWatching(player);
+			return;
+		}
+		if (watch == dev.overcraft.net.HighlightsPayload.STATUS) {
+			ServerPlayNetworking.send(player, new dev.overcraft.net.HighlightsPayload(dev.overcraft.net.HighlightsPayload.STATUS,
+				dragonKilled(server) ? "1" : "0"));
 			return;
 		}
 		com.google.gson.JsonObject o = new com.google.gson.JsonObject();

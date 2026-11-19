@@ -82,6 +82,11 @@ public class HighlightsScreen extends OwScreen {
 			rows.clear();
 		}
 		Minecraft mc = Minecraft.getInstance();
+		dev.overcraft.client.ClientPotg.highlightsOpen(!locked);
+		if (locked && !broken) {
+			// not before the dragon: nothing opens, no word of what's behind it (owner, 2026-11-18: it "shouldn't hint to the potg")
+			return;
+		}
 		if (mc.gui.screen() == null || mc.gui.screen() instanceof OverwatchMenuScreen) {
 			mc.gui.setScreen(new HighlightsScreen(broken, locked, rows));
 		}

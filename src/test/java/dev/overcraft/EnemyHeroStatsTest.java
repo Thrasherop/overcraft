@@ -38,6 +38,10 @@ class EnemyHeroStatsTest {
 		assertTrue(EnemyHeroStats.mayReplace(0, 1));
 		assertFalse(EnemyHeroStats.mayReplace(0, 2));
 		assertFalse(EnemyHeroStats.mayReplace(1, 0));
+		// the gamerule's cap
+		assertFalse(EnemyHeroStats.mayReplace(0, 0, 0));
+		assertTrue(EnemyHeroStats.mayReplace(0, 4, 5));
+		assertFalse(EnemyHeroStats.mayReplace(0, 5, 5));
 	}
 
 	@Test

@@ -14,9 +14,13 @@ public final class EnemyHeroStats {
 	// ---- spawning (ours: the plan's "How often") ----
 	/** 1 in 12 natural night spawns of a zombie, skeleton or husk in the Overworld becomes an enemy hero (ours). */
 	public static final int SPAWN_ONE_IN = 12;
-	/** Never more than 2 enemy heroes within 64 m of a player (ours). */
+	/**
+	 * Never more than 2 enemy heroes around a player (ours): the gamerule overcraft:enemy_hero_cap's default. Counted out to 128 m,
+	 * Minecraft's spawn reach (monsters come 24-128 m from a player and go beyond 128): counted to 64 m, as it was, new heroes
+	 * spawned past 64 m never saw each other and walked in (played 2026-11-19 at chance 100, cap 6: 12 within 64 m, 23 within 128).
+	 */
 	public static final int CAP = 2;
-	public static final double CAP_RADIUS = 64;
+	public static final double CAP_RADIUS = 128;
 
 	// ---- damage and aim (ours: the plan's "Damage to a player" and "Aim") ----
 	/**
@@ -48,7 +52,12 @@ public final class EnemyHeroStats {
 
 	/** Whether a spawn may become one: the roll hit (1 in SPAWN_ONE_IN), and fewer than CAP are near the nearest player. */
 	public static boolean mayReplace(int roll, int nearby) {
-		return roll == 0 && nearby < CAP;
+		return mayReplace(roll, nearby, CAP);
+	}
+
+	/** The same with the world's cap (the gamerule): 0 lets none spawn. */
+	public static boolean mayReplace(int roll, int nearby, int cap) {
+		return roll == 0 && nearby < cap;
 	}
 
 	// ---- movement (M: Minecraft's own movement) ----

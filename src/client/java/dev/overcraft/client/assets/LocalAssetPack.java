@@ -26,7 +26,9 @@ import java.util.function.Consumer;
  * (tools/build_asset_pack.py) and it's read from outside the jar.
  *
  * Where: {@code -Dovercraft.assetPack=<zip or folder>}, else {@code <game dir>/overcraft/overcraft-assets.zip}, else
- * the folder {@code <game dir>/overcraft/overcraft-assets/}. Missing: placeholders only.
+ * the folder {@code <game dir>/overcraft/overcraft-assets/}, else {@code <game dir>/mods/<modsZipName()>} (owner,
+ * 2026-11-18: beside the jar is the easiest install; Fabric loads only .jar files from mods/, so the zip is left alone
+ * there). Missing: placeholders only.
  */
 public final class LocalAssetPack implements RepositorySource {
 	public static final String ID = "overcraft:local_assets";
@@ -41,24 +43,43 @@ public final class LocalAssetPack implements RepositorySource {
 		Pack.ResourcesSupplier resources = Files.isDirectory(path)
 			? new PathPackResources.PathResourcesSupplier(path)
 			: new FilePackResources.FileResourcesSupplier(path);
-		PackLocationInfo location = new PackLocationInfo(ID, Component.literal("Overcraft: local Overwatch assets"), PackSource.BUILT_IN, Optional.empty());
+		// labelled with the mod's own display name (fabric.mod.json), not a fixed one: a build can go by another name
+		String name = FabricLoader.getInstance().getModContainer("overcraft").map(m -> m.getMetadata().getName()).orElse("Overcraft");
+		PackLocationInfo location = new PackLocationInfo(ID, Component.literal(name + ": local assets"), PackSource.BUILT_IN, Optional.empty());
 		Pack.Metadata metadata = new Pack.Metadata(Component.literal(path.getFileName().toString()), PackCompatibility.COMPATIBLE,
 			FeatureFlagSet.of(), List.of());
 		result.accept(new Pack(location, resources, metadata, new PackSelectionConfig(true, Pack.Position.TOP, false)));
 		Overcraft.LOG.info("Local Overwatch asset pack: {}", path);
 	}
 
+	/**
+	 * The zip's name in mods/: the mod's display name (fabric.mod.json) in lower case, spaces as dashes, then "-assets.zip":
+	 * overcraft-assets.zip, or mystery-mod-assets.zip for a build named "Mystery Mod" (owner, 2026-11-18: one name to tell
+	 * the players).
+	 */
+	public static String modsZipName() {
+		String name = FabricLoader.getInstance().getModContainer("overcraft").map(m -> m.getMetadata().getName()).orElse("Overcraft");
+		return name.trim().toLowerCase(java.util.Locale.ROOT).replaceAll("[^a-z0-9]+", "-") + "-assets.zip";
+	}
+
 	public static @Nullable Path find() {
 		String override = System.getProperty("overcraft.assetPack");
 		if (override != null && !override.isBlank()) {
 			Path path = Path.of(override);
-			return Files.exists(path) ? path : null;
+			if (Files.exists(path)) {
+				return path;
+			}
+			// a missing override falls through to the usual places
 		}
 		Path dir = FabricLoader.getInstance().getGameDir().resolve("overcraft");
 		for (Path candidate : new Path[] {dir.resolve("overcraft-assets.zip"), dir.resolve("overcraft-assets")}) {
 			if (Files.exists(candidate)) {
 				return candidate;
 			}
+		}
+		Path inMods = FabricLoader.getInstance().getGameDir().resolve("mods").resolve(modsZipName());
+		if (Files.exists(inMods)) {
+			return inMods;
 		}
 		return null;
 	}

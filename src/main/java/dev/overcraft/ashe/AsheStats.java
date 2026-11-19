@@ -43,11 +43,13 @@ public final class AsheStats {
 	public static final double ADS_IN = 0.2, ADS_OUT = 0.1666;
 	/** The scope's view: 40 degrees across (D #552 v172 40, M as a field of view), full at half the scope-in (D clamp(v169 x 2)) M. */
 	public static final double ADS_FOV = 40;
-	/**
-	 * Scoped, she moves at x0.75 (W "-25 %, 4.125 m/s") M. The data's #565 has 0.6 in two fields of a movement modifier while fully
-	 * scoped (m_69A20070 / m_10705336, meaning unread: L): the wiki's kept, the data's open.
-	 */
+	/** Scoped, she moves at x0.75 (W "-25 %, 4.125 m/s") M: her graphs' self-slow add (Widow's 1E5A kind) not yet read. */
 	public static final double ADS_MOVE = 0.75;
+	/**
+	 * Fully scoped, the mouse turns at 60 % (D 14FC #565 STU_3716E1D4 0.6 / 0.6 at v169 >= 1: the node type of Widow's #115,
+	 * which her hero settings name the zoomed aim sensitivity; once read as a move speed) H value / M field.
+	 */
+	public static final double ADS_SENSITIVITY = 0.6;
 	/** Both: hitscan 0.04 m across (D 28A2, the global large size after BZ 2026-10-06; W) H; x2 on the head (D default, M; W ✓) M. */
 	public static final double RADIUS = 0.04, CRIT = 2, FALLOFF_MIN = 0.3;
 	/** The longest shot (ours: 200 m, as far as Minecraft draws). */

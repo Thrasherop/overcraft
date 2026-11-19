@@ -42,6 +42,8 @@ public final class WidowmakerStats {
 	public static final double SCOPE_IN = 1 / 3.0, SCOPE_OUT = 1 / 3.0;
 	/** The scope's view: 30 degrees (D v172 30, #44 -> #32 at full scope; L as a vertical field of view, as Ana's 30 and Ashe's 40). */
 	public static final double SCOPE_FOV = 30;
+	/** Fully scoped, the mouse turns at 30 % (D 001B #115 0.3 / 0.3, the hero setting "zoomed aim sensitivity" v7648 / v24086) H. */
+	public static final double SCOPED_SENSITIVITY = 0.3;
 	/** Fully scoped she moves 65 % slower: 1.925 m/s (D v23184 += 0.65, value 1E5A, #370, M the field; W -65 %) H/M. */
 	public static final double SCOPE_SLOW = 0.65;
 	/**

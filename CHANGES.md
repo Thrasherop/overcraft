@@ -4,6 +4,36 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-19: 0.3.131
+
+- **Ashe's comms wheel voice lines (#174):** the wheel showed raw keys ("overcraft.voiceline.ashe.girl_who_has_everything")
+  and played nothing: her line list was in the local pack but her sounds and names weren't (a pack sounds build from before
+  she joined it). Rebuilt with `build_asset_pack.py sounds`: her 42 lines, nothing else lost (3081 -> 3123 events). The wheel
+  now lists only lines the pack has a sound for, so a list without its sounds can't show raw keys again. Played: the voice
+  page shows "Spell on You", "Life Is a Highway"..., and picking one says "Ashe: Life is a highway." **A player's asset zip
+  needs rebuilding for her lines.**
+
+- **Ashe's and Widowmaker's scopes slow the mouse (#173):** fully scoped, Ashe turns at 60 % and Widowmaker at 30 % (the data's
+  zoomed-aim sensitivity: Ashe 14FC #565 0.6, once read as a move speed; Widow 001B #115 0.3), as Ana (30 %) and Silver
+  Bullet (60 %) already did. Reproduced: a 100 px mouse move turned 15 degrees scoped and unscoped for both. After: 9 for Ashe,
+  4.5 for Widowmaker, 15 unscoped, five runs each.
+- **Ashe's voice lines (#174):** her own moments had no cooldowns, and five were never said. Now: "Step it up, Bob!" /
+  "Thanks, Bob" as B.O.B. ends without or with a kill, "They got Bob!" when he's destroyed, her dynamite kill line, and her
+  Coach Gun kill line. Played with subtitles on; before, B.O.B.'s end said nothing. A Coach Gun kill in the same instant
+  as the shot stays silent: her Coach Gun grunt outranks the kill line in the data (60 against 50) and holds her voice.
+- **Gamerule `overcraft:enemy_hero_cap` (#175):** at most this many enemy heroes around a player for another to come, 0-64,
+  default 2; 0 stops them. The cap is now counted out to 128 m, Minecraft's spawn reach: counted to 64 m, heroes spawned
+  past 64 m never saw each other (played at chance 100 and cap 6: 12 within 64 m, 23 within 128). After: cap 6 held at 6
+  for a minute of night; cap 0 let none come while zombies kept spawning. Both enemy-hero gamerules have names in the list.
+- **Junkrat's mine jumps stack (#176):** his mine's launch adds to his speed (the data's add-a-vector kind, 096A #262), not
+  sets it, so mines in a row build on each other; on the ground Minecraft's small resting fall speed isn't taken off. One
+  mine out at a time stays: a throw removes the mine already out without a blast (096A #231 -> message 0511 -> 096B #263).
+  Same keys and timing: the triple went 17.05 m before, 18.75 m now; one ground mine 6.4 m both.
+- **The menu doesn't hint at the POTG (#177):** no Highlights item and no Highlights key screen until the world's dragon has
+  died ("Kill the Ender Dragon to unlock your highlights" showed before). After the kill it comes back at once: Minecraft's
+  own "killed" flag stayed false until a reload, so the mod keeps its own (overcraft/potg/dragon_killed). The key is now
+  just "Highlights". Played: hidden in a fresh world, there right after a kill, the list opened.
+
 ## 2026-11-18: 0.3.130
 
 - **Catnapper's aim shows its whole reach (#171, the owner's clip of the real game):** a big flat disc on the ground the

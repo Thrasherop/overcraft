@@ -32,7 +32,7 @@ public abstract class MouseHandlerMixin {
 		} else if (EmoteCamera.active()) {
 			EmoteCamera.turn(dx, dy);
 		} else {
-			// Ana fully scoped: 30% (ClientAna)
+			// fully scoped: Ana and Widowmaker 30%, Ashe 60% (ClientAna); Silver Bullet 60% (ClientCassidy)
 			double k = dev.overcraft.client.ClientAna.sensitivity() * dev.overcraft.client.ClientCassidy.sensitivity();
 			player.turn(dx * k, dy * k);
 		}

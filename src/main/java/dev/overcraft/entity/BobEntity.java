@@ -155,6 +155,23 @@ public class BobEntity extends PathfinderMob implements OwnableEntity {
 		}
 	}
 
+	/** His kills this time out (D 14FF v41446): her farewell line says thanks for them or tells him to step it up. */
+	private int kills;
+
+	/** A kill of his (Ashe.killed). */
+	public void killed() {
+		kills++;
+	}
+
+	/** B.O.B. destroyed (D 12A4, 14FF #187 message 1E6F): "They got Bob!" from her. */
+	@Override
+	public void die(DamageSource source) {
+		super.die(source);
+		if (!level().isClientSide() && ownerPlayer() instanceof ServerPlayer owner) {
+			dev.overcraft.hero.Voice.say(owner, "bob_destroyed", 1);
+		}
+	}
+
 	/** Called away early (a second B.O.B.): straight to his going. */
 	public void leave() {
 		if (phase() != DESPAWN) {
@@ -245,6 +262,8 @@ public class BobEntity extends PathfinderMob implements OwnableEntity {
 				if (phaseTicks >= Ow.ticks(AsheStats.BOB_FIRE_TIME)) {
 					AsheSounds.at((ServerLevel) level(), "bob.fire_stop", position(), 40);
 					phase(DESPAWN);
+					// his time up: her line, by whether he got kills (D 0A93, 14FF #151 message 1C22, v41446 >= 1 -> A1E8, else A1E9)
+					dev.overcraft.hero.Voice.say(owner, kills > 0 ? "bob_end_kills" : "bob_end_no_kills", 1);
 				}
 			}
 			default -> {

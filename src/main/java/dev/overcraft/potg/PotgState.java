@@ -28,6 +28,28 @@ final class PotgState {
 		}
 	}
 
+	/**
+	 * Whether a dragon of this world has taken its killing blow while the mod watched (PotgReplay.dragonDied): the highlights'
+	 * unlock, beside Minecraft's own flag. Minecraft's (EnderDragonFight.hasPreviouslyKilledDragon) is only set at the end of the
+	 * death, and played 2026-11-19 it stayed false after a kill and its POTG until the world was reloaded (the Highlights item
+	 * didn't come back), so this one is kept too (overcraft/potg/dragon_killed).
+	 */
+	static boolean dragonKilled(MinecraftServer server) {
+		return Files.exists(PotgRecorder.root(server).resolve("dragon_killed"));
+	}
+
+	static void setDragonKilled(MinecraftServer server) {
+		try {
+			Files.createDirectories(PotgRecorder.root(server));
+			Path f = PotgRecorder.root(server).resolve("dragon_killed");
+			if (!Files.exists(f)) {
+				Files.writeString(f, Long.toString(System.currentTimeMillis()));
+			}
+		} catch (IOException e) {
+			Overcraft.LOG.warn("[POTG] couldn't save the dragon's kill: {}", e.toString());
+		}
+	}
+
 	static void setLastPotg(MinecraftServer server, long ms) {
 		try {
 			Files.createDirectories(PotgRecorder.root(server));
