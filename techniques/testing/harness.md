@@ -325,3 +325,5 @@ boosting bit every 0.04 s): held Shift ended Boosters at 0.57 s before the fix, 
   Water on a one-block floating floor drains; a fill right after `forceload add` may not land.
 - **`state`'s `primaryAmmo` can lag a shot:** read the target's health instead. **At night, target the test mob with
   `sort=nearest`** (or set noon and clear mobs first): `limit=1` alone can pick a natural spawn.
+- **`execute in <dim> run kill @e[distance=..N]` measures from the command's own position (0 0 0 there), not the player's:**
+  use `execute in <dim> at @p run kill ...` to clear around the player (a hoglin and a blaze left nearby hurt Cassidy).

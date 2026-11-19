@@ -35,4 +35,4 @@ OutOfMemory or exception in the log, back at 117 fps as Cassidy. The process's w
   fall"): the fall, from my teleport, not the lava (her safe height is the hero's own, by design). Respawned: 20, hero mode.
 - **The Nether:** Cassidy on a netherrack platform with a blaze 10 m off: its fireballs took her 250 -> 138 (the HUD,
   `2026-11-18_20.07.42.png`) and then killed her within about 15 s; hero mode on throughout. Respawned in the Overworld:
-  20, hero mode. (Shooting the blaze back wasn't tried.)
+  20, hero mode. Shooting back: two Cassidy shots took a still blaze 6 m off from 20 to 8.
