@@ -157,6 +157,28 @@ public final class PotgCard {
 		return done;
 	}
 
+	/**
+	 * Each client tick: the end screen's clock, as outro() keeps it while frames draw. A minimized window draws none, so the
+	 * showing never finished there and the server held the world to its worst case (#172).
+	 */
+	public static void advance(Minecraft mc) {
+		if (!showing || done || cutAt < 0) {
+			return;
+		}
+		long now = Util.getMillis();
+		if (endScreenAt < 0) {
+			long ready = Math.max(cutAt + Math.round(BLACK * 1000), lastLoading + 100);
+			if (now >= ready && mc.level != null) {
+				endScreenAt = now;
+			}
+			return;
+		}
+		float et = (now - endScreenAt) / 1000f;
+		if (et > (potg ? BLACK_FADE + END_HOLD + END_FADE : BLACK_FADE)) {
+			done = true;
+		}
+	}
+
 	public static void hide() {
 		// the replay's kill feed doesn't carry over into the world (found in play: a replayed kill showed after the return)
 		KillFeedHud.clear();

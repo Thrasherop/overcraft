@@ -51,7 +51,7 @@ public final class PotgReplay {
 	/** After the play (the clip): black 0.6 s, a 0.2 s fade into the end screen; the end screen 6 s and a 0.3 s fade out (ours). */
 	public static final int OUTRO_MS = 600 + 200 + 6000 + 300;
 	/** Ends regardless this long after the replay should have (ours: a slow seek, a lost client). */
-	private static final long WATCHDOG_EXTRA_MS = 20_000;
+	public static final long WATCHDOG_EXTRA_MS = 20_000;
 
 	/** A showing: the highlight, whose it is, and the card's words. */
 	public record Show(Highlights.Highlight highlight, UUID owner, String player, String hero, String category) {
@@ -479,7 +479,9 @@ public final class PotgReplay {
 		List<ServerPlayer> online = new ArrayList<>();
 		for (ServerPlayer p : viewers) {
 			ServerPlayer now = server.getPlayerList().getPlayer(p.getUUID());
-			if (now != null) {
+			// not one who left during the card and came back (viewerLeft took them out): their new client never had the card,
+			// and they'd watch without a viewer's protections, maybe never put back (#172); they wait in the held world
+			if (now != null && VIEWERS.contains(p.getUUID())) {
 				online.add(now);
 			}
 		}
@@ -670,7 +672,9 @@ public final class PotgReplay {
 			return;
 		}
 		VIEWERS.remove(id);
-		if (WATCHING.remove(id) && WATCHING.isEmpty()) {
+		if (WATCHING.remove(id) && WATCHING.isEmpty() || VIEWERS.isEmpty()) {
+			// (also during the card, before anyone watches: a solo viewer who relogged left an empty showing to the watchdog,
+			// 37 s in which they couldn't watch another: #172)
 			end(server, "the last viewer left");
 		}
 	}
