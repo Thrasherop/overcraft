@@ -16,7 +16,7 @@ import net.minecraft.world.phys.AABB;
 /**
  * Where enemy heroes come from (#46, the plan's "How often", ours): at night in the Overworld, a zombie, skeleton or husk that
  * Minecraft spawns naturally (EntitySpawnReason.NATURAL) is, 1 time in 12, replaced by one of the eight enemy heroes, equally
- * likely, never in Peaceful, and never when a player within 64 m of it already has 2 within 64 m.
+ * likely, never in Peaceful, and never when a player within 128 m of it already has the cap's number (2) within 128 m.
  * <p>
  * Minecraft has no hook for this, so MobMixin marks the mob from Mob.finalizeSpawn's end, and EnemySpawnSwapMixin swaps it as the
  * spawner adds it (ServerLevel.addFreshEntity): the hero is made at the mob's place and facing, finalized as a natural spawn and added
@@ -38,13 +38,23 @@ public final class EnemyHeroSpawns {
 	/**
 	 * {@code /gamerule overcraft:enemy_hero_chance <0-100>}: the percent of natural night zombies, skeletons and husks that come as
 	 * an enemy hero instead (owner, 2026-11-18: "a gamerule for the chances of enemy heros, including a way to disable spawning mob
-	 * heros"). 0 turns them off; the default 8 is the old fixed 1 in 12 (EnemyHeroStats.SPAWN_ONE_IN). The cap (2 within 64 m of a
+	 * heros"). 0 turns them off; the default 8 is the old fixed 1 in 12 (EnemyHeroStats.SPAWN_ONE_IN). The cap (2 within 128 m of a
 	 * player) still holds at any chance.
 	 */
 	public static final net.minecraft.world.level.gamerules.GameRule<Integer> ENEMY_HERO_CHANCE =
 		net.fabricmc.fabric.api.gamerule.v1.GameRuleBuilder.forInteger(8).range(0, 100)
 			.category(net.minecraft.world.level.gamerules.GameRuleCategory.MOBS)
 			.buildAndRegister(dev.overcraft.Overcraft.id("enemy_hero_chance"));
+
+	/**
+	 * {@code /gamerule overcraft:enemy_hero_cap <0-64>}: at most this many enemy heroes within 128 m of a player (the spawn reach) for a new one to come
+	 * (owner, 2026-11-18: "a gamerule that changes the cap of number of enemy heros near a player"). Default 2 (EnemyHeroStats.CAP);
+	 * 0 lets none come. Heroes already out stay when it's lowered; summoned ones don't count against it at the summon.
+	 */
+	public static final net.minecraft.world.level.gamerules.GameRule<Integer> ENEMY_HERO_CAP =
+		net.fabricmc.fabric.api.gamerule.v1.GameRuleBuilder.forInteger(EnemyHeroStats.CAP).range(0, 64)
+			.category(net.minecraft.world.level.gamerules.GameRuleCategory.MOBS)
+			.buildAndRegister(dev.overcraft.Overcraft.id("enemy_hero_cap"));
 
 	public static void init() {
 		// a mark the spawner didn't add this tick (never expected) doesn't linger
@@ -126,6 +136,7 @@ public final class EnemyHeroSpawns {
 	/** Whether a player within the cap's reach of {@code at} already has the cap's number of enemy heroes within it. */
 	private static boolean crowded(ServerLevel level, Mob at) {
 		double r = EnemyHeroStats.CAP_RADIUS;
+		int cap = level.getGameRules().get(ENEMY_HERO_CAP);
 		for (ServerPlayer player : level.players()) {
 			// natural spawns land 24-128 m from a player: any player that far may be the one it walks to (critique of c728bea)
 			if (player.distanceToSqr(at) > 128 * 128) {
@@ -133,7 +144,7 @@ public final class EnemyHeroSpawns {
 			}
 			int near = level.getEntitiesOfClass(EnemyHeroEntity.class, new AABB(player.position(), player.position()).inflate(r),
 				e -> e.isAlive() && e.distanceToSqr(player) <= r * r).size();
-			if (!EnemyHeroStats.mayReplace(0, near)) {
+			if (!EnemyHeroStats.mayReplace(0, near, cap)) {
 				return true;
 			}
 		}

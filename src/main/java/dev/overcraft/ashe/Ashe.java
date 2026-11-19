@@ -805,6 +805,28 @@ public final class Ashe implements HeroKit {
 		}
 	}
 
+	/**
+	 * A kill credited to her (Voice.onKill): Dynamite's (its burn too) "Out with a bang" (D 0A91, 14FD #206 message 1B27), Coach Gun's
+	 * "Up and out" (D 0AAC, 1513 #328), and B.O.B.'s counted for his farewell line.
+	 */
+	public static void killed(ServerPlayer player, dev.overcraft.hero.HeroState s, @Nullable Blow blow) {
+		if (blow == null) {
+			return;
+		}
+		switch (blow.icon()) {
+			case "dynamite" -> Voice.say(player, "dynamite_kill", 1);
+			case "coach_gun" -> Voice.say(player, "coach_gun_kill", 1);
+			case "b_o_b" -> {
+				BobEntity b = bob(player, s.ashe);
+				if (b != null) {
+					b.killed();
+				}
+			}
+			default -> {
+			}
+		}
+	}
+
 	private static @Nullable BobEntity bob(ServerPlayer player, AsheState a) {
 		for (ServerLevel level : player.level().getServer().getAllLevels()) {
 			if (level.getEntity(a.bob) instanceof BobEntity b && b.isAlive()) {

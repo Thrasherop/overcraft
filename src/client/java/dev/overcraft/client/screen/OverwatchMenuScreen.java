@@ -51,6 +51,15 @@ public class OverwatchMenuScreen extends OwScreen {
 
 	@Override
 	protected void init() {
+		refreshItems();
+		dev.overcraft.client.ClientPotg.askHighlightsOpen();
+	}
+
+	/**
+	 * The items: Highlights only once this world's dragon has been killed (ClientPotg.highlightsOpen; owner, 2026-11-18: "completely
+	 * hide the highlight button in menu. it shouldn't hint to the potg as it does now"). Again when the server's answer changes it.
+	 */
+	public void refreshItems() {
 		boolean canChange = ClientHero.hero() == null || ClientHero.sync().canChangeHero();
 		items = List.of(
 			new Item("resume", this::onClose, true, null),
@@ -62,6 +71,11 @@ public class OverwatchMenuScreen extends OwScreen {
 			new Item("highlights", dev.overcraft.client.ClientPotg::openHighlights, true, null),
 			new Item("minecraft_menu", () -> minecraft.gui.setScreen(new PauseScreen(true)), true, null),
 			new Item(minecraft.isLocalServer() ? "save_and_leave" : "leave", this::leave, true, null));
+		if (!dev.overcraft.client.ClientPotg.highlightsOpen()) {
+			items = items.stream().filter(i -> !i.key().equals("highlights")).toList();
+		}
+		selected = Math.clamp(selected, 0, items.size() - 1);
+		hovered = -1;
 	}
 
 	private void leave() {

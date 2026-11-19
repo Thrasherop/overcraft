@@ -72,8 +72,39 @@ public final class ClientPotg {
 
 	public static void init() {
 		ClientPlayNetworking.registerGlobalReceiver(PotgPayload.TYPE, (payload, context) -> on(payload));
-		ClientPlayNetworking.registerGlobalReceiver(HighlightsPayload.TYPE, (payload, context) -> HighlightsScreen.received(payload.data()));
+		ClientPlayNetworking.registerGlobalReceiver(HighlightsPayload.TYPE, (payload, context) -> {
+			if (payload.watch() == HighlightsPayload.STATUS) {
+				highlightsOpen("1".equals(payload.data()));
+			} else {
+				HighlightsScreen.received(payload.data());
+			}
+		});
+		// a new world starts closed until its server says otherwise
+		net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> highlightsOpen = false);
 		dev.overcraft.potg.ReplayTap.clientPaused = () -> Minecraft.getInstance().isPaused();
+	}
+
+	/** Whether this world's highlights are open (its dragon killed), as its server last said: the menu's item shows only then. */
+	private static boolean highlightsOpen;
+
+	public static boolean highlightsOpen() {
+		return highlightsOpen;
+	}
+
+	/** The server's answer, to the menu if it is open (its item comes or goes). */
+	public static void highlightsOpen(boolean open) {
+		boolean changed = open != highlightsOpen;
+		highlightsOpen = open;
+		if (changed && Minecraft.getInstance().gui.screen() instanceof dev.overcraft.client.screen.OverwatchMenuScreen menu) {
+			menu.refreshItems();
+		}
+	}
+
+	/** Asks the server whether the highlights are open (the menu, as it opens). */
+	public static void askHighlightsOpen() {
+		if (ClientPlayNetworking.canSend(HighlightsPayload.TYPE)) {
+			ClientPlayNetworking.send(new HighlightsPayload(HighlightsPayload.STATUS, ""));
+		}
 	}
 
 	/** Asks the server for the player's highlights: the menu opens when they come. */

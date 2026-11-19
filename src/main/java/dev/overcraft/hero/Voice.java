@@ -224,6 +224,16 @@ public final class Voice {
 		java.util.Map.entry("cassidy.deadeye_fire", new Stimulus(60, 0.1f, 0.1f, false)), // 020C (022F #473)
 		java.util.Map.entry("cassidy.deadeye_kill", new Stimulus(50, 2, 5, false)), // 01D6 (022F #452)
 		java.util.Map.entry("cassidy.ultimate", new Stimulus(95, 1, 1, false)), // 183B (022F #621, the own key F1AC)
+		// Ashe's (tools/soundmaps/ashe.txt; her stimuli's .078): they had none, so each line could come every time
+		java.util.Map.entry("ashe.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
+		java.util.Map.entry("ashe.dynamite", new Stimulus(60, 10, 10, false)), // 0A57 (14FD #107)
+		java.util.Map.entry("ashe.dynamite_kill", new Stimulus(50, 10, 15, false)), // 0A91
+		java.util.Map.entry("ashe.dynamite_shot", new Stimulus(60, 10, 10, false)), // 0A97
+		java.util.Map.entry("ashe.coach_gun", new Stimulus(60, 10, 10, false)), // 0A92 (1513 #153)
+		java.util.Map.entry("ashe.coach_gun_kill", new Stimulus(50, 10, 10, false)), // 0AAC
+		java.util.Map.entry("ashe.bob_end_kills", new Stimulus(50, 10, 10, false)), // 0A93 (14FF #161, A1E8)
+		java.util.Map.entry("ashe.bob_end_no_kills", new Stimulus(50, 10, 10, false)), // 0A93 (14FF #161, A1E9)
+		java.util.Map.entry("ashe.bob_destroyed", new Stimulus(60, 10, 10, false)), // 12A4 (14FF #192)
 		// Junkrat's (tools/soundmaps/junkrat.txt; his stimuli's .078)
 		java.util.Map.entry("junkrat.nano_boosted", new Stimulus(95, 2, 2, true)), // 05E2
 		java.util.Map.entry("junkrat.mine_throw", new Stimulus(60, 15, 20, false)), // 03DE (096A #586)
@@ -409,6 +419,10 @@ public final class Voice {
 			if (state.hero == Hero.WIDOWMAKER && blow != null && "venom_mine".equals(blow.icon())) {
 				// her mine's kill line (11E3: widowmaker.voice.mine_kill)
 				say(killer, "mine_kill", 1);
+			}
+			if (state.hero == Hero.ASHE) {
+				// her Dynamite's and Coach Gun's kill lines, B.O.B.'s count
+				dev.overcraft.ashe.Ashe.killed(killer, state, blow);
 			}
 			if (state.hero == Hero.DVA) {
 				// her own: Call Mech's "Squished!", the pilot's "No mech? No problem!"

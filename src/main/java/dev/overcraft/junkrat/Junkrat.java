@@ -367,8 +367,18 @@ public final class Junkrat implements HeroKit {
 		// TrackTargets on enemies
 		if (mineLaunches(centre.distanceTo(at))) {
 			Vec3 away = horizontalAway(at, centre);
-			// set, not added (ours, M: the data's STU_FF3471E9 is read as a launch; a fall's speed doesn't eat it)
-			Combat.launch(player, away.scale(Ow.speed(MINE_SELF_AWAY)).add(0, Ow.speed(MINE_SELF_UP), 0), player, MINE_BLOW);
+			// added to his speed, not set: #262's one entry is the add-a-vector kind xA634D7B9 with no cancel before it (Juno's and
+			// Illari's launches zero x57643451 first; this doesn't), so mines in a row stack, the double and triple mine jumps (owner,
+			// 2026-11-18: it was set, and a second mine in the air couldn't build on the first), and one under a fall gives less
+			Vec3 impulse = away.scale(Ow.speed(MINE_SELF_AWAY)).add(0, Ow.speed(MINE_SELF_UP), 0);
+			Vec3 had = Combat.motion(player);
+			// on the ground Minecraft keeps a small fall speed (about -1.6 m/s) where Overwatch has none: it isn't taken off the 15 up
+			// (a first try took the plain jump from 6.4 m to 5.2 m)
+			if (player.onGround() && had.y < 0) {
+				had = new Vec3(had.x, 0, had.z);
+			}
+			// (launch scales it all by his knockback taken: 1 for Junkrat)
+			Combat.launch(player, had.add(impulse), player, MINE_BLOW);
 			s.softLanding = true;
 			j.launchGrace = LAUNCH_GRACE;
 			JunkratSounds.all(player.level(), "mine.jump", player.position(), 40);

@@ -102,8 +102,15 @@ public final class ClientAna {
 		return 1 - scope * (1 - (float) scoped / Math.max(fov, 1));
 	}
 
-	/** The mouse's turn while fully scoped: 30%. */
+	/** The mouse's turn while fully scoped: Ana 30%, Widowmaker 30%, Ashe 60% (their Stats). */
 	public static double sensitivity() {
+		if (ClientHero.hero() == dev.overcraft.hero.Hero.ASHE) {
+			// fully scoped: her meter at 1 (D 14FC #565 "only at v169 >= 1")
+			return viewScope() > 0 && ClientHero.sync().meter() >= 1 ? dev.overcraft.ashe.AsheStats.ADS_SENSITIVITY : 1;
+		}
+		if (ClientHero.hero() == dev.overcraft.hero.Hero.WIDOWMAKER) {
+			return viewScope() >= 1 ? dev.overcraft.widowmaker.WidowmakerStats.SCOPED_SENSITIVITY : 1;
+		}
 		State s = state(Minecraft.getInstance().player);
 		return s != null && s.has(Ana.FLAG_SCOPED) && viewScope() >= 1 ? AnaStats.SCOPED_SENSITIVITY : 1;
 	}
