@@ -714,16 +714,17 @@ public final class JetpackCat implements HeroKit {
 	public static @Nullable Vec3 diveTarget(Player player) {
 		Vec3 eye = player.getEyePosition();
 		Vec3 end = eye.add(player.getViewVector(1.0f).scale(ULT_RANGE));
-		HitResult hit = player.level().clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+		HitResult hit = player.level().clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, player));
 		// a wall's hit point lies on its face, inside the block for the ray down, which then stopped at once: the dive went to a
 		// spot on the wall 1.6 m up (#139, played). Stepped back off the face by her half width, the floor in front of it.
 		boolean wall = hit instanceof net.minecraft.world.phys.BlockHitResult block && hit.getType() != HitResult.Type.MISS
 			&& block.getDirection().getAxis() != net.minecraft.core.Direction.Axis.Y;
 		Vec3 at = hit.getType() == HitResult.Type.MISS ? end
 			: wall ? hit.getLocation().subtract(player.getViewVector(1.0f).multiply(1, 0, 1).normalize().scale(0.35)) : hit.getLocation();
-		// down to the ground below it
+		// down to the ground below it, or the water on it: the marker and the landing on the surface (#171: aimed at a pool, both
+		// went to its bed, and the marker was hidden under the water)
 		HitResult ground = player.level().clip(new ClipContext(at.add(0, 0.5, 0), at.add(0, -ULT_RANGE, 0), ClipContext.Block.COLLIDER,
-			ClipContext.Fluid.NONE, player));
+			ClipContext.Fluid.ANY, player));
 		return ground.getType() == HitResult.Type.MISS ? null : ground.getLocation();
 	}
 
