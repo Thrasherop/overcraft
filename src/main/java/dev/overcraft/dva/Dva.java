@@ -137,11 +137,19 @@ public final class Dva implements HeroKit {
 
 	/** Her health and armor in the body she's in: 675 (200 + 150 + 325) in the mech, 175 as the pilot. */
 	public static int owHealth(@Nullable Player player) {
-		return pilotBody(player) ? PILOT_HEALTH : Hero.DVA.owHealth;
+		return pilotHealth(player) ? PILOT_HEALTH : Hero.DVA.owHealth;
 	}
 
 	public static int armor(@Nullable Player player) {
-		return pilotBody(player) ? 0 : MECH_ARMOR;
+		return pilotHealth(player) ? 0 : MECH_ARMOR;
+	}
+
+	/**
+	 * Her health is the pilot's: the pilot's body, or out of hero mode whatever her form (a respawn in Minecraft mode measured
+	 * her before her form was set, and gave a plain-sized player the mech's 675: found playing, 2026-11-18).
+	 */
+	private static boolean pilotHealth(@Nullable Player player) {
+		return pilotBody(player) || player != null && !HeroManager.heroMode(player);
 	}
 
 	/**

@@ -806,17 +806,11 @@ public final class JetpackCat implements HeroKit {
 				// carried below her on the tether, its top 1 m under her feet. Ours: her data reels the rope in to 0.5 m from
 				// a point 1 m behind her hips (graph 5B7B #209, hardpoint 0283: M), but held that close (at her feet) a
 				// zombie hit her the whole carry and killed her (found playing)
-				if (enemy instanceof Player) {
-					// a player held at the point (played on a real client, #109: this alone holds a player up there, y -58.9 under a bot
-					// on a ledge, both modes; the 4 s in runs/polish3/p109_carry.txt): their client runs the rope only for Lifeline
-					Vec3 hold = player.position().add(0, -enemy.getBbHeight() - 1.0, 0);
-					enemy.setDeltaMovement(hold.subtract(enemy.position()).scale(0.5).add(player.getKnownMovement()));
-					enemy.syncVelocity = true;
-				} else {
-					// a mob on her rope, as Lifeline tows (#142: it was held at a point under her, with no swing): the rope as long as
-					// keeps its top 1 m under her feet hanging straight, so it swings and trails as she turns and flies
-					tow(player, enemy, enemy.getBbHeight() + 1.0);
-				}
+				// on her rope, as Lifeline tows, the rope as long as keeps its top 1 m under her feet hanging straight, so it
+				// swings and trails as she turns and flies: a mob (#142), and a player too (owner, 2026-11-18: hung like Lifeline's tether;
+				// it was held at a point under her). A player's own client runs their rope (ClientTow, from
+				// carry_state), their keys held so they hang helpless
+				tow(player, enemy, enemy.getBbHeight() + 1.0);
 				if (player.tickCount % 4 == 0) {
 					Combat.heal(player, ULT_SELF_HEAL / 5);
 				}

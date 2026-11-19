@@ -43,6 +43,13 @@ public final class ClientTow {
 			return;
 		}
 		int catId = JetpackCatFx.towedBy(player);
+		// Lifeline's rope, or Catnapper's carry on hers (#142, owner: "hung like tether"): as long as keeps their top 1 m under
+		// her feet (JetpackCat's carry)
+		double rope = JetpackCatStats.LIFELINE_ROPE;
+		if (catId < 0) {
+			catId = JetpackCatFx.carriedBy(player);
+			rope = player.getBbHeight() + 1.0;
+		}
 		Entity cat = catId < 0 ? null : mc.level.getEntity(catId);
 		if (cat == null) {
 			SEEN.clear();
@@ -65,14 +72,13 @@ public final class ClientTow {
 		Vec3 v = player.getDeltaMovement().scale(20);
 		Vec3 toHer = herAt.subtract(player.position());
 		// past what the server lets a rope be (it's let go, or she's blinked: its word is on the way): no pull
-		if (!LifelineRope.taut(toHer, JetpackCatStats.LIFELINE_ROPE)
-			|| toHer.horizontalDistance() > JetpackCatStats.LIFELINE_ROPE * JetpackCatStats.LIFELINE_BREAK) {
+		if (!LifelineRope.taut(toHer, rope) || toHer.horizontalDistance() > rope * JetpackCatStats.LIFELINE_BREAK) {
 			return;
 		}
 		taut = true;
 		double dt = 0.05 / OwMovement.SUBSTEPS;
 		for (int i = 0; i < OwMovement.SUBSTEPS; i++) {
-			v = LifelineRope.pull(toHer.subtract(v.subtract(her).scale(i * dt)), her, v, JetpackCatStats.LIFELINE_ROPE, dt);
+			v = LifelineRope.pull(toHer.subtract(v.subtract(her).scale(i * dt)), her, v, rope, dt);
 		}
 		player.setDeltaMovement(v.scale(0.05));
 		player.resetFallDistance();
