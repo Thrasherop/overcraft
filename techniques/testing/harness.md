@@ -304,3 +304,26 @@ boosting bit every 0.04 s): held Shift ended Boosters at 0.57 s before the fix, 
 - **`giveult` is its own command** (`giveult @p 100`), not under `overcraft`; it fails silently in a harness `servercmd`.
 - **Clear mobs before a respawn test:** `kill @e[type=!player]` before `respawn`. A husk left from a death test kills again,
   and a platform over the world spawn suffocates the respawned player (HeroBody then drops hero mode: "no room").
+
+## Lessons, 2026-11-18 (the POTG review round)
+- **`cmd /c "gradlew.bat ..."` from PowerShell can start outside the repo** (cmd's start folder isn't PowerShell's), so a
+  compile check printed "'gradlew.bat' is not recognized" and passed a check that only looked for "error". Call it by its
+  full path with `-p E:\claude\mods\overcraft`, and treat "not recognized" or "FAILED" as a failure (relaunch.ps1, dserver.ps1).
+- **`oc_scratch/dserver.ps1`** starts the dedicated server (`run/`, world `potgserver`, RCON 25575 through `rcon.py`) and one
+  client connected to it. The server has no `-Dovercraft.dev`, so the dev `overcraft potg` commands aren't there: watch
+  highlights through K and the menu. `rcon.py "kick <name>"` works on a viewer during the card (still in the player list).
+- **In single player the integrated server pauses while its only player watches a highlight**, so nothing in the world moves
+  then (a dragon can't die mid-watch). Test "the world goes on during a watch" on the dedicated server.
+- **Killing a dragon from the console:** set `{Health:1f}`, kill its end crystals (they heal it), then
+  `damage <dragon> 50 minecraft:explosion`. Damage "by" a mob doesn't reach it (only players and explosions do).
+- **The harness screenshot doesn't show the OS pointer**, nor does the desktop screenshot; `state`'s `cursorShown` reads
+  SDL's cursor visibility instead.
+- **A client left with the player under water drowns them on the next launch:** move the player to dry ground before
+  closing.
+- **PowerShell's `R` is `Invoke-History`:** name an RCON helper something else (`Rc`).
+- **Build test pools as a solid block, then turn its top layer to water,** next to where the player already is (loaded).
+  Water on a one-block floating floor drains; a fill right after `forceload add` may not land.
+- **`state`'s `primaryAmmo` can lag a shot:** read the target's health instead. **At night, target the test mob with
+  `sort=nearest`** (or set noon and clear mobs first): `limit=1` alone can pick a natural spawn.
+- **`execute in <dim> run kill @e[distance=..N]` measures from the command's own position (0 0 0 there), not the player's:**
+  use `execute in <dim> at @p run kill ...` to clear around the player (a hoglin and a blaze left nearby hurt Cassidy).

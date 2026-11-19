@@ -445,6 +445,10 @@ public final class PotgReplay {
 			// /kill or a quit during the intro: no replay for a dead or gone viewer, the critique's 3)
 			if (active && generation == gen && player.isAlive() && !player.hasDisconnected()) {
 				replay(server, show, List.of(player));
+			} else if (active && generation == gen) {
+				// no replay for them: the showing ends now, not at its watchdog 37 s in (found playing: a viewer killed
+				// during the card waited it out)
+				end(server, "the viewer is dead or gone");
 			}
 		})));
 		return "Watching " + h;
@@ -668,6 +672,8 @@ public final class PotgReplay {
 	 */
 	public static void viewerLeft(MinecraftServer server, UUID id) {
 		OUTRO.remove(id);
+		// a VICTORY owed to one who left before they were back isn't shown at their next showing (the critique of 0.3.120)
+		VICTORY_OWED.remove(id);
 		if (!active) {
 			return;
 		}
