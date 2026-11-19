@@ -4,6 +4,13 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.122
+
+- **A kill by Minecraft's own weapons no longer scores for Play of the Game (#172):** an arrow shot in Minecraft mode, with G
+  pressed before it landed, scored +250 (reproduced). Now a kill made with the player's bare hit and no hero blow, or with a
+  Minecraft projectile or TNT, scores nothing. Played after the fix: the arrow kill, nothing; Cassidy's shot and Kiriko's kunai
+  (which hurts directly, with no hero blow recorded), +250 each.
+
 ## 2026-11-18: 0.3.121
 
 More of the POTG review (#172), on how highlights are stored:
