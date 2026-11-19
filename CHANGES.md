@@ -4,6 +4,14 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.126
+
+- **A viewer who leaves during the card and comes back** isn't pulled into the replay without a viewer's protections (#172),
+  and a showing whose last viewer left ends at once, card or not. Played on a dedicated server: kicked during a highlight's
+  card, the showing ended 2.3 s in ("the last viewer left"); back in the world, a new watch started at once. Before this last
+  part, the empty showing waited for its watchdog (37 s) and no other highlight could be watched meanwhile. (The rejoin into
+  the replay itself wasn't reproduced on the old build first.)
+
 ## 2026-11-18: 0.3.125
 
 The last client items of the POTG review (#172), found by reading the code:

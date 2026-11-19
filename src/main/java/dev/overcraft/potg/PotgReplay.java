@@ -479,7 +479,9 @@ public final class PotgReplay {
 		List<ServerPlayer> online = new ArrayList<>();
 		for (ServerPlayer p : viewers) {
 			ServerPlayer now = server.getPlayerList().getPlayer(p.getUUID());
-			if (now != null) {
+			// not one who left during the card and came back (viewerLeft took them out): their new client never had the card,
+			// and they'd watch without a viewer's protections, maybe never put back (#172); they wait in the held world
+			if (now != null && VIEWERS.contains(p.getUUID())) {
 				online.add(now);
 			}
 		}
@@ -670,7 +672,9 @@ public final class PotgReplay {
 			return;
 		}
 		VIEWERS.remove(id);
-		if (WATCHING.remove(id) && WATCHING.isEmpty()) {
+		if (WATCHING.remove(id) && WATCHING.isEmpty() || VIEWERS.isEmpty()) {
+			// (also during the card, before anyone watches: a solo viewer who relogged left an empty showing to the watchdog,
+			// 37 s in which they couldn't watch another: #172)
 			end(server, "the last viewer left");
 		}
 	}
