@@ -4,6 +4,17 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.129
+
+- **D.Va picked from Minecraft mode got the pilot's health in the mech** (found in a D.Va QA pass): the pick measured her
+  body while hero mode was still off (out of hero mode she counts as the pilot), then turned hero mode on, so she stood in
+  the mech's body with 175 health and no armor. The pick now turns hero mode on first. Reproduced with G, then `/changehero
+  dva` (and the select screen takes the same path): max health 14 (175). After: 54 (675) from Minecraft mode and from hero
+  mode.
+- **The rest of the D.Va pass:** Fusion Cannons hit a husk 6 m off (20 -> 7.96; aimed a little down: the mech's eye is higher),
+  Micro Missiles 20 -> 10 with their cooldown running, Boosters carried her 13.2 m in a second, Defense Matrix's meter drained
+  while held.
+
 ## 2026-11-18: 0.3.128
 
 After an independent critique of 0.3.120-0.3.127 (Play of the Game):

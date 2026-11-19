@@ -513,13 +513,17 @@ public final class HeroManager {
 		} else {
 			player.setAttached(HERO, hero.id);
 		}
-		applyKit(player, state, true);
 		if (hero != null) {
-			// picking a hero puts you in hero mode
+			// picking a hero puts you in hero mode, before the kit measures the body: D.Va picked from Minecraft mode got the
+			// mech's body with the pilot's 175 health and no armor (found playing, 2026-11-18; Dva.pilotBody is true out of
+			// hero mode)
 			if (!wasInPlay) {
 				startPlainFall(player);
 			}
 			player.setAttached(HERO_MODE, true);
+		}
+		applyKit(player, state, true);
+		if (hero != null) {
 			Voice.say(player, "select", 1);
 		}
 	}
