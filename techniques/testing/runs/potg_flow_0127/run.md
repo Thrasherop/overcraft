@@ -33,3 +33,6 @@ OutOfMemory or exception in the log, back at 117 fps as Cassidy. The process's w
 - **Lava:** stepped into a 2x2 lava pool in hero mode: 20 -> 16 -> 12 -> 8 over about a second, Minecraft's 4 every half
   second; hero mode stayed on. Teleported out to a spot past the stone block's edge, she fell about 11 m and died ("doomed to
   fall"): the fall, from my teleport, not the lava (her safe height is the hero's own, by design). Respawned: 20, hero mode.
+- **The Nether:** Cassidy on a netherrack platform with a blaze 10 m off: its fireballs took her 250 -> 138 (the HUD,
+  `2026-11-18_20.07.42.png`) and then killed her within about 15 s; hero mode on throughout. Respawned in the Overworld:
+  20, hero mode. (Shooting the blaze back wasn't tried.)
