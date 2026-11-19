@@ -71,6 +71,7 @@ public final class Highlights {
 	public static void clear() {
 		KEPT_BY.clear();
 		LOADED.clear();
+		UNREADABLE.clear();
 	}
 
 	/** A player's highlights, best first (loaded from the world on first use). */
@@ -89,7 +90,15 @@ public final class Highlights {
 						}
 					}
 				} catch (Exception e) {
-					Overcraft.LOG.warn("[POTG] couldn't read {}: {}", file, e.toString());
+					// kept aside, and nothing of this player's is tidied away this session (#172: the empty list made the next
+					// tidy delete every kept zip); a new highlight still saves a fresh list
+					UNREADABLE.add(id);
+					try {
+						Files.copy(file, file.resolveSibling("highlights.json.bad"), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+					} catch (IOException ignored) {
+						// the warning below says it all
+					}
+					Overcraft.LOG.warn("[POTG] couldn't read {} (kept as highlights.json.bad; no segment deleted): {}", file, e.toString());
 				}
 			}
 			list.sort(Comparator.comparingDouble((Highlight h) -> h.score).reversed());
@@ -206,10 +215,14 @@ public final class Highlights {
 		}
 	}
 
+	/** Players whose highlights.json couldn't be read this session: their segments are never deleted (the list can't say which are used). */
+	private static final Set<UUID> UNREADABLE = new HashSet<>();
+
 	/** Deletes every saved segment of this player's no highlight uses (never the one being recorded). */
 	static void tidy(MinecraftServer server, UUID id) {
 		Path dir = PotgRecorder.dir(server, id);
-		if (!Files.isDirectory(dir)) {
+		of(server, id);
+		if (!Files.isDirectory(dir) || UNREADABLE.contains(id)) {
 			return;
 		}
 		Set<String> used = new HashSet<>();

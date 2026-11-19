@@ -131,7 +131,23 @@ public final class PotgRecorder {
 				}
 			}
 		}
-		ReplayPlayerRecorders.tickAll();
+		try {
+			ReplayPlayerRecorders.tickAll();
+		} catch (RuntimeException e) {
+			// a recorder failing loses its segment, never the server (#172: one recording into a shut writer crashed it)
+			Overcraft.LOG.warn("[POTG] a recorder failed; its segment is dropped", e);
+			for (Rec r : RECS.values()) {
+				if (r.recorder != null) {
+					try {
+						r.recorder.stop(false);
+					} catch (RuntimeException ignored) {
+						// already broken
+					}
+					r.recorder = null;
+					r.segment = null;
+				}
+			}
+		}
 		CLOSING.removeIf(CompletableFuture::isDone);
 	}
 

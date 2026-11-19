@@ -433,7 +433,12 @@ public final class PotgReplay {
 		// every highlight opens with the hero's intro, as the POTG does (owner, 2026-11-11)
 		ServerPlayNetworking.send(player, new PotgPayload(PotgPayload.SOLO, h.player, show.hero(), h.category, lead / 1000f,
 			showData(server, show, List.of(player), false).toString()));
-		var zipped = PotgRecorder.holdOne(server, owner).thenCompose(v -> PotgRecorder.holdOne(server, player.getUUID()));
+		// both recorders stopped here, on the server thread (#172: the viewer's was stopped from the zip's writer thread once
+		// the owner's zip was done; for their own highlight that was the new segment the server thread had just started and was
+		// ticking, and a dedicated server crashed recording into its shut writer)
+		var ownerZip = PotgRecorder.holdOne(server, owner);
+		var zipped = owner.equals(player.getUUID()) ? ownerZip
+			: java.util.concurrent.CompletableFuture.allOf(ownerZip, PotgRecorder.holdOne(server, player.getUUID()));
 		int gen = generation;
 		later(server, lead, () -> zipped.whenComplete((v, err) -> server.execute(() -> {
 			// still this showing (a slow zip after the dragon's POTG replaced it: #170), and the viewer alive and here (the void,
@@ -632,6 +637,26 @@ public final class PotgReplay {
 	/** A viewer's client: its end screen (or a solo's black) is over and its input is back. */
 	public static void viewerDoneWatching(ServerPlayer player) {
 		OUTRO.remove(player.getUUID());
+		if (VICTORY_OWED.remove(player.getUUID())) {
+			ServerPlayNetworking.send(player, new dev.overcraft.net.VictoryPayload());
+		}
+		// the dragon fight's music where it stands now: its news was held back while they watched (#172)
+		EndPhase.joined(player);
+	}
+
+	/** Solo viewers put back at a dragon's death, who get its VICTORY once they're back (out of the player list, they missed it). */
+	private static final java.util.Set<UUID> VICTORY_OWED = new java.util.HashSet<>();
+
+	/**
+	 * A dragon died (Overcraft's AFTER_DEATH, before VICTORY is sent): a highlight someone watches alone ends now, so they see
+	 * the kill's VICTORY with everyone (#172: it was dropped, the solo ending only at the POTG's cue 7 s later).
+	 */
+	public static void soloEndsAtDragonDeath(MinecraftServer server) {
+		if (!active || holdsWorld) {
+			return;
+		}
+		VICTORY_OWED.addAll(VIEWERS);
+		end(server, "the dragon died");
 	}
 
 	/**
@@ -650,12 +675,22 @@ public final class PotgReplay {
 		}
 	}
 
+	/**
+	 * SERVER_STOPPING, first: a showing ends, its viewers put back in the player list so the server saves them, and the world
+	 * back as it was (#172: a viewer is out of the player list while it watches, and a /stop then never saved them).
+	 */
+	public static void serverStopping(MinecraftServer server) {
+		end(server, "the server is stopping");
+		thaw(server, "the server is stopping");
+	}
+
 	/** Whether the POTG's end screen still holds the world (no highlight may start then: critique 1). */
 	public static boolean holding() {
 		return holdUntil > 0;
 	}
 
 	public static void clear() {
+		VICTORY_OWED.clear();
 		active = false;
 		holdUntil = 0;
 		OUTRO.clear();

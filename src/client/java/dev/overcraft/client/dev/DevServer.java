@@ -158,6 +158,8 @@ public final class DevServer {
 					net.minecraft.world.phys.Vec3 aim = dev.overcraft.client.effect.JetpackCatFx.aimSeen;
 					out.addProperty("aimSeen", aim == null ? "" : aim.toString());
 					out.addProperty("potgMusic", dev.overcraft.client.PotgMusic.playing());
+					out.addProperty("cursorShown", org.lwjgl.sdl.SDLMouse.SDL_CursorVisible());
+					out.addProperty("endMusic", dev.overcraft.client.EndMusic.playing());
 					out.addProperty("perkLevel", s.perkLevel());
 					out.addProperty("perkProgress", s.perkProgress());
 					out.addProperty("perkReady", s.perkReady());

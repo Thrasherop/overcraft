@@ -751,6 +751,21 @@ public final class PotgCard {
 			return false;
 		}
 
+		/**
+		 * The pointer hidden over the whole showing (#172: a screen frees the mouse, so it sat over the replay). Not
+		 * MouseHandler.grabMouse: that closes any open screen, this one with it.
+		 */
+		@Override
+		protected void init() {
+			org.lwjgl.sdl.SDLMouse.SDL_HideCursor();
+		}
+
+		@Override
+		public void removed() {
+			// (a grab after this hides it again its own way: relative mouse mode)
+			org.lwjgl.sdl.SDLMouse.SDL_ShowCursor();
+		}
+
 		@Override
 		public boolean keyPressed(KeyEvent event) {
 			return true;
