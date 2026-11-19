@@ -29,3 +29,7 @@ OutOfMemory or exception in the log, back at 117 fps as Cassidy. The process's w
 - Getting there took three broken set-ups (a floating platform drained, a fill in a just-forceloaded area didn't land, a
   player parked on a pad that hadn't filled fell and drowned) and two false alarms: `state`'s `primaryAmmo` read 6 just after
   shots that had fired, and at night `@e[type=husk,limit=1]` picked a natural husk elsewhere. Lessons in harness.md.
+- **Swimming:** Cassidy in the pool, hero mode on; two shots at a husk 7 m off: 20 -> 12.1 (one hit).
+- **Lava:** stepped into a 2x2 lava pool in hero mode: 20 -> 16 -> 12 -> 8 over about a second, Minecraft's 4 every half
+  second; hero mode stayed on. Teleported out to a spot past the stone block's edge, she fell about 11 m and died ("doomed to
+  fall"): the fall, from my teleport, not the lava (her safe height is the hero's own, by design). Respawned: 20, hero mode.
