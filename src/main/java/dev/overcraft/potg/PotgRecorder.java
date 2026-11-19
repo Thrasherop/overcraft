@@ -135,16 +135,22 @@ public final class PotgRecorder {
 			ReplayPlayerRecorders.tickAll();
 		} catch (RuntimeException e) {
 			// a recorder failing loses its segment, never the server (#172: one recording into a shut writer crashed it)
-			Overcraft.LOG.warn("[POTG] a recorder failed; its segment is dropped", e);
+			Overcraft.LOG.warn("[POTG] a recorder failed; every segment is closed", e);
 			for (Rec r : RECS.values()) {
 				if (r.recorder != null) {
+					// closed as at a roll: a healthy one with a highlight is still zipped; the broken one's highlights are
+					// dropped (the critique of 0.3.120: they pointed at a zip that never came, holding the tidy back and
+					// letting the dragon's POTG choose a play with nothing to show)
+					String segment = r.segment;
 					try {
-						r.recorder.stop(false);
-					} catch (RuntimeException ignored) {
-						// already broken
+						finish(server, r);
+					} catch (RuntimeException broken) {
+						r.recorder = null;
+						r.segment = null;
+						if (segment != null) {
+							Highlights.dropSegment(server, r.id, segment + ".zip");
+						}
 					}
-					r.recorder = null;
-					r.segment = null;
 				}
 			}
 		}
@@ -203,9 +209,13 @@ public final class PotgRecorder {
 			return;
 		}
 		boolean keep = segment != null && Highlights.uses(server, r.id, segment + ".zip");
+		if (keep) {
+			ZIPPING.add(r.id + "/" + segment + ".zip");
+		}
 		CompletableFuture<Long> future = recorder.stop(keep);
 		CLOSING.add(future);
 		future.whenComplete((size, err) -> server.execute(() -> {
+			ZIPPING.remove(r.id + "/" + segment + ".zip");
 			if (keep && !Files.exists(dir(server, r.id).resolve(segment + ".zip"))) {
 				// the zip failed: its highlights are gone, not listed for the session (#172), and no longer hold back the tidy
 				Overcraft.LOG.warn("[POTG] {}'s segment {} didn't save ({}): its highlights are dropped", r.id, segment,
@@ -214,6 +224,14 @@ public final class PotgRecorder {
 			}
 			Highlights.tidy(server, r.id);
 		}));
+	}
+
+	/** Segments being zipped now ("uuid/seg-N.zip"; server thread): a highlight's zip that is still coming. */
+	private static final java.util.Set<String> ZIPPING = new java.util.HashSet<>();
+
+	/** Whether this segment of this player's is being zipped now (Highlights.tidy waits for it). */
+	static boolean zipping(UUID id, String segment) {
+		return ZIPPING.contains(id + "/" + segment);
 	}
 
 	/** A player left (the vendored listener's onDisconnect): their segment closes, kept only if a highlight is in it. */

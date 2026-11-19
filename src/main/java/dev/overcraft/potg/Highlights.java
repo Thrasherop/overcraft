@@ -236,15 +236,26 @@ public final class Highlights {
 			return;
 		}
 		Set<String> used = new HashSet<>();
-		for (Highlight h : of(server, id)) {
-			used.add(h.segment);
-			if (!Files.exists(dir.resolve(h.segment))) {
-				// a highlight whose segment isn't zipped yet (still recording, or zipping): the zips it replaced stay until it
-				// is (#172: deleted first, a crash in between lost both); the finished zip's tidy deletes them
-				return;
-			}
-		}
 		String current = PotgRecorder.current(id);
+		Set<String> dead = new HashSet<>();
+		for (Highlight h : of(server, id)) {
+			if (!Files.exists(dir.resolve(h.segment))) {
+				if (h.segment.equals(current) || PotgRecorder.zipping(id, h.segment)) {
+					// a highlight whose segment isn't zipped yet (still recording, or zipping): the zips it replaced stay until
+					// it is (#172: deleted first, a crash in between lost both); the finished zip's tidy deletes them
+					return;
+				}
+				// neither recording nor zipping, and no zip: it will never come (a recorder that died some other way); the
+				// highlight goes, rather than holding the tidy back all session (the critique of 0.3.120)
+				dead.add(h.segment);
+				continue;
+			}
+			used.add(h.segment);
+		}
+		for (String segment : dead) {
+			Overcraft.LOG.warn("[POTG] {}'s segment {} has no zip and isn't coming: its highlights are dropped", id, segment);
+			dropSegment(server, id, segment);
+		}
 		try (Stream<Path> files = Files.list(dir)) {
 			for (Path f : files.toList()) {
 				String n = f.getFileName().toString();

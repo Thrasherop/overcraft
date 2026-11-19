@@ -4,6 +4,21 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.128
+
+After an independent critique of 0.3.120-0.3.127 (Play of the Game):
+- **A recorder that fails no longer strands highlights:** before, every recorder was stopped unsaved and their highlights
+  still pointed at zips that would never come, holding the tidy back all session and letting the dragon's POTG pick a play
+  with nothing to show. Now each is closed as at a roll (a healthy one with a highlight is zipped), and a broken one's
+  highlights are dropped. (Found by reading; not reproduced, it needs a recorder to fail.)
+- **The tidy waits only for a segment still recording or zipping:** a highlight whose zip will never come is dropped instead.
+  Played: a 746 play replaced a 500; seg-8.zip stayed while seg-11 recorded, and went once watching zipped seg-11.
+- **A VICTORY owed to a solo viewer who left** isn't shown at their next showing.
+- **A viewer killed during a highlight's card** ends the showing at once, not at its watchdog. Played: killed 1.5 s in,
+  the showing ended at 5.1 s (it waited 37 s before); a normal watch after it played through.
+- Checked and fine: the Minecraft-weapon kill rule against every hero attack with the player as the direct source (all go
+  through Combat.damage, so they carry a hero blow), and a healthy recording never misses a chunk-cache entry.
+
 ## 2026-11-18: 0.3.127
 
 - **Catnapper's aim over water (#171, perhaps the owner's case):** aimed at water, the marker and the landing went to the
