@@ -243,6 +243,11 @@ public class Overcraft implements ModInitializer {
 				return;
 			}
 			boolean resurrected = Souls.resurrecting(newPlayer);
+			// the mode they died in, on the new player before the kit measures their body (D.Va respawned in Minecraft mode
+			// got the mech's 675 on a plain-sized player: her mode wasn't on the new player yet, found playing 2026-11-18)
+			if (oldPlayer.hasAttached(HeroManager.HERO_MODE)) {
+				newPlayer.setAttached(HeroManager.HERO_MODE, HeroManager.heroMode(oldPlayer));
+			}
 			HeroManager.onRespawn(newPlayer, resurrected);
 			// a Mercy's Resurrect puts them back where they fell, with its health (after the kit, which sets the health)
 			Souls.onRespawn(oldPlayer, newPlayer);

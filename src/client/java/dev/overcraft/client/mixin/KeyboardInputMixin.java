@@ -22,7 +22,8 @@ public abstract class KeyboardInputMixin extends ClientInput {
 	private void overcraft$heroKeys(CallbackInfo ci) {
 		var player = net.minecraft.client.Minecraft.getInstance().player;
 		if (player != null && (Boolean.TRUE.equals(player.getAttached(dev.overcraft.hero.HeroManager.ASLEEP))
-			|| dev.overcraft.dva.Dva.held(player))) {
+			|| dev.overcraft.dva.Dva.held(player) || dev.overcraft.client.effect.JetpackCatFx.carriedBy(player) >= 0)) {
+			// (carried by Catnapper: hanging on her rope, helpless: #142)
 			// (D.Va calling her mech, and its wreck: no moving, no jumping either: D 026A #105, 0276 #79)
 			// asleep (Ana's Sleep Dart: dev.overcraft.hero.Sleep): no moving, no jumping, hero or not
 			this.keyPresses = Input.EMPTY;

@@ -4,6 +4,21 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.130
+
+- **Catnapper's aim shows its whole reach (#171, the owner's clip of the real game):** a big flat disc on the ground the
+  size of the landing's knockdown (5.5 m out, 11 m across), its rim, and rings rippling out across it. Ours drew only small
+  rings 3-4 m across above the ground and two small glows, so the owner never saw an area marker. Played: the disc and rings
+  around the aim point on the platform.
+- **A player carried by Catnapper hangs on her rope like Lifeline's tether (#142, owner's answer):** they were held at a
+  point under her. Their own client now runs the rope (as for Lifeline), at the carry's length (their height and 1 m), and
+  their movement keys are off while carried. Played with two clients on a dedicated server: on the ground the carried player
+  stayed 2.79 m from her with forward held; when she flew up they were lifted with her, 2.6-2.9 m away, up to y 130, and
+  dropped when the carry ended.
+- **D.Va respawned in Minecraft mode had the mech's 675 health at plain size:** her hero mode wasn't on the new player yet
+  when the respawn measured her body. It is now copied first. Reproduced: G, die, respawn: max health 54. After: 14 (the
+  pilot's 175), and G then gives a full mech (54).
+
 ## 2026-11-18: 0.3.129
 
 - **D.Va picked from Minecraft mode got the pilot's health in the mech** (found in a D.Va QA pass): the pick measured her

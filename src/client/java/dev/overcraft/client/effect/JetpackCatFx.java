@@ -202,6 +202,16 @@ public final class JetpackCatFx {
 	}
 
 	/** The Jetpack Cat whose Lifeline tows the local player, or -1 (Catnapper's carry isn't a tow: the server holds that). */
+	/** The Jetpack Cat whose Catnapper carries this player on her rope (carry_state), or -1. */
+	public static int carriedBy(net.minecraft.client.player.LocalPlayer player) {
+		for (Map.Entry<Integer, int[]> e : TETHERS.entrySet()) {
+			if (e.getValue()[0] == player.getId() && e.getValue()[2] == 1) {
+				return e.getKey();
+			}
+		}
+		return -1;
+	}
+
 	public static int towedBy(net.minecraft.client.player.LocalPlayer player) {
 		for (Map.Entry<Integer, int[]> e : TETHERS.entrySet()) {
 			if (e.getValue()[0] == player.getId() && e.getValue()[2] == 0) {
@@ -1302,6 +1312,26 @@ public final class JetpackCatFx {
 			Particle d = Fx.soft("cat_soft", Palette.NATURAL);
 			return d == null ? null : d.shape(Shape.FLAT).normal(UP).tint(0x000002).life(0.3f).size(1, 1).alpha(0.5f).fade(0.05f, 0.5f);
 		});
+		// the landing's whole reach on the ground (#171, the owner's clip of the real game: a big blue disc the size of the
+		// knockdown, rings rippling out across it; ours drew only the 3-4 m rings above and two small glows, and the owner had
+		// never seen it): the disc and its rim at ULT_RADIUS (5.5 m), and rings spreading from the middle to the rim
+		float reach = (float) (dev.overcraft.jetpackcat.JetpackCatStats.ULT_RADIUS * 2);
+		Fx.attach("catnapper_aim_area", ground.add(0, 0.01, 0), () -> {
+			Particle d = Fx.particle("cat_soft", blue(Palette.CAT_STAMP_BLUE));
+			return d == null ? null : d.shape(Shape.FLAT).normal(UP).life(0.3f).size(reach, reach).alpha(0.1f).fade(0.05f, 0.5f);
+		});
+		Fx.attach("catnapper_aim_rim", ground.add(0, 0.03, 0), () -> {
+			Particle r = Fx.particle("cat_ring", blue(Palette.CAT_HALO));
+			return r == null ? null : r.shape(Shape.FLAT).normal(UP).life(0.3f).size(reach, reach).alpha(0.55f).fade(0.05f, 0.5f);
+		});
+		if (Fx.RANDOM.nextFloat() < 3 / 20f) {
+			Particle ripple = Fx.particle("cat_ring", blue(Palette.CAT_HALO));
+			if (ripple != null) {
+				Fx.add(ripple.at(ground.add(0, 0.02, 0)).shape(Shape.FLAT).normal(UP).life(1.0f).size(reach * 0.2f, reach).easeOut()
+					.alpha(0.6f).fade(0.05f, 0.5f));
+				AIM_RINGS.add(ripple);
+			}
+		}
 		// the lines (71AF) from her paws (000A / 000B) as posed; ours, beside her below the eyes, without the pose
 		net.minecraft.world.entity.player.Player cat = mc.player;
 		Posed posed = posed(cat);
