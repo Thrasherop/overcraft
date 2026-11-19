@@ -332,7 +332,7 @@ public class Overcraft implements ModInitializer {
 		});
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
 			dev.overcraft.potg.PotgReplay.serverStopping(server);
-			dev.overcraft.potg.MobStats.flush(server);
+			dev.overcraft.potg.MobStats.flush(server, true);
 			dev.overcraft.potg.PlayerStats.flush(server);
 			dev.overcraft.potg.PotgRecorder.stopAll(server);
 		});

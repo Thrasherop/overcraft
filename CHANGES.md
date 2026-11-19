@@ -4,6 +4,16 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.124
+
+The last of the POTG review's bookkeeping (#172), found by reading the code; not reproduced in play:
+- **The end screen's mob list** is saved at most every 10 s during a fight (it wrote on the server thread every second), and
+  always at a stop and at the dragon; it's written whole, then moved into place. A 9th mob that hurts players is followed
+  (up to 64), not reset each second by the top-8 trim. Played: a husk fight, saves 10 s apart, its 225 damage kept.
+- **A death just after a kept window** takes only the latest window in reach again, so two highlights of one play no longer
+  end up the same.
+- **Two plays of the same score:** the earlier one is the POTG (it went by the order of the players' folders).
+
 ## 2026-11-18: 0.3.123
 
 - **A corrupt highlight ends at once instead of hanging (#172):** a zip with a broken chunk cache made the replay re-read the

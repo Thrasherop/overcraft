@@ -188,15 +188,18 @@ public final class Highlights {
 			return;
 		}
 		MinecraftServer server = player.level().getServer();
-		boolean changed = false;
+		// only the latest window in reach is taken again (#172: each one in reach was, and two of one play ended up the same)
+		Highlight latest = null;
 		for (Highlight h : of(server, player.getUUID())) {
-			if (h.segment.equals(clip.segment()) && clip.tick() - h.endTick <= reachTicks && clip.tick() > h.endTick) {
-				Overcraft.LOG.info("[POTG] {}: {} taken again to show the death ({} ticks after it)", h.player, h.category, clip.tick() - h.endTick);
-				h.endTick = clip.tick();
-				changed = true;
+			if (h.segment.equals(clip.segment()) && clip.tick() - h.endTick <= reachTicks && clip.tick() > h.endTick
+				&& (latest == null || h.endTick > latest.endTick)) {
+				latest = h;
 			}
 		}
-		if (changed) {
+		if (latest != null) {
+			Overcraft.LOG.info("[POTG] {}: {} taken again to show the death ({} ticks after it)", latest.player, latest.category,
+				clip.tick() - latest.endTick);
+			latest.endTick = clip.tick();
 			save(server, player.getUUID());
 		}
 	}
@@ -297,7 +300,8 @@ public final class Highlights {
 		UUID whose = null;
 		for (UUID id : owners(server)) {
 			for (Highlight h : of(server, id)) {
-				if (h.epochMs > sinceMs && (best == null || h.score > best.score)) {
+				// a tie goes to the earlier play (#172: it went by the folders' order)
+				if (h.epochMs > sinceMs && (best == null || h.score > best.score || h.score == best.score && h.epochMs < best.epochMs)) {
 					best = h;
 					whose = id;
 				}
