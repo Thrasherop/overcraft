@@ -215,6 +215,13 @@ public final class Highlights {
 		}
 	}
 
+	/** A segment that didn't save (PotgRecorder.finish): its highlights are removed and the list saved. */
+	static void dropSegment(MinecraftServer server, UUID id, String segment) {
+		if (of(server, id).removeIf(h -> h.segment.equals(segment))) {
+			save(server, id);
+		}
+	}
+
 	/** Players whose highlights.json couldn't be read this session: their segments are never deleted (the list can't say which are used). */
 	private static final Set<UUID> UNREADABLE = new HashSet<>();
 
@@ -228,6 +235,11 @@ public final class Highlights {
 		Set<String> used = new HashSet<>();
 		for (Highlight h : of(server, id)) {
 			used.add(h.segment);
+			if (!Files.exists(dir.resolve(h.segment))) {
+				// a highlight whose segment isn't zipped yet (still recording, or zipping): the zips it replaced stay until it
+				// is (#172: deleted first, a crash in between lost both); the finished zip's tidy deletes them
+				return;
+			}
 		}
 		String current = PotgRecorder.current(id);
 		try (Stream<Path> files = Files.list(dir)) {

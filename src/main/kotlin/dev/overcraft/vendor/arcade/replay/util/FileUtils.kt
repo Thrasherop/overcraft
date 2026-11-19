@@ -86,6 +86,18 @@ public object FileUtils {
     }
 
     public fun zip(source: Path, file: Path) {
+        // Overcraft (#172): written whole beside it, then moved into place, so a crash mid-zip never leaves a partial
+        // zip under the real name (a highlight trusts a segment whose zip exists)
+        val part = file.resolveSibling(file.name + ".part")
+        zipTo(source, part)
+        try {
+            Files.move(part, file, java.nio.file.StandardCopyOption.REPLACE_EXISTING, java.nio.file.StandardCopyOption.ATOMIC_MOVE)
+        } catch (e: java.nio.file.AtomicMoveNotSupportedException) {
+            Files.move(part, file, java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+        }
+    }
+
+    private fun zipTo(source: Path, file: Path) {
         ZipOutputStream(file.outputStream()).use { out ->
             out.setLevel(Deflater.BEST_SPEED)
             for (path in source.walk()) {

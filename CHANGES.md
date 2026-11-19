@@ -4,6 +4,16 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-18: 0.3.121
+
+More of the POTG review (#172), on how highlights are stored:
+- **A segment's zip is written beside it and moved into place when whole,** so a crash mid-zip can't leave a partial zip that
+  a highlight trusts.
+- **The zips a new highlight replaces stay until its own segment is zipped** (before, they were deleted at once, and a crash
+  before the new zip lost both). Played: a 1500 play replaced a 450; seg-3.zip stayed while seg-9 recorded, and went once
+  watching zipped seg-9 (13.7 MB, no `.part` left), which then played.
+- **A segment that fails to zip drops its highlights** (and says so in the log) instead of listing a dead one all session.
+
 ## 2026-11-18: 0.3.120
 
 Play of the Game, after the owner's heavy review round (#172; four independent critics). Each was reproduced in the game first

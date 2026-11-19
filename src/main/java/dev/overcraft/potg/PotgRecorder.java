@@ -205,7 +205,15 @@ public final class PotgRecorder {
 		boolean keep = segment != null && Highlights.uses(server, r.id, segment + ".zip");
 		CompletableFuture<Long> future = recorder.stop(keep);
 		CLOSING.add(future);
-		future.whenComplete((size, err) -> server.execute(() -> Highlights.tidy(server, r.id)));
+		future.whenComplete((size, err) -> server.execute(() -> {
+			if (keep && !Files.exists(dir(server, r.id).resolve(segment + ".zip"))) {
+				// the zip failed: its highlights are gone, not listed for the session (#172), and no longer hold back the tidy
+				Overcraft.LOG.warn("[POTG] {}'s segment {} didn't save ({}): its highlights are dropped", r.id, segment,
+					err == null ? "no zip" : err.toString());
+				Highlights.dropSegment(server, r.id, segment + ".zip");
+			}
+			Highlights.tidy(server, r.id);
+		}));
 	}
 
 	/** A player left (the vendored listener's onDisconnect): their segment closes, kept only if a highlight is in it. */
