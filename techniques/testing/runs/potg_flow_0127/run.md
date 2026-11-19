@@ -21,3 +21,11 @@ Not covered here (played on their own for #172): a watched highlight, a second p
 (Minecraft's `reloadResourcePacks`, what F3+T calls; the desktop tool can't press F3+T as one chord): each done in 13 s, no
 OutOfMemory or exception in the log, back at 117 fps as Cassidy. The process's working set: 5.7 GB at launch, 4.3, 5.0 and
 5.1 GB after the three (no steady climb). #166's fix holds on 0.3.127.
+
+## Hero mode on a ladder and in a boat (same build, same evening)
+- **Ladder:** Cassidy in hero mode, holding forward against a 6-high ladder: at the top (y 121 to 127) within 3 s.
+- **Boat:** on a pool (a solid stone block, its top layer water), `ride` into an oak boat, hero mode on; two Cassidy shots
+  at a husk 7 m off at head height took it from 20 to 0.32 ("Kiriko started riding Oak Boat" in chat; `2026-11-18_19.59.36.png`).
+- Getting there took three broken set-ups (a floating platform drained, a fill in a just-forceloaded area didn't land, a
+  player parked on a pad that hadn't filled fell and drowned) and two false alarms: `state`'s `primaryAmmo` read 6 just after
+  shots that had fired, and at night `@e[type=husk,limit=1]` picked a natural husk elsewhere. Lessons in harness.md.

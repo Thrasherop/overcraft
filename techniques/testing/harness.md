@@ -321,3 +321,7 @@ boosting bit every 0.04 s): held Shift ended Boosters at 0.57 s before the fix, 
 - **A client left with the player under water drowns them on the next launch:** move the player to dry ground before
   closing.
 - **PowerShell's `R` is `Invoke-History`:** name an RCON helper something else (`Rc`).
+- **Build test pools as a solid block, then turn its top layer to water,** next to where the player already is (loaded).
+  Water on a one-block floating floor drains; a fill right after `forceload add` may not land.
+- **`state`'s `primaryAmmo` can lag a shot:** read the target's health instead. **At night, target the test mob with
+  `sort=nearest`** (or set noon and clear mobs first): `limit=1` alone can pick a natural spawn.
