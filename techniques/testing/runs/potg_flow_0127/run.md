@@ -15,3 +15,9 @@ keys. Up: [testing](../../README.md).
    7 s later; back in the world, 20 health, hero mode.
 
 Not covered here (played on their own for #172): a watched highlight, a second player, a dedicated server.
+
+## Resource reloads at a player's 2 GB heap (same build, same evening)
+`OC_XMX=2G` (`-Xmx2G` on the command line), the full local pack, three reloads in a row through the harness's `reload`
+(Minecraft's `reloadResourcePacks`, what F3+T calls; the desktop tool can't press F3+T as one chord): each done in 13 s, no
+OutOfMemory or exception in the log, back at 117 fps as Cassidy. The process's working set: 5.7 GB at launch, 4.3, 5.0 and
+5.1 GB after the three (no steady climb). #166's fix holds on 0.3.127.
