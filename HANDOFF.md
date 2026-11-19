@@ -4,7 +4,11 @@ Read this with CLAUDE.md (the rules), CHANGES.md (the log, newest first) and tec
 done: a linked graph of notes). This file is the state of play and the path forward.
 
 ## Now (2026-11-18)
-- **Build 0.3.126 on `main` and `next`** (abad5c2, after genplay_0124 and genplay_0126): the owner's heavy Play of the Game
+- **Build 0.3.127 on `main`** (8858cc0, after genplay_0127): Catnapper's aim stops at water surfaces (#171: aimed at water,
+  the marker was drawn on the bottom, hidden). Then QA on 0.3.127 (`techniques/testing/runs/potg_flow_0127/run.md`): the
+  whole POTG flow as a player gets it, resource reloads at 2 GB, and hero mode on a ladder, in a boat, swimming, in lava and
+  against a blaze in the Nether; all fine. An independent critic of 0.3.120-0.3.127 was started after that.
+- **Before: build 0.3.126 on `main` and `next`** (abad5c2, after genplay_0124 and genplay_0126): the owner's heavy Play of the Game
   review (#172, closed) is done: 22 findings from four critics, each reproduced first where play reached it. Fixed: a
   dedicated-server crash on a solo watch, eye of ender / D.Va eject / friendly-fire / Minecraft-weapon scoring, the pointer,
   fight music and VICTORY around a watched highlight, `/stop` saving viewers, atomic zips and stats, corrupt highlights,
