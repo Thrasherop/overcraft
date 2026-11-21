@@ -124,7 +124,7 @@ public final class SigmaBarrier {
 		ServerLevel level = player.level();
 		Vec3 eye = player.getEyePosition();
 		Vec3 aim = player.getViewVector(1.0f);
-		HitResult hit = level.clip(new ClipContext(eye, eye.add(aim.scale(BARRIER_DEPLOY_RAY)), ClipContext.Block.COLLIDER,
+		HitResult hit = dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, eye.add(aim.scale(BARRIER_DEPLOY_RAY)), ClipContext.Block.COLLIDER,
 			ClipContext.Fluid.NONE, player));
 		double reach = hit.getType() == HitResult.Type.MISS ? BARRIER_DEPLOY_RAY : hit.getLocation().distanceTo(eye);
 		Vec3 centre = eye.add(aim.scale(Math.max(0.3, reach - BARRIER_DEPLOY_BACK)));
@@ -147,7 +147,7 @@ public final class SigmaBarrier {
 		Vec3 dir = owner.getViewVector(1.0f);
 		Vec3 centre = b.barrierCentre();
 		double step = Ow.speed(BARRIER_SPEED);
-		HitResult hit = b.level().clip(new ClipContext(centre, centre.add(dir.scale(BARRIER_STOP_RAY + step)), ClipContext.Block.COLLIDER,
+		HitResult hit = dev.overcraft.hero.Rays.clip(b.level(), new ClipContext(centre, centre.add(dir.scale(BARRIER_STOP_RAY + step)), ClipContext.Block.COLLIDER,
 			ClipContext.Fluid.NONE, b));
 		double room = hit.getType() == HitResult.Type.MISS ? Double.MAX_VALUE : hit.getLocation().distanceTo(centre) - BARRIER_STOP_RAY;
 		double go = Math.max(0, Math.min(step, room));

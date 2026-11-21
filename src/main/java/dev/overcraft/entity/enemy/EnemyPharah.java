@@ -171,7 +171,7 @@ public class EnemyPharah extends EnemyHeroEntity {
 	/** How far the ground is below her (m), up to 10 (ours: past that, she's high enough to come down). */
 	private double heightAboveGround() {
 		Vec3 from = position();
-		HitResult hit = level().clip(new ClipContext(from, from.add(0, -10, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, this));
+		HitResult hit = dev.overcraft.hero.Rays.clip(level(), new ClipContext(from, from.add(0, -10, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, this));
 		return hit.getType() == HitResult.Type.MISS ? 10 : from.y - hit.getLocation().y;
 	}
 

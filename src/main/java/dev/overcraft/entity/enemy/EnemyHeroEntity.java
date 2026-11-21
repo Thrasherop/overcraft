@@ -242,7 +242,7 @@ public abstract class EnemyHeroEntity extends Monster {
 		side = side.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : side.normalize();
 		Vec3 top = side.cross(look).normalize();
 		Vec3 at = eye.add(side.scale(right)).add(top.scale(up)).add(look.scale(ahead));
-		return level().clip(new ClipContext(eye, at, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType()
+		return dev.overcraft.hero.Rays.clip(level(), new ClipContext(eye, at, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType()
 			== net.minecraft.world.phys.HitResult.Type.MISS ? at : eye;
 	}
 
@@ -265,7 +265,7 @@ public abstract class EnemyHeroEntity extends Monster {
 	protected Traced trace(ServerLevel level, Vec3 from, Vec3 dir, double range, double radius,
 						   java.util.function.@Nullable DoubleUnaryOperator damageAt) {
 		Vec3 end = from.add(dir.scale(range));
-		BlockHitResult block = level.clip(new ClipContext(from, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+		BlockHitResult block = dev.overcraft.hero.Rays.clip(level, new ClipContext(from, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
 		Vec3 stop = block.getLocation();
 		LivingEntity best = null;
 		Vec3 bestAt = stop;

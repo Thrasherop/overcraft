@@ -329,7 +329,7 @@ public final class Widowmaker implements HeroKit {
 		ServerLevel level = player.level();
 		Vec3 eye = player.getEyePosition();
 		Vec3 far = eye.add(dir.scale(RANGE));
-		BlockHitResult blockHit = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+		BlockHitResult blockHit = dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 block = blockHit.getLocation();
 		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		List<Hit> hits = hits(level, player, eye, block, radius);
@@ -418,7 +418,7 @@ public final class Widowmaker implements HeroKit {
 		side = side.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : side.normalize();
 		Vec3 top = side.cross(look).normalize();
 		Vec3 at = eye.add(side.scale(right)).add(top.scale(up)).add(look.scale(ahead));
-		if (player.level().clip(new ClipContext(eye, at, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
+		if (dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(eye, at, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
 			return eye;
 		}
 		return at;

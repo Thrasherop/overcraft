@@ -84,7 +84,7 @@ public final class HyperRing {
 			if (age < Ow.ticks(RING_FLIGHT)) {
 				// in flight: 35 m/s along her aim, stopping at a wall
 				Vec3 next = r.centre.add(r.normal.scale(Ow.speed(RING_SPEED)));
-				var hit = level.clip(new ClipContext(r.centre, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, r.juno));
+				var hit = dev.overcraft.hero.Rays.clip(level, new ClipContext(r.centre, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, r.juno));
 				r.centre = hit.getType() == HitResult.Type.MISS ? next : hit.getLocation().subtract(r.normal.scale(0.3));
 			}
 			for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new net.minecraft.world.phys.AABB(r.centre, r.centre)

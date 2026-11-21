@@ -471,7 +471,7 @@ public final class Pharah implements HeroKit {
 		Vec3 top = side.cross(look).normalize();
 		Vec3 from = eye.add(side.scale(right)).add(top.scale(up)).add(look.scale(ahead));
 		ServerLevel level = player.level();
-		if (level.clip(new ClipContext(eye, from, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
+		if (dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, from, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
 			return eye;
 		}
 		return from;
@@ -485,7 +485,7 @@ public final class Pharah implements HeroKit {
 		Vec3 at = player.position().add(left.scale(pod[0])).add(0, pod[1], 0).add(ahead.scale(pod[2] + 0.3));
 		ServerLevel level = player.level();
 		Vec3 eye = player.getEyePosition();
-		if (level.clip(new ClipContext(eye, at, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
+		if (dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, at, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
 			return eye;
 		}
 		return at;
@@ -496,7 +496,7 @@ public final class Pharah implements HeroKit {
 		ServerLevel level = player.level();
 		Vec3 eye = player.getEyePosition();
 		Vec3 far = eye.add(player.getViewVector(1.0f).scale(range));
-		Vec3 target = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
+		Vec3 target = dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
 		net.minecraft.world.phys.EntityHitResult onIt = net.minecraft.world.entity.projectile.ProjectileUtil.getEntityHitResult(level,
 			player, eye, target, new AABB(eye, target).inflate(1.0), e -> e != player && e.isPickable() && !e.isSpectator()
 				&& !(e instanceof PharahRocketEntity), 0.0f);
@@ -695,7 +695,7 @@ public final class Pharah implements HeroKit {
 
 	static boolean inSight(ServerLevel level, Vec3 at, LivingEntity e) {
 		for (Vec3 to : new Vec3[] {e.getBoundingBox().getCenter(), e.getEyePosition()}) {
-			if (level.clip(new ClipContext(at, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e)).getType() == HitResult.Type.MISS) {
+			if (dev.overcraft.hero.Rays.clip(level, new ClipContext(at, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e)).getType() == HitResult.Type.MISS) {
 				return true;
 			}
 		}

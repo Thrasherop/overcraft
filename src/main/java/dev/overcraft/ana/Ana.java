@@ -394,7 +394,7 @@ public final class Ana implements HeroKit {
 
 	private static boolean inSight(ServerLevel level, Vec3 at, LivingEntity e) {
 		for (Vec3 to : new Vec3[] {e.getBoundingBox().getCenter(), e.getEyePosition()}) {
-			if (level.clip(new ClipContext(at, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e)).getType() == HitResult.Type.MISS) {
+			if (dev.overcraft.hero.Rays.clip(level, new ClipContext(at, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e)).getType() == HitResult.Type.MISS) {
 				return true;
 			}
 		}
@@ -433,7 +433,7 @@ public final class Ana implements HeroKit {
 	private static void hitscan(ServerPlayer player) {
 		Vec3 eye = player.getEyePosition();
 		Vec3 end = eye.add(player.getViewVector(1.0f).scale(SCOPED_RANGE));
-		var blockHit = player.level().clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+		var blockHit = dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 block = blockHit.getLocation();
 		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		LivingEntity best = null;
@@ -517,7 +517,7 @@ public final class Ana implements HeroKit {
 		side = side.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : side.normalize();
 		Vec3 upv = side.cross(look).normalize();
 		Vec3 at = eye.add(side.scale(right)).add(upv.scale(up)).add(look.scale(ahead));
-		return player.level().clip(new ClipContext(eye, at, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType()
+		return dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(eye, at, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType()
 			== HitResult.Type.MISS ? at : eye;
 	}
 
@@ -525,7 +525,7 @@ public final class Ana implements HeroKit {
 	static Vec3 aimPoint(ServerPlayer player) {
 		Vec3 eye = player.getEyePosition();
 		Vec3 far = eye.add(player.getViewVector(1.0f).scale(100));
-		Vec3 hit = player.level().clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
+		Vec3 hit = dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
 		return hit.distanceTo(eye) < 1 ? far : hit;
 	}
 

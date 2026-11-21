@@ -354,7 +354,7 @@ public final class Lifeweaver implements HeroKit {
 	}
 
 	static boolean clear(Entity from, Vec3 a, Vec3 b) {
-		return from.level().clip(new ClipContext(a, b, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, from)).getType() == HitResult.Type.MISS;
+		return dev.overcraft.hero.Rays.clip(from.level(), new ClipContext(a, b, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, from)).getType() == HitResult.Type.MISS;
 	}
 
 	/**
@@ -379,7 +379,7 @@ public final class Lifeweaver implements HeroKit {
 	static Vec3 aimPoint(ServerPlayer player) {
 		Vec3 eye = player.getEyePosition();
 		Vec3 far = eye.add(player.getViewVector(1.0f).scale(100));
-		Vec3 hit = player.level().clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
+		Vec3 hit = dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
 		return hit.distanceTo(eye) < 1 ? far : hit;
 	}
 
@@ -724,13 +724,13 @@ public final class Lifeweaver implements HeroKit {
 	public static @Nullable Vec3 treeSpot(net.minecraft.world.entity.player.Player player) {
 		Vec3 eye = player.getEyePosition();
 		Vec3 end = eye.add(player.getViewVector(1.0f).scale(TREE_RANGE));
-		BlockHitResult hit = player.level().clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+		BlockHitResult hit = dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		if (hit.getType() == HitResult.Type.BLOCK && hit.getDirection() == net.minecraft.core.Direction.UP) {
 			return hit.getLocation();
 		}
 		Vec3 from = hit.getType() == HitResult.Type.BLOCK
 			? hit.getLocation().add(Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i()).scale(0.3)) : end;
-		BlockHitResult down = player.level().clip(new ClipContext(from, from.add(0, -10, 0), ClipContext.Block.COLLIDER,
+		BlockHitResult down = dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(from, from.add(0, -10, 0), ClipContext.Block.COLLIDER,
 			ClipContext.Fluid.NONE, player));
 		return down.getType() == HitResult.Type.BLOCK && down.getDirection() == net.minecraft.core.Direction.UP ? down.getLocation() : null;
 	}

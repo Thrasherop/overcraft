@@ -197,11 +197,11 @@ public final class GraviticFlux {
 		ServerLevel level = player.level();
 		Vec3 eye = player.getEyePosition();
 		Vec3 end = eye.add(player.getViewVector(1.0f).scale(FLUX_RANGE));
-		BlockHitResult hit = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+		BlockHitResult hit = dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		if (hit.getType() != HitResult.Type.MISS) {
 			return hit.getLocation();
 		}
-		BlockHitResult down = level.clip(new ClipContext(end, end.subtract(0, FLUX_HEIGHT, 0), ClipContext.Block.COLLIDER,
+		BlockHitResult down = dev.overcraft.hero.Rays.clip(level, new ClipContext(end, end.subtract(0, FLUX_HEIGHT, 0), ClipContext.Block.COLLIDER,
 			ClipContext.Fluid.NONE, player));
 		return down.getType() != HitResult.Type.MISS ? down.getLocation() : end;
 	}
@@ -238,7 +238,7 @@ public final class GraviticFlux {
 			}
 			boolean seen = false;
 			for (Vec3 to : new Vec3[] {box.getCenter(), e.getEyePosition(), e.position().add(0, 0.1, 0)}) {
-				if (level.clip(new ClipContext(eye, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e)).getType() == HitResult.Type.MISS) {
+				if (dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e)).getType() == HitResult.Type.MISS) {
 					seen = true;
 					break;
 				}
@@ -428,7 +428,7 @@ public final class GraviticFlux {
 			return true;
 		}
 		Vec3 from = e.position();
-		return e.level().clip(new ClipContext(from, from.subtract(0, metres, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, e))
+		return dev.overcraft.hero.Rays.clip(e.level(), new ClipContext(from, from.subtract(0, metres, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, e))
 			.getType() != HitResult.Type.MISS;
 	}
 

@@ -225,7 +225,7 @@ public final class Illari implements HeroKit {
 		Vec3 eye = player.getEyePosition();
 		Vec3 dir = player.getViewVector(1.0f);
 		Vec3 far = eye.add(dir.scale(SHOT_RANGE));
-		BlockHitResult blockHit = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+		BlockHitResult blockHit = dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 block = blockHit.getLocation();
 		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		Entity best = null;
@@ -314,7 +314,7 @@ public final class Illari implements HeroKit {
 				j.beamTarget = target.getId();
 			} else {
 				Vec3 eye = player.getEyePosition();
-				to = player.level().clip(new ClipContext(eye, eye.add(player.getViewVector(1.0f).scale(BEAM_RANGE)), ClipContext.Block.COLLIDER,
+				to = dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(eye, eye.add(player.getViewVector(1.0f).scale(BEAM_RANGE)), ClipContext.Block.COLLIDER,
 					ClipContext.Fluid.NONE, player)).getLocation();
 				j.beamTarget = -1;
 			}
@@ -358,7 +358,7 @@ public final class Illari implements HeroKit {
 		ServerLevel level = player.level();
 		Vec3 eye = player.getEyePosition();
 		Vec3 far = eye.add(player.getViewVector(1.0f).scale(BEAM_RANGE));
-		Vec3 block = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
+		Vec3 block = dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
 		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		LivingEntity best = null;
 		double bestD = Double.MAX_VALUE;
@@ -514,8 +514,8 @@ public final class Illari implements HeroKit {
 			if (to.distanceTo(eye) > PYLON_RANGE) {
 				continue;
 			}
-			if (level.clip(new ClipContext(eye, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, pylon)).getType() != HitResult.Type.MISS
-				&& level.clip(new ClipContext(eye, e.getEyePosition(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, pylon)).getType()
+			if (dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, pylon)).getType() != HitResult.Type.MISS
+				&& dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, e.getEyePosition(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, pylon)).getType()
 				!= HitResult.Type.MISS) {
 				continue;
 			}
@@ -1121,7 +1121,7 @@ public final class Illari implements HeroKit {
 		side = side.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : side.normalize();
 		Vec3 top = side.cross(look).normalize();
 		Vec3 from = eye.add(side.scale(right)).add(top.scale(up)).add(look.scale(ahead));
-		if (player.level().clip(new ClipContext(eye, from, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
+		if (dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(eye, from, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
 			return eye;
 		}
 		return from;
@@ -1132,7 +1132,7 @@ public final class Illari implements HeroKit {
 		ServerLevel level = player.level();
 		Vec3 eye = player.getEyePosition();
 		Vec3 far = eye.add(player.getViewVector(1.0f).scale(range));
-		Vec3 target = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
+		Vec3 target = dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
 		net.minecraft.world.phys.EntityHitResult onIt = net.minecraft.world.entity.projectile.ProjectileUtil.getEntityHitResult(level,
 			player, eye, target, new AABB(eye, target).inflate(1.0), e -> e != player && e.isPickable() && !e.isSpectator()
 				&& !(e instanceof dev.overcraft.entity.OwProjectile), 0.0f);

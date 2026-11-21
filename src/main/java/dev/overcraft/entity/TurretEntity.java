@@ -415,7 +415,7 @@ public class TurretEntity extends Mob implements OwnableEntity, SurfaceStuck {
 		Barriers.Shape barrier = Barriers.between(level, gun, at, owner);
 		if (barrier != null) {
 			barrier.barrierTake(damage, at);
-		} else if (level.clip(new ClipContext(gun, at, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() == HitResult.Type.MISS
+		} else if (dev.overcraft.hero.Rays.clip(level, new ClipContext(gun, at, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() == HitResult.Type.MISS
 			|| Combat.inSight(level, gun, target, this)) {
 			Torbjorn.turretHit(owner, this, target, damage, missile);
 		}

@@ -131,13 +131,13 @@ public interface ChunkSender {
             var chunk = source.getChunk(pos.x, pos.z, false)
             if (chunk != null) {
                 this.sendChunk(chunk, SeenEntities.all())
-            } else if (load.invoke(pos)) {
-                chunk = source.getChunk(pos.x, pos.z, true)
-                if (chunk != null) {
-                    this.sendChunk(chunk, SeenEntities.all())
-                } else {
-                    ArcadeUtils.logger.warn("Failed to get chunk at $pos, didn't send")
-                }
+            } else {
+                // Overcraft (#178): never load or generate a chunk here. Loading every unloaded chunk in view, one after
+                // another on the server thread, froze the server 4.6-6.7 s on joins, hero picks and portal trips (67-126
+                // chunks each). A chunk that isn't loaded hasn't been sent to the player either; when the game loads and
+                // sends it, the recorder records that packet like any other. `load` still runs for its side effect (the
+                // writer's cached copy of a chunk, on a snapshot).
+                load.invoke(pos)
             }
         }
     }

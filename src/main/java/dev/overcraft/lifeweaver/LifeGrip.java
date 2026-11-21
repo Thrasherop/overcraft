@@ -58,7 +58,7 @@ public final class LifeGrip {
 	private static Vec3 destination(ServerPlayer caster, LivingEntity ally) {
 		Vec3 feet = caster.position();
 		if (!caster.onGround()) {
-			var down = caster.level().clip(new ClipContext(feet, feet.add(0, -9, 0), ClipContext.Block.COLLIDER,
+			var down = dev.overcraft.hero.Rays.clip(caster.level(), new ClipContext(feet, feet.add(0, -9, 0), ClipContext.Block.COLLIDER,
 				ClipContext.Fluid.NONE, caster));
 			if (down.getType() == HitResult.Type.BLOCK) {
 				feet = down.getLocation();

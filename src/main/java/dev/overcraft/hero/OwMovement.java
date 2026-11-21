@@ -301,7 +301,7 @@ public final class OwMovement {
 	/** Ground within this far below her (D 1E6F #337: a ray from 0.5 m above her feet, M on its sense). */
 	private static boolean groundWithin(LivingEntity entity, double metres) {
 		Vec3 from = entity.position().add(0, 0.5, 0);
-		return entity.level().clip(new net.minecraft.world.level.ClipContext(from, from.add(0, -0.5 - metres, 0),
+		return dev.overcraft.hero.Rays.clip(entity.level(), new net.minecraft.world.level.ClipContext(from, from.add(0, -0.5 - metres, 0),
 			net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, entity)).getType()
 			!= net.minecraft.world.phys.HitResult.Type.MISS;
 	}
@@ -364,7 +364,7 @@ public final class OwMovement {
 	/** No ground within the hover's 2.5 m below her (D 4441 #376: a ray down from 0.25 m up, M on its sense). */
 	private static boolean clear(LivingEntity entity) {
 		Vec3 from = entity.position().add(0, 0.25, 0);
-		return entity.level().clip(new net.minecraft.world.level.ClipContext(from,
+		return dev.overcraft.hero.Rays.clip(entity.level(), new net.minecraft.world.level.ClipContext(from,
 			from.add(0, -0.25 - dev.overcraft.juno.JunoStats.HOVER_CLEARANCE, 0), net.minecraft.world.level.ClipContext.Block.COLLIDER,
 			net.minecraft.world.level.ClipContext.Fluid.NONE, entity)).getType() == net.minecraft.world.phys.HitResult.Type.MISS;
 	}

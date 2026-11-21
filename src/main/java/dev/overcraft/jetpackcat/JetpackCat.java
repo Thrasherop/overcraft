@@ -345,7 +345,7 @@ public final class JetpackCat implements HeroKit {
 			}
 		}
 		Vec3 from = cat.position().add(0, LIFELINE_SIGHT, 0);
-		return cat.level().clip(new net.minecraft.world.level.ClipContext(from, ally.getBoundingBox().getCenter(),
+		return dev.overcraft.hero.Rays.clip(cat.level(), new net.minecraft.world.level.ClipContext(from, ally.getBoundingBox().getCenter(),
 			net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, cat))
 			.getType() == net.minecraft.world.phys.HitResult.Type.MISS;
 	}
@@ -483,7 +483,7 @@ public final class JetpackCat implements HeroKit {
 	 */
 	private static boolean throughTerrain(ServerPlayer player, LivingEntity ally, Vec3 apart) {
 		return apart.length() > LIFELINE_ROPE * LIFELINE_BREAK
-			&& player.level().clip(new ClipContext(player.position().add(0, LIFELINE_SIGHT, 0), ally.getBoundingBox().getCenter(),
+			&& dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(player.position().add(0, LIFELINE_SIGHT, 0), ally.getBoundingBox().getCenter(),
 				ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != net.minecraft.world.phys.HitResult.Type.MISS;
 	}
 
@@ -714,7 +714,7 @@ public final class JetpackCat implements HeroKit {
 	public static @Nullable Vec3 diveTarget(Player player) {
 		Vec3 eye = player.getEyePosition();
 		Vec3 end = eye.add(player.getViewVector(1.0f).scale(ULT_RANGE));
-		HitResult hit = player.level().clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, fluidFrom(player, eye), player));
+		HitResult hit = dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(eye, end, ClipContext.Block.COLLIDER, fluidFrom(player, eye), player));
 		// a wall's hit point lies on its face, inside the block for the ray down, which then stopped at once: the dive went to a
 		// spot on the wall 1.6 m up (#139, played). Stepped back off the face by her half width, the floor in front of it.
 		boolean wall = hit instanceof net.minecraft.world.phys.BlockHitResult block && hit.getType() != HitResult.Type.MISS
@@ -723,7 +723,7 @@ public final class JetpackCat implements HeroKit {
 			: wall ? hit.getLocation().subtract(player.getViewVector(1.0f).multiply(1, 0, 1).normalize().scale(0.35)) : hit.getLocation();
 		// down to the ground below it, or the water on it: the marker and the landing on the surface (#171: aimed at a pool, both
 		// went to its bed, and the marker was hidden under the water)
-		HitResult ground = player.level().clip(new ClipContext(at.add(0, 0.5, 0), at.add(0, -ULT_RANGE, 0), ClipContext.Block.COLLIDER,
+		HitResult ground = dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(at.add(0, 0.5, 0), at.add(0, -ULT_RANGE, 0), ClipContext.Block.COLLIDER,
 			fluidFrom(player, at.add(0, 0.5, 0)), player));
 		return ground.getType() == HitResult.Type.MISS ? null : ground.getLocation();
 	}

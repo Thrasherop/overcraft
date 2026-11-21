@@ -209,7 +209,7 @@ public final class Sombra implements HeroKit {
 			Vec3 to = d.getBoundingBox().getCenter().subtract(eye);
 			double angle = Math.toDegrees(Math.acos(Math.clamp(to.normalize().dot(look), -1, 1)));
 			if (to.length() > HOTFIX_RANGE || angle > bestAngle || !enemyDeployable(player, d) || Hack.hacked(d)
-				|| player.level().clip(new ClipContext(eye, eye.add(to), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
+				|| dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(eye, eye.add(to), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
 				continue;
 			}
 			best = d;
@@ -287,7 +287,7 @@ public final class Sombra implements HeroKit {
 	static Vec3 aimPoint(ServerPlayer player) {
 		Vec3 eye = player.getEyePosition();
 		Vec3 far = eye.add(player.getViewVector(1.0f).scale(100));
-		Vec3 hit = player.level().clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
+		Vec3 hit = dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
 		return hit.distanceTo(eye) < 1 ? far : hit;
 	}
 
@@ -382,7 +382,7 @@ public final class Sombra implements HeroKit {
 		side = side.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : side.normalize();
 		Vec3 upv = side.cross(look).normalize();
 		Vec3 at = eye.add(side.scale(right)).add(upv.scale(up)).add(look.scale(ahead));
-		return player.level().clip(new ClipContext(eye, at, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType()
+		return dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(eye, at, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType()
 			== HitResult.Type.MISS ? at : eye;
 	}
 
@@ -521,7 +521,7 @@ public final class Sombra implements HeroKit {
 		Vec3 eye = player.getEyePosition();
 		Vec3 dir = cone(player.getViewVector(1.0f), spread, player.getRandom());
 		Vec3 end = eye.add(dir.scale(PISTOL_RANGE));
-		net.minecraft.world.phys.BlockHitResult blockHit = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+		net.minecraft.world.phys.BlockHitResult blockHit = dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 block = blockHit.getLocation();
 		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);
 		LivingEntity best = null;

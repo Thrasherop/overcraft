@@ -413,7 +413,7 @@ public final class Railgun {
 		Vec3 eye = aim != null && aim.eye().distanceToSqr(player.getEyePosition()) <= PATH_STEP_MAX * PATH_STEP_MAX ? aim.eye() : player.getEyePosition();
 		dev.overcraft.hero.PressTrace.mark(String.format(java.util.Locale.ROOT, "srv_eye %.3f %.3f %.3f %.2f", eye.x, eye.y, eye.z, aim != null ? aim.yaw() : player.getYRot()));
 		Vec3 end = eye.add((aim != null ? Vec3.directionFromRotation(aim.pitch(), aim.yaw()) : player.getViewVector(1.0f)).scale(CHARGED_RANGE));
-		var blockHit = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+		var blockHit = dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		Vec3 stop = blockHit.getType() == HitResult.Type.MISS ? end : blockHit.getLocation();
 		stop = dev.overcraft.hero.Combat.crystalStop(player, eye, stop);
 		record Hit(Entity entity, Vec3 at, double dist) {
@@ -514,7 +514,7 @@ public final class Railgun {
 		side = side.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : side.normalize();
 		Vec3 up = side.cross(look).normalize();
 		Vec3 at = eye.add(side.scale(0.2)).add(up.scale(-0.15)).add(look.scale(0.7));
-		return player.level().clip(new ClipContext(eye, at, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType()
+		return dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(eye, at, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType()
 			== HitResult.Type.MISS ? at : eye;
 	}
 

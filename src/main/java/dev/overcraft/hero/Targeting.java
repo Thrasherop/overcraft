@@ -46,7 +46,7 @@ public final class Targeting {
 			if (cos <= bestCos) {
 				continue;
 			}
-			if (needSight && hero.level().clip(new ClipContext(eye, point, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, hero)).getType() != HitResult.Type.MISS) {
+			if (needSight && dev.overcraft.hero.Rays.clip(hero.level(), new ClipContext(eye, point, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, hero)).getType() != HitResult.Type.MISS) {
 				continue;
 			}
 			best = entity;

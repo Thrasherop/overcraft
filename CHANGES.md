@@ -4,6 +4,19 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-20: 0.3.132
+
+- **Server freezes of several seconds in multiplayer (#178):** the Play of the Game recorder, when a player's recording
+  started (joining, picking a hero, every portal trip, a respawn into another dimension, everyone at once after a POTG
+  showing), loaded every chunk in view that wasn't loaded yet, one after another on the server thread: 4.6-6.7 s each,
+  measured (67-126 chunks). It now records only loaded chunks; the rest are recorded when the game sends them normally.
+  Hitscan and other block rays (88 of them, every hero) also loaded each chunk they crossed: a Cassidy shot into fresh
+  land cost 140-225 ms. They now read unloaded chunks as empty (`Rays.clip`). Played (dev client, view distance 16, fresh
+  world): join 2.1 s (one-off new-world startup; was 5.7-6.6 s), into the Nether 0.8 s (was 4.6 s), back to the Overworld
+  at 4000,4000 0.55 s (was 6.2 s), four Cassidy shots level into fresh land: no tick over 100 ms (was 140-225 ms each). A
+  POTG played afterwards shows the spawn area complete, chunks that weren't loaded when its recording began included. Not
+  tried: a dedicated server, several players.
+
 ## 2026-11-19: 0.3.131
 
 - **Ashe's comms wheel voice lines (#174):** the wheel showed raw keys ("overcraft.voiceline.ashe.girl_who_has_everything")

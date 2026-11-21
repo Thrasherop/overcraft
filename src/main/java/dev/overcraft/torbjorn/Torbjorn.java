@@ -395,7 +395,7 @@ public final class Torbjorn implements HeroKit {
 		}
 		if (hit) {
 			TorbjornSounds.split(player, "hammer.hit", centre, 30);
-		} else if (level.clip(new ClipContext(eye, centre, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
+		} else if (dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, centre, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
 			TorbjornSounds.all(level, "hammer.hit_world", centre, 30);
 		}
 	}
@@ -685,7 +685,7 @@ public final class Torbjorn implements HeroKit {
 		// its hit 26B7 (TorbjornFx)
 		Effects.play(level, "torb_slag_hit", slag.position(), Vec3.ZERO, null, 0, owner);
 		Vec3 at = slag.position();
-		var down = level.clip(new ClipContext(at, at.add(0, -12, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, slag));
+		var down = dev.overcraft.hero.Rays.clip(level, new ClipContext(at, at.add(0, -12, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, slag));
 		if (down.getType() != HitResult.Type.MISS) {
 			pool(owner, level, down.getLocation());
 		}
@@ -825,7 +825,7 @@ public final class Torbjorn implements HeroKit {
 		side = side.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : side.normalize();
 		Vec3 top = side.cross(look).normalize();
 		Vec3 from = eye.add(side.scale(right)).add(top.scale(up)).add(look.scale(ahead));
-		if (player.level().clip(new ClipContext(eye, from, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
+		if (dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(eye, from, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
 			return eye;
 		}
 		return from;
@@ -836,7 +836,7 @@ public final class Torbjorn implements HeroKit {
 		ServerLevel level = player.level();
 		Vec3 eye = player.getEyePosition();
 		Vec3 far = eye.add(player.getViewVector(1.0f).scale(range));
-		Vec3 target = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
+		Vec3 target = dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
 		net.minecraft.world.phys.EntityHitResult onIt = net.minecraft.world.entity.projectile.ProjectileUtil.getEntityHitResult(level,
 			player, eye, target, new AABB(eye, target).inflate(1.0), e -> e != player && e.isPickable() && !e.isSpectator()
 				&& !(e instanceof dev.overcraft.entity.OwProjectile) && !(e instanceof TurretEntity), 0.0f);

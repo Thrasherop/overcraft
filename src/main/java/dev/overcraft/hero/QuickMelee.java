@@ -65,7 +65,7 @@ public final class QuickMelee {
 			if (dist > RANGE || (dist > 0.3 && toCenter.dot(look) < cosLimit)) {
 				continue;
 			}
-			if (level.clip(new ClipContext(eye, point, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, hero)).getType() != HitResult.Type.MISS) {
+			if (dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, point, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, hero)).getType() != HitResult.Type.MISS) {
 				continue;
 			}
 			DamageSource source = hero.damageSources().playerAttack(hero);
