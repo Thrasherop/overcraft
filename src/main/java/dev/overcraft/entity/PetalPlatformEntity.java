@@ -382,7 +382,7 @@ public class PetalPlatformEntity extends Entity {
 		double room = reach;
 		// four rays at its edges and one at its middle: a Minecraft ceiling is blocks, not a single point
 		for (Vec3 o : new Vec3[] {Vec3.ZERO, new Vec3(r, 0, 0), new Vec3(-r, 0, 0), new Vec3(0, 0, r), new Vec3(0, 0, -r)}) {
-			var hit = level.clip(new ClipContext(from.add(o), from.add(o).add(0, reach, 0), ClipContext.Block.COLLIDER,
+			var hit = dev.overcraft.hero.Rays.clip(level, new ClipContext(from.add(o), from.add(o).add(0, reach, 0), ClipContext.Block.COLLIDER,
 				ClipContext.Fluid.NONE, this));
 			if (hit.getType() == HitResult.Type.BLOCK) {
 				room = Math.min(room, hit.getLocation().y - from.y);

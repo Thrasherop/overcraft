@@ -106,7 +106,7 @@ public final class OrbitalRay {
 
 	/** The ground under a point (from 3 m above it down to 20 m below), so the ray follows slopes and steps; a liquid's surface counts (#80). */
 	private static Vec3 ground(net.minecraft.world.level.Level level, Vec3 at, ServerPlayer juno) {
-		var hit = level.clip(new ClipContext(at.add(0, 3, 0), at.add(0, -20, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, juno));
+		var hit = dev.overcraft.hero.Rays.clip(level, new ClipContext(at.add(0, 3, 0), at.add(0, -20, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, juno));
 		return hit.getType() == HitResult.Type.MISS ? at : onTop(level, hit);
 	}
 

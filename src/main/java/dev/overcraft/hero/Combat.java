@@ -550,7 +550,7 @@ public final class Combat {
 	 */
 	public static boolean inSight(net.minecraft.world.level.Level level, net.minecraft.world.phys.Vec3 from, LivingEntity target, Entity viewer) {
 		for (double y : new double[] {target.getEyeY(), target.getY() + target.getBbHeight() / 2, target.getY() + 0.1}) {
-			if (level.clip(new net.minecraft.world.level.ClipContext(from, new net.minecraft.world.phys.Vec3(target.getX(), y, target.getZ()),
+			if (dev.overcraft.hero.Rays.clip(level, new net.minecraft.world.level.ClipContext(from, new net.minecraft.world.phys.Vec3(target.getX(), y, target.getZ()),
 				net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, viewer)).getType() == net.minecraft.world.phys.HitResult.Type.MISS) {
 				return true;
 			}

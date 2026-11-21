@@ -92,7 +92,7 @@ public class SprayEntity extends Entity implements SurfaceStuck {
 		if (last != null && now - last >= 0 && now - last < SPRAY_GAP) {
 			return false;
 		}
-		BlockHitResult hit = level.clip(new ClipContext(eye, eye.add(player.getLookAngle().scale(RANGE)), ClipContext.Block.COLLIDER,
+		BlockHitResult hit = dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, eye.add(player.getLookAngle().scale(RANGE)), ClipContext.Block.COLLIDER,
 			ClipContext.Fluid.NONE, player));
 		if (hit.getType() != HitResult.Type.BLOCK) {
 			return false;

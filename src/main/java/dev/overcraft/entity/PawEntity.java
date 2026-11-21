@@ -83,7 +83,7 @@ public class PawEntity extends OwProjectile {
 		if (!level().isClientSide() && isAlive() && getOwner() instanceof LivingEntity owner) {
 			Vec3 from = position();
 			Vec3 to = from.add(getDeltaMovement());
-			BlockHitResult wall = level().clip(new net.minecraft.world.level.ClipContext(from, to,
+			BlockHitResult wall = dev.overcraft.hero.Rays.clip(level(), new net.minecraft.world.level.ClipContext(from, to,
 				net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, this));
 			if (wall.getType() != net.minecraft.world.phys.HitResult.Type.MISS) {
 				to = wall.getLocation();

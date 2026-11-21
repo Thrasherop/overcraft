@@ -94,7 +94,7 @@ public final class Torpedoes {
 			double d = to.length();
 			boolean started = s.junoLockProgress.containsKey(id);
 			if (d > (started ? LOCK_RANGE + LOCK_FORGIVE : LOCK_RANGE) || d < 1.0E-3 || to.scale(1 / d).dot(look) < cos
-				|| level.clip(new ClipContext(eye, e.getBoundingBox().getCenter(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player))
+				|| dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, e.getBoundingBox().getCenter(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player))
 					.getType() != HitResult.Type.MISS) {
 				continue;
 			}
@@ -233,7 +233,7 @@ public final class Torpedoes {
 			double step = Ow.speed(speed);
 			Vec3 next = to.length() <= step ? aim : at.add(to.normalize().scale(step));
 			net.minecraft.world.phys.BlockHitResult wall = f.heal ? null
-				: level.clip(new ClipContext(at, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, f.juno));
+				: dev.overcraft.hero.Rays.clip(level, new ClipContext(at, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, f.juno));
 			if (wall != null && wall.getType() != HitResult.Type.MISS) {
 				// damage torpedoes are stopped by terrain (W); healing ones follow their ally through it. The sparks there (5F45,
 				// the data's wall hit, along the normal)

@@ -296,7 +296,7 @@ public final class Barriers {
 	 * reached the Brigitte it was fired at, from behind; a zombie pressed to a barrier's front was out of reach the same way).
 	 */
 	public static boolean reaches(Projectile p, Vec3 now, Vec3 at) {
-		if (p.level().clip(new net.minecraft.world.level.ClipContext(now, at, net.minecraft.world.level.ClipContext.Block.COLLIDER,
+		if (dev.overcraft.hero.Rays.clip(p.level(), new net.minecraft.world.level.ClipContext(now, at, net.minecraft.world.level.ClipContext.Block.COLLIDER,
 			net.minecraft.world.level.ClipContext.Fluid.NONE, p)).getType() != net.minecraft.world.phys.HitResult.Type.MISS) {
 			return false;
 		}

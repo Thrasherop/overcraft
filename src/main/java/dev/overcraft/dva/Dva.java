@@ -446,7 +446,7 @@ public final class Dva implements HeroKit {
 	}
 
 	private static @Nullable Vec3 ground(ServerLevel level, Entity player, Vec3 from, double down) {
-		BlockHitResult hit = level.clip(new ClipContext(from, from.subtract(0, down, 0), ClipContext.Block.COLLIDER,
+		BlockHitResult hit = dev.overcraft.hero.Rays.clip(level, new ClipContext(from, from.subtract(0, down, 0), ClipContext.Block.COLLIDER,
 			ClipContext.Fluid.NONE, player));
 		return hit.getType() == HitResult.Type.MISS ? null : hit.getLocation();
 	}

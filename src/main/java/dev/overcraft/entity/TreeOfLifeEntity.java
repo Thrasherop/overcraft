@@ -76,7 +76,7 @@ public class TreeOfLifeEntity extends Entity {
 	/** The free height over its root, up to the trunk's height and a bit (ours: one ray; the data surveys several). */
 	private double room(ServerLevel level, Vec3 root) {
 		Vec3 from = root.add(0, 0.1, 0);
-		var hit = level.clip(new ClipContext(from, from.add(0, TRUNK_HEIGHT + 2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+		var hit = dev.overcraft.hero.Rays.clip(level, new ClipContext(from, from.add(0, TRUNK_HEIGHT + 2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
 		return hit.getType() == HitResult.Type.BLOCK ? hit.getLocation().y - from.y : TRUNK_HEIGHT + 2;
 	}
 
@@ -86,7 +86,7 @@ public class TreeOfLifeEntity extends Entity {
 		for (int i = 0; i < 8; i++) {
 			double a = Math.PI * i / 4;
 			Vec3 to = at.add(Math.cos(a) * CANOPY_RADIUS, 0, Math.sin(a) * CANOPY_RADIUS);
-			if (level.clip(new ClipContext(at, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() == HitResult.Type.BLOCK) {
+			if (dev.overcraft.hero.Rays.clip(level, new ClipContext(at, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() == HitResult.Type.BLOCK) {
 				return true;
 			}
 		}
@@ -193,8 +193,8 @@ public class TreeOfLifeEntity extends Entity {
 				continue;
 			}
 			Vec3 to = e.getBoundingBox().getCenter();
-			if (level.clip(new ClipContext(eye, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() != HitResult.Type.MISS
-				&& level.clip(new ClipContext(eye, e.getEyePosition(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType()
+			if (dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() != HitResult.Type.MISS
+				&& dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, e.getEyePosition(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType()
 				!= HitResult.Type.MISS) {
 				continue;
 			}

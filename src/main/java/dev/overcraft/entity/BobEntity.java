@@ -280,7 +280,7 @@ public class BobEntity extends PathfinderMob implements OwnableEntity {
 			Vec3 from = position().add(0, up, 0);
 			// from his front: the ray's 2 m from his middle reach 1.3 m past his 0.7 m (ours: the data's ray origin not read)
 			Vec3 to = from.add(ahead.scale(getBbWidth() / 2 + 0.3));
-			if (level().clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() != HitResult.Type.MISS) {
+			if (dev.overcraft.hero.Rays.clip(level(), new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() != HitResult.Type.MISS) {
 				return true;
 			}
 		}

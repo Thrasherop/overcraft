@@ -453,7 +453,7 @@ public final class Brigitte implements HeroKit {
 			Vec3 a = s.whipFrom.add(s.whipDir.scale(s.whipOut));
 			double reach = Math.min(step, WHIP_RANGE - s.whipOut);
 			Vec3 b = a.add(s.whipDir.scale(reach));
-			HitResult block = player.level().clip(new ClipContext(a, b, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+			HitResult block = dev.overcraft.hero.Rays.clip(player.level(), new ClipContext(a, b, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 			Vec3 end = block.getType() == HitResult.Type.MISS ? b : block.getLocation();
 			LivingEntity hit = null;
 			double best = Double.MAX_VALUE;
@@ -719,7 +719,7 @@ public final class Brigitte implements HeroKit {
 			// its width counts: a target whose side is in the arc is hit
 			double margin = Math.toDegrees(Math.atan2(box.getXsize() / 2, Math.max(0.3, Math.hypot(to.x, to.z))));
 			if (yaw < fromYaw - margin || yaw > toYaw + margin || Math.abs(Mth.wrapDegrees(pitch - aimPitch)) > FLAIL_PITCH && dist > 1.5
-				|| level.clip(new ClipContext(eye, box.getCenter(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType()
+				|| dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, box.getCenter(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType()
 					!= HitResult.Type.MISS) {
 				continue;
 			}

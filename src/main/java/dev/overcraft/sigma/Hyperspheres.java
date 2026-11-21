@@ -179,7 +179,7 @@ public final class Hyperspheres {
 
 	private static boolean inSight(ServerLevel level, Vec3 at, LivingEntity e) {
 		for (Vec3 to : new Vec3[] {e.getBoundingBox().getCenter(), e.getEyePosition()}) {
-			if (level.clip(new ClipContext(at, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e)).getType() == HitResult.Type.MISS) {
+			if (dev.overcraft.hero.Rays.clip(level, new ClipContext(at, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e)).getType() == HitResult.Type.MISS) {
 				return true;
 			}
 		}

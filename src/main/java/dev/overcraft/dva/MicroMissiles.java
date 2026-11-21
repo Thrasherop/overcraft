@@ -109,13 +109,13 @@ public final class MicroMissiles {
 		Vec3 up = side.cross(look).normalize();
 		double sign = (s.dvaMissileSide++ & 1) == 0 ? 1 : -1;
 		Vec3 from = eye.add(side.scale(sign * MISSILES_MUZZLE_SIDE)).add(up.scale(MISSILES_MUZZLE_UP)).add(look.scale(MISSILES_MUZZLE_AHEAD));
-		if (level.clip(new ClipContext(eye, from, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
+		if (dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, from, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
 			// a wall beside her: from her eyes
 			from = eye;
 		}
 		// toward what the crosshair is on (else the missile's 100 m out), so both muzzles meet it
 		Vec3 far = eye.add(look.scale(MISSILES_RANGE));
-		Vec3 target = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
+		Vec3 target = dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
 		// a creature the crosshair is on comes first: the muzzles sit 0.88 m to either side, so aimed at the block behind it
 		// both passed it by (1-2 of 18 on a zombie at 12 m, none on a husk at 5, 12 or 20 m: the real-input pass, 2026-11-11).
 		// The volley has no spread or homing (D 1128 #357: no spread field, a straight 50 m/s projectile 1E8A; W none)
@@ -209,7 +209,7 @@ public final class MicroMissiles {
 
 	static boolean inSight(ServerLevel level, Vec3 at, LivingEntity e) {
 		for (Vec3 to : new Vec3[] {e.getBoundingBox().getCenter(), e.getEyePosition()}) {
-			if (level.clip(new ClipContext(at, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e)).getType() == HitResult.Type.MISS) {
+			if (dev.overcraft.hero.Rays.clip(level, new ClipContext(at, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e)).getType() == HitResult.Type.MISS) {
 				return true;
 			}
 		}

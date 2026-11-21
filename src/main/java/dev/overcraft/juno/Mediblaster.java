@@ -77,7 +77,7 @@ final class Mediblaster {
 		ServerLevel level = player.level();
 		Vec3 eye = player.getEyePosition();
 		Vec3 dir = dev.overcraft.sombra.Sombra.cone(player.getViewVector(1.0f), SPREAD, player.getRandom());
-		net.minecraft.world.phys.BlockHitResult blockHit = level.clip(new ClipContext(eye, eye.add(dir.scale(RANGE)), ClipContext.Block.COLLIDER,
+		net.minecraft.world.phys.BlockHitResult blockHit = dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, eye.add(dir.scale(RANGE)), ClipContext.Block.COLLIDER,
 			ClipContext.Fluid.NONE, player));
 		Vec3 block = blockHit.getLocation();
 		block = dev.overcraft.hero.Combat.crystalStop(player, eye, block);

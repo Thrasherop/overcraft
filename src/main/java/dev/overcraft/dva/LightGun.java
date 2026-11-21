@@ -93,11 +93,11 @@ public final class LightGun {
 		side = side.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : side.normalize();
 		Vec3 up = side.cross(look).normalize();
 		Vec3 from = eye.add(side.scale(MUZZLE_RIGHT)).add(up.scale(MUZZLE_UP)).add(look.scale(MUZZLE_AHEAD));
-		if (level.clip(new ClipContext(eye, from, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
+		if (dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, from, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) {
 			from = eye;
 		}
 		Vec3 far = eye.add(look.scale(100));
-		Vec3 target = level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
+		Vec3 target = dev.overcraft.hero.Rays.clip(level, new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation();
 		if (target.distanceTo(eye) < MUZZLE_AHEAD + 0.5) {
 			target = far;
 		}

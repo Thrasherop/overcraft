@@ -260,7 +260,7 @@ public final class Mercy implements HeroKit {
 		}
 		// toward the block the crosshair is on (else 100 m out), so the round meets the crosshair at any distance
 		Vec3 far = eye.add(look.scale(100));
-		Vec3 target = level.clip(new net.minecraft.world.level.ClipContext(eye, far, net.minecraft.world.level.ClipContext.Block.COLLIDER,
+		Vec3 target = dev.overcraft.hero.Rays.clip(level, new net.minecraft.world.level.ClipContext(eye, far, net.minecraft.world.level.ClipContext.Block.COLLIDER,
 			net.minecraft.world.level.ClipContext.Fluid.NONE, player)).getLocation();
 		if (target.distanceTo(eye) < MUZZLE_AHEAD + 0.5) {
 			target = far;
@@ -432,7 +432,7 @@ public final class Mercy implements HeroKit {
 	}
 
 	private static boolean clear(Entity from, Vec3 a, Vec3 b) {
-		return from.level().clip(new net.minecraft.world.level.ClipContext(a, b, net.minecraft.world.level.ClipContext.Block.COLLIDER,
+		return dev.overcraft.hero.Rays.clip(from.level(), new net.minecraft.world.level.ClipContext(a, b, net.minecraft.world.level.ClipContext.Block.COLLIDER,
 			net.minecraft.world.level.ClipContext.Fluid.NONE, from)).getType() == net.minecraft.world.phys.HitResult.Type.MISS;
 	}
 
