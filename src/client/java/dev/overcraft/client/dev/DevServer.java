@@ -262,7 +262,9 @@ public final class DevServer {
 			}
 			case "timing" -> {
 				// dev only: "timing reset", then "timing": ms per frame spent posing and emitting hero models since
-				if (arg.startsWith("cull ")) {
+				if (arg.startsWith("lod ")) {
+					dev.overcraft.client.model.HeroLod.enabled = arg.endsWith("on");
+				} else if (arg.startsWith("cull ")) {
 					dev.overcraft.client.model.HeroModelRenderer.Timing.cull = arg.endsWith("on");
 				} else if (arg.startsWith("stride ")) {
 					dev.overcraft.client.model.HeroModelRenderer.Timing.stride = Integer.parseInt(arg.substring(7));
@@ -290,6 +292,35 @@ public final class DevServer {
 				net.minecraft.client.gui.screens.ConnectScreen.startConnecting(new net.minecraft.client.gui.screens.TitleScreen(), mc,
 					net.minecraft.client.multiplayer.resolver.ServerAddress.parseString(arg),
 					new net.minecraft.client.multiplayer.ServerData("Dev", arg, net.minecraft.client.multiplayer.ServerData.Type.LAN), false, null);
+				out.addProperty("ok", true);
+			}
+			case "endcards" -> {
+				// dev only: "endcards sojourn,cassidy,tracer": POTG's end screen now, one ally card per hero (names Dev1..), the dragon's
+				com.google.gson.JsonArray cards = new com.google.gson.JsonArray();
+				int i = 0;
+				for (String h : arg.trim().split(",")) {
+					com.google.gson.JsonObject c = new com.google.gson.JsonObject();
+					c.addProperty("side", "ally");
+					c.addProperty("name", "Dev" + ++i);
+					c.addProperty("hero", h.trim());
+					c.addProperty("stat", 1000 * i);
+					c.addProperty("label", "DAMAGE DONE");
+					cards.add(c);
+				}
+				com.google.gson.JsonObject dragon = new com.google.gson.JsonObject();
+				dragon.addProperty("side", "enemy");
+				dragon.addProperty("mob", "minecraft:ender_dragon");
+				dragon.addProperty("name", "");
+				dragon.addProperty("stat", 0);
+				dragon.addProperty("label", "DAMAGE TO PLAYERS");
+				cards.add(dragon);
+				com.google.gson.JsonObject o = new com.google.gson.JsonObject();
+				o.addProperty("player", "Dev1");
+				o.addProperty("hero", arg.trim().split(",")[0].trim());
+				o.add("lineup", new com.google.gson.JsonArray());
+				o.add("cards", cards);
+				dev.overcraft.client.hud.PotgCard.show(true, o.toString());
+				dev.overcraft.client.hud.PotgCard.cut();
 				out.addProperty("ok", true);
 			}
 			case "victory" -> {

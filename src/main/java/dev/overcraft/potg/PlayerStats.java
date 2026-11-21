@@ -43,6 +43,8 @@ public final class PlayerStats {
 		public double damage;
 		public double healing;
 		public int kills;
+		/** Deaths this run, in any mode (the Tab scoreboard's D). */
+		public int deaths;
 		/** The hero they last played, for the end screen's figure. */
 		public String lastHero = "";
 		/** The dimensions whose first entry has been awarded (PotgValues.FIRST_NETHER, FIRST_END), over the world's life. */
@@ -138,11 +140,37 @@ public final class PlayerStats {
 		}
 	}
 
+	/** AFTER_DEATH: a player died (the Tab scoreboard). */
+	public static void died(ServerPlayer player) {
+		Player p = of(player);
+		if (p != null) {
+			p.deaths++;
+		}
+	}
+
+	/** Every online player's run (StatsPayload), sent to all once a second: the Tab scoreboard (ScoreboardHud). */
+	private static void send(MinecraftServer server) {
+		List<dev.overcraft.net.StatsPayload.Row> rows = new ArrayList<>();
+		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			Player p = of(server, player.getUUID());
+			Hero hero = HeroManager.hero(player);
+			rows.add(new dev.overcraft.net.StatsPayload.Row(player.getName().getString(), hero == null ? "" : hero.id,
+				HeroManager.heroMode(player), p.kills, p.deaths, p.damage, p.healing));
+		}
+		dev.overcraft.net.StatsPayload payload = new dev.overcraft.net.StatsPayload(rows);
+		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			if (net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.canSend(player, dev.overcraft.net.StatsPayload.TYPE)) {
+				net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, payload);
+			}
+		}
+	}
+
 	/** END_SERVER_TICK (not while a showing holds the world): a second of hero mode per hero; saved each minute. */
 	public static void tick(MinecraftServer server) {
 		if (server.getTickCount() % 20 != 0) {
 			return;
 		}
+		send(server);
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 			Hero hero = HeroManager.hero(player);
 			if (hero != null && HeroManager.heroMode(player) && player.isAlive()) {
@@ -170,6 +198,7 @@ public final class PlayerStats {
 			p.damage = 0;
 			p.healing = 0;
 			p.kills = 0;
+			p.deaths = 0;
 		}
 		dirty = true;
 		flush(server);

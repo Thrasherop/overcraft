@@ -147,6 +147,8 @@ public final class HeroModelRenderer {
 	public static @Nullable String previewClip;
 	public static float previewClipAt;
 	public static float previewShowcaseAt = -1;
+	/** A POTG card's figure (PotgCard): the showcase this many seconds into its hold, past its pick; -1 none. */
+	public static float previewHoldAt = -1;
 
 	/** Forgets who was which hero (leaving a world). */
 	public static void clear() {
@@ -204,8 +206,15 @@ public final class HeroModelRenderer {
 			// default slot: its hold), as Junkrat's; read as the showcase's intro and hold for her (the critic, 2026-11-14: she stood
 			// side-on in her idle, unlike the others)
 			// Ashe's the same (ashe.txt: select C1AB, cat 6E, and select_2 C1AC on her hero file's 0x477, set 0F60), the Viper on its 00C9
-			showcase = preview == Hero.ILLARI || preview == Hero.ASHE ? HeroAnimator.showcasePose(loaded.model(), showcaseAt, "select", "select_2")
-				: HeroAnimator.showcasePose(loaded.model(), showcaseAt);
+			// (HeroAnimator.showcaseNames reads every map's names, Sojourn's select_idle and Junkrat's select_3 among them)
+			if (previewHoldAt >= 0) {
+				// a card's figure: this far into the hold, the pose the select screen shows (owner, 2026-11-21: Sojourn crumpled;
+				// 100 s in, a hold's later frames or the combat idle)
+				showcaseAt = HeroAnimator.showcaseIntroLength(loaded.model()) + previewHoldAt;
+			}
+			// Tracer stays in her idle: her hold (B1F1) keys Weapon_R 39 cm above her wrist (1.59 m up) the whole 9.7 s, and her
+			// pistol drew floating beside her head, her hand empty (2026-11-21, found playing): how her showcase holds it isn't read
+			showcase = preview == Hero.TRACER ? null : HeroAnimator.showcasePose(loaded.model(), showcaseAt);
 		}
 		Matrix4f[] skin = showcase != null ? Skeleton.skin(loaded.model(), showcase, -1, null) : null;
 		if (skin == null) {
@@ -568,6 +577,13 @@ public final class HeroModelRenderer {
 			return null;
 		}
 		Vec3 feet = entity.getPosition(partialTicks);
+		// Minecraft's own fade (EntityRenderer.extractRenderState: strength x (1 - distance^2 / 256), none from 16 m): ours drew at
+		// any distance, 5 ms a frame for eight enemy heroes (owner, 2026-11-21, the lag)
+		double distSq = feet.distanceToSqr(mc.gameRenderer.mainCamera().position());
+		if (distSq >= 256) {
+			return null;
+		}
+		float fade = (float) (1 - distSq / 256);
 		net.minecraft.world.phys.BlockHitResult ground = mc.level.clip(new net.minecraft.world.level.ClipContext(
 			feet.add(0, 0.2, 0), feet.add(0, -SHADOW_REACH, 0), net.minecraft.world.level.ClipContext.Block.COLLIDER,
 			net.minecraft.world.level.ClipContext.Fluid.NONE, entity));
@@ -599,7 +615,7 @@ public final class HeroModelRenderer {
 		float sky = mc.level.getBrightness(net.minecraft.world.level.LightLayer.SKY, above) / 15f;
 		float sunlit = sky * (day ? 1 - mc.level.getRainLevel(partialTicks) * 0.6f : 0.35f);
 		toLight.lerp(new Vector3f(0, 1, 0), 1 - sunlit).normalize();
-		float strength = SHADOW_ALPHA * (0.6f + 0.4f * sunlit) * Math.min(1, brightness / 12f) * (1 + h / SHADOW_REACH);
+		float strength = SHADOW_ALPHA * (0.6f + 0.4f * sunlit) * Math.min(1, brightness / 12f) * (1 + h / SHADOW_REACH) * fade;
 		if (strength <= 0.01f) {
 			return null;
 		}
@@ -1952,9 +1968,19 @@ public final class HeroModelRenderer {
 
 	private static void emit(SkinnedModel.Piece piece, Matrix4f[] skin, PoseStack.Pose pose, VertexConsumer buffer, int light, int overlay,
 							 boolean prop, int color, boolean cull, boolean triangles) {
+		// from afar, a coarser copy (HeroLod: one about a pixel wide at this distance)
+		piece = HeroLod.pick(piece, pose.pose());
 		int n = piece.vertexCount();
-		float[] p = new float[n * 3];
-		float[] nm = new float[n * 3];
+		// the work arrays kept between calls (render thread): four new arrays a piece a frame were the garbage of every hero
+		if (scratchP.length < n * 3) {
+			int size = n * 3 + n * 3 / 4;
+			scratchP = new float[size];
+			scratchN = new float[size];
+			scratchQ = new float[size];
+			scratchQn = new float[size];
+		}
+		float[] p = scratchP;
+		float[] nm = scratchN;
 		skinned(piece, skin, p, nm);
 		int[] idx = piece.indices();
 		float[] uv = piece.uv();
@@ -1963,8 +1989,8 @@ public final class HeroModelRenderer {
 		// into the pose's space once per vertex (camera-relative: the camera at the origin), normals too
 		Matrix4f m = pose.pose();
 		Vector3f t = new Vector3f();
-		float[] q = new float[n * 3];
-		float[] qn = new float[n * 3];
+		float[] q = scratchQ;
+		float[] qn = scratchQn;
 		for (int v = 0; v < n; v++) {
 			m.transformPosition(p[v * 3], p[v * 3 + 1], p[v * 3 + 2], t);
 			q[v * 3] = t.x;
@@ -1992,6 +2018,8 @@ public final class HeroModelRenderer {
 			}
 		}
 	}
+
+	private static float[] scratchP = new float[0], scratchN = new float[0], scratchQ = new float[0], scratchQn = new float[0];
 
 	/** Some of the piece's vertices posed by the skin: their positions into p (model space; the rest left as they are). */
 	private static void skinnedSome(SkinnedModel.Piece piece, Matrix4f[] skin, int[] vertices, float[] p) {

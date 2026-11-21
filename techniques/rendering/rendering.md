@@ -309,3 +309,14 @@ Then the effects #150 listed as never seen in play, all seen 2026-11-17 on 0.3.7
   11-22 for under a second).
 - **Cassidy:** Silver Bullet (right button held 1.2 s, left click): a husk 20 -> 10.77 = 70 + 50 bleed through 2 armor (the small
   bleed ticks lose more to armor: 5.51 + 3.7); the bleed's look 5-6 particles for about a second.
+
+## Many heroes in view: a pixel-wide weld, Minecraft's shadow fade (2026-11-21, #180)
+- Each hero's whole mesh (58-68k triangles) is skinned on the CPU and sent every frame. Eight enemy heroes in view: 30 fps to 13, emit
+  26.8-30 ms a frame (DevServer `timing`; `timing lod on|off` compares).
+- `HeroLod`: a copy of each piece with vertices welded on a grid (and a UV grid, so seams stay apart), each cell keeping its first
+  vertex whole (weights too: no averaging). The cell is chosen about one screen pixel wide at the hero's distance, from the camera's
+  FOV and the window's height, so scopes keep detail, and only for world-scale poses (menu previews stay whole). Built on a worker.
+  1.5 / 2.5 / 4 / 6 cm keep about 40 / 23 / 12 / 7 % of the triangles (`oc_scratch/lodtest.py`). Eight heroes: 25-26 fps, emit 11 ms;
+  side by side, no difference seen at play size.
+- The emit's four work arrays a piece a frame are reused (render thread only).
+- Hero shadows now fade as Minecraft's do (`1 - d^2/256`, none from 16 m: `EntityRenderer`): they were drawn at any distance.

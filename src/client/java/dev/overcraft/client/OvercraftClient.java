@@ -50,6 +50,8 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(HeroSyncPayload.TYPE, (payload, context) -> dev.overcraft.client.dev.DevLag.in(() -> ClientHero.onSync(payload)));
 		ClientPlayNetworking.registerGlobalReceiver(EffectPayload.TYPE, (payload, context) -> dev.overcraft.client.dev.DevLag.in(() -> KirikoFx.play(payload)));
 		ClientPlayNetworking.registerGlobalReceiver(KillFeedPayload.TYPE, (payload, context) -> KillFeedHud.add(payload));
+		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.StatsPayload.TYPE,
+			(payload, context) -> dev.overcraft.client.hud.ScoreboardHud.set(payload));
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.ConspiratorPayload.TYPE,
 			(payload, context) -> dev.overcraft.client.hud.ConspiratorHud.receive(payload));
 		ClientPlayNetworking.registerGlobalReceiver(dev.overcraft.net.DeadeyePayload.TYPE,
@@ -125,6 +127,7 @@ public class OvercraftClient implements ClientModInitializer {
 		ClientPlayConnectionEvents.JOIN.register((listener, sender, client) -> ClientHero.onJoin());
 		ClientPlayConnectionEvents.DISCONNECT.register((listener, client) -> {
 			ClientSojourn.reset();
+			dev.overcraft.client.hud.ScoreboardHud.clear();
 			ClientHero.onDisconnect();
 			ClientPotg.onDisconnect();
 			HeroAnimator.clear();
@@ -322,6 +325,14 @@ public class OvercraftClient implements ClientModInitializer {
 			HudElementRegistry.replaceElement(id, vanilla -> hiddenInHeroMode(vanilla));
 		}
 		// the air bubbles join the hero HUD, above the health (HeroHud.airPlace)
+		// Tab in hero mode: Overwatch's scoreboard in place of the player list (ScoreboardHud)
+		HudElementRegistry.replaceElement(VanillaHudElements.PLAYER_LIST, vanilla -> (graphics, delta) -> {
+			if (dev.overcraft.client.hud.ScoreboardHud.showing()) {
+				dev.overcraft.client.hud.ScoreboardHud.render(graphics, delta);
+			} else {
+				vanilla.extractRenderState(graphics, delta);
+			}
+		});
 		HudElementRegistry.replaceElement(VanillaHudElements.AIR_BAR, vanilla -> (graphics, delta) -> {
 			if (!ClientHero.heroView()) {
 				vanilla.extractRenderState(graphics, delta);

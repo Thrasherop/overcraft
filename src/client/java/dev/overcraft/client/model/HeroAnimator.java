@@ -131,6 +131,8 @@ public final class HeroAnimator {
 	private boolean sojourn, sojournSliding;
 	/** Cassidy (his Deadeye's first-person clips are left out: below). */
 	private boolean cassidy;
+	/** Cassidy in Deadeye (his synced look, HeroManager.CASSIDY_LOOK): his walk is the slow set (cassidyWalk). */
+	private boolean cassidyDeadeye;
 	/** Sigma (his actions' clips: trigger). */
 	private boolean sigma;
 	/** D.Va's form (dev.overcraft.dva.Dva.MECH .. WRECK, -1 not her), when it last changed, when she last ejected. */
@@ -1424,7 +1426,34 @@ public final class HeroAnimator {
 	 * pose (HeroWeapon.placeShowcase).
 	 */
 	public static Skeleton.@Nullable Pose showcasePose(SkinnedModel model, float sinceOpened) {
-		return showcasePose(model, sinceOpened, "select_intro", "select_hold");
+		String[] names = showcaseNames(model);
+		return showcasePose(model, sinceOpened, names[0], names[1]);
+	}
+
+	/**
+	 * The showcase's pick and hold under the names each map gave them (owner, 2026-11-21: "some heros, like sojourn, are crumpled
+	 * up in the post-potg stat screen": with no select_hold they stood in their combat idle). The hero file's select alias (0x477,
+	 * Junkrat's 0x5A6) holds the pick at dfC3 cat 0x6E and the hold at dfC3's default: select_intro / select_hold (Kiriko's map),
+	 * select / select_idle (Sojourn's C278 / C279, 14.7 s), select / select_3 (Junkrat's A00E / A01B: his select_2 is cat 0x82),
+	 * select / select_2 (Cassidy C033 / C034, Tracer B1F0 / B1F1, Pharah C1A1 / C1A2, Torbjorn C08F / C1FB, Sigma B1E6 / B1EA,
+	 * Illari, Ashe): tools/clipmaps/<hero>.txt.
+	 */
+	public static String[] showcaseNames(SkinnedModel model) {
+		if (model.clips.containsKey("select_hold")) {
+			return new String[] {"select_intro", "select_hold"};
+		}
+		for (String hold : new String[] {"select_idle", "select_3", "select_2"}) {
+			if (model.clips.containsKey(hold)) {
+				return new String[] {"select", hold};
+			}
+		}
+		return new String[] {"select_intro", "select_hold"};
+	}
+
+	/** How long the showcase's pick runs before its hold (0 with none). */
+	public static float showcaseIntroLength(SkinnedModel model) {
+		SkinnedModel.Clip intro = model.clips.get(showcaseNames(model)[0]);
+		return intro == null ? 0 : intro.duration();
 	}
 
 	/** The same with the intro and hold clips named (Illari's map names them "select" / "select_2"). */
@@ -1507,12 +1536,12 @@ public final class HeroAnimator {
 		previousPhase += dt;
 
 		Skeleton.Pose pose = new Skeleton.Pose(model.nodeNames.length).rest(model);
-		SkinnedModel.Clip baseClip = clip(model, base);
+		SkinnedModel.Clip baseClip = clip(model, cassidyWalk(model, base));
 		if (baseClip != null) {
 			Skeleton.sample(baseClip, time(baseClip, basePhase, loops(base)), pose);
 		}
 		float fade = Math.clamp((now - switchedAt) / FADE, 0, 1);
-		SkinnedModel.Clip prevClip = previous == null ? null : clip(model, previous);
+		SkinnedModel.Clip prevClip = previous == null ? null : clip(model, cassidyWalk(model, previous));
 		if (prevClip != null && fade < 1) {
 			Skeleton.Pose old = new Skeleton.Pose(model.nodeNames.length).rest(model);
 			Skeleton.sample(prevClip, time(prevClip, previousPhase, loops(previous)), old);
@@ -1943,6 +1972,8 @@ public final class HeroAnimator {
 		boolean sojourn = "sojourn".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		this.sojourn = sojourn;
 		this.cassidy = "cassidy".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
+		Integer cassidyLook = cassidy ? entity.getAttached(dev.overcraft.hero.HeroManager.CASSIDY_LOOK) : null;
+		cassidyDeadeye = cassidyLook != null && (cassidyLook & dev.overcraft.cassidy.Cassidy.LOOK_DEADEYE) != 0;
 		this.sigma = "sigma".equals(entity.getAttached(dev.overcraft.hero.HeroManager.HERO));
 		String heroId = entity.getAttached(dev.overcraft.hero.HeroManager.HERO);
 		Map<String, String> names = heroId == null ? null : SHEET_NAMES.get("dva".equals(heroId)
@@ -2461,6 +2492,27 @@ public final class HeroAnimator {
 			}
 		}
 		return state + "_ads";
+	}
+
+	/**
+	 * Cassidy's walk out of Deadeye (owner, 2026-11-21: "cassidy walking animation is his ulting walking animations"). His move
+	 * tree (alias 5, df 0x583) has two 8-way sets: the 1.0 s one the map named run / strafe (1313, 1417 ...) and the 0.8 s one
+	 * under a LayerOverride bound to variable 0AD8 (12AC, 131C ...: run_ovr, move_*), which Deadeye's graph 022F writes (node 617,
+	 * an expression). Which way the bound runs isn't read; the poses say it: the 1.0 s run sits 2.2-2.6 degrees a joint from his
+	 * Deadeye stance and 3.6-4.0 from his idle, the 0.8 s set 2.6-3.3 from his idle and 4.4-5.0 from Deadeye
+	 * (oc_scratch/posecmp.py, mean joint angle). So the 1.0 s set is Deadeye's walk and the 0.8 s set his own.
+	 */
+	private String cassidyWalk(SkinnedModel model, String name) {
+		if (!cassidy || cassidyDeadeye) {
+			return name;
+		}
+		String own = switch (name) {
+			case "run" -> "run_ovr";
+			case "strafe_left" -> "move_left";
+			case "strafe_right" -> "move_right";
+			default -> name.startsWith("run_") ? "move" + name.substring(3) : name;
+		};
+		return model.clips.containsKey(own) ? own : name;
 	}
 
 	private static String resolve(SkinnedModel model, String want) {
