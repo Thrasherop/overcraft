@@ -763,8 +763,13 @@ public final class Lifeweaver implements HeroKit {
 			TreeOfLifeEntity tree = new TreeOfLifeEntity(player.level(), player, s.treeAt);
 			player.level().addFreshEntity(tree);
 			s.treeId = tree.getId();
-			// the ult's line, allies' and enemies' (11FD / 11FE), as the other heroes' casts
-			HeroSounds.ultLine(player, OcSounds.LW_ULT_FRIENDLY, OcSounds.LW_ULT_ENEMY, 4);
+			// the ult's line, allies' and enemies' (11FD / 11FE), as the other heroes' casts; the freak list's own line for
+			// both (Freaks, owner 2026-11-20)
+			if (tree.freak()) {
+				HeroSounds.ultLine(player, OcSounds.LW_ULT_FREAK, OcSounds.LW_ULT_FREAK, 4);
+			} else {
+				HeroSounds.ultLine(player, OcSounds.LW_ULT_FRIENDLY, OcSounds.LW_ULT_ENEMY, 4);
+			}
 		}
 		if (s.treeCast >= Ow.ticks(TREE_CAST)) {
 			s.treeCast = -1;

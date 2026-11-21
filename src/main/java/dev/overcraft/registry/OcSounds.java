@@ -317,6 +317,8 @@ public final class OcSounds {
 	/** The Tree of Life's line as allies (and he) hear it, and as enemies do. */
 	public static final SoundEvent LW_ULT_FRIENDLY = register("lifeweaver.ult.friendly");
 	public static final SoundEvent LW_ULT_ENEMY = register("lifeweaver.ult.enemy");
+	/** The freak list's cast line (Freaks: the owner's own recording, local-assets/raw/freak/), for allies and enemies alike. */
+	public static final SoundEvent LW_ULT_FREAK = register("lifeweaver.ult.freak");
 	/**
 	 * His lines by moment (Voice.say: "lifeweaver.voice.<moment>"), the game's own pools (the map's voice section). His
 	 * wheel lines, "resurrected" and "damage_boosted" are every hero's, registered in init().

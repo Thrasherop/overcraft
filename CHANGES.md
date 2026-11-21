@@ -4,6 +4,26 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-20: 0.3.134
+
+- **The freak list (owner).** Players on it get their own Tree of Life as Lifeweaver: the owner's own cast line in place of
+  "Life protects life" (allies and enemies hear the same line), and a model of the owner's in place of the tree once it is in the
+  pack. Everyone else casts the normal one. `/addfreak <name>`, `/removefreak <name>` and `/freaks` (operators); by name,
+  any case, so offline players can be added; saved per world in `<world>/overcraft/freaks.json`. SaltySardines is on it by
+  default.
+- Asset pack: `py tools/build_asset_pack.py freak [<model file>]` builds the line from `local-assets/raw/freak/` (its 0.6 s
+  of padding cut at each end, mono, levelled to the normal line's peak) and, given a file, the freak tree's model
+  (`hero_models/lifeweaver_tree_freak.glb`). A full `sounds` build keeps the line. Players need a fresh asset zip to hear it.
+  Until the model arrives the freak tree is drawn as the normal tree. It grows in and out over 0.5 s and plays any of the
+  tree's clips it has.
+- Played with real keys on a fresh world, as Lifeweaver picked on the select screen:
+  - The list starts as saltysardines.
+  - Off the list: the normal tree and its "Life protects life" subtitle.
+  - `/addfreak Kiriko` (typed in chat), then cast: the "Lifeweaver: ultimate (freak)" subtitle, with no normal line.
+  - With a stand-in model in the pack (the petal platform, removed afterwards): the stand-in stood where the tree goes.
+  - `/removefreak Kiriko`: the normal tree and its line again, and the world's `freaks.json` back to `["saltysardines"]`.
+  - Not tried: a second player hearing the line, and the owner's real model, which isn't here yet.
+
 ## 2026-11-20: 0.3.133
 
 - **Server freezes, the rest (#178):** checked 0.3.132 on a dedicated server (view distance 10, fresh worlds, one seed,

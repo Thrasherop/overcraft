@@ -54,6 +54,8 @@ public final class HeroModels {
 		"cat_flame", "cat_bell", "cat_slash_arc", "cat_dome",
 		// Lifeweaver's: his Petal Platform, his Tree of Life, and his seed (model 126CC: thrown, and Sow the Seed's on the ground)
 		"lifeweaver_platform", "lifeweaver_tree", "lifeweaver_seed", "projectile_lifeweaver_seed",
+		// the freak list's Tree of Life (Freaks: the owner's own model, py tools/build_asset_pack.py freak <file>; none: the normal tree)
+		"lifeweaver_tree_freak",
 		// his effects' meshes (LifeweaverFx): the platform's bloom outline, Life Grip's bud and its point's flower
 		"lw_flower_ring", "lw_bud", "lw_flower",
 		// Sombra's Translocator beacon (model 10518)

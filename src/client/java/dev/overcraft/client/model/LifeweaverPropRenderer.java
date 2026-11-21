@@ -42,6 +42,8 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 		/** It turns to aim (Torbjörn's turret): bolted to a wall or a ceiling it swivels about the face's normal, toward its aim. */
 		boolean swivel;
 		float xRot;
+		/** Drawn this size (the freak tree's growing in and out). */
+		float scale = 1;
 	}
 
 	private final String model;
@@ -167,6 +169,13 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 			s.lift = (float) LifeweaverStats.TRUNK_BELOW;
 			float t = (e.tickCount + s.partialTick) / 20f;
 			float left = (e.left() - s.partialTick) / 20f;
+			HeroModels.Loaded freak = e.freak() ? HeroModels.get("lifeweaver_tree_freak") : null;
+			if (freak != null) {
+				// the freak list's tree (Freaks): its own model on the root, grown in over the normal tree's 0.5 s and out over
+				// its last 0.5 s (ours); its own clips if it has any by the tree's names, else still
+				s.loaded = freak;
+				s.scale = Math.clamp(Math.min(t, left) / 0.5f, 0.01f, 1f);
+			}
 			if (left < 5 / 3f) {
 				clip(s, e.growth() == TreeOfLifeEntity.GROW_LEANING ? "end_leaning" : "end", 5 / 3f - left, false);
 				return;
@@ -215,6 +224,7 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 		state.swivel = entity instanceof dev.overcraft.entity.TurretEntity;
 		state.loaded = HeroModels.get(model);
 		state.lift = 0;
+		state.scale = 1;
 		state.partialTick = partialTicks;
 		state.face = entity instanceof dev.overcraft.entity.SurfaceStuck stuck ? stuck.stuckFace() : null;
 		state.width = entity.getBbWidth();
@@ -270,6 +280,9 @@ public class LifeweaverPropRenderer<T extends Entity> extends EntityRenderer<T, 
 				poseStack.rotateDegrees(Axis.XP, 90);
 			} else {
 				poseStack.rotateDegrees(Axis.YP, -state.yRot);
+			}
+			if (state.scale != 1) {
+				poseStack.scale(state.scale, state.scale, state.scale);
 			}
 			HeroModelRenderer.submitModel(loaded, skin, poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, java.util.Set.of(),
 				true, false);

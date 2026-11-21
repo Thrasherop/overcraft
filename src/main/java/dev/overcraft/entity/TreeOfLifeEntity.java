@@ -47,6 +47,8 @@ public class TreeOfLifeEntity extends Entity {
 	private static final EntityDataAccessor<Integer> LIFE = SynchedEntityData.defineId(TreeOfLifeEntity.class, EntityDataSerializers.INT);
 	/** The free height over it (m), for the enclosed growth's cut. */
 	private static final EntityDataAccessor<Float> ROOM = SynchedEntityData.defineId(TreeOfLifeEntity.class, EntityDataSerializers.FLOAT);
+	/** Cast by a player on the freak list (dev.overcraft.lifeweaver.Freaks): drawn as the freak tree. */
+	private static final EntityDataAccessor<Boolean> FREAK = SynchedEntityData.defineId(TreeOfLifeEntity.class, EntityDataSerializers.BOOLEAN);
 
 	private @Nullable UUID ownerId;
 	private double health = TREE_HEALTH;
@@ -65,6 +67,7 @@ public class TreeOfLifeEntity extends Entity {
 		ownerId = owner.getUUID();
 		entityData.set(OWNER, owner.getId());
 		entityData.set(LIFE, Ow.ticks(TREE_TIME));
+		entityData.set(FREAK, dev.overcraft.lifeweaver.Freaks.is(owner));
 		double room = room(level, root);
 		entityData.set(ROOM, (float) room);
 		entityData.set(GROWTH, room < TRUNK_HEIGHT ? GROW_ENCLOSED : nearWall(level, root) ? GROW_LEANING : GROW);
@@ -99,10 +102,15 @@ public class TreeOfLifeEntity extends Entity {
 		builder.define(GROWTH, GROW);
 		builder.define(LIFE, Ow.ticks(TREE_TIME));
 		builder.define(ROOM, 10f);
+		builder.define(FREAK, false);
 	}
 
 	public int ownerId() {
 		return entityData.get(OWNER);
+	}
+
+	public boolean freak() {
+		return entityData.get(FREAK);
 	}
 
 	public int growth() {
