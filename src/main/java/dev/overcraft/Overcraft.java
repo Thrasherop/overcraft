@@ -277,7 +277,10 @@ public class Overcraft implements ModInitializer {
 		ServerLivingEntityEvents.AFTER_DEATH.register(KillFeed::onDeath);
 		// Voice's kill lines come from KillFeed.onDeath, which knows whose kill it is (a fall after a boop too)
 		ServerLivingEntityEvents.AFTER_DEATH.register(Souls::onDeath);
-		CommandRegistrationCallback.EVENT.register((dispatcher, registries, environment) -> OvercraftCommand.register(dispatcher));
+		CommandRegistrationCallback.EVENT.register((dispatcher, registries, environment) -> {
+			OvercraftCommand.register(dispatcher);
+			dev.overcraft.lifeweaver.Freaks.register(dispatcher);
+		});
 		// a hero who dies leaves play at once (#100: HeroKit.leavePlay): Brigitte's barrier goes down (it stood on over her body,
 		// and she came back in its stance: #88), a tow or a carry lets go, a stealth ends
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
@@ -334,6 +337,8 @@ public class Overcraft implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			dev.overcraft.potg.PotgRecorder.serverStarted(server);
 			dev.overcraft.potg.PlayScore.open();
+			// the freak list (owner, 2026-11-20): this world's, before anyone casts a tree
+			dev.overcraft.lifeweaver.Freaks.load(server);
 			// the replay engine's classes loaded in the background, not on a player's first hero pick (#178)
 			dev.overcraft.potg.ReplayWarmup.start();
 		});

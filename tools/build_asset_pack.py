@@ -8,6 +8,8 @@
                                                             model's textures over 2048 px halved and its animation index
                                                             packed (tools/slim_glb.py); install it the same way, and the
                                                             plain zip to go back
+    py tools/build_asset_pack.py freak [<model file>]       the freak list's Tree of Life line (local-assets/raw/freak/,
+                                                            FREAK_SOUNDS) and, if given, its model (hero_models/lifeweaver_tree_freak.glb)
     py tools/build_asset_pack.py test                       check the Blender pipeline with a cube
     py tools/build_asset_pack.py ui <DataTool output dir>  the heroes' portraits and ability/perk icons, from DataTool's
                                                             extract-hero-icons (<dir>/HeroIcons/<Hero>/...), and the role
@@ -409,6 +411,8 @@ def add_sounds(source, only=None):
     for event, text in SUBTITLES.items():
         if event in sounds:
             lang[f"subtitles.overcraft.{event}"] = text
+    # the owner's own lines (FREAK_SOUNDS): a full sounds build keeps them
+    add_freak_sounds(sounds, lang, out)
     sounds_file.write_text(json.dumps(sounds, indent=1), encoding="utf8")
     lang_file.parent.mkdir(parents=True, exist_ok=True)
     lang_file.write_text(json.dumps(lang, indent=1, ensure_ascii=False), encoding="utf8")
@@ -1753,6 +1757,44 @@ def write_mcmeta():
         encoding="utf8")
 
 
+# The freak list's Tree of Life (owner, 2026-11-20: dev.overcraft.lifeweaver.Freaks): the owner's own recordings, kept in
+# local-assets/raw/freak/ -> (event, start s, end s, gain dB, subtitle). The recording has padding on both sides: its speech
+# runs 0.64-2.87 s (ffmpeg silencedetect at -40 dB), cut with a little air; +2.5 dB brings its peak to the normal ult line's
+# (-7.9 dB, lifeweaver.ult.friendly's file).
+FREAK_SOUNDS = {"lifeweaver_ult_freak.m4a": ("lifeweaver.ult.freak", 0.58, 2.93, 2.5, "Lifeweaver: ultimate (freak)")}
+FREAK_TREE = "lifeweaver_tree_freak"
+
+
+def add_freak_sounds(sounds=None, lang=None, out=None):
+    """The owner's own recordings (FREAK_SOUNDS), trimmed, mono and levelled, into the pack's sounds and its sounds.json.
+    With no arguments: into the pack as it stands."""
+    standalone = sounds is None
+    sounds_file = PACK / "assets" / "overcraft" / "sounds.json"
+    lang_file = PACK / "assets" / "overcraft" / "lang" / "en_us.json"
+    if standalone:
+        sounds = json.loads(sounds_file.read_text(encoding="utf8")) if sounds_file.exists() else {}
+        lang = json.loads(lang_file.read_text(encoding="utf8")) if lang_file.exists() else {}
+        out = PACK / "assets" / "overcraft" / "sounds"
+    raw = LOCAL / "raw" / "freak"
+    for name, (event, start, end, gain, subtitle) in FREAK_SOUNDS.items():
+        src = raw / name
+        if not src.exists():
+            print(f"freak: no {src}, {event} left out")
+            continue
+        dest = out / event.replace(".", "/") / "0.ogg"
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-ss", str(start), "-to", str(end), "-i", str(src),
+                        "-ac", "1", "-ar", "48000", "-af", f"volume={gain}dB", "-c:a", "libvorbis", "-q:a", "5", str(dest)], check=True)
+        sounds[event] = {"replace": True, "subtitle": "subtitles.overcraft." + event, "sounds": [f"overcraft:{event.replace('.', '/')}/0"]}
+        lang[f"subtitles.overcraft.{event}"] = subtitle
+        print(f"freak: {event} <- {name} ({start}-{end} s, {gain:+} dB)")
+    if standalone:
+        sounds_file.parent.mkdir(parents=True, exist_ok=True)
+        sounds_file.write_text(json.dumps(sounds, indent=1), encoding="utf8")
+        lang_file.parent.mkdir(parents=True, exist_ok=True)
+        lang_file.write_text(json.dumps(lang, indent=1, ensure_ascii=False), encoding="utf8")
+
+
 def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
@@ -1771,6 +1813,17 @@ def main():
         out = MODELS / f"{hero}.glb"
         convert(str(src), out)
         print("added:", out, out.stat().st_size // 1024, "KB")
+    elif cmd == "freak":
+        # py tools/build_asset_pack.py freak [<model file>]: the freak list's voice line, and its tree's model if given
+        write_mcmeta()
+        add_freak_sounds()
+        if len(sys.argv) > 2:
+            src = Path(sys.argv[2])
+            if not src.exists():
+                sys.exit(f"no such file: {src}")
+            out = MODELS / f"{FREAK_TREE}.glb"
+            convert(str(src), out)
+            print("added:", out, out.stat().st_size // 1024, "KB")
     elif cmd == "sprays":
         add_sprays(sys.argv[2] if len(sys.argv) > 2 else None)
     elif cmd == "ui":
