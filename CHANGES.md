@@ -22,7 +22,12 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
   - `/addfreak Kiriko` (typed in chat), then cast: the "Lifeweaver: ultimate (freak)" subtitle, with no normal line.
   - With a stand-in model in the pack (the petal platform, removed afterwards): the stand-in stood where the tree goes.
   - `/removefreak Kiriko`: the normal tree and its line again, and the world's `freaks.json` back to `["saltysardines"]`.
-  - Not tried: a second player hearing the line, and the owner's real model, which isn't here yet.
+  - Not tried: a second player hearing the line.
+- The owner's model (Upturned_Foot.stl, in `local-assets/raw/freak/`): `tools/freak_model.py` builds it (run by
+  `build_asset_pack.py freak <file>`). The STL has 1.09 M triangles in millimetres with no colour, so it is cut to
+  40,000 (860 KB), scaled to the tree's 6.5 m (11.5 m long), stood with its base's middle on the root, and given one skin
+  colour. Played: cast with Q and the mouse as a freak, it grew in at the tree's spot and stood on its mound; seen from
+  above and 20 m out (screenshot run/freak_foot_ingame.jpg). The tree's healing and hit box are the normal tree's.
 
 ## 2026-11-20: 0.3.133
 

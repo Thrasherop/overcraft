@@ -1822,7 +1822,12 @@ def main():
             if not src.exists():
                 sys.exit(f"no such file: {src}")
             out = MODELS / f"{FREAK_TREE}.glb"
-            convert(str(src), out)
+            # a bare mesh (the owner's STL): cut, sized to the tree and coloured by tools/freak_model.py
+            result = subprocess.run([blender(), "--background", "--factory-startup", "--python", str(ROOT / "tools" / "freak_model.py"),
+                                     "--", str(src), str(out)], capture_output=True, text=True)
+            print("\n".join(l for l in result.stdout.splitlines() if "OVERCRAFT_EXPORT" in l or "Error" in l) or result.stdout[-2000:])
+            if result.returncode != 0 or not out.exists():
+                sys.exit("freak model failed: " + result.stderr[-2000:])
             print("added:", out, out.stat().st_size // 1024, "KB")
     elif cmd == "sprays":
         add_sprays(sys.argv[2] if len(sys.argv) > 2 else None)
