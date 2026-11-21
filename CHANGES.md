@@ -30,6 +30,18 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
     Tab: no scoreboard.
   - Not tried: a second player on the scoreboard or another team's rows, a real POTG's end screen (the dev one shows the
     same cards), lag on a slower machine.
+- General play before main (fresh client, fresh survival world `general135`, real keys and mouse):
+  - Every hero (all 20) picked on the select screen with H at a bed, each firing its primary at a NoAI mob: each took
+    damage (health read after). Shots that read no damage were checked: a miss, a target spawned in a tree trunk, the snow
+    ledge blocking Brigitte's flail (it hit at 2 m in the open), Kiriko's ofuda on the right button (the kunai hit).
+  - Mercy's beam healed a hurt villager 5 to 16.9 of 20. Died four ways (a fall, slain by wild zombies twice, burned by
+    a spreading forest fire), respawned with the button each time; hero mode came back, Minecraft mode stayed.
+  - Save and leave, Singleplayer, rejoin: the select screen on join, Kiriko picked from it; Tab kept the run (D 3,
+    DMG 4,436, H 190).
+  - Minecraft mode in survival: mined with a wooden pickaxe, crafted planks in the 2x2 grid, placed planks and a chest,
+    stored the planks and found them on reopening.
+  - Found: clicks at the window's right side went to another window over it (the harness, not the game). Not explained:
+    what lit the tree that burned (no ability places fire blocks).
 
 ## 2026-11-20: 0.3.134
 
