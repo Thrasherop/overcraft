@@ -4,6 +4,45 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-21: 0.3.135
+
+- **Cassidy walks as himself (#179).** Out of Deadeye he walked in Deadeye's hunched, gun-forward stance. His move tree has two
+  walk sets; measured by pose, the one we played is Deadeye's. Now his own walk plays, and Deadeye's only during Deadeye.
+- **Enemy heroes lag far less (#180).** Eight enemy heroes in view took the game from 30 fps to 13 (each hero's whole mesh is
+  built on the CPU every frame). Heroes far enough away now draw a lighter copy of their mesh, chosen to be about one screen pixel
+  of detail at their distance, so it isn't seen (a scope's zoom keeps the detail). Hero shadows fade out by 16 m, as Minecraft's
+  own do. Measured: the same eight, 25-26 fps (the window's 30 cap); the mesh's share 30 ms a frame down to 11.
+- **No more crumpled heroes on the POTG end screen (#181).** Sojourn (and Ana, Brigitte) stood hunched. Several heroes' select
+  poses are named differently in their data and weren't found, so they stood in their combat stance; the cards also took a frame
+  100 s into the pose. Now every hero with a select pose shows it on the cards and the select screen (Sojourn, Cassidy, Pharah,
+  Torbjorn, Sigma, Junkrat newly), a couple of seconds in. Tracer keeps her idle: in her select pose the pistol floated (#183).
+- **Tab scoreboard (#182).** In hero mode, holding Tab shows each player's hero, eliminations, deaths, damage and healing for
+  this run (since the last dragon), your team on top and any other team below. Minecraft mode keeps Minecraft's list. No
+  assists or mitigation yet: they aren't counted.
+- Played, one dev client, real keys and mouse:
+  - Cassidy: walked forward, back and sideways in third person (upright, gun at his side); Q, then walked (Deadeye's set).
+    Before the fix the same walk showed the hunch.
+  - Lag: eight enemy heroes 8-14 m out at night, 13 fps before; with the change 25-26, switching it off and on twice
+    (`timing lod off|on`); the same view side by side showed no difference.
+  - End screen: every hero three at a time (dev `endcards`) before and after. Before: Sojourn, Ana, Brigitte hunched. After:
+    all upright; Tracer's floating pistol found and kept out. The select screen checked for Sojourn, Cassidy, Tracer, Ana.
+  - Tab: zeros at first; shot a zombie with the revolver (4 shots), Tab: E 1, DMG 250; died, Tab: D 1; G to Minecraft mode,
+    Tab: no scoreboard.
+  - Not tried: a second player on the scoreboard or another team's rows, a real POTG's end screen (the dev one shows the
+    same cards), lag on a slower machine.
+- General play before main (fresh client, fresh survival world `general135`, real keys and mouse):
+  - Every hero (all 20) picked on the select screen with H at a bed, each firing its primary at a NoAI mob: each took
+    damage (health read after). Shots that read no damage were checked: a miss, a target spawned in a tree trunk, the snow
+    ledge blocking Brigitte's flail (it hit at 2 m in the open), Kiriko's ofuda on the right button (the kunai hit).
+  - Mercy's beam healed a hurt villager 5 to 16.9 of 20. Died four ways (a fall, slain by wild zombies twice, burned by
+    a spreading forest fire), respawned with the button each time; hero mode came back, Minecraft mode stayed.
+  - Save and leave, Singleplayer, rejoin: the select screen on join, Kiriko picked from it; Tab kept the run (D 3,
+    DMG 4,436, H 190).
+  - Minecraft mode in survival: mined with a wooden pickaxe, crafted planks in the 2x2 grid, placed planks and a chest,
+    stored the planks and found them on reopening.
+  - Found: clicks at the window's right side went to another window over it (the harness, not the game). Not explained:
+    what lit the tree that burned (no ability places fire blocks).
+
 ## 2026-11-20: 0.3.134
 
 - **The freak list (owner).** Players on it get their own Tree of Life as Lifeweaver: the owner's own cast line in place of

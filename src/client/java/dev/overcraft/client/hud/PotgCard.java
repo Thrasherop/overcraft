@@ -659,6 +659,7 @@ public final class PotgCard {
 		HeroModelRenderer.previewClip = clip;
 		HeroModelRenderer.previewClipAt = clipAt;
 		HeroModelRenderer.previewShowcaseAt = holdAt + 100;
+		HeroModelRenderer.previewHoldAt = holdAt;
 		try {
 			InventoryScreen.extractEntityInInventoryFollowsMouse(g, x0, y0, x1, y1, Math.round(size), offsetY - boxShift,
 				cx - turn, centreY, mc.player);
@@ -666,6 +667,7 @@ public final class PotgCard {
 			HeroModelRenderer.preview(null);
 			HeroModelRenderer.previewClip = null;
 			HeroModelRenderer.previewShowcaseAt = -1;
+			HeroModelRenderer.previewHoldAt = -1;
 		}
 	}
 

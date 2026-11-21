@@ -75,6 +75,16 @@ and a fix by eye was built on that. Read frames from the raw reference pose or t
   trailing, hips turning as the 8-way clips' do).
 - **Some clips carry the hero's lift in the pelvis** (Lúcio's jump rise, Sound Barrier's 1.63 m leap): Minecraft
   moves the player already, so take the lift off the pose, and where the move is ours, match its height to the clip.
+- **Two sets in one tree: which is the special one, measured by pose** (2026-11-21, #179, [cassidy](../heroes/cassidy.md)). Cassidy's move
+  tree has a 1.0 s 8-way set and a 0.8 s set under a LayerOverride bound to variable 0AD8, which Deadeye's graph writes through an
+  expression we can't evaluate offline. The map named the 1.0 s set `run`, and he walked in his Deadeye stance. Settle it by mean joint
+  angle against the states you know (`oc_scratch/posecmp.py <glb> <reference> <clips...>`): the 1.0 s run sat 2.2 degrees from
+  `deadeye`, the 0.8 s one 2.6 from `idle`. `HeroAnimator.cassidyWalk` plays the 0.8 s set out of Deadeye.
+- **A showcase hides under several names** (2026-11-21, #181). The hero file's select alias holds the pick at dfC3 cat 0x6E and the
+  hold at its default; the maps named them `select_intro` / `select_hold`, `select` / `select_2`, `select` / `select_idle` (Sojourn),
+  `select` / `select_3` (Junkrat). Reading only the first pair left seven heroes in their combat idle on the select screen and the
+  POTG cards (Sojourn's crouch read as "crumpled"). `HeroAnimator.showcaseNames` reads them all. Check the weapon in each: Tracer's
+  hold keys Weapon_R 39 cm off her wrist and her pistol floated (#183), so she keeps her idle.
 - **When a clip "looks wrong" to the owner, re-identify it from the game's own graph**: alias chains, which sounds
   sit on it, its length against the stat. Render strips. A whole action can be mislabelled: the "reload" was an
   ofuda throw, and the real reload was filed as "equip".

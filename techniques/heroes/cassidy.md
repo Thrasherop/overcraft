@@ -150,3 +150,10 @@ harness keys (not the real mouse and keys). Raw stamped log: [runs/cassidy/fixer
 mid-round-trip, the enemy's view of the cut roll); a hack landing mid-roll (left going: no source read on it); Peacekeeper headshots on
 the dragon's head by hand (Deadeye only); a Shift press dropped at a hero switch (his client retakes the count after 2 s stuck); an
 Overwatch side by side.
+
+## His walk, out of Deadeye and in it (2026-11-21, #179)
+The owner: his walk was his ult's. His move tree holds two 8-way sets; the one played (1.0 s, named `run`) is Deadeye's, measured by
+pose ([animation_import](../animation/animation_import.md#finding-the-right-clip)). Out of Deadeye he now plays the 0.8 s set
+(`run_ovr`, `move_*`), in it the 1.0 s set (his synced look's LOOK_DEADEYE). Played: walked forward, back and sideways in third
+person (upright, the gun at his side); Q, then walked (gun forward, the eye's glow, the slow set). Screenshots in the session's
+tool results; not tried: an enemy Cassidy (he has no Deadeye), a second player watching.

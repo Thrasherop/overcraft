@@ -118,6 +118,7 @@ public class Overcraft implements ModInitializer {
 		PayloadTypeRegistry.serverboundPlay().register(dev.overcraft.net.LifelineGrabPayload.TYPE, dev.overcraft.net.LifelineGrabPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(PingPayload.TYPE, PingPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(PingPayload.TYPE, PingPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(dev.overcraft.net.StatsPayload.TYPE, dev.overcraft.net.StatsPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HeroSyncPayload.TYPE, HeroSyncPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HeroActionPayload.TYPE, HeroActionPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(EffectPayload.TYPE, EffectPayload.CODEC);
@@ -288,6 +289,7 @@ public class Overcraft implements ModInitializer {
 			if (entity instanceof ServerPlayer player) {
 				HeroManager.onDeath(player);
 				dev.overcraft.potg.PlayScore.died(player);
+				dev.overcraft.potg.PlayerStats.died(player);
 				dev.overcraft.potg.MobStats.killed(player, source);
 			}
 		});
