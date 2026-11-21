@@ -334,6 +334,8 @@ public class Overcraft implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			dev.overcraft.potg.PotgRecorder.serverStarted(server);
 			dev.overcraft.potg.PlayScore.open();
+			// the replay engine's classes loaded in the background, not on a player's first hero pick (#178)
+			dev.overcraft.potg.ReplayWarmup.start();
 		});
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
 			dev.overcraft.potg.PotgReplay.serverStopping(server);

@@ -296,12 +296,13 @@ public final class Tracer implements HeroKit {
 		}
 	}
 
-	/** Her feet's nearest place to {@code to} (within 3 m, 0.25 m apart, nearest first) where her box is clear, or null. */
-	private static @org.jspecify.annotations.Nullable Vec3 freeNear(ServerPlayer player, Vec3 to) {
-		AABB box = player.getBoundingBox().move(to.subtract(player.position())).deflate(1.0E-4);
-		if (player.level().noCollision(player, box)) {
-			return to;
-		}
+	/**
+	 * The places freeNear tries, nearest first (within 3 m, 0.25 m apart): built once (#178), not on every Recall that
+	 * lands in a block; the same list in the same order (a stable sort of the same loop), so where she lands is unchanged.
+	 */
+	private static final java.util.List<Vec3> FREE_OFFSETS;
+
+	static {
 		java.util.List<Vec3> offsets = new java.util.ArrayList<>();
 		for (int x = -12; x <= 12; x++) {
 			for (int y = -12; y <= 12; y++) {
@@ -314,7 +315,16 @@ public final class Tracer implements HeroKit {
 			}
 		}
 		offsets.sort(java.util.Comparator.comparingDouble(Vec3::lengthSqr));
-		for (Vec3 o : offsets) {
+		FREE_OFFSETS = java.util.List.copyOf(offsets);
+	}
+
+	/** Her feet's nearest place to {@code to} (within 3 m, 0.25 m apart, nearest first) where her box is clear, or null. */
+	private static @org.jspecify.annotations.Nullable Vec3 freeNear(ServerPlayer player, Vec3 to) {
+		AABB box = player.getBoundingBox().move(to.subtract(player.position())).deflate(1.0E-4);
+		if (player.level().noCollision(player, box)) {
+			return to;
+		}
+		for (Vec3 o : FREE_OFFSETS) {
 			if (player.level().noCollision(player, box.move(o))) {
 				return to.add(o);
 			}

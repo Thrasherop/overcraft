@@ -114,6 +114,10 @@ public final class PotgRecorder {
 			}
 		}
 		if (!held) {
+			// at most one recording starts (or rolls) a tick (#178): each start snapshots everything the player sees, 0.1-0.5 s,
+			// and after a POTG showing every player's started in the same tick (four players: one 0.54 s freeze). One a tick,
+			// the rest wait a tick or so each, their recordings beginning that much later, and their 5-minute rolls spread out
+			boolean started = false;
 			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 				Rec r = RECS.computeIfAbsent(player.getUUID(), Rec::new);
 				boolean want = HeroManager.hero(player) != null && !ReplayViewers.has(player.getUUID());
@@ -121,13 +125,18 @@ public final class PotgRecorder {
 					if (r.recorder != null) {
 						finish(server, r);
 					}
+				} else if (started) {
+					continue;
 				} else if (r.recorder == null || r.recorder.getStopped()) {
 					start(server, r, player);
+					// (only a start that took counts: one that fails every tick mustn't keep the others from starting)
+					started = r.recorder != null;
 				} else if (r.recorder.recordedTicks() >= SEGMENT_TICKS
 					&& (!PlayScore.busy(player.getUUID()) || r.recorder.recordedTicks() >= SEGMENT_TICKS + ROLL_DEFER_TICKS)) {
 					// not in the middle of a play (#170): a window across the roll lost its start, the old segment unkept
 					finish(server, r);
 					start(server, r, player);
+					started = r.recorder != null;
 				}
 			}
 		}

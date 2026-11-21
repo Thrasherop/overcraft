@@ -4,6 +4,25 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-20: 0.3.133
+
+- **Server freezes, the rest (#178):** checked 0.3.132 on a dedicated server (view distance 10, fresh worlds, one seed,
+  the old chunk loading switched back on for an A/B): portal trips 2.1-3.1 s -> 0.4-1.0 s, a long shot 233 ms -> none.
+  The first hero pick after a server start still froze it 2.3 s (one run 7.4 s): thread dumps showed the replay engine's
+  classes loading on the server thread. Three changes:
+  - **Replay classes warmed up** in the background as the server starts (`ReplayWarmup`, 187 classes, about 2 s off the
+    server thread): the first pick on a dedicated server 2.3 s -> 0.6 s, the rest ordinary ticking.
+  - **One recording starts a tick:** after a POTG every player's recording restarted in the same tick (four players, one
+    0.54 s freeze); now one a tick (four ticks of about 0.15 s), which also spreads their 5-minute rolls.
+  - **Tracer's Recall** builds its free-spot list once, not on every Recall into a block: same list, same order, so she
+    lands where she did; 4-5 ms -> about 1 ms (measured: it was never the 100 ms first guessed).
+- Played (real mouse and keys by desktop control, plus the harness for set-up): Tracer's pistols and Recall (clear spot:
+  back to it; filled spot: the nearest free place), Ana's rifle healing a villager 4 -> 16 and her Sleep Dart, Widowmaker
+  at 30 m, Pharah's rockets, Sojourn's railgun; a POTG with three bots (played through, recordings restarted on four
+  consecutive ticks); Save and Leave, Singleplayer, rejoin, hero select, READY; H mid-game to change hero; death and
+  respawn. A scripted sweep of all 20 heroes' fire buttons gave the same hits with the new block rays as with Minecraft's
+  own. Not tried: several real players on a dedicated server.
+
 ## 2026-11-20: 0.3.132
 
 - **Server freezes of several seconds in multiplayer (#178):** the Play of the Game recorder, when a player's recording
