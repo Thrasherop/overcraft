@@ -22,7 +22,8 @@ import static dev.overcraft.sombra.SombraStats.*;
  * Sombra's stealth (graph 420C), after every teleport: 0.75 s fading in, 6.5 s stealthed, +60% speed from the landing;
  * firing, Cyberspace, EMP and quick melee end it; damage doesn't (it reveals her 1.3 s); an enemy within 4 m in sight sees
  * her. Here: Minecraft's invisibility hides her (its name tag and shadow with it), and two mixins decide who still sees her:
- * mobs only pick her up within 4 m in sight (TargetingConditionsMixin), players see her see-through when on her side or
+ * mobs only pick her up within 4 m in sight (TargetingConditionsMixin; the enemy heroes and their turret not at all, only
+ * while she's revealed: owner, 2026-11-22), players see her see-through when on her side or
  * within 4 m in sight (EntityMixin.isInvisibleTo).
  */
 public final class Stealth {
@@ -52,7 +53,7 @@ public final class Stealth {
 	/** Mobs after her that can't see her any more (further than 4 m, or out of sight) lose her. */
 	private static void dropTargets(ServerPlayer player) {
 		for (Mob mob : player.level().getEntitiesOfClass(Mob.class, new AABB(player.blockPosition()).inflate(48))) {
-			if (mob.getTarget() == player && !detects(mob, player)) {
+			if (mob.getTarget() == player && hiddenFrom(player, mob)) {
 				mob.setTarget(null);
 			}
 		}
@@ -143,7 +144,14 @@ public final class Stealth {
 		if (s == null || s.hero != Hero.SOMBRA || !stealthed(player, s) || player.level().getGameTime() < s.revealedUntil) {
 			return false;
 		}
-		return !detects(looker, target);
+		// the enemy heroes and his turret only when she's revealed (owner, 2026-11-22: "Enemy heros still see sombra when
+		// invisible. they should only see her when she is revealed"); other mobs within 4 m in sight
+		return enemyHero(looker) || !detects(looker, target);
+	}
+
+	/** The Overwatch enemies (#46): an enemy hero or the enemy Torbjörn's turret. */
+	private static boolean enemyHero(LivingEntity looker) {
+		return looker instanceof dev.overcraft.entity.enemy.EnemyHeroEntity || looker instanceof dev.overcraft.entity.enemy.EnemyTurretEntity;
 	}
 
 	/** Within 4 m and in sight (420C's detection). */

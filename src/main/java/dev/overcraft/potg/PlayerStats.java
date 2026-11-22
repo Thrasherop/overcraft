@@ -45,6 +45,8 @@ public final class PlayerStats {
 		public int kills;
 		/** Deaths this run, in any mode (the Tab scoreboard's D). */
 		public int deaths;
+		/** Damage mitigated this run, Overwatch HP: what their barriers, Defense Matrix and Kinetic Grasp took (Tab's MIT). */
+		public double mitigated;
 		/** The hero they last played, for the end screen's figure. */
 		public String lastHero = "";
 		/** The dimensions whose first entry has been awarded (PotgValues.FIRST_NETHER, FIRST_END), over the world's life. */
@@ -140,6 +142,22 @@ public final class PlayerStats {
 		}
 	}
 
+	/**
+	 * Damage their ability kept off its target (Overwatch HP), the Tab scoreboard's MIT: what a barrier of theirs took
+	 * (Brigitte's, Sigma's, up to what it had left), what Defense Matrix ate, what Kinetic Grasp absorbed (projectiles and
+	 * shots). Overwatch's scoreboard counts blocked damage as mitigated; armor's reduction isn't counted here (ours: no source
+	 * read for it). Under PlayScore's conditions (scoring open, a hero in hero mode), like damage and healing.
+	 */
+	public static void mitigated(ServerPlayer player, double ow) {
+		if (ow <= 0 || !PlayScore.scores(player)) {
+			return;
+		}
+		Player p = of(player);
+		if (p != null) {
+			p.mitigated += ow;
+		}
+	}
+
 	/** AFTER_DEATH: a player died (the Tab scoreboard). */
 	public static void died(ServerPlayer player) {
 		Player p = of(player);
@@ -155,7 +173,7 @@ public final class PlayerStats {
 			Player p = of(server, player.getUUID());
 			Hero hero = HeroManager.hero(player);
 			rows.add(new dev.overcraft.net.StatsPayload.Row(player.getName().getString(), hero == null ? "" : hero.id,
-				HeroManager.heroMode(player), p.kills, p.deaths, p.damage, p.healing));
+				HeroManager.heroMode(player), p.kills, p.deaths, p.damage, p.healing, p.mitigated));
 		}
 		dev.overcraft.net.StatsPayload payload = new dev.overcraft.net.StatsPayload(rows);
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
@@ -199,6 +217,7 @@ public final class PlayerStats {
 			p.healing = 0;
 			p.kills = 0;
 			p.deaths = 0;
+			p.mitigated = 0;
 		}
 		dirty = true;
 		flush(server);

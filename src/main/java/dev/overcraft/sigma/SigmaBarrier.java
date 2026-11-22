@@ -173,6 +173,7 @@ public final class SigmaBarrier {
 		double after = s.barrierHealth / BARRIER_HEALTH;
 		Combat.addUltCharge(owner, took * BARRIER_ULT_SHARE, false);
 		Perks.add(owner, took);
+		dev.overcraft.potg.PlayerStats.mitigated(owner, took);
 		ServerLevel level = owner.level();
 		// a hit on it: no effect of its own (1A2A #685 only feeds his ult, H); the attackers' contact on barrier material
 		// 0015 (1833 / 1834), the shared barrier impact

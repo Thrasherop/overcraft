@@ -87,6 +87,7 @@ public final class DefenseMatrix {
 		Barriers.absorbBox(player, BOX, (p, at, damage) -> {
 			// 4 % of what it eats to her ult (#255, M)
 			Combat.addUltCharge(player, damage * MATRIX_ULT_SHARE, false);
+			dev.overcraft.potg.PlayerStats.mitigated(player, damage);
 			// "Don't think so!" 0.75 s after it eats something (06C1: 02CC #343)
 			if (s.dvaMatrixLineAt < 0) {
 				s.dvaMatrixLineAt = level.getGameTime() + Ow.ticks(0.75);

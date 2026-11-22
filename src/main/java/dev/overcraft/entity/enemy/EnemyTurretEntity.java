@@ -86,7 +86,7 @@ public class EnemyTurretEntity extends TurretEntity implements Enemy {
 		// (not a creative or spectating player, as Minecraft's own targeting: the critique of 29c1797)
 		return e.isAlive() && e != this && Allies.lockOn(owner, e) && EnemyHeroStats.scanMayPick(e instanceof net.minecraft.world.entity.player.Player,
 			e instanceof net.minecraft.world.entity.player.Player p && p.isCreative(), e.isSpectator()) && e.getBoundingBox().getCenter().distanceTo(gun) <= TURRET_RANGE
-			&& Combat.inSight(level, gun, e, this);
+			&& Combat.inSight(level, gun, e, this) && !dev.overcraft.sombra.Stealth.hiddenFrom(e, this);
 	}
 
 	/** Its target: the one it has while it can still shoot it, else his, else the closest it may shoot in sight within 40 m. */
