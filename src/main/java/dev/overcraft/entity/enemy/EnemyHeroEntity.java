@@ -126,6 +126,11 @@ public abstract class EnemyHeroEntity extends Monster {
 			setAttached(HeroManager.HERO, hero().id);
 		}
 		if (!level().isClientSide()) {
+			// a stealthed Sombra it can't see goes at once, whatever set her (owner, 2026-11-22, #185: an Ashe kept shooting her
+			// from 10 m after her reveal ended)
+			if (getTarget() != null && dev.overcraft.sombra.Stealth.hiddenFrom(getTarget(), this)) {
+				setTarget(null);
+			}
 			noteTarget();
 			leaveAtDay();
 		}

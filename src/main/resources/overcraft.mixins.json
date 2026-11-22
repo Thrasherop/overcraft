@@ -11,6 +11,7 @@
 		"ProjectileUtilMixin",
 		"EntityMixin",
 		"TargetingConditionsMixin",
+		"TargetGoalMixin",
 		"FoodDataMixin",
 		"ZombieVillagerInvoker",
 		"ServerGamePacketListenerAccessor",
