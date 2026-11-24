@@ -94,6 +94,7 @@ public final class KineticGrasp {
 			}
 			double damage = Barriers.projectileDamage(p);
 			s.sigmaGraspAbsorbed += damage;
+			dev.overcraft.potg.PlayerStats.mitigated(player, damage);
 			// 5% of what it absorbs to his ult (#432, M)
 			Combat.addUltCharge(player, damage * GRASP_ULT_SHARE, false);
 			Barriers.stop(p, in, false);
@@ -137,6 +138,7 @@ public final class KineticGrasp {
 				if (inBox(at.subtract(eye), f, r, u)) {
 					double ow = Ow.toOw(damage);
 					s.sigmaGraspAbsorbed += ow;
+					dev.overcraft.potg.PlayerStats.mitigated(sigma, ow);
 					Combat.addUltCharge(sigma, ow * GRASP_ULT_SHARE, false);
 					Effects.play(level, "sigma_absorb", at, to.subtract(from).normalize(), sigma, 0, sigma);
 					SigmaSounds.splitAt(sigma, "grasp.absorb", at, 30, 30);

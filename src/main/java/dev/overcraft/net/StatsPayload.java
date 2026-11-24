@@ -15,8 +15,9 @@ import java.util.List;
 public record StatsPayload(List<Row> rows) implements CustomPacketPayload {
 	public static final Type<StatsPayload> TYPE = new Type<>(Overcraft.id("stats"));
 
-	/** One player: name, hero id ("" none), whether in hero mode, eliminations, deaths, damage done, healing done. */
-	public record Row(String name, String hero, boolean heroMode, int kills, int deaths, double damage, double healing) {
+	/** One player: name, hero id ("" none), whether in hero mode, eliminations, deaths, damage done, healing, mitigated. */
+	public record Row(String name, String hero, boolean heroMode, int kills, int deaths, double damage, double healing,
+					  double mitigated) {
 	}
 
 	public static final StreamCodec<FriendlyByteBuf, StatsPayload> CODEC = CustomPacketPayload.codec((p, buf) -> {
@@ -29,13 +30,14 @@ public record StatsPayload(List<Row> rows) implements CustomPacketPayload {
 			buf.writeVarInt(r.deaths);
 			buf.writeDouble(r.damage);
 			buf.writeDouble(r.healing);
+			buf.writeDouble(r.mitigated);
 		}
 	}, buf -> {
 		int n = Math.min(buf.readVarInt(), 256);
 		List<Row> rows = new ArrayList<>(n);
 		for (int i = 0; i < n; i++) {
 			rows.add(new Row(buf.readUtf(64), buf.readUtf(32), buf.readBoolean(), buf.readVarInt(), buf.readVarInt(), buf.readDouble(),
-				buf.readDouble()));
+				buf.readDouble(), buf.readDouble()));
 		}
 		return new StatsPayload(rows);
 	});

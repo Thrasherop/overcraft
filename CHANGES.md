@@ -4,6 +4,35 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-22: 0.3.136
+
+- **Tab scoreboard: MIT (#184).** A fifth column, damage mitigated this run (Overwatch HP): what Brigitte's and Sigma's barriers
+  took (up to what they had left), what D.Va's Defense Matrix ate, what Sigma's Kinetic Grasp absorbed. Armor's reduction isn't
+  counted. Reset with the dragon like the rest.
+- **Enemy heroes no longer see stealthed Sombra (#185).** An enemy hero within 4 m in sight still spotted her (stealth's
+  close-range detection, which every mob used), and the enemy Torbjorn's turret never checked stealth at all. Now the enemy
+  heroes and that turret see her only while she's revealed (hit, Hotfix). Other mobs keep the 4 m rule.
+  The owner's case (an Ashe shooting and chasing from 10+ m after the 1.3 s reveal ended): a hit reveals her 1.3 s, Ashe fires
+  every 1.2 s, and a target was only dropped every half second, so an Ashe mid-aim could still fire just after the reveal
+  ended, and that hit revealed her again. Minecraft's own target goal also put a cleared target straight back
+  (TargetGoal.canContinueToUse falls back to the one it remembers). Now an enemy hero drops a hidden Sombra the tick she's
+  hidden, and no target goal keeps one it can't see.
+- Played, one dev client, real keys and mouse:
+  - MIT: Sigma from the select screen, a bow skeleton 14 m out at night, RMB barrier in front; the barrier took its arrows;
+    Tab: MIT 238, the other columns as before. Not tried: Brigitte's barrier, Defense Matrix, Kinetic Grasp (same counter,
+    one line each), a second player's row.
+  - Sombra (a fresh flat world, noon, no mob spawns): an enemy Cassidy summoned frozen; E to throw the Translocator, E to
+    teleport (stealth), then the Cassidy moved 3 m from her and let go. Before: he shot at once and kept on (18 -> 2.9 in 10 s).
+    After: no shot for the rest of stealth, his first ~7 s after the teleport (as it ended). From 18-22 m he didn't shoot on
+    either build. Revealed: 1 damage while stealthed with him 3 m away, he fired within half a second. Not tried: the enemy
+    turret (changed from reading its code), Hotfix's reveal, other enemy heroes.
+  - Ashe (owner's follow-up): an active enemy Ashe 13 m out, Sombra teleported into stealth, then 1 damage to reveal her.
+    Before (the 4 m change only): the reveal ended at :39.14 and Ashe still hit her at :39.48. After: two trials, no Ashe hit
+    from the reveal until stealth's end (~7 s after the teleport). The exact chase-and-shoot loop the owner saw wasn't
+    reproduced end to end here; its cause was found in the timings and Minecraft's TargetGoal source.
+  - Seen in passing: closing the first client hung on "Saving world" (the shutdown watchdog fired; its stack is Minecraft's
+    chunk tickets, no mod frames); not looked into further.
+
 ## 2026-11-21: 0.3.135
 
 - **Cassidy walks as himself (#179).** Out of Deadeye he walked in Deadeye's hunched, gun-forward stance. His move tree has two
@@ -18,7 +47,7 @@ handed out has its own version (`gradle.properties`), shown in the pause menu ne
   Torbjorn, Sigma, Junkrat newly), a couple of seconds in. Tracer keeps her idle: in her select pose the pistol floated (#183).
 - **Tab scoreboard (#182).** In hero mode, holding Tab shows each player's hero, eliminations, deaths, damage and healing for
   this run (since the last dragon), your team on top and any other team below. Minecraft mode keeps Minecraft's list. No
-  assists or mitigation yet: they aren't counted.
+  assists or mitigation yet: they aren't counted (mitigation added in 0.3.136).
 - Played, one dev client, real keys and mouse:
   - Cassidy: walked forward, back and sideways in third person (upright, gun at his side); Q, then walked (Deadeye's set).
     Before the fix the same walk showed the hunch.

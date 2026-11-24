@@ -29,7 +29,8 @@ import static dev.overcraft.client.hud.HudDraw.outline;
  * player list while Tab is held: Overwatch's scoreboard rows, your team on top and any other team below, each player's
  * hero portrait, name and this run's numbers (PlayerStats, since the last dragon: StatsPayload once a second). Overwatch's
  * columns are E A D DMG H MIT; ours are the ones counted: E (eliminations), D (deaths), DMG (damage done), H (healing done),
- * in Overwatch HP. No assists or mitigation are counted yet. Layout and sizes ours, in the HUD's 1920x1080 reference
+ * MIT (damage mitigated: barriers, Defense Matrix, Kinetic Grasp; owner, 2026-11-22: "There is no damage mitigated stat on
+ * tab"), in Overwatch HP. No assists are counted yet. Layout and sizes ours, in the HUD's 1920x1080 reference
  * pixels; the colours are the kill feed's (Overwatch's team blue and red).
  */
 public final class ScoreboardHud {
@@ -47,8 +48,8 @@ public final class ScoreboardHud {
 	private static final int ENEMY_EDGE = 0xAA3F66;
 	private static final int PANEL = 0x0B1520;
 	/** The columns' right edges from the panel's right, and their headings. */
-	private static final String[] HEADINGS = {"E", "D", "DMG", "H"};
-	private static final float[] COLUMNS = {470, 380, 220, 60};
+	private static final String[] HEADINGS = {"E", "D", "DMG", "H", "MIT"};
+	private static final float[] COLUMNS = {610, 520, 370, 210, 50};
 	/** Where the face band starts in a hero's 256 px portrait art (KillFeedHud's). */
 	private static final int PORTRAIT_TOP = 30;
 
@@ -153,7 +154,8 @@ public final class ScoreboardHud {
 			: hero.displayName.toUpperCase(Locale.ROOT);
 		HudText.draw(g, Face.SMALL, sub, x + PORTRAIT_W + 18 + HudText.width(Face.BODY, r.name().toUpperCase(Locale.ROOT), 16) + 14,
 			y + ROW_H / 2 + 6, 11, 0xFFD6E2EE, Align.LEFT);
-		String[] values = {Integer.toString(r.kills()), Integer.toString(r.deaths()), number(r.damage()), number(r.healing())};
+		String[] values = {Integer.toString(r.kills()), Integer.toString(r.deaths()), number(r.damage()), number(r.healing()),
+			number(r.mitigated())};
 		for (int i = 0; i < values.length; i++) {
 			HudText.draw(g, Face.NUMBERS, values[i], x + WIDTH - COLUMNS[i], y + ROW_H / 2 + 10, 24, 0xFFFFFFFF, Align.RIGHT);
 		}

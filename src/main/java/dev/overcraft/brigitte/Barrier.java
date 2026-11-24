@@ -324,6 +324,7 @@ public final class Barrier {
 		double took = Math.min(ow, s.barrierHealth);
 		s.barrierHealth -= took;
 		Barrier.took = true;
+		dev.overcraft.potg.PlayerStats.mitigated(brig, took);
 		double after = s.barrierHealth / maxHealth(s);
 		// a hit on it (her flail's barrier contact 0015, M: anything hitting her barrier), and its calls
 		BrigitteSounds.at(level, "hit_barrier", at, 100);
