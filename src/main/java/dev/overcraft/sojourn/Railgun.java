@@ -430,7 +430,7 @@ public final class Railgun {
 				: !e.isPickable() || e.isRemoved()) {
 				continue;
 			}
-			java.util.Optional<Vec3> at = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(CHARGED_RADIUS), eye, stop);
+			java.util.Optional<Vec3> at = dev.overcraft.hero.Combat.clipEntity(e, CHARGED_RADIUS, eye, stop);
 			if (at.isEmpty() && e.getBoundingBox().inflate(CHARGED_RADIUS).contains(eye)) {
 				at = java.util.Optional.of(eye);
 			}

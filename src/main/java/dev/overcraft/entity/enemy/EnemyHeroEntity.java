@@ -279,7 +279,7 @@ public abstract class EnemyHeroEntity extends Monster {
 			if (!(e instanceof LivingEntity living) || !living.isAlive() || !Allies.canHurt(this, living)) {
 				continue;
 			}
-			java.util.Optional<Vec3> hit = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(radius), from, stop);
+			java.util.Optional<Vec3> hit = dev.overcraft.hero.Combat.clipEntity(e, radius, from, stop);
 			if (hit.isPresent() && hit.get().distanceToSqr(from) < bestDist) {
 				best = living;
 				bestAt = hit.get();

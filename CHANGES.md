@@ -4,6 +4,22 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-25: 0.3.138
+
+- **Animal heads take hits (#186, owner: "sheep, chickens, cows, etc don't register hits when you hit the actual head").**
+  Minecraft's server knows one box per mob, around its body, and an animal's head is drawn mostly outside it (a sheep's from
+  0.38 to 0.88 m ahead of its middle; its box ends at 0.45 m), so a shot through the head went through nothing. Every hero's
+  hitscan, beam and projectile now also tests the head as Minecraft draws it: read from Minecraft 26.3's own models by a dev
+  command ("headboxes", HeadBoxDump) into overcraft/head_boxes.json (83 mobs: farm animals, horses, wolves, hoglins, ravagers,
+  spiders...), turned with the mob's body, scaled with it, its baby head where the model has one. A front-headed mob's
+  headshot uses that head too. Not followed: the head turning or nodding (a grazing sheep), a cow's and a chicken's babies (their
+  renderer picks the baby model another way: box only, as before), melee, Minecraft's own arrows.
+- Played, one dev client, real mouse, still 1-health mobs side-on 7 m out (dead = gone from the client):
+  - Before, Cassidy at a sheep: past the head alive, torso front dead, middle of the head alive, front of the head alive
+    (hb_s2_*).
+  - After: past the head alive, torso dead, head middle dead, head front dead (hb_f_*); a cow's head dead, a chicken's head
+    dead, just past the chicken's head alive; Kiriko's kunai at the sheep's head dead, past it alive (hb_k_*).
+
 ## 2026-11-25: 0.3.137
 
 - **The asset pack in mods/ wins over an old one (owner: "a ton of assets seem to be missing").** The game looked for

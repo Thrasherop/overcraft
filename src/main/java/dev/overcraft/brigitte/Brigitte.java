@@ -459,7 +459,7 @@ public final class Brigitte implements HeroKit {
 			double best = Double.MAX_VALUE;
 			for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, new AABB(a, end).inflate(WHIP_RADIUS + 1),
 				e -> e.isAlive() && Allies.canHurt(player, e))) {
-				java.util.Optional<Vec3> at = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(WHIP_RADIUS), a, end);
+				java.util.Optional<Vec3> at = dev.overcraft.hero.Combat.clipEntity(e, WHIP_RADIUS, a, end);
 				if (at.isPresent() && at.get().distanceToSqr(a) < best) {
 					hit = e;
 					best = at.get().distanceToSqr(a);

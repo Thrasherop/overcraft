@@ -48,8 +48,12 @@ public final class Headshot {
 
 	/** {@code at}: where it struck; {@code direction}: which way it was going; {@code radius}: how thick the shot is. */
 	public static boolean crossed(LivingEntity target, Vec3 at, Vec3 direction, double radius) {
-		return crossed(head(plan(target), target.getX(), target.getY(), target.getZ(), target.getBbWidth(), target.getBbHeight(), target.getEyeHeight(),
-			target.getYHeadRot()), target.getBbWidth(), at, direction, radius);
+		Plan plan = plan(target);
+		// a front-headed mob's head as Minecraft draws it, where there's one (#186: HeadBoxes; most of it is outside the box, where
+		// the estimate below can't reach), else the estimate
+		AABB drawn = plan == Plan.FRONT ? HeadBoxes.head(target) : null;
+		return crossed(drawn != null ? drawn : head(plan, target.getX(), target.getY(), target.getZ(), target.getBbWidth(), target.getBbHeight(),
+			target.getEyeHeight(), target.getYHeadRot()), target.getBbWidth(), at, direction, radius);
 	}
 
 	/** The head of a creature standing at x y z (feet). Package-private for HeadshotTest. */

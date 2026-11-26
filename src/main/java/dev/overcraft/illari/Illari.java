@@ -246,7 +246,7 @@ public final class Illari implements HeroKit {
 			if (!pylon && (target == null || !target.isAlive() || !Allies.canHurt(player, target))) {
 				continue;
 			}
-			var hit = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(SHOT_RADIUS), eye, block);
+			var hit = dev.overcraft.hero.Combat.clipEntity(e, SHOT_RADIUS, eye, block);
 			if (hit.isPresent() && hit.get().distanceTo(eye) < bestD) {
 				best = e;
 				bestAt = hit.get();
@@ -366,7 +366,7 @@ public final class Illari implements HeroKit {
 			if (!Allies.isAlly(player, e)) {
 				continue;
 			}
-			var hit = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(BEAM_RADIUS), eye, block);
+			var hit = dev.overcraft.hero.Combat.clipEntity(e, BEAM_RADIUS, eye, block);
 			if (hit.isPresent() && hit.get().distanceTo(eye) < bestD) {
 				best = e;
 				bestD = hit.get().distanceTo(eye);

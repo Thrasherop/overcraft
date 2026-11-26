@@ -131,6 +131,20 @@ public final class Combat {
 	}
 
 	/**
+	 * Where a shot from {@code from} to {@code to}, {@code radius} thick, first meets {@code e}: its box or its drawn head, whichever
+	 * comes first (#186: an animal's head is drawn outside its box: HeadBoxes).
+	 */
+	public static java.util.Optional<net.minecraft.world.phys.Vec3> clipEntity(Entity e, double radius, net.minecraft.world.phys.Vec3 from,
+																				 net.minecraft.world.phys.Vec3 to) {
+		var body = clipFrom(e.getBoundingBox().inflate(radius), from, to);
+		var head = HeadBoxes.clip(e, radius, from, to);
+		if (head.isEmpty()) {
+			return body;
+		}
+		return body.isEmpty() || head.get().distanceToSqr(from) < body.get().distanceToSqr(from) ? head : body;
+	}
+
+	/**
 	 * A hitscan shot's way from {@code from} to {@code to} (its block clip) ends at the first end crystal on it, popping it, as
 	 * Minecraft's arrows pop one (EndCrystal.hurtServer: any hit but the dragon's). Overwatch has no crystals; without this a
 	 * shot passed through one and only projectiles could pop them (#169, reproduced: two Cassidy shots through one). Unless

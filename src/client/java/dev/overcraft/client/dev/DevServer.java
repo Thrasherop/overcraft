@@ -563,6 +563,11 @@ public final class DevServer {
 				player.connection.sendChat(arg);
 				out.addProperty("ok", true);
 			}
+			case "headboxes" -> {
+				// dev only: every mob's drawn head for the server's hit tests (#186): HeadBoxDump
+				out.addProperty("types", HeadBoxDump.dump(mc, java.nio.file.Path.of(arg)));
+				HeadBoxDump.WHY.forEach(out::addProperty);
+			}
 			case "servercmd" -> {
 				// dev only: a command run by the integrated server itself, not the player (a dead player's commands find no
 				// entities: harness.md): POTG step 3 kills the dragon this way while its hero lies dead
