@@ -812,7 +812,7 @@
 	"overcraft.command.changehero": "Changed %s player(s) to %s",
 	"overcraft.command.changehero.unknown": "No playable hero \"%s\"",
 	"overcraft.command.changehero.dead": "%s is dead: change their hero once they respawn",
-	"overcraft.assets.outdated": "Overcraft's asset pack is from build %s; this build (%s) needs %s or newer. Rebuild it (py tools/build_asset_pack.py zip) and copy it to .minecraft/overcraft/overcraft-assets.zip.",
+	"overcraft.assets.outdated": "Overcraft's asset pack is from build %s; this build (%s) needs %s or newer. Rebuild it (py tools/build_asset_pack.py zip) and put it in .minecraft/mods/ as overcraft-assets.zip.",
 	"overcraft.assets.unknown": "Overcraft's asset pack is older than build %s and needs rebuilding (py tools/build_asset_pack.py zip): models, sounds or clips this build uses may be missing.",
 	"overcraft.hud.eliminated": "Eliminated",
 	"overcraft.hud.prompt.confirm": "CONFIRM",

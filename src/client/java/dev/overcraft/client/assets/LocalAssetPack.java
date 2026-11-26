@@ -25,10 +25,10 @@ import java.util.function.Consumer;
  * of the mod's placeholders. They never come with the mod: the player makes the pack on their own machine
  * (tools/build_asset_pack.py) and it's read from outside the jar.
  *
- * Where: {@code -Dovercraft.assetPack=<zip or folder>}, else {@code <game dir>/overcraft/overcraft-assets.zip}, else
- * the folder {@code <game dir>/overcraft/overcraft-assets/}, else {@code <game dir>/mods/<modsZipName()>} (owner,
- * 2026-11-18: beside the jar is the easiest install; Fabric loads only .jar files from mods/, so the zip is left alone
- * there). Missing: placeholders only.
+ * Where: {@code -Dovercraft.assetPack=<zip or folder>}, else {@code <game dir>/mods/<modsZipName()>} (owner, 2026-11-18:
+ * beside the jar is the easiest install; Fabric loads only .jar files from mods/, so the zip is left alone there), else
+ * {@code <game dir>/overcraft/overcraft-assets.zip}, else the folder {@code <game dir>/overcraft/overcraft-assets/}.
+ * Missing: placeholders only.
  */
 public final class LocalAssetPack implements RepositorySource {
 	public static final String ID = "overcraft:local_assets";
@@ -71,15 +71,20 @@ public final class LocalAssetPack implements RepositorySource {
 			}
 			// a missing override falls through to the usual places
 		}
+		// mods/ first: it's where the bundle's install notes put the pack, and an older pack left in overcraft/ by an earlier
+		// install's notes won over it, so a new build ran on old assets: no portraits, models or sounds (owner, 2026-11-25)
 		Path dir = FabricLoader.getInstance().getGameDir().resolve("overcraft");
-		for (Path candidate : new Path[] {dir.resolve("overcraft-assets.zip"), dir.resolve("overcraft-assets")}) {
-			if (Files.exists(candidate)) {
-				return candidate;
+		Path[] candidates = {FabricLoader.getInstance().getGameDir().resolve("mods").resolve(modsZipName()),
+			dir.resolve("overcraft-assets.zip"), dir.resolve("overcraft-assets")};
+		for (int i = 0; i < candidates.length; i++) {
+			if (Files.exists(candidates[i])) {
+				for (int j = i + 1; j < candidates.length; j++) {
+					if (Files.exists(candidates[j])) {
+						Overcraft.LOG.warn("Another asset pack is at {}; it isn't used (delete it if it's old)", candidates[j]);
+					}
+				}
+				return candidates[i];
 			}
-		}
-		Path inMods = FabricLoader.getInstance().getGameDir().resolve("mods").resolve(modsZipName());
-		if (Files.exists(inMods)) {
-			return inMods;
 		}
 		return null;
 	}
