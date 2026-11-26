@@ -4,6 +4,22 @@ A day-by-day log of development: releases, features, bugs fixed, investigations,
 Newest day first. Issue numbers are on https://github.com/Thrasherop/overcraft/issues. From 0.2.0 on, every build
 handed out has its own version (`gradle.properties`), shown in the pause menu next to the asset pack's.
 
+## 2026-11-25: 0.3.137
+
+- **The asset pack in mods/ wins over an old one (owner: "a ton of assets seem to be missing").** The game looked for
+  `.minecraft/overcraft/overcraft-assets.zip` before the pack beside the jar in `mods/`, and earlier install notes put the pack in
+  that folder. So a new build with its new pack in mods/ ran on whatever old pack was still there: no portraits, hero models,
+  ability icons or sounds, and no warning (the version check only flags packs older than 0.3.31). Now mods/ comes first, and the
+  log names any other pack it ignores. The outdated-pack message points at mods/ too.
+- **The bundle ships the slim asset pack (owner, 2026-11-25: "we can officially use slim assets. it looks fine").** 1.39 GB
+  instead of 2.38 GB: textures over 2048 px halved, animation indexes packed (tools/slim_glb.py).
+- Played, one dev client at the launcher's default 2 GB:
+  - Reproduced: the shipped pack in mods/ and an old pack (2026-11-02) in overcraft/. The log loaded overcraft/'s; the hero
+    select showed letters for portraits, blank ability icons, no Kiriko model; 1652 "Missing sound" lines
+    (run/screenshots/ma_old_select).
+  - Fixed, same two packs: the log loads mods/' and warns about the other; portraits, icons and Kiriko back; 10 "Missing sound"
+    lines, as with the pack alone (ma_fix_select, ma_select).
+
 ## 2026-11-22: 0.3.136
 
 - **Tab scoreboard: MIT (#184).** A fifth column, damage mitigated this run (Overwatch HP): what Brigitte's and Sigma's barriers
