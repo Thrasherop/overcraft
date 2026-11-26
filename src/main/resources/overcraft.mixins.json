@@ -9,6 +9,7 @@
 		"AvatarMixin",
 		"PlayerAdvancementsMixin",
 		"ProjectileUtilMixin",
+		"ProjectileUtilHeadsMixin",
 		"EntityMixin",
 		"TargetingConditionsMixin",
 		"TargetGoalMixin",

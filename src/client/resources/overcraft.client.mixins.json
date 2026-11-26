@@ -12,6 +12,8 @@
 		"MinecraftPacksMixin",
 		"AvatarRendererMixin",
 		"LivingEntityRendererMixin",
+		"LivingEntityRendererInvoker",
+		"AgeableMobRendererAccessor",
 		"FirstPersonHandsMixin",
 		"HudMixin",
 		"GuiPotgMixin",

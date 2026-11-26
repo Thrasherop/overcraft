@@ -98,7 +98,7 @@ final class Mediblaster {
 			if (!ally && !Allies.canHurt(player, target)) {
 				continue;
 			}
-			java.util.Optional<Vec3> hit = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(ally ? ROUND_RADIUS_ALLY : ROUND_RADIUS_ENEMY), eye, block);
+			java.util.Optional<Vec3> hit = dev.overcraft.hero.Combat.clipEntity(e, ally ? ROUND_RADIUS_ALLY : ROUND_RADIUS_ENEMY, eye, block);
 			if (hit.isPresent() && hit.get().distanceToSqr(eye) < bestDist) {
 				best = target;
 				bestAt = hit.get();

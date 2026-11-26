@@ -448,7 +448,7 @@ public final class Ana implements HeroKit {
 				continue;
 			}
 			double margin = ally ? SCOPED_RADIUS_ALLY : SCOPED_RADIUS_ENEMY;
-			java.util.Optional<Vec3> hit = dev.overcraft.hero.Combat.clipFrom(e.getBoundingBox().inflate(margin), eye, block);
+			java.util.Optional<Vec3> hit = dev.overcraft.hero.Combat.clipEntity(e, margin, eye, block);
 			if (hit.isPresent() && hit.get().distanceToSqr(eye) < bestDist) {
 				best = e;
 				heal = ally;
@@ -456,7 +456,7 @@ public final class Ana implements HeroKit {
 			}
 		}
 		if (best != null) {
-			Vec3 at = dev.overcraft.hero.Combat.clipFrom(best.getBoundingBox().inflate(heal ? SCOPED_RADIUS_ALLY : SCOPED_RADIUS_ENEMY), eye, block).orElse(best.getEyePosition());
+			Vec3 at = dev.overcraft.hero.Combat.clipEntity(best, heal ? SCOPED_RADIUS_ALLY : SCOPED_RADIUS_ENEMY, eye, block).orElse(best.getEyePosition());
 			dose(player, best, heal, null, at);
 			tracer(player, at);
 		} else if (blockHit.getType() == HitResult.Type.BLOCK) {
